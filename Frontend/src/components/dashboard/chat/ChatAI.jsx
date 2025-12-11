@@ -6,15 +6,22 @@ import { Typography, Button, TextField, Box } from "@mui/material";
 const ChatAI = () => {
     const navigate = useNavigate();
     const [prompt, setPrompt] = useState("");
+    const [promptVisible, setPromptVisible] = useState(null);
     const [respuesta, setRespuesta] = useState("");
 
     const handleLogin = () => {
         navigate('/');
     }
-    
+
     const mandarPrompt = async (e) => {
         e.preventDefault();
-        await enviarPrompt(prompt, setRespuesta, setPrompt);
+        const promptActual = prompt;
+        setPrompt("");
+
+        setTimeout(() => {
+            setPromptVisible(prompt);
+        }, 200);
+        await enviarPrompt(promptActual, setRespuesta, setPrompt);
     }
 
     return (
@@ -24,13 +31,18 @@ const ChatAI = () => {
             </Typography>
             <Button variant='outlined' onClick={handleLogin}>Ir a login</Button>
             <Box sx={{ marginTop: 2, marginBottom: 2, padding: 2, border: '1px solid gray', borderRadius: 1, minHeight: '100px' }}>
-                {respuesta && (<Typography variant="body1">{respuesta.text}</Typography>)}     
+                {promptVisible && (
+                    <Typography variant="body1">{promptVisible}</Typography>
+                )}
+                {respuesta && (
+                    <Typography variant="body1">{respuesta.text}</Typography>
+                )}
             </Box>
             <Box component='form' onSubmit={mandarPrompt}>
                 <TextField
                     label="Escribe tu mensaje"
                     variant="outlined"
-                    vakue={prompt}
+                    value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     fullWidth
                     margin="normal"
