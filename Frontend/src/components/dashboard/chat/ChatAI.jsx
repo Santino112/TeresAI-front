@@ -46,9 +46,12 @@ const ChatAI = () => {
                     onChange={(e) => setPrompt(e.target.value)}
                     fullWidth
                     margin="normal"
+                    multiline
+                    minRows={1}
+                    maxRows={4}
                     InputLabelProps={{ required: false }}
                     sx={{
-                        input: { color: "white" },
+                        textarea: { color: "white" },
                         label: { color: "white" },
                         "& label.Mui-focused": { color: "white" },
                         "& .MuiOutlinedInput-root": {

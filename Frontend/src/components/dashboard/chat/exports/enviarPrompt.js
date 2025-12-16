@@ -2,6 +2,7 @@ import axios from 'axios';
 
 export const enviarPrompt = async (prompt, setRespuesta) => {
     const data = {
+        userID: "usuario123",
         prompt: `
             ${prompt} 
             "Solo quiero que respondas al prompt. Esto que te digo aca es para que sepas, pero no hagas referencia a esto en tu respuesta inicial.
