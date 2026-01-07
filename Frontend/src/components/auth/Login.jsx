@@ -5,6 +5,10 @@ import { Typography, Button, TextField, Box, } from '@mui/material';
 const Login = () => {
     const navigate = useNavigate();
 
+    const handleRegister = () => {
+        navigate('/register');
+    }
+ 
     const handleChatAI = () => {
         navigate('/chatAI');
     }
@@ -31,7 +35,7 @@ const Login = () => {
                     },
                 }} />
                 <br />
-                <TextField label="Password" type="outlined" margin="dense" sx={{
+                <TextField label="Password" type="password" variant="outlined" margin="dense" sx={{
                     marginBottom: 2,
                     input: { color: "white" },
                     label: { color: "white" },
@@ -49,7 +53,7 @@ const Login = () => {
                 <br />
                 <Button variant="contained" fullWidth sx={{marginBottom: 2}}>Login</Button>
                 <br />
-                <Button variant="outlined" fullWidth>Register</Button>
+                <Button variant="outlined" onClick={handleRegister} fullWidth>Register</Button>
             </Box>
         </>
     )
