@@ -1,3 +1,4 @@
+import { supabase } from "../../../supabaseClient.js"
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { enviarPrompt } from './exports/enviarPrompt.js';
@@ -10,7 +11,10 @@ const ChatAI = () => {
     const [respuesta, setRespuesta] = useState("");
     const [conversationId, setConversationId] = useState(null);
 
-    const handleLogin = () => {
+    const handleLogOut = async () => {
+        await supabase.auth.signOut();
+        const { data } = await supabase.auth.getSession()
+        console.log(data.session)
         navigate('/');
     }
 
@@ -65,7 +69,8 @@ const ChatAI = () => {
                         },
                     }}
                 />
-                <Button variant="contained" color="primary" type="submit" fullWidth>Enviar</Button>
+                <Button variant="contained" color="primary" type="submit" fullWidth sx={{ marginBottom: 2 }}>Enviar</Button>
+                <Button variant="outlined" onClick={handleLogOut} fullWidth>LogOut</Button>
             </Box>
         </>
     );
