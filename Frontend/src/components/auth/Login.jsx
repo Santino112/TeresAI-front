@@ -1,21 +1,57 @@
-import { useState, useEffect } from 'react'; 
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Button} from '@mui/material';
+import { Typography, Button, TextField, Box, } from '@mui/material';
 
 const Login = () => {
     const navigate = useNavigate();
 
     const handleChatAI = () => {
         navigate('/chatAI');
-    } 
+    }
 
     return (
-    <>
-        <Typography variant="h4" component="h1" gutterBottom>
-            Login Page
-        </Typography>
-        <Button variant='outlined' onClick={handleChatAI}>Ir a chat</Button>
-    </>
+        <>
+            <Typography variant="h4" component="h1" gutterBottom>
+                Login Page
+            </Typography>
+            <Button variant='outlined' onClick={handleChatAI}>Ir a chat</Button>
+            <br />
+            <Box component="form">
+                <TextField label="Username" variant="outlined" margin="normal" sx={{
+                    input: { color: "white" },
+                    label: { color: "white" },
+                    "& label.Mui-focused": { color: "white" },
+                    "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                            borderColor: "gray",
+                        },
+                        "&.Mui-focused fieldset": {
+                            borderColor: "white",
+                        },
+                    },
+                }} />
+                <br />
+                <TextField label="Password" type="outlined" margin="dense" sx={{
+                    marginBottom: 2,
+                    input: { color: "white" },
+                    label: { color: "white" },
+                    "& label.Mui-focused": { color: "white" },
+                    "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                            borderColor: "gray",
+                        },
+                        "&.Mui-focused fieldset": {
+                            borderColor: "white",
+                        },
+                    },
+
+                }} />
+                <br />
+                <Button variant="contained" fullWidth sx={{marginBottom: 2}}>Login</Button>
+                <br />
+                <Button variant="outlined" fullWidth>Register</Button>
+            </Box>
+        </>
     )
 };
 

@@ -8,6 +8,7 @@ const ChatAI = () => {
     const [prompt, setPrompt] = useState("");
     const [promptVisible, setPromptVisible] = useState(null);
     const [respuesta, setRespuesta] = useState("");
+    const [conversationId, setConversationId] = useState(null);
 
     const handleLogin = () => {
         navigate('/');
@@ -17,11 +18,10 @@ const ChatAI = () => {
         e.preventDefault();
         const promptActual = prompt;
         setPrompt("");
-
         setTimeout(() => {
             setPromptVisible(prompt);
         }, 200);
-        await enviarPrompt(promptActual, setRespuesta, setPrompt);
+        await enviarPrompt(promptActual, conversationId, setRespuesta, setConversationId);
     }
 
     return (
@@ -30,7 +30,7 @@ const ChatAI = () => {
                 Chat AI Page
             </Typography>
             <Button variant='outlined' onClick={handleLogin}>Ir a login</Button>
-            <Box sx={{ marginTop: 2, marginBottom: 2, padding: 2, border: '1px solid gray', borderRadius: 1, minHeight: '100px' }}>
+            <Box sx={{ marginTop: 2, marginBottom: 1, padding: 2, border: '1px solid gray', borderRadius: 1, minHeight: '100px' }}>
                 {promptVisible && (
                     <Typography variant="body1">{promptVisible}</Typography>
                 )}
@@ -51,6 +51,7 @@ const ChatAI = () => {
                     maxRows={4}
                     InputLabelProps={{ required: false }}
                     sx={{
+                        marginBottom: 2,
                         textarea: { color: "white" },
                         label: { color: "white" },
                         "& label.Mui-focused": { color: "white" },
@@ -64,7 +65,7 @@ const ChatAI = () => {
                         },
                     }}
                 />
-                <Button variant="contained" color="primary" type="submit">Enviar</Button>
+                <Button variant="contained" color="primary" type="submit" fullWidth>Enviar</Button>
             </Box>
         </>
     );

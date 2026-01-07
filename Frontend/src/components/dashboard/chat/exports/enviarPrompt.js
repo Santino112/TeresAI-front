@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-export const enviarPrompt = async (prompt, setRespuesta) => {
+export const enviarPrompt = async (prompt, conversationId, setRespuesta, setConversationId) => {
     const data = {
-        userID: "usuario123",
+        conversationId,
         prompt: `
             ${prompt} 
             "Solo quiero que respondas al prompt. Esto que te digo aca es para que sepas, pero no hagas referencia a esto en tu respuesta inicial.
@@ -13,8 +13,11 @@ export const enviarPrompt = async (prompt, setRespuesta) => {
 
     try {
         const response = await axios.post('http://localhost:3000/requestToAI/mandandoAlaIA', data);
-        const respuestaAI = response.data;
-        setRespuesta(respuestaAI);
+        const res = response.data;
+        setRespuesta(res);
+        if (!conversationId) {
+            setConversationId(response.data.conversationId);
+        }
     } catch (error) {
         console.error("Error sending prompt:", error);
     }
