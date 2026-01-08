@@ -13,8 +13,8 @@ const ChatAI = () => {
 
     const handleLogOut = async () => {
         await supabase.auth.signOut();
-        const { data } = await supabase.auth.getSession()
-        console.log(data.session)
+        const { data } = await supabase.auth.getSession();
+        console.log(data.session);
         navigate('/');
     }
 
@@ -33,7 +33,6 @@ const ChatAI = () => {
             <Typography variant="h4" component="h1" gutterBottom>
                 Chat AI Page
             </Typography>
-            <Button variant='outlined' onClick={handleLogin}>Ir a login</Button>
             <Box sx={{ marginTop: 2, marginBottom: 1, padding: 2, border: '1px solid gray', borderRadius: 1, minHeight: '100px' }}>
                 {promptVisible && (
                     <Typography variant="body1">{promptVisible}</Typography>
