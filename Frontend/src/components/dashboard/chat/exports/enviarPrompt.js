@@ -12,7 +12,7 @@ export const enviarPrompt = async (prompt, conversationId, setRespuesta, setConv
     };
 
     try {
-        const response = await axios.post('http://localhost:3000/requestToAI/mandandoAlaIA', data);
+        const response = await axios.post('http://localhost:3000/api/ai/mandandoAlaIA', data);
         const res = response.data;
         setRespuesta(res);
         if (!conversationId) {
@@ -22,4 +22,3 @@ export const enviarPrompt = async (prompt, conversationId, setRespuesta, setConv
         console.error("Error sending prompt:", error);
     }
 };
-

@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { enviarPrompt } from '../exports/enviarPrompt.js';
 import { Typography, Button, TextField, Box } from "@mui/material";
+import BotonAudio from "./botonAudio.jsx";
+import { playTTS } from '../exports/playTTS.js';
+import { useEffect } from "react";
 
 const Chat = () => {
     const [prompt, setPrompt] = useState("");
@@ -8,15 +11,37 @@ const Chat = () => {
     const [respuesta, setRespuesta] = useState("");
     const [conversationId, setConversationId] = useState(null);
 
+    useEffect(() => {
+        if (respuesta?.text) {
+            playTTS(respuesta.text);
+        }
+    }, [respuesta]);
+
     const mandarPrompt = async (e) => {
         e.preventDefault();
         const promptActual = prompt;
         setPrompt("");
-        setTimeout(() => {
-            setPromptVisible(prompt);
-        }, 200);
-        await enviarPrompt(promptActual, conversationId, setRespuesta, setConversationId);
-    }
+        setPromptVisible(promptActual);
+
+        await enviarPrompt(
+            promptActual,
+            conversationId,
+            setRespuesta,
+            setConversationId
+        );
+    };
+
+    const recibirTextoDeAudio = async (texto) => {
+        setPrompt(texto);
+        setPromptVisible(texto);
+
+        await enviarPrompt(
+            texto,
+            conversationId,
+            setRespuesta,
+            setConversationId
+        );
+    };
 
     return (
         <Box sx={{borderColor: '2px solid red', padding: 4, marginTop: 4, marginLeft: 4, marginRight: 4}}>
@@ -59,6 +84,7 @@ const Chat = () => {
                     }}
                 />
                 <Button variant="contained" color="primary" type="submit" fullWidth sx={{ marginBottom: 2 }}>Enviar</Button>
+                <BotonAudio onTranscription={recibirTextoDeAudio} />
             </Box>
         </Box>
     );
