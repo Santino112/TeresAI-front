@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import Button from '@mui/material/Button';
 
 const BotonAudio = ({ onTranscription }) => {
   const [recording, setRecording] = useState(false);
@@ -44,9 +45,9 @@ const BotonAudio = ({ onTranscription }) => {
   };
 
   return (
-    <button onClick={recording ? stopRecording : startRecording}>
+    <Button variant="contained" onClick={recording ? stopRecording : startRecording}>
       {recording ? "Detener grabación" : "Iniciar grabación"}
-    </button>
+    </Button>
   );
 };
 

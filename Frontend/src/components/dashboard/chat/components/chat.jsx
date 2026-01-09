@@ -1,39 +1,42 @@
-import { use, useState } from "react";
+import { useEffect, useState } from "react";
 import { enviarPrompt } from '../exports/enviarPrompt.js';
 import { Typography, Button, TextField, Box } from "@mui/material";
 import BotonAudio from "./botonAudio.jsx";
 import { playTTS } from '../exports/playTTS.js';
-import { useEffect } from "react";
 
 const Chat = () => {
     const [prompt, setPrompt] = useState("");
     const [promptVisible, setPromptVisible] = useState(null);
     const [respuesta, setRespuesta] = useState("");
     const [conversationId, setConversationId] = useState(null);
+    const [ttsEnabled, setTtsEnabled] = useState(true);
 
     useEffect(() => {
-        if (respuesta?.text) {
+        if (ttsEnabled && respuesta?.text) {
             playTTS(respuesta.text);
         }
-    }, [respuesta]);
+    }, [respuesta, ttsEnabled]);
 
     const mandarPrompt = async (e) => {
         e.preventDefault();
         const promptActual = prompt;
         setPrompt("");
         setPromptVisible(promptActual);
-
+        console.log("SUBMIT disparado");
         await enviarPrompt(
             promptActual,
             conversationId,
             setRespuesta,
             setConversationId
         );
+        console.log("MANDAR PROMPT:", promptActual);
     };
 
     const recibirTextoDeAudio = async (texto) => {
-        setPrompt(texto);
+        setPrompt("");
         setPromptVisible(texto);
+
+        console.log("AUDIO TRANSCRIPTO:", texto);
 
         await enviarPrompt(
             texto,
@@ -85,6 +88,14 @@ const Chat = () => {
                 />
                 <Button variant="contained" color="primary" type="submit" fullWidth sx={{ marginBottom: 2 }}>Enviar</Button>
                 <BotonAudio onTranscription={recibirTextoDeAudio} />
+                <Button
+                    variant={ttsEnabled ? "contained" : "outlined"}
+                    color="secondary"
+                    onClick={() => setTtsEnabled(prev => !prev)}
+                    sx={{ mb: 2 }}
+                >
+                    {ttsEnabled ? "Audio activado" : "Audio desactivado"}
+                </Button>
             </Box>
         </Box>
     );
