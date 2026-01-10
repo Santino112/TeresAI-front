@@ -10,7 +10,7 @@ export const enviarPrompt = async (prompt, conversationId, setRespuesta, setConv
             No incluyas simbolos, ni numeros, ni signos raros. Contesta como un profesional que quiere enseñar y se lo mas claro posible."
         `
     };
-
+    
     try {
         const response = await axios.post('http://localhost:3000/api/ai/mandandoAlaIA', data);
         const res = response.data;

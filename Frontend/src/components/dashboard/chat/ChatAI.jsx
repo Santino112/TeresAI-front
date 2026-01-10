@@ -1,12 +1,11 @@
-import MenuAppBar from './components/appBar.jsx';
-import Chat from './components/chat.jsx';
+import { Box } from '@mui/material';
+import ResponsiveDrawer from './components/sideBar.jsx';
 
 const ChatAI = () => {
     return (
-        <>
-            <MenuAppBar />
-            <Chat />
-        </>
+       <>
+          <ResponsiveDrawer />
+       </>
     );
 };
 

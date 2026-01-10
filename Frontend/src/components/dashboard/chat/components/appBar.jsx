@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from "../../../../supabaseClient.js"
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -16,13 +15,6 @@ export default function MenuAppBar() {
   const navigate = useNavigate();
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleLogOut = async () => {
-    await supabase.auth.signOut();
-    const { data } = await supabase.auth.getSession();
-    console.log(data.session);
-    navigate('/');
-  }
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -46,9 +38,8 @@ export default function MenuAppBar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Chat AI Application
+            TeresAI
           </Typography>
-          <Button onClick={handleLogOut} color='primary'>LogOut</Button>
           {auth && (
             <div>
               <IconButton

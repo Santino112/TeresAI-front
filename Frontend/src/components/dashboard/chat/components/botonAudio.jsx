@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import Button from '@mui/material/Button';
+import MicRoundedIcon from '@mui/icons-material/MicRounded';
+import MicOffRoundedIcon from '@mui/icons-material/MicOffRounded';
 
 const BotonAudio = ({ onTranscription }) => {
   const [recording, setRecording] = useState(false);
@@ -46,7 +48,7 @@ const BotonAudio = ({ onTranscription }) => {
 
   return (
     <Button variant="contained" onClick={recording ? stopRecording : startRecording}>
-      {recording ? "Detener grabación" : "Iniciar grabación"}
+      {recording ? <MicOffRoundedIcon /> : <MicRoundedIcon />}
     </Button>
   );
 };
