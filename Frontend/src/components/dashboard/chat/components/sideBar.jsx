@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getConversations } from '../exports/conversaciones.js';
-import { supabase } from '../../../../supabaseClient.js';
 import Chat from './chat.jsx';
 import Menu from './menu.jsx';
 import AppBar from '@mui/material/AppBar';
@@ -20,6 +19,7 @@ import SmartToyRoundedIcon from '@mui/icons-material/SmartToyRounded';
 import DrawRoundedIcon from '@mui/icons-material/DrawRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
+import BotonCalendar from './botonCalendar.jsx';
 
 const drawerWidth = 290;
 
@@ -75,7 +75,7 @@ function ResponsiveDrawer(props) {
             <List>
                 <Button><DrawRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
                 <Button><SearchRoundedIcon sx={{ mr: 1 }} />Buscar chats</Button>
-                <Button><CalendarMonthRoundedIcon sx={{ mr: 1 }} />Calendario</Button>
+                <BotonCalendar />
             </List>
             <Divider />
             <List>

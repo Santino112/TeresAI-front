@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { supabase } from '../../supabaseClient.js';
 import { Typography, Button, TextField, Box } from "@mui/material";
 
 const Register = () => {
@@ -14,22 +14,26 @@ const Register = () => {
     }
 
     const handleRegister = async (e) => {
-        e.preventDefault();
-        const datosUsuario = {
-            username,
-            email,
-            password
-        };
+    e.preventDefault();
 
-        try {
-            const response = await axios.post("http://localhost:3000/auth/register", datosUsuario);
-            const res = response.data;
-            alert(res.message);
-        } catch (error) {
-            console.error('Error durante el registro');
-            console.error(error);
-            res.status(500).json({ error: error.message });
-        }
+    const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+        data: {
+            username,
+            display_name: username,
+        },
+        },
+    });
+
+    if (error) {
+        alert(error.message);
+        return;
+    }
+
+    alert("Usuario registrado");
+    navigate('/');
     };
 
     return (

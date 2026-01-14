@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { Typography, Button, TextField, Box, } from '@mui/material';
+import { supabase } from '../../supabaseClient.js';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -15,25 +15,18 @@ const Login = () => {
     const loginUser = async (e) => {
         e.preventDefault();
 
-        const dataLogin = {
-            email: email,
-            password: password
-        }
+        const { error } = await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
 
-        try {
-            const response = await axios.post('http://localhost:3000/auth/login', dataLogin);
-            const res = response.data;
-            alert(res.message);
-            console.log(res.data);
-            localStorage.setItem('token', res.data.access_token);
-            navigate('/chatAI');
-        } catch (error) {
-            console.error('Error durante el login');
-            console.error(error);
-            alert('error al iniciar sesion');
-        }
+        if (error) {
+            alert(error.message);
+            return;
+        };
+
+        navigate('/chatAI');
     };
-
 
     return (
         <>
