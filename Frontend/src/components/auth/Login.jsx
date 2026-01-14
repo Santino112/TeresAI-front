@@ -25,11 +25,12 @@ const Login = () => {
             const res = response.data;
             alert(res.message);
             console.log(res.data);
+            localStorage.setItem('token', res.data.access_token);
             navigate('/chatAI');
         } catch (error) {
             console.error('Error durante el login');
             console.error(error);
-            res.status(500).json({ error: error.message });
+            alert('error al iniciar sesion');
         }
     };
 

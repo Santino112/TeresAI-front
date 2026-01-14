@@ -1,4 +1,8 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getConversations } from '../exports/conversaciones.js';
+import { supabase } from '../../../../supabaseClient.js';
 import Chat from './chat.jsx';
 import Menu from './menu.jsx';
 import AppBar from '@mui/material/AppBar';
@@ -20,9 +24,11 @@ import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 const drawerWidth = 290;
 
 function ResponsiveDrawer(props) {
+    const navigate = useNavigate();
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
+    const [conversations, setConversations] = useState([]);
 
     const handleDrawerClose = () => {
         setIsClosing(true);
@@ -39,6 +45,22 @@ function ResponsiveDrawer(props) {
         }
     };
 
+    useEffect(() => {
+        const loadConversations = async () => {
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                navigate('/');
+            }
+
+            const data = await getConversations(token);
+            console.log('DATOS:', data)
+            setConversations(data);
+        };
+
+        loadConversations();
+    }, []);
+
     const drawer = (
         <div>
             <Toolbar sx={{
@@ -46,18 +68,18 @@ function ResponsiveDrawer(props) {
                 justifyContent: 'flex-start',
             }}>
                 <Typography variant="h6" noWrap component="div">
-                    <SmartToyRoundedIcon fontSize='large' sx={{marginTop: 1.5}}></SmartToyRoundedIcon>
+                    <SmartToyRoundedIcon fontSize='large' sx={{ marginTop: 1.5 }}></SmartToyRoundedIcon>
                 </Typography>
             </Toolbar>
             <Divider />
             <List>
-                <Button><DrawRoundedIcon sx={{mr: 1}}/>Nuevo chat</Button>
-                <Button><SearchRoundedIcon sx={{mr: 1}}/>Buscar chats</Button>
-                <Button><CalendarMonthRoundedIcon sx={{mr: 1}}/>Calendario</Button>
+                <Button><DrawRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
+                <Button><SearchRoundedIcon sx={{ mr: 1 }} />Buscar chats</Button>
+                <Button><CalendarMonthRoundedIcon sx={{ mr: 1 }} />Calendario</Button>
             </List>
             <Divider />
             <List>
-                <Typography variant='h6' noWrap component="div" sx={{m: 1}}>Chats</Typography>
+                <Typography variant='h6' noWrap component="div" sx={{ m: 1 }}>Chats</Typography>
                 <Box sx={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -68,7 +90,11 @@ function ResponsiveDrawer(props) {
                     width: '100%',
                     border: '2px solid grey'
                 }}>
-                    Chats
+                    {Array.isArray(conversations) && conversations.map(conv => (
+                        <Button key={conv.id} variant='contained' sx={{mb: 1}}> 
+                            {conv.title}
+                        </Button>
+                    ))}
                 </Box>
             </List>
             <Divider />

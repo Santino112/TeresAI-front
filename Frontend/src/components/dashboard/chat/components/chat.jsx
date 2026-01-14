@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { enviarPrompt } from "../exports/enviarPrompt.js";
 import { Typography, Button, TextField, Box, Stack } from "@mui/material";
-import BotonAudio from "./botonAudio.jsx";
 import { playTTS } from "../exports/playTTS.js";
 import { useWakeWord } from "../exports/useWakeWord.js";
+import { getConversations } from "../exports/conversaciones.js";
+import BotonAudio from "./botonAudio.jsx";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
@@ -67,6 +68,13 @@ const Chat = () => {
     { from: "ia", text: respuesta?.text },
   ];
 
+  const hayTexto = prompt.trim().length > 0;
+  const botonActivo = hayTexto ? 'enviar' : 'audio'
+
+  const botones = [
+    { tipo: botonActivo }
+  ];
+
   return (
     <Stack
       spacing={3}
@@ -75,8 +83,16 @@ const Chat = () => {
       sx={{
         flexGrow: 1,
         minHeight: 0,
+        minWidth: 0,
+        maxWidth: '1000px',
+        minWidth: {
+          xs: '100%',
+          sm: '100%',
+          md: '600px',
+          lg: '900px',
+          xl: '1000px'
+        },
         width: "100%",
-        maxWidth: "1000px",
         mx: "auto",
         p: 3,
       }}
@@ -89,7 +105,7 @@ const Chat = () => {
           gap: 2,
           flexGrow: 1,
           overflowY: "auto",
-          p: 2,
+          p: 0,
         }}
       >
         {mensajes.map(
@@ -102,11 +118,12 @@ const Chat = () => {
                   justifyContent:
                     msg.from === "user" ? "flex-end" : "flex-start",
                 }}
+
               >
                 <Box
                   sx={{
                     maxWidth: "70%",
-                    p: 2,
+                    p: 1,
                     borderRadius: 2,
                     color: "white",
                     backgroundColor:
@@ -122,33 +139,62 @@ const Chat = () => {
       </Box>
 
       <Box component="form" onSubmit={mandarPrompt}>
-        <Box sx={{ display: "flex", gap: 1 }}>
+        <Box sx={{
+          display: "flex",
+          gap: {
+            xs: 1,
+            sm: 0,
+            md: 1,
+            lg: 1,
+            xl: 1
+          },
+        }}>
           <TextField
             label="Escribe tu mensaje"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             fullWidth
             multiline
-            maxRows={4}
+            maxRows={2}
           />
+          <Box sx={{
+            display: 'flex',
+            gap: {
+              xs: 1,
+              sm: 0,
+              md: 1,
+              lg: 1,
+              xl: 1
+            },
+          }}>
 
-          <BotonAudio
-            ref={audioRef}
-            onTranscription={recibirTextoDeAudio}
-            onStart={stopWake}   
-            onStop={startWake}  
-          />
+            {botones.map(b => {
+              if (b.tipo === 'audio') {
+                return (
+                  <BotonAudio
+                    key='audio'
+                    ref={audioRef}
+                    onTranscription={recibirTextoDeAudio}
+                    onStart={stopWake}
+                    onStop={startWake}
+                  />
+                )
+              };
 
-          <Button type="submit" variant="contained">
-            <SendRoundedIcon />
-          </Button>
+              return (
+                <Button key='enviar' type='submit' variant='contained' >
+                  <SendRoundedIcon />
+                </Button>
+              );
+            })}
 
-          <Button
-            variant={ttsEnabled ? "contained" : "outlined"}
-            onClick={() => setTtsEnabled((v) => !v)}
-          >
-            {ttsEnabled ? <VolumeUpRoundedIcon /> : <VolumeOffRoundedIcon />}
-          </Button>
+            <Button
+              variant={ttsEnabled ? "contained" : "outlined"}
+              onClick={() => setTtsEnabled((v) => !v)}
+            >
+              {ttsEnabled ? <VolumeUpRoundedIcon /> : <VolumeOffRoundedIcon />}
+            </Button>
+          </Box>
         </Box>
       </Box>
     </Stack>
