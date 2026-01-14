@@ -62,10 +62,15 @@ function ResponsiveDrawer(props) {
     }, []);
 
     const drawer = (
-        <div>
+        <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100dvh'
+        }}>
             <Toolbar sx={{
                 display: 'flex',
                 justifyContent: 'flex-start',
+                flexShrink: 0
             }}>
                 <Typography variant="h6" noWrap component="div">
                     <SmartToyRoundedIcon fontSize='large' sx={{ marginTop: 1.5 }}></SmartToyRoundedIcon>
@@ -78,33 +83,44 @@ function ResponsiveDrawer(props) {
                 <Button><CalendarMonthRoundedIcon sx={{ mr: 1 }} />Calendario</Button>
             </List>
             <Divider />
-            <List>
-                <Typography variant='h6' noWrap component="div" sx={{ m: 1 }}>Chats</Typography>
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'flex-start',
-                    overflowY: 'auto',
-                    minHeight: 0,
-                    p: 1,
-                    width: '100%',
-                    border: '2px solid grey'
-                }}>
-                    {Array.isArray(conversations) && conversations.map(conv => (
-                        <Button key={conv.id} variant='contained' sx={{mb: 1}}> 
-                            {conv.title}
-                        </Button>
-                    ))}
-                </Box>
-            </List>
+            <Box sx={{
+                flexGrow: 1,
+                overflowY: 'auto',
+                minHeight: 0,
+                p: 1,
+                width: '100%',
+                /* Firefox */
+                scrollbarWidth: 'thin',
+                scrollbarColor: '#666 transparent',
+
+                /* Chrome / Edge / Safari */
+                '&::-webkit-scrollbar': {
+                    width: '6px',
+                },
+                '&::-webkit-scrollbar-track': {
+                    background: 'transparent',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                    backgroundColor: '#2f2f2f',
+                    borderRadius: '8px',
+                },
+                '&::-webkit-scrollbar-thumb:hover': {
+                    backgroundColor: '#444',
+                },
+            }}>
+                {Array.isArray(conversations) && conversations.map(conv => (
+                    <Button key={conv.id} variant='outlined' fullWidth sx={{ mb: 1, }}>
+                        {conv.title}
+                    </Button>
+                ))}
+            </Box>
             <Divider />
             <List>
                 <Menu />
             </List>
-        </div>
+        </Box>
     );
 
-    // Remove this const when copying and pasting into your project.
     const container = window !== undefined ? () => window().document.body : undefined;
 
     return (
@@ -178,7 +194,24 @@ function ResponsiveDrawer(props) {
                     height: '100dvh',
                     width: '100%',
                     minWidth: 0,
-                    overflow: 'hidden',
+                    overflowY: 'hidden',
+                    scrollbarWidth: 'none',
+                    scrollbarColor: '#666 transparent',
+
+                    /* Chrome / Edge / Safari */
+                    '&::-webkit-scrollbar': {
+                        display: 'none'
+                    },
+                    '&::-webkit-scrollbar-track': {
+                        background: 'transparent',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        backgroundColor: '#2f2f2f',
+                        borderRadius: '8px',
+                    },
+                    '&::-webkit-scrollbar-thumb:hover': {
+                        backgroundColor: '#444',
+                    },
                 }}
             >
                 <Toolbar />
