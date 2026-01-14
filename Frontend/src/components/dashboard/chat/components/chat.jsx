@@ -11,9 +11,9 @@ import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
 
 const Chat = () => {
   const [prompt, setPrompt] = useState("");
-  const [promptVisible, setPromptVisible] = useState(null);
-  const [respuesta, setRespuesta] = useState("");
+  const [mensajes, setMensajes] = useState([]);
   const [conversationId, setConversationId] = useState(null);
+  const [respuesta, setRespuesta] = useState("");
   const [ttsEnabled, setTtsEnabled] = useState(true);
 
   const audioRef = useRef(null);
@@ -38,16 +38,36 @@ const Chat = () => {
     e.preventDefault();
     if (!prompt.trim()) return;
 
-    const promptActual = prompt;
+    const texto = prompt;
     setPrompt("");
-    setPromptVisible(promptActual);
 
-    await enviarPrompt(
-      promptActual,
+    setMensajes(prev => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        role: 'user',
+        content: texto
+      }
+    ]);
+
+    const res = await enviarPrompt(
+      texto,
       conversationId,
-      setRespuesta,
-      setConversationId
     );
+    console.log("RESPUESTA BACKEND:", res);
+
+    setMensajes(prev => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: res.text
+      }
+    ]);
+
+    if (!conversationId) {
+      setConversationId(res.conversationId)
+    }
   };
 
   const recibirTextoDeAudio = async (texto) => {
@@ -58,15 +78,8 @@ const Chat = () => {
     await enviarPrompt(
       texto,
       conversationId,
-      setRespuesta,
-      setConversationId
     );
   };
-
-  const mensajes = [
-    { from: "user", text: promptVisible },
-    { from: "ia", text: respuesta?.text },
-  ];
 
   const hayTexto = prompt.trim().length > 0;
   const botonActivo = hayTexto ? 'enviar' : 'audio'
@@ -108,34 +121,30 @@ const Chat = () => {
           p: 0,
         }}
       >
-        {mensajes.map(
-          (msg, index) =>
-            msg.text && (
-              <Box
-                key={index}
-                sx={{
-                  display: "flex",
-                  justifyContent:
-                    msg.from === "user" ? "flex-end" : "flex-start",
-                }}
-
-              >
-                <Box
-                  sx={{
-                    maxWidth: "70%",
-                    p: 1,
-                    borderRadius: 2,
-                    color: "white",
-                    backgroundColor:
-                      msg.from === "user" ? "#1976d2" : "#292929",
-                    whiteSpace: "pre-wrap",
-                  }}
-                >
-                  <Typography>{msg.text}</Typography>
-                </Box>
-              </Box>
-            )
-        )}
+        {mensajes.map((msg) => (
+          <Box 
+            key={msg.id}
+            sx={{
+              display: "flex",
+              justifyContent:
+                msg.role === "user" ? "flex-end" : "flex-start",
+            }}
+          >
+            <Box
+              sx={{
+                maxWidth: "70%",
+                p: 1,
+                borderRadius: 2,
+                color: "white",
+                mb: 1,
+                backgroundColor:
+                  msg.role === "user" ? "#1976d2" : "#292929",
+              }}
+            >
+              <Typography>{msg.content}</Typography>
+            </Box>
+          </Box>
+        ))}
       </Box>
 
       <Box component="form" onSubmit={mandarPrompt}>
