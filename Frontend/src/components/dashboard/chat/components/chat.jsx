@@ -33,13 +33,9 @@ const Chat = () => {
       playTTS(respuesta.text);
     }
   }, [respuesta, ttsEnabled]);
-
-  const mandarPrompt = async (e) => {
-    e.preventDefault();
-    if (!prompt.trim()) return;
-
-    const texto = prompt;
-    setPrompt("");
+  
+  const enviarTexto = async (texto) => {
+    if (!texto.trim()) return;
 
     setMensajes(prev => [
       ...prev,
@@ -50,11 +46,7 @@ const Chat = () => {
       }
     ]);
 
-    const res = await enviarPrompt(
-      texto,
-      conversationId,
-    );
-    console.log("RESPUESTA BACKEND:", res);
+    const res = await enviarPrompt(texto, conversationId);
 
     setMensajes(prev => [
       ...prev,
@@ -65,20 +57,22 @@ const Chat = () => {
       }
     ]);
 
+    setRespuesta(res);
+
     if (!conversationId) {
-      setConversationId(res.conversationId)
+      setConversationId(res.conversationId);
     }
   };
 
+  const mandarPrompt = async (e) => {
+    e.preventDefault();
+    const texto = prompt;
+    setPrompt("");
+    await enviarTexto(texto);
+  };
+
   const recibirTextoDeAudio = async (texto) => {
-    if (!texto?.trim()) return;
-
-    setPromptVisible(texto);
-
-    await enviarPrompt(
-      texto,
-      conversationId,
-    );
+    await enviarTexto(texto);
   };
 
   const hayTexto = prompt.trim().length > 0;

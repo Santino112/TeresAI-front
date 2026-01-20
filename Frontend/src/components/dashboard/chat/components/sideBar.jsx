@@ -20,6 +20,7 @@ import DrawRoundedIcon from '@mui/icons-material/DrawRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import BotonCalendar from './botonCalendar.jsx';
+import { useAuth } from '../../../auth/AuthContext';
 
 const drawerWidth = 290;
 
@@ -29,6 +30,7 @@ function ResponsiveDrawer(props) {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
     const [conversations, setConversations] = useState([]);
+    const { user, loading } = useAuth();
 
     const handleDrawerClose = () => {
         setIsClosing(true);
@@ -46,20 +48,15 @@ function ResponsiveDrawer(props) {
     };
 
     useEffect(() => {
-        const loadConversations = async () => {
-            const token = localStorage.getItem('token');
+        if (loading) return;
 
-            if (!token) {
-                navigate('/');
-            }
-
-            const data = await getConversations(token);
-            console.log('DATOS:', data)
-            setConversations(data);
+        if (!user) {
+            navigate('/');
+            return;
         };
 
-        loadConversations();
-    }, []);
+        getConversations().then(setConversations);
+    }, [user, loading]);
 
     const drawer = (
         <Box sx={{

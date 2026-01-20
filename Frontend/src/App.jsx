@@ -1,8 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Login from './components/auth/Login.jsx';
 import Register from './components/auth/Register.jsx';
 import ChatAI from './components/dashboard/chat/ChatAI.jsx';
+import { useAuth } from './components/auth/AuthContext.jsx';
 import './App.css'
 
 const darkTheme = createTheme({
@@ -14,14 +15,22 @@ const darkTheme = createTheme({
   },
 });
 
+const PrivateRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) return null;
+  return user ? children : <Navigate to='/' />;
+};
+
 function App() {
+
   return (
     <ThemeProvider theme={darkTheme}>
       <Router>
         <Routes>
           <Route path='/' element={<Login />} />
           <Route path='/register' element={<Register />} />
-          <Route path='/chatAI' element={<ChatAI />} />
+          <Route path='/chatAI' element={ <PrivateRoute><ChatAI /></PrivateRoute> } />
         </Routes>
       </Router>
     </ThemeProvider>
