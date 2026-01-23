@@ -18,7 +18,7 @@ import Button from '@mui/material/Button';
 import SmartToyRoundedIcon from '@mui/icons-material/SmartToyRounded';
 import DrawRoundedIcon from '@mui/icons-material/DrawRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
+import GamesRoundedIcon from '@mui/icons-material/GamesRounded';
 import BotonCalendar from './botonCalendar.jsx';
 import { useAuth } from '../../../auth/AuthContext';
 
@@ -74,11 +74,19 @@ function ResponsiveDrawer(props) {
                 </Typography>
             </Toolbar>
             <Divider />
-            <List>
-                <Button><DrawRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
-                <Button><SearchRoundedIcon sx={{ mr: 1 }} />Buscar chats</Button>
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                p: 1,
+                flexGrow: 1
+            }}>
+                <Button sx={{mb: 1}}><DrawRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
+                <Button sx={{mb: 1}}><SearchRoundedIcon sx={{ mr: 1 }} />Buscar chats</Button>
+                <Button sx={{mb: 1}}><GamesRoundedIcon sx={{ mr: 1 }} />Juegos</Button>
                 <BotonCalendar />
-            </List>
+            </Box>
             <Divider />
             <Box sx={{
                 flexGrow: 1,
@@ -106,7 +114,7 @@ function ResponsiveDrawer(props) {
                 },
             }}>
                 {Array.isArray(conversations) && conversations.map(conv => (
-                    <Button key={conv.id} variant='outlined' fullWidth sx={{ mb: 1, }}>
+                    <Button key={conv.id} fullWidth sx={{ mb: 1, backgroundColor: 'gray' }}>
                         {conv.title}
                     </Button>
                 ))}

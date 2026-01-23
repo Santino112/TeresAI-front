@@ -24,7 +24,7 @@ const BotonCalendar = () => {
     };
 
   return (
-    <Button variant="contained" onClick={connectCalendar}>
+    <Button variant="contained" onClick={connectCalendar} sx={{mb: 1}}>
       <CalendarMonthRoundedIcon sx={{ mr: 1 }} />Calendario
     </Button>
   );
