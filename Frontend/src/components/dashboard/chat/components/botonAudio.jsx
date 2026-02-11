@@ -71,6 +71,13 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop }, ref) => {
       variant="contained"
       color={recording ? "error" : "primary"}
       onClick={recording ? stopRecording : startRecording}
+      sx={{
+        backgroundColor: "#EDEDED",
+        color: "#2E2E2E",
+        "&:hover": {
+          backgroundColor: "#FFFFFF"
+        }
+      }}
     >
       {recording ? <MicOffRoundedIcon /> : <MicRoundedIcon />}
     </Button>

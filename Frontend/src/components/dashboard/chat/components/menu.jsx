@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from "../../../../supabaseClient.js"
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
@@ -33,7 +34,10 @@ function IconMenu() {
     }
 
     return (
-        <div>
+        <Box sx={{
+            backgroundColor: "#434A42",
+            borderRight: "1px solid #2f332f",
+        }}  >
             <Button
                 id='basic-button'
                 aria-controls={open ? 'basic-menu' : undefined}
@@ -53,7 +57,9 @@ function IconMenu() {
                         'aria-labelledby': 'basic-button',
                     },
                 }}
-                sx={{ width: 420, maxWidth: '100%' }}
+                sx={{
+                    width: 420, maxWidth: '100%',
+                }}
             >
                 <MenuList>
                     <MenuItem>
@@ -71,7 +77,7 @@ function IconMenu() {
                     </MenuItem>
                 </MenuList>
             </Menu>
-        </div>
+        </Box >
     );
 }
 

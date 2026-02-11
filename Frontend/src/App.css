@@ -2,3 +2,22 @@
   margin: 0 auto;
   text-align: center;
 }
+
+body, html {
+  background-color: transparent !important;
+}
+
+.MuiContainer-root, .MuiBox-root {
+  background-color: transparent;
+}
+
+.background {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background-color: #454545;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+}

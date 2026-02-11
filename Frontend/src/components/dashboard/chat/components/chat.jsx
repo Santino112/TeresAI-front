@@ -132,7 +132,7 @@ const Chat = () => {
                 color: "white",
                 mb: 1,
                 backgroundColor:
-                  msg.role === "user" ? "#1976d2" : "#292929",
+                  msg.role === "user" ? "#292929" : "#292929",
               }}
             >
               <Typography>{msg.content}</Typography>
@@ -159,6 +159,11 @@ const Chat = () => {
             fullWidth
             multiline
             maxRows={2}
+            sx={{
+              backgroundColor: "#353A36",
+              color: "#EDEDED",
+              border: "1px solid #2f332f"
+            }}
           />
           <Box sx={{
             display: 'flex',
@@ -185,7 +190,13 @@ const Chat = () => {
               };
 
               return (
-                <Button key='enviar' type='submit' variant='contained' >
+                <Button key='enviar' type='submit' variant='contained' sx={{
+                  backgroundColor: "#EDEDED",
+                  color: "#2E2E2E",
+                  "&:hover": {
+                    backgroundColor: "#FFFFFF"
+                  }
+                }}>
                   <SendRoundedIcon />
                 </Button>
               );
@@ -194,6 +205,13 @@ const Chat = () => {
             <Button
               variant={ttsEnabled ? "contained" : "outlined"}
               onClick={() => setTtsEnabled((v) => !v)}
+              sx={{
+                 backgroundColor: "#EDEDED",
+                  color: "#2E2E2E",
+                  "&:hover": {
+                    backgroundColor: "#FFFFFF"
+                  }
+              }}
             >
               {ttsEnabled ? <VolumeUpRoundedIcon /> : <VolumeOffRoundedIcon />}
             </Button>

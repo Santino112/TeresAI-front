@@ -20,6 +20,7 @@ import DrawRoundedIcon from '@mui/icons-material/DrawRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import GamesRoundedIcon from '@mui/icons-material/GamesRounded';
 import BotonCalendar from './botonCalendar.jsx';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useAuth } from '../../../auth/AuthContext';
 
 const drawerWidth = 290;
@@ -30,6 +31,7 @@ function ResponsiveDrawer(props) {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
     const [conversations, setConversations] = useState([]);
+    const [isLoading, setLoading] = useState(true);
     const { user, loading } = useAuth();
 
     const handleDrawerClose = () => {
@@ -48,6 +50,7 @@ function ResponsiveDrawer(props) {
     };
 
     useEffect(() => {
+        
         if (loading) return;
 
         if (!user) {
@@ -55,7 +58,14 @@ function ResponsiveDrawer(props) {
             return;
         };
 
-        getConversations().then(setConversations);
+        const fetchData = async () => {
+            setLoading(true);
+            const data = await getConversations();
+            setConversations(data);
+            setLoading(false);
+        }
+
+        fetchData();
     }, [user, loading]);
 
     const drawer = (
@@ -80,11 +90,34 @@ function ResponsiveDrawer(props) {
                 justifyContent: 'center',
                 alignItems: 'center',
                 p: 1,
-                flexGrow: 1
+                flexGrow: 1,
+                backgroundColor: "#434A42",
+                borderRight: "1px solid #2f332f",
             }}>
-                <Button sx={{mb: 1}}><DrawRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
-                <Button sx={{mb: 1}}><SearchRoundedIcon sx={{ mr: 1 }} />Buscar chats</Button>
-                <Button sx={{mb: 1}}><GamesRoundedIcon sx={{ mr: 1 }} />Juegos</Button>
+                <Button sx={{
+                    mb: 1,
+                    backgroundColor: "transparent",
+                    color: "#E6E6E6",
+                    "&:hover": {
+                        backgroundColor: "#565E58"
+                    }
+                }}><DrawRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
+                <Button sx={{
+                    mb: 1,
+                    backgroundColor: "transparent",
+                    color: "#E6E6E6",
+                    "&:hover": {
+                        backgroundColor: "#565E58"
+                    }
+                }}><SearchRoundedIcon sx={{ mr: 1 }} />Buscar chats</Button>
+                <Button sx={{
+                    mb: 1,
+                    backgroundColor: "transparent",
+                    color: "#E6E6E6",
+                    "&:hover": {
+                        backgroundColor: "#565E58"
+                    }
+                }}><GamesRoundedIcon sx={{ mr: 1 }} />Juegos</Button>
                 <BotonCalendar />
             </Box>
             <Divider />
@@ -94,6 +127,8 @@ function ResponsiveDrawer(props) {
                 minHeight: 0,
                 p: 1,
                 width: '100%',
+                backgroundColor: "#2b2f2a",
+                borderRight: "1px solid #2f332f",
                 /* Firefox */
                 scrollbarWidth: 'thin',
                 scrollbarColor: '#666 transparent',
@@ -113,17 +148,36 @@ function ResponsiveDrawer(props) {
                     backgroundColor: '#444',
                 },
             }}>
-                {Array.isArray(conversations) && conversations.map(conv => (
-                    <Button key={conv.id} fullWidth sx={{ mb: 1, backgroundColor: 'gray' }}>
-                        {conv.title}
-                    </Button>
-                ))}
+                {isLoading ? (
+                     <Box sx={{ display: 'flex', justifyContent: "center", mt: 2 }}>
+                        <CircularProgress color="inherit" />
+                     </Box>
+                ) : (
+                    Array.isArray(conversations) && conversations.map(conv => (
+                        <Button
+                            key={conv.id}
+                            fullWidth
+                            sx={{
+                                backgroundColor: "transparent",
+                                color: "#E6E6E6",
+                                mb: 1.3,
+                                borderRadius: 2,
+                                textTransform: 'none',
+                                "&:hover": {
+                                    backgroundColor: "#565E58"
+                                }
+                            }}
+                        >
+                            {conv.title}
+                        </Button>
+                    ))
+                )}
             </Box>
             <Divider />
             <List>
                 <Menu />
             </List>
-        </Box>
+        </Box >
     );
 
     const container = window !== undefined ? () => window().document.body : undefined;
@@ -161,7 +215,6 @@ function ResponsiveDrawer(props) {
                 sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
                 aria-label="mailbox folders"
             >
-                {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                 <Drawer
                     container={container}
                     variant="temporary"
@@ -174,7 +227,7 @@ function ResponsiveDrawer(props) {
                     }}
                     slotProps={{
                         root: {
-                            keepMounted: true, // Better open performance on mobile.
+                            keepMounted: true,
                         },
                     }}
                 >

@@ -30,7 +30,9 @@ function App() {
         <Routes>
           <Route path='/' element={<Login />} />
           <Route path='/register' element={<Register />} />
-          <Route path='/chatAI' element={ <PrivateRoute><ChatAI /></PrivateRoute> } />
+          <Route path='/chatAI' element={ <PrivateRoute><ChatAI />
+            <div className="background"></div>
+          </PrivateRoute> } />
         </Routes>
       </Router>
     </ThemeProvider>
