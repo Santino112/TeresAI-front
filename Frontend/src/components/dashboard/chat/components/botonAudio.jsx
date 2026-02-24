@@ -1,4 +1,5 @@
 import { useState, forwardRef, useImperativeHandle } from "react";
+import { InputAdornment, IconButton } from "@mui/material";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import MicRoundedIcon from "@mui/icons-material/MicRounded";
@@ -67,20 +68,21 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop }, ref) => {
   };
 
   return (
-    <Button
+    <IconButton
       variant="contained"
       color={recording ? "error" : "primary"}
       onClick={recording ? stopRecording : startRecording}
       sx={{
-        backgroundColor: "#EDEDED",
-        color: "#2E2E2E",
+        backgroundColor: "transparent",
+        color: "#ffffff",
         "&:hover": {
-          backgroundColor: "#FFFFFF"
+          backgroundColor: "#FFFFFF",
+          color: "#2E2E2E",
         }
       }}
     >
-      {recording ? <MicOffRoundedIcon /> : <MicRoundedIcon />}
-    </Button>
+      {recording ? <MicOffRoundedIcon fontSize="small" /> : <MicRoundedIcon fontSize="small" />}
+    </IconButton>
   );
 });
 

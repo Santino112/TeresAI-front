@@ -37,6 +37,7 @@ function IconMenu() {
         <Box sx={{
             backgroundColor: "#434A42",
             borderRight: "1px solid #2f332f",
+            p: 1
         }}  >
             <Button
                 id='basic-button'
@@ -58,7 +59,7 @@ function IconMenu() {
                     },
                 }}
                 sx={{
-                    width: 420, maxWidth: '100%',
+                    width: 420, maxWidth: '100%', p: 0
                 }}
             >
                 <MenuList>

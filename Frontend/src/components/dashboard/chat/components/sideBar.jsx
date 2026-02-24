@@ -31,8 +31,12 @@ function ResponsiveDrawer(props) {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
     const [conversations, setConversations] = useState([]);
+    const [activeConversationId, setActiveConversationId] = useState(null);
     const [isLoading, setLoading] = useState(true);
-    const { user, loading } = useAuth();
+    const { user, loading: authLoading } = useAuth();
+    const addConversation = (newConversation) => {
+        setConversations(prev => [newConversation, ...prev]);
+    };
 
     const handleDrawerClose = () => {
         setIsClosing(true);
@@ -49,24 +53,24 @@ function ResponsiveDrawer(props) {
         }
     };
 
+    const fetchData = async () => {
+        setLoading(true);
+        const data = await getConversations();
+        setConversations(data);
+        setLoading(false);
+    }
+
     useEffect(() => {
-        
-        if (loading) return;
+        console.log("ResponsiveDrawer mounted or deps changed");
+        if (authLoading) return;
 
         if (!user) {
             navigate('/');
             return;
         };
 
-        const fetchData = async () => {
-            setLoading(true);
-            const data = await getConversations();
-            setConversations(data);
-            setLoading(false);
-        }
-
         fetchData();
-    }, [user, loading]);
+    }, [user, authLoading]);
 
     const drawer = (
         <Box sx={{
@@ -92,9 +96,8 @@ function ResponsiveDrawer(props) {
                 p: 1,
                 flexGrow: 1,
                 backgroundColor: "#434A42",
-                borderRight: "1px solid #2f332f",
             }}>
-                <Button sx={{
+                <Button onClick={() => setActiveConversationId(null)}  sx={{
                     mb: 1,
                     backgroundColor: "transparent",
                     color: "#E6E6E6",
@@ -149,34 +152,41 @@ function ResponsiveDrawer(props) {
                 },
             }}>
                 {isLoading ? (
-                     <Box sx={{ display: 'flex', justifyContent: "center", mt: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: "center", mt: 2 }}>
                         <CircularProgress color="inherit" />
-                     </Box>
+                    </Box>
                 ) : (
-                    Array.isArray(conversations) && conversations.map(conv => (
-                        <Button
-                            key={conv.id}
-                            fullWidth
-                            sx={{
-                                backgroundColor: "transparent",
-                                color: "#E6E6E6",
-                                mb: 1.3,
-                                borderRadius: 2,
-                                textTransform: 'none',
-                                "&:hover": {
-                                    backgroundColor: "#565E58"
-                                }
-                            }}
-                        >
-                            {conv.title}
-                        </Button>
-                    ))
+                    Array.isArray(conversations) && conversations.map(conv => {
+                        const isActive = conv.id === activeConversationId;
+
+                        return (
+                            <Button
+                                key={conv.id}
+                                fullWidth
+                                onClick={() => setActiveConversationId(conv.id)}
+                                sx={{
+                                    backgroundColor: isActive ? "#565E58" : "transparent",
+                                    color: "#E6E6E6",
+                                    mb: 1.3,
+                                    borderRadius: 2,
+                                    textTransform: 'none',
+                                    fontWeight: isActive ? 600 : 400,
+                                    transition: "all 0.2s ease",
+                                    "&:hover": {
+                                        backgroundColor: "#565E58"
+                                    }
+                                }}
+                            >
+                                {conv.title}
+                            </Button>
+                        );
+                    })
                 )}
             </Box>
             <Divider />
-            <List>
+            <Box>
                 <Menu />
-            </List>
+            </Box>
         </Box >
     );
 
@@ -273,7 +283,13 @@ function ResponsiveDrawer(props) {
                 }}
             >
                 <Toolbar />
-                <Chat />
+                <Box sx={{ flexGrow: 1, minHeight: 0, display: "flex" }}>
+                    <Chat
+                        activeConversationId={activeConversationId}
+                        setActiveConversationId={setActiveConversationId}
+                        addConversation={addConversation}
+                    />
+                </Box>
             </Box>
         </Box>
     );
