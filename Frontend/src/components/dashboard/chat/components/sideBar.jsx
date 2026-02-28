@@ -95,7 +95,7 @@ function ResponsiveDrawer(props) {
                 alignItems: 'center',
                 p: 1,
                 flexGrow: 1,
-                backgroundColor: "#434A42",
+                backgroundColor: "#626C66",
             }}>
                 <Button onClick={() => setActiveConversationId(null)}  sx={{
                     mb: 1,
@@ -126,7 +126,8 @@ function ResponsiveDrawer(props) {
             <Divider />
             <Box sx={{
                 flexGrow: 1,
-                overflowY: 'auto',
+                overflowY: "auto",
+                overflowX: "hidden",
                 minHeight: 0,
                 p: 1,
                 width: '100%',
@@ -167,13 +168,14 @@ function ResponsiveDrawer(props) {
                                 sx={{
                                     backgroundColor: isActive ? "#565E58" : "transparent",
                                     color: "#E6E6E6",
-                                    mb: 1.3,
+                                    mb: 1,
                                     borderRadius: 2,
                                     textTransform: 'none',
                                     fontWeight: isActive ? 600 : 400,
-                                    transition: "all 0.2s ease",
+                                    transition: "transform 0.4s ease-out",
                                     "&:hover": {
-                                        backgroundColor: "#565E58"
+                                        backgroundColor: "#565E58",
+                                        transform: "scale(1.1)"
                                     }
                                 }}
                             >

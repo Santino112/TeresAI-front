@@ -161,7 +161,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                 multiline
                 maxRows={4}
                 sx={{
-                  backgroundColor: "#353A36",
+                  backgroundColor: "#35353a",
                   borderRadius: 4,
                   boxShadow: 5,
                   "& .MuiOutlinedInput-root": {
@@ -263,11 +263,35 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
               >
                 <Box
                   sx={{
+                    position: "relative",
                     maxWidth: "70%",
-                    p: 1,
-                    borderRadius: 2,
+                    p: 2,
+                    borderRadius: "15px",
+                    fontFamily: "Arial, sans-serif",
                     color: "white",
-                    backgroundColor: "#292929",
+                    backgroundColor: "#353A36",
+                    boxShadow: 4,
+                    "&:after": {
+                      content: '""',
+                      position: "absolute",
+                      top: "10px",
+                      ...(msg.role === "user"
+                        ? {
+                          top: "6px",
+                          right: "-7px",
+                          left: "auto",
+                          borderWidth: "10px 0 10px 10px",
+                          borderColor: "transparent transparent transparent #353A36"
+                        }
+                        : {
+                          top: "6px",
+                          left: "-7px",
+                          right: "auto",
+                          borderWidth: "10px 10px 10px 0",
+                          borderColor: "transparent #353A36 transparent transparent"
+                        }),
+                      borderStyle: "solid",
+                    }
                   }}
                 >
                   <Typography>{msg.content}</Typography>

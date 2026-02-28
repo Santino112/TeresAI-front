@@ -15,10 +15,11 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop }, ref) => {
 
     onStart?.();
 
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const recorder = new MediaRecorder(stream, {
+    const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const recorder = new MediaRecorder(audioStream, {
       mimeType: "audio/webm;codecs=opus",
     });
+    setStream(audioStream);
 
     const chunks = [];
 
@@ -37,10 +38,10 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop }, ref) => {
     setRecording(true);
   };
 
-
   const stopRecording = () => {
     if (!mediaRecorder) return;
     mediaRecorder.stop();
+    stream?.getTracks().forEach(track => track.stop());
     setRecording(false);
   };
 
@@ -69,12 +70,12 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop }, ref) => {
 
   return (
     <IconButton
-      variant="contained"
-      color={recording ? "error" : "primary"}
+      variant= {recording ? "contained" : "outlined"}
+      color={recording ? "#FFFFFF" : "#FFFFFF"}
       onClick={recording ? stopRecording : startRecording}
       sx={{
-        backgroundColor: "transparent",
-        color: "#ffffff",
+        backgroundColor: recording ? "#FFFFFF" : "transparent",
+        color: recording ? "#2E2E2E" : "#FFFFFF",
         "&:hover": {
           backgroundColor: "#FFFFFF",
           color: "#2E2E2E",

@@ -15,7 +15,18 @@ body, html {
   position: fixed;
   inset: 0;
   overflow: hidden;
-  background-color: #454545;
+  background-color: #434a42;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+.backgroundLogin {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background-color: #2e2e2e4a;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
