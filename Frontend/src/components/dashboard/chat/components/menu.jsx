@@ -35,8 +35,9 @@ function IconMenu() {
 
     return (
         <Box sx={{
-            backgroundColor: "#434A42",
+            backgroundColor: "#626C66",
             borderRight: "1px solid #2f332f",
+            p: 1
         }}  >
             <Button
                 id='basic-button'
@@ -44,6 +45,7 @@ function IconMenu() {
                 aria-haspopup='true'
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
+                sx={{color: "#ffffff"}}
             >
                 <SettingsRoundedIcon />
             </Button>
@@ -58,7 +60,7 @@ function IconMenu() {
                     },
                 }}
                 sx={{
-                    width: 420, maxWidth: '100%',
+                    width: 420, maxWidth: '100%', p: 0
                 }}
             >
                 <MenuList>

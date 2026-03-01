@@ -1,4 +1,5 @@
 import { useState, forwardRef, useImperativeHandle } from "react";
+import { InputAdornment, IconButton } from "@mui/material";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import MicRoundedIcon from "@mui/icons-material/MicRounded";
@@ -14,10 +15,11 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop }, ref) => {
 
     onStart?.();
 
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const recorder = new MediaRecorder(stream, {
+    const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const recorder = new MediaRecorder(audioStream, {
       mimeType: "audio/webm;codecs=opus",
     });
+    setStream(audioStream);
 
     const chunks = [];
 
@@ -36,10 +38,10 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop }, ref) => {
     setRecording(true);
   };
 
-
   const stopRecording = () => {
     if (!mediaRecorder) return;
     mediaRecorder.stop();
+    stream?.getTracks().forEach(track => track.stop());
     setRecording(false);
   };
 
@@ -67,20 +69,21 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop }, ref) => {
   };
 
   return (
-    <Button
-      variant="contained"
-      color={recording ? "error" : "primary"}
+    <IconButton
+      variant= {recording ? "contained" : "outlined"}
+      color={recording ? "#FFFFFF" : "#FFFFFF"}
       onClick={recording ? stopRecording : startRecording}
       sx={{
-        backgroundColor: "#EDEDED",
-        color: "#2E2E2E",
+        backgroundColor: recording ? "#FFFFFF" : "transparent",
+        color: recording ? "#2E2E2E" : "#FFFFFF",
         "&:hover": {
-          backgroundColor: "#FFFFFF"
+          backgroundColor: "#FFFFFF",
+          color: "#2E2E2E",
         }
       }}
     >
-      {recording ? <MicOffRoundedIcon /> : <MicRoundedIcon />}
-    </Button>
+      {recording ? <MicOffRoundedIcon fontSize="small" /> : <MicRoundedIcon fontSize="small" />}
+    </IconButton>
   );
 });
 

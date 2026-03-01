@@ -11,7 +11,7 @@ const darkTheme = createTheme({
     mode: 'dark',
   },
   typography: {
-    fontFamily: 'Inter, sans-serif',
+    fontFamily: 'sans-serif',
   },
 });
 
@@ -22,17 +22,30 @@ const PrivateRoute = ({ children }) => {
   return user ? children : <Navigate to='/' />;
 };
 
+const PublicRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) return null;
+  return !user ? children : <Navigate to="/chatAI" />;
+};
+
 function App() {
 
   return (
     <ThemeProvider theme={darkTheme}>
       <Router>
         <Routes>
-          <Route path='/' element={<Login />} />
+          <Route path='/' element={
+            <PublicRoute>
+              <Login />
+              <div className="backgroundLogin"></div>
+            </PublicRoute>} />
           <Route path='/register' element={<Register />} />
-          <Route path='/chatAI' element={ <PrivateRoute><ChatAI />
-            <div className="background"></div>
-          </PrivateRoute> } />
+          <Route path='/chatAI' element={
+            <PrivateRoute>
+              <ChatAI />
+              <div className="background"></div>
+            </PrivateRoute>} />
         </Routes>
       </Router>
     </ThemeProvider>
