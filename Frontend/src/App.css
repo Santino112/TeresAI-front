@@ -1,6 +1,5 @@
 #root {
   margin: 0 auto;
-  text-align: center;
 }
 
 body, html {
@@ -15,7 +14,7 @@ body, html {
   position: fixed;
   inset: 0;
   overflow: hidden;
-  background-color: #434a42;
+  background: linear-gradient(160deg, #1a1f1a 0%, #1c1f1b 100%);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

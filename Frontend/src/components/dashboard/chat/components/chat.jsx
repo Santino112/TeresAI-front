@@ -5,6 +5,7 @@ import { playTTS } from "../exports/playTTS.js";
 import { useWakeWord } from "../exports/useWakeWord.js";
 import { getMessages } from "../exports/conversaciones.js";
 import { InputAdornment, IconButton } from "@mui/material";
+import ReactMarkDown from 'react-markdown';
 import BotonAudio from "./botonAudio.jsx";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
@@ -16,6 +17,16 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   const [respuesta, setRespuesta] = useState("");
   const [ttsEnabled, setTtsEnabled] = useState(true);
   const esPantallaInicial = mensajes.length === 0;
+  const bottomRef = useRef(null);
+
+  const frases = [
+    "¿Qué haremos hoy?",
+    "¿En qué te puedo ayudar?",
+    "¡Hola! ¿Cómo estás hoy?",
+    "¿Querés charlar un rato?",
+    "¿Necesitás algo?",
+  ];
+  const [fraseActual, setFraseActual] = useState(frases[0]);
 
   const audioRef = useRef(null);
 
@@ -99,6 +110,18 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     { tipo: botonActivo }
   ];
 
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [mensajes]);
+
+  useEffect(() => {
+    if (!activeConversationId) {
+      setMensajes([]);
+      setFraseActual(frases[Math.floor(Math.random() * frases.length)]);
+      return;
+    };
+  }, [activeConversationId]);
+
   return (
     <Box
       sx={{
@@ -136,8 +159,8 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
               xl: "2.5rem"
             },
             fontFamily: "monospace",
-            mb: 3
-          }}>¿Qué haremos hoy?</Typography>
+            mb: 2
+          }}>{fraseActual}</Typography>
           <Box
             component="form"
             onSubmit={mandarPrompt}
@@ -176,6 +199,12 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   },
                   "&.Mui-focused fieldset": {
                     border: "none"
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    mandarPrompt();
                   }
                 }}
                 InputProps={{
@@ -248,8 +277,8 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                 xl: '1000px'
               },
               width: "100%",
-              gap: 2,
-              p: 3
+              gap: 5,
+              p: 3,
             }}
           >
             {mensajes.map((msg) => (
@@ -264,13 +293,13 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                 <Box
                   sx={{
                     position: "relative",
-                    maxWidth: "70%",
+                    maxWidth: msg.role === "user" ? "70%" : "100%",
                     p: 2,
                     borderRadius: "15px",
                     fontFamily: "Arial, sans-serif",
                     color: "white",
-                    backgroundColor: "#353A36",
-                    boxShadow: 4,
+                    backgroundColor: msg.role === "user" ? "#353A36" : "#262a25",
+                    boxShadow: msg.role === "user" ? 4 : 1,
                     "&:after": {
                       content: '""',
                       position: "absolute",
@@ -288,27 +317,60 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                           left: "-7px",
                           right: "auto",
                           borderWidth: "10px 10px 10px 0",
-                          borderColor: "transparent #353A36 transparent transparent"
+                          borderColor: "transparent #262a25 transparent transparent"
                         }),
-                      borderStyle: "solid",
+                      borderStyle: "solid"
                     }
                   }}
                 >
-                  <Typography>{msg.content}</Typography>
+                  <ReactMarkDown
+                    components={msg.role === "user" ? {
+                      p: ({ children }) => (
+                        <Typography sx={{
+                          fontSize: "1.05rem",
+                          lineHeight: 1.8,
+                          color: "#E6E6E6",
+                          m: 0,
+                          textAlign: "left"
+                        }}>
+                          {children}
+                        </Typography>
+                      ),
+                    } : {
+                      p: ({ children }) => (
+                        <Typography sx={{
+                          fontSize: "1.05rem",
+                          lineHeight: 1.8,
+                          mb: 1,
+                          color: "#E6E6E6",
+                          textAlign: "left"
+                        }}>
+                          {children}
+                        </Typography>
+                      ),
+                      li: ({ children }) => (
+                        <li style={{
+                          fontSize: "1.05rem",
+                          lineHeight: 1.8,
+                          color: "#E6E6E6",
+                          textAlign: "left"
+                        }}>
+                          {children}
+                        </li>
+                      ),
+                    }}
+                  >
+                    {msg.content}
+                  </ReactMarkDown>
                 </Box>
               </Box>
             ))}
+            <div ref={bottomRef} />
           </Box>
           <Box component="form" onSubmit={mandarPrompt}>
             <Box sx={{
               display: "flex",
-              gap: {
-                xs: 1,
-                sm: 1,
-                md: 1,
-                lg: 1,
-                xl: 1
-              },
+              gap: 1,
               p: 3
             }}>
               <TextField
@@ -344,16 +406,26 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                         {botones.map(b => {
                           if (b.tipo === 'audio') {
                             return (
-                              <BotonAudio
-                                key='audio'
-                                ref={audioRef}
-                                onTranscription={recibirTextoDeAudio}
-                                onStart={stopWake}
-                                onStop={startWake}
-                              />
+                              <>
+                                <BotonAudio
+                                  ref={audioRef}
+                                  onTranscription={recibirTextoDeAudio}
+                                  onStart={stopWake}
+                                  onStop={startWake}
+                                  sx={{ display: hayTexto ? "none" : "inline-flex" }}
+                                />
+                                {hayTexto && (
+                                  <IconButton type='submit' sx={{
+                                    backgroundColor: "transparent",
+                                    color: "#ffffff",
+                                    "&:hover": { backgroundColor: "#FFFFFF", color: "#2E2E2E" }
+                                  }}>
+                                    <SendRoundedIcon fontSize="small" />
+                                  </IconButton>
+                                )}
+                              </>
                             )
                           };
-
                           return (
                             <IconButton key='enviar' type='submit' variant='contained' sx={{
                               backgroundColor: "transparent",

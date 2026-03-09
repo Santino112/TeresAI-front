@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert } from '@mui/material';
 import { supabase } from '../../supabaseClient.js';
@@ -7,6 +7,7 @@ import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import PasswordRoundedIcon from '@mui/icons-material/PasswordRounded';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
+import { GoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -27,7 +28,7 @@ const Login = () => {
             "Network request failed": "Error de conexión, revisá tu internet",
         };
         return errores[mensaje] || "Ocurrió un herror, intentelo de nuevo.";
-    }
+    };
 
     const handleShowPassword = () => {
         setShowPassword((prev) => !prev);
@@ -123,7 +124,7 @@ const Login = () => {
                         Bienvenido de vuelta
                     </Typography>
                     <Divider sx={{
-                        my: 0,
+
                         width: "100%",
                         "&::before, &::after": {
                             borderColor: "#ffffff",
@@ -131,23 +132,36 @@ const Login = () => {
                     }}>
                         <Typography variant="body1" sx={{ color: "#ffffff" }}>~</Typography>
                     </Divider>
-                    <Button variant="contained" color="primary" fullWidth sx={{
-                        color: "#ffffff",
-                        my: 2,
-                        border: "none",
-                    }}>
-                        Ingresar con Google
-                    </Button>
+                    <Typography variant='body1' sx={{
+                        mb: 1,
+                        fontFamily: "'Lora', serif",
+                    }}>Ingresa o registrate con Google</Typography>
+                    <GoogleLogin
+                        onSuccess={async (credentialResponse) => {
+                            const { data, error } = await supabase.auth.signInWithIdToken({
+                                provider: 'google',
+                                token: credentialResponse.credential,
+                            });
+                            if (!error) navigate('/chatAI');
+                        }}
+                        onError={() => console.log('Error con Google')}
+                        theme="filled_blue"
+                        size="large"
+                        shape="circle"
+                        text="signin_with"
+                        locale="es"
+                        width="280"
+                    />
                     <Box component="form" onSubmit={loginUser}>
                         <Divider sx={{
-                            my: 0,
+                            mt: 1,
                             color: "#ffffff",
                             "&:after": {
                                 borderColor: "#ffffff"
                             },
                             "&:before": {
                                 borderColor: "#ffffff"
-                            }
+                            },
                         }}>
                             <Typography variant="body2">O</Typography>
                         </Divider>
@@ -261,7 +275,7 @@ const Login = () => {
                         <Typography variant='body1' sx={{
                             my: 0,
                             fontFamily: "'Lora', serif",
-                        }}>¿No tienes una cuenta?, crea una aquí!</Typography>
+                        }}>¿No tienes una cuenta? crea una aquí!</Typography>
                         <Button variant="outlined" onClick={handleRegister} fullWidth
                             sx={{
                                 color: "#ffffff",

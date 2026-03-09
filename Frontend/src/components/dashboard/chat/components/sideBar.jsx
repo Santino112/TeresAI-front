@@ -2,8 +2,13 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getConversations } from '../exports/conversaciones.js';
+import { deleteConversation } from '../exports/eliminarConversacion.js';
 import Chat from './chat.jsx';
-import Menu from './menu.jsx';
+import Games from './games.jsx';
+import Calendar from './calendar.jsx';
+import MenuUsuario from './menu.jsx';
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -19,8 +24,12 @@ import SmartToyRoundedIcon from '@mui/icons-material/SmartToyRounded';
 import DrawRoundedIcon from '@mui/icons-material/DrawRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import GamesRoundedIcon from '@mui/icons-material/GamesRounded';
-import BotonCalendar from './botonCalendar.jsx';
+import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import CircularProgress from '@mui/material/CircularProgress';
+import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import { useAuth } from '../../../auth/AuthContext';
 
 const drawerWidth = 290;
@@ -32,8 +41,12 @@ function ResponsiveDrawer(props) {
     const [isClosing, setIsClosing] = React.useState(false);
     const [conversations, setConversations] = useState([]);
     const [activeConversationId, setActiveConversationId] = useState(null);
+    const [paginaActiva, setPaginaActiva] = useState("chat");
     const [isLoading, setLoading] = useState(true);
+    const [menuAnchor, setMenuAnchor] = useState(null);
+    const [menuConvId, setMenuConvId] = useState(null);
     const { user, loading: authLoading } = useAuth();
+
     const addConversation = (newConversation) => {
         setConversations(prev => [newConversation, ...prev]);
     };
@@ -72,6 +85,25 @@ function ResponsiveDrawer(props) {
         fetchData();
     }, [user, authLoading]);
 
+    const handleMenuOpen = (e, convId) => {
+        e.stopPropagation();
+        setMenuAnchor(e.currentTarget);
+        setMenuConvId(convId);
+    };
+
+    const handleMenuClose = () => {
+        setMenuAnchor(null);
+        setMenuConvId(null);
+    };
+
+    const handleDelete = async () => {
+        const success = await deleteConversation(menuConvId);
+        if (success) {
+            setConversations(prev => prev.filter(c => c.id !== activeConversationId));
+            if (activeConversationId === menuConvId) setActiveConversationId(null);
+        }
+    };
+
     const drawer = (
         <Box sx={{
             display: 'flex',
@@ -81,47 +113,62 @@ function ResponsiveDrawer(props) {
             <Toolbar sx={{
                 display: 'flex',
                 justifyContent: 'flex-start',
-                flexShrink: 0
+                flexShrink: 0,
+                backgroundColor: "#313630",
             }}>
                 <Typography variant="h6" noWrap component="div">
-                    <SmartToyRoundedIcon fontSize='large' sx={{ marginTop: 1.5 }}></SmartToyRoundedIcon>
+                    <SmartToyRoundedIcon fontSize='large' sx={{ verticalAlign: "bottom", mr: 1 }}/> TeresAI
                 </Typography>
             </Toolbar>
-            <Divider />
             <Box sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
+                alignItems: 'flex-start',
                 p: 1,
-                flexGrow: 1,
-                backgroundColor: "#626C66",
+                flexShrink: 0,
+                backgroundColor: "#313630",
             }}>
-                <Button onClick={() => setActiveConversationId(null)}  sx={{
-                    mb: 1,
-                    backgroundColor: "transparent",
-                    color: "#E6E6E6",
-                    "&:hover": {
-                        backgroundColor: "#565E58"
-                    }
-                }}><DrawRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
+                <Button onClick={() => {
+                    setActiveConversationId(null);
+                    setPaginaActiva("chat");
+                }}
+                    sx={{
+                        mt: 1,
+                        mb: 1,
+                        backgroundColor: "transparent",
+                        color: "#E6E6E6",
+                        "&:hover": {
+                            backgroundColor: "#3f4440"
+                        }
+                    }}><DrawRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
                 <Button sx={{
                     mb: 1,
                     backgroundColor: "transparent",
                     color: "#E6E6E6",
                     "&:hover": {
-                        backgroundColor: "#565E58"
+                        backgroundColor: "#3f4440"
                     }
                 }}><SearchRoundedIcon sx={{ mr: 1 }} />Buscar chats</Button>
-                <Button sx={{
+                <Button onClick={() => {
+                    setPaginaActiva("juegos");
+                }} sx={{
                     mb: 1,
                     backgroundColor: "transparent",
                     color: "#E6E6E6",
                     "&:hover": {
-                        backgroundColor: "#565E58"
+                        backgroundColor: "#3f4440"
                     }
                 }}><GamesRoundedIcon sx={{ mr: 1 }} />Juegos</Button>
-                <BotonCalendar />
+                <Button onClick={() => {
+                    setPaginaActiva("calendario");
+                }} sx={{
+                    mb: 1,
+                    backgroundColor: "transparent",
+                    color: "#E6E6E6",
+                    "&:hover": {
+                        backgroundColor: "#3f4440"
+                    }
+                }}><CalendarMonthRoundedIcon sx={{ mr: 1 }} />Calendario</Button>
             </Box>
             <Divider />
             <Box sx={{
@@ -131,7 +178,7 @@ function ResponsiveDrawer(props) {
                 minHeight: 0,
                 p: 1,
                 width: '100%',
-                backgroundColor: "#2b2f2a",
+                backgroundColor: "#262a25",
                 borderRight: "1px solid #2f332f",
                 /* Firefox */
                 scrollbarWidth: 'thin',
@@ -161,33 +208,71 @@ function ResponsiveDrawer(props) {
                         const isActive = conv.id === activeConversationId;
 
                         return (
-                            <Button
-                                key={conv.id}
-                                fullWidth
-                                onClick={() => setActiveConversationId(conv.id)}
-                                sx={{
-                                    backgroundColor: isActive ? "#565E58" : "transparent",
-                                    color: "#E6E6E6",
-                                    mb: 1,
-                                    borderRadius: 2,
-                                    textTransform: 'none',
-                                    fontWeight: isActive ? 600 : 400,
-                                    transition: "transform 0.4s ease-out",
-                                    "&:hover": {
-                                        backgroundColor: "#565E58",
-                                        transform: "scale(1.1)"
-                                    }
-                                }}
-                            >
-                                {conv.title}
-                            </Button>
+                            <>
+                                <Button
+                                    key={conv.id}
+                                    fullWidth
+                                    onClick={() => {
+                                        setActiveConversationId(conv.id);
+                                        setPaginaActiva("chat");
+                                    }}
+                                    sx={{
+                                        backgroundColor: isActive ? "#353A36" : "transparent",
+                                        color: "#E6E6E6",
+                                        mb: 1,
+                                        borderRadius: 2,
+                                        textTransform: 'none',
+                                        fontWeight: isActive ? 600 : 400,
+                                        "&:hover": {
+                                            backgroundColor: "#353A36",
+                                        }
+                                    }}
+                                >
+                                    {conv.title}
+                                    <IconButton
+                                        size="small"
+                                        onClick={(e) => {
+                                            handleMenuOpen(e, conv.id);
+                                            e.stopPropagation();
+                                        }}
+                                        sx={{ ml: "auto", color: "#ffffff", "&:hover": { color: "#fff" } }}
+                                    >
+                                        <MoreHorizRoundedIcon fontSize="small" />
+                                    </IconButton>
+                                </Button>
+                                <Menu
+                                    anchorEl={menuAnchor}
+                                    open={Boolean(menuAnchor) && menuConvId === conv.id}
+                                    onClose={handleMenuClose}
+                                    MenuListProps={{
+                                        sx: {
+                                            p: 0
+                                        }
+                                    }}
+                                    PaperProps={{
+                                        sx: { backgroundColor: "#353A36", color: "#E6E6E6", minWidth: "160px", p: 0}
+                                    }}
+                                >
+                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }}>
+                                        <StarRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Favorito
+                                    </MenuItem>
+                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }}>
+                                        <EditRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Renombrar
+                                    </MenuItem>
+                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleDelete(); handleMenuClose(); }}
+                                        sx={{ color: "#ff6b6b" }}
+                                    >
+                                        <DeleteRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Eliminar
+                                    </MenuItem>
+                                </Menu>
+                            </>
                         );
                     })
                 )}
             </Box>
             <Divider />
             <Box>
-                <Menu />
+                <MenuUsuario />
             </Box>
         </Box >
     );
@@ -202,6 +287,7 @@ function ResponsiveDrawer(props) {
                 sx={{
                     width: { sm: `calc(100% - ${drawerWidth}px)` },
                     ml: { sm: `${drawerWidth}px` },
+                    backgroundColor: "#262a25"
                 }}
             >
                 <Toolbar sx={{
@@ -217,9 +303,6 @@ function ResponsiveDrawer(props) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        TeresAI
-                    </Typography>
                 </Toolbar>
             </AppBar>
             <Box
@@ -286,11 +369,14 @@ function ResponsiveDrawer(props) {
             >
                 <Toolbar />
                 <Box sx={{ flexGrow: 1, minHeight: 0, display: "flex" }}>
-                    <Chat
-                        activeConversationId={activeConversationId}
-                        setActiveConversationId={setActiveConversationId}
-                        addConversation={addConversation}
-                    />
+                    {paginaActiva === "juegos" ? <Games />
+                        : paginaActiva === "calendario" ? <Calendar />
+                            : <Chat
+                                activeConversationId={activeConversationId}
+                                setActiveConversationId={setActiveConversationId}
+                                addConversation={addConversation}
+                            />
+                    }
                 </Box>
             </Box>
         </Box>
