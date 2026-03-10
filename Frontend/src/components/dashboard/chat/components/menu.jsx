@@ -35,7 +35,7 @@ function IconMenu() {
 
     return (
         <Box sx={{
-            backgroundColor: "#626C66",
+            backgroundColor: "#313630",
             borderRight: "1px solid #2f332f",
             p: 1
         }}  >
@@ -45,7 +45,7 @@ function IconMenu() {
                 aria-haspopup='true'
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
-                sx={{color: "#ffffff"}}
+                sx={{ color: "#ffffff" }}
             >
                 <SettingsRoundedIcon />
             </Button>
@@ -54,30 +54,22 @@ function IconMenu() {
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
-                slotProps={{
-                    list: {
-                        'aria-labelledby': 'basic-button',
-                    },
+                MenuListProps={{
+                    sx: {
+                        p: 0
+                    }
                 }}
-                sx={{
-                    width: 420, maxWidth: '100%', p: 0
+                PaperProps={{
+                    sx: { backgroundColor: "#302e2e", color: "#E6E6E6", minWidth: "160px", p: 0 }
                 }}
             >
-                <MenuList>
-                    <MenuItem>
-                        <ListItemIcon>
-                            <AutoAwesomeRoundedIcon />
-                        </ListItemIcon>
-                        <ListItemText>Personalización</ListItemText>
-                    </MenuItem>
-                    <Divider />
-                    <MenuItem onClick={handleLogOut}>
-                        <ListItemIcon>
-                            <LogoutRoundedIcon />
-                        </ListItemIcon>
-                        <ListItemText>Cerrar sesion</ListItemText>
-                    </MenuItem>
-                </MenuList>
+                <MenuItem>
+                    <AutoAwesomeRoundedIcon fontSize='small' sx={{ mr: 1 }} /> Personalizar
+                </MenuItem>
+                <MenuItem onClick={handleLogOut}>
+                    <LogoutRoundedIcon fontSize="small" sx={{ mr: 1 }} />Cerrar sesión
+                </MenuItem>
+
             </Menu>
         </Box >
     );
