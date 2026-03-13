@@ -87,7 +87,9 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     if (res.calendarEventCreated) {
       window.dispatchEvent(new Event("calendarUpdated"));
     };
-
+    if (res.shoppingListUpdated) {
+      window.dispatchEvent(new Event("shoppingListUpdated"));
+    };
     if (!activeConversationId && res.conversationId) {
       setActiveConversationId(res.conversationId);
       if (res.conversation) {

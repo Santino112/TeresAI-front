@@ -6,6 +6,7 @@ import { deleteConversation } from '../exports/eliminarConversacion.js';
 import Chat from './chat.jsx';
 import Games from './games.jsx';
 import Calendar from './calendar.jsx';
+import ShoppingList from './shoppinglist.jsx';
 import MenuUsuario from './menu.jsx';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -30,6 +31,7 @@ import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import { useAuth } from '../../../auth/AuthContext';
 
 const drawerWidth = 290;
@@ -169,6 +171,21 @@ function ResponsiveDrawer(props) {
                         backgroundColor: "#3f4440"
                     }
                 }}><CalendarMonthRoundedIcon sx={{ mr: 1 }} />Calendario</Button>
+                <Button
+                    onClick={() => {
+                        setPaginaActiva("shopping");
+                    }}
+                    sx={{
+                        mb: 1,
+                        backgroundColor: "transparent",
+                        color: "#E6E6E6",
+                        "&:hover": {
+                        backgroundColor: "#3f4440"
+                        }
+                    }}
+                >
+                    <ShoppingCartRoundedIcon sx={{ mr: 1 }} /> Lista de compras
+                </Button>
             </Box>
             <Divider />
             <Box sx={{
@@ -368,15 +385,21 @@ function ResponsiveDrawer(props) {
                 }}
             >
                 <Toolbar />
+                
                 <Box sx={{ flexGrow: 1, minHeight: 0, display: "flex" }}>
-                    {paginaActiva === "juegos" ? <Games />
-                        : paginaActiva === "calendario" ? <Calendar />
-                            : <Chat
-                                activeConversationId={activeConversationId}
-                                setActiveConversationId={setActiveConversationId}
-                                addConversation={addConversation}
-                            />
-                    }
+                    {paginaActiva === "juegos" ? (
+                        <Games />
+                    ) : paginaActiva === "calendario" ? (
+                        <Calendar />
+                    ) : paginaActiva === "shopping" ? (
+                        <ShoppingList />
+                    ) : (
+                        <Chat
+                            activeConversationId={activeConversationId}
+                            setActiveConversationId={setActiveConversationId}
+                            addConversation={addConversation}
+                        />
+                    )}
                 </Box>
             </Box>
         </Box>
