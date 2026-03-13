@@ -83,6 +83,10 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     ]);
 
     setRespuesta(res);
+    
+    if (res.calendarEventCreated) {
+      window.dispatchEvent(new Event("calendarUpdated"));
+    };
 
     if (!activeConversationId && res.conversationId) {
       setActiveConversationId(res.conversationId);

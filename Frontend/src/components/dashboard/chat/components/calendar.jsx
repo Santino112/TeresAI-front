@@ -4,8 +4,39 @@ import BotonCalendar from './botonCalendar.jsx';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import api from "../../../../api/axios.js";
+import { supabase } from "../../../../supabaseClient.js";
+
 
 const Calendar = () => {
+    const [events, setEvents] = useState([]);
+
+    const fetchEvents = async () => {
+        const { data } = await supabase.auth.getSession();
+        const session = data.session;
+
+        if (!session) return;
+
+        const res = await api.get('/calendar/events', {
+            headers: {
+                Authorization: `Bearer ${session.access_token}`,
+            },
+        });
+
+        setEvents(res.data);
+    };
+    useEffect(() => {
+        fetchEvents();
+        const handleCalendarUpdated = () => {
+            console.log("Actualizando calendario...")
+            fetchEvents();
+        };
+        window.addEventListener("calendarUpdated", handleCalendarUpdated);
+        return () => {
+            window.removeEventListener("calendarUpdated", handleCalendarUpdated);
+        };
+    }, []);
+
     return (
         <Box
             sx={{
@@ -68,6 +99,7 @@ const Calendar = () => {
                         plugins={[dayGridPlugin, timeGridPlugin]}
                         initialView="dayGridMonth"
                         locale="es"
+                        events={events}
                         headerToolbar={{
                             left: 'prev,next today',
                             center: 'title',
