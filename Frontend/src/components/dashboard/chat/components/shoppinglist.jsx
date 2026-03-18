@@ -61,77 +61,102 @@ export default function ShoppingList() {
   const completedItems = items.filter(i => i.completed);
 
   return (
-    <Box sx={{ width: "100%", p: 3 }}>
-
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        p: 3
+      }}
+    >
       <Typography variant="h5" sx={{ mb: 2 }}>
         🛒 Lista de compras
       </Typography>
 
-      <Paper sx={{ p: 2 }}>
-
-        {/* ITEMS PENDIENTES */}
-
+      <Paper
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          p: 2
+        }}
+      >
+        {/* PENDIENTES */}
         <Typography variant="h6" sx={{ mb: 1 }}>
           Pendientes
         </Typography>
 
-        <List>
+        <Box
+          sx={{
+            flex: 1,
+            overflowY: "auto",
+            minHeight: 0, 
+            pr: 1
+          }}
+        >
+          <List>
+            {pendingItems.map((item) => (
+              <ListItem key={item.id} divider>
+                <Checkbox
+                  checked={item.completed}
+                  onChange={() => toggleItem(item.id)}
+                />
+                <ListItemText
+                  primary={`${item.text} ${
+                    item.quantity ? `(x${item.quantity})` : ""
+                  }`}
+                />
+              </ListItem>
+            ))}
+          </List>
 
-          {pendingItems.map((item) => (
-            <ListItem key={item.id} divider>
-
-              <Checkbox
-                checked={item.completed}
-                onChange={() => toggleItem(item.id)}
-              />
-
-              <ListItemText
-                primary={`${item.text} ${item.quantity ? `(x${item.quantity})` : ""}`}
-              />
-
-            </ListItem>
-          ))}
-
-        </List>
-
-        {pendingItems.length === 0 && (
-          <Typography sx={{ mt: 1 }}>
-            No hay artículos pendientes.
-          </Typography>
-        )}
+          {pendingItems.length === 0 && (
+            <Typography sx={{ mt: 1 }}>
+              No hay artículos pendientes.
+            </Typography>
+          )}
+        </Box>
 
         {/* COMPLETADOS */}
-
         {completedItems.length > 0 && (
           <>
-            <Divider sx={{ my: 3 }} />
+            <Divider sx={{ my: 2 }} />
 
             <Typography variant="h6" sx={{ mb: 1 }}>
-              ✅ Comprados
+              Comprados
             </Typography>
 
-            <List>
-
-              {completedItems.map((item) => (
-                <ListItem key={item.id} divider>
-
-                  <Checkbox
-                    checked={item.completed}
-                    onChange={() => toggleItem(item.id)}
-                  />
-
-                  <ListItemText
-                    primary={`${item.text} ${item.quantity ? `(x${item.quantity})` : ""}`}
-                    sx={{
-                      textDecoration: "line-through",
-                      color: "text.secondary"
-                    }}
-                  />
-
-                </ListItem>
-              ))}
-
-            </List>
+            <Box
+              sx={{
+                maxHeight: "30%",
+                overflowY: "auto",
+                minHeight: 0,
+                pr: 1
+              }}
+            >
+              <List>
+                {completedItems.map((item) => (
+                  <ListItem key={item.id} divider>
+                    <Checkbox
+                      checked={item.completed}
+                      onChange={() => toggleItem(item.id)}
+                    />
+                    <ListItemText
+                      primary={`${item.text} ${
+                        item.quantity ? `(x${item.quantity})` : ""
+                      }`}
+                      sx={{
+                        textDecoration: "line-through",
+                        color: "text.secondary"
+                      }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
 
             <Button
               variant="outlined"
@@ -141,12 +166,9 @@ export default function ShoppingList() {
             >
               Eliminar artículos comprados
             </Button>
-
           </>
         )}
-
       </Paper>
-
     </Box>
   );
 }
