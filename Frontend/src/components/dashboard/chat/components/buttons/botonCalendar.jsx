@@ -1,7 +1,7 @@
 import Button from '@mui/material/Button';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import axios from 'axios';
-import { supabase } from "../../../../supabaseClient.js"
+import { supabase } from "../../../../../supabaseClient.js"
 
 const BotonCalendar = () => {
 

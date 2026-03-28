@@ -2,11 +2,13 @@
   margin: 0 auto;
 }
 
-body, html {
+body,
+html {
   background-color: transparent !important;
 }
 
-.MuiContainer-root, .MuiBox-root {
+.MuiContainer-root,
+.MuiBox-root {
   background-color: transparent;
 }
 
@@ -14,11 +16,12 @@ body, html {
   position: fixed;
   inset: 0;
   overflow: hidden;
-  background: linear-gradient(160deg, #1a1f1a 0%, #1c1f1b 100%);
+  background: linear-gradient(160deg, #212221 30%, #2e2c2c 70%);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   z-index: -1;
+  width: 100%;
 }
 
 .backgroundLogin {
@@ -26,6 +29,17 @@ body, html {
   inset: 0;
   overflow: hidden;
   background-color: #2e2e2e4a;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+.backgroundFamiliar {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(160deg, #212221 30%, #2e2c2c 70%);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
