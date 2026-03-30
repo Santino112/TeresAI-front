@@ -1,19 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from "../../../../supabaseClient.js"
+import { supabase } from "../../../../../supabaseClient.js"
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
-import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 
-function IconMenu() {
+function IconMenu({setPaginaActiva}) {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -63,6 +60,9 @@ function IconMenu() {
                     sx: { backgroundColor: "#302e2e", color: "#E6E6E6", minWidth: "160px", p: 0 }
                 }}
             >
+                <MenuItem onClick={() => setPaginaActiva("perfil")}>
+                    <PersonRoundedIcon fontSize='small' sx={{ mr: 1 }} />Perfil
+                </MenuItem>
                 <MenuItem>
                     <AutoAwesomeRoundedIcon fontSize='small' sx={{ mr: 1 }} /> Personalizar
                 </MenuItem>

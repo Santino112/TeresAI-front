@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert } from '@mui/material';
+import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert, Card } from '@mui/material';
 import { supabase } from '../../supabaseClient.js';
 import imagenLogin from "../../assets/images/imagenLogin.jpg"
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
@@ -58,7 +58,7 @@ const Login = () => {
             setPassword("");
             return;
         };
-        navigate('/chatAI');
+        navigate('/infoUser');
     };
 
     return (
@@ -67,50 +67,38 @@ const Login = () => {
             flexDirection: "row",
             alignItems: "center",
             minHeight: "100dvh",
-            width: "100dvw",
+            width: "100%",
             minWidth: 0,
             overflow: "hidden",
+            backgroundColor: "#434a42",
+            px: { xs: 2, sm: 0 },
+            py: { xs: 4, sm: 0 },
         }}>
             <Box sx={{
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                minHeight: "100dvh",
-                width: {
-                    xs: "100%",
-                    sm: "100%",
-                    md: "55%",
-                    lg: "40%",
-                    xl: "40%"
-                },
-                backgroundColor: "#434a42",
-                overflowY: "hidden"
+                minHeight: "560px",
+                width: "100%",
+                maxWidth: { xs: 440, sm: 440, md: 900, lg: 800 },
+                overflowY: "hidden",
             }}>
-                <Box sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    maxWidth: {
-                        xs: "300px",
-                        sm: "370px",
-                        md: "500px",
-                        lg: "500px",
-                        xl: "500px"
-                    },
-                    width: {
-                        xs: "75%",
-                        sm: "60%",
-                        md: "60%",
-                        lg: "50%",
-                        xl: "50%"
-                    },
-                    backgroundColor: "#626C66",
-                    p: 3,
-                    borderRadius: 4,
-                    boxShadow: 4
-                }}>
+                <Card
+                    elevation={0}
+                    sx={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        p: { xs: 3 },
+                        borderRadius: 0,
+                        bgcolor: "#1e1e1e",
+                        boxShadow: "0 8px 40px rgba(0,0,0,0.5)",
+                        borderRadius: 3,
+                    }}
+                >
                     <Typography variant="h4" component="h1" sx={{
                         fontSize: {
                             xs: "1.7rem",
@@ -292,7 +280,7 @@ const Login = () => {
                             }}>Registrate
                         </Button>
                     </Box>
-                </Box>
+                </Card>
             </Box>
             <Box sx={{
                 display: {
@@ -352,7 +340,7 @@ const Login = () => {
                     </Box>
                 </Box>
             </Box>
-        </Box>
+        </Box >
     )
 };
 

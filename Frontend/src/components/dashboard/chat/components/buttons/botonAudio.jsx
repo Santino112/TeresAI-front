@@ -82,7 +82,7 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop }, ref) => {
         }
       }}
     >
-      {recording ? <MicOffRoundedIcon fontSize="small" /> : <MicRoundedIcon fontSize="small" />}
+      {recording ? <MicOffRoundedIcon fontSize="medium" /> : <MicRoundedIcon fontSize="medium" />}
     </IconButton>
   );
 });

@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import { getCrossword } from "../exports/crossword.js";
+import { getCrossword } from "../../exports/crossword.js";
 
 const DIFFICULTIES = ["easy", "medium", "hard"];
 

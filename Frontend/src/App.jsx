@@ -1,19 +1,15 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import Login from './components/auth/Login.jsx';
-import Register from './components/auth/Register.jsx';
-import ChatAI from './components/dashboard/chat/ChatAI.jsx';
 import { useAuth } from './components/auth/AuthContext.jsx';
+import { Theme } from './theme/theme.jsx';
+import { CssBaseline } from '@mui/material';
+import Login from './components/auth/Login.jsx';
+import InformacionUsuarios from './components/UserInformation/informacionUsuario.jsx';
+import Register from './components/auth/Register.jsx';
+import ChatAI from './components/dashboard/chat/paginaChatAI.jsx';
+import PanelFamiliar from './components/dashboard/chat/paginaFamiliar.jsx';
+import PanelCuidador from './components/dashboard/chat/paginaCuidador.jsx';
 import './App.css'
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
-  typography: {
-    fontFamily: 'sans-serif',
-  },
-});
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -26,13 +22,14 @@ const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
   if (loading) return null;
-  return !user ? children : <Navigate to="/chatAI" />;
+  return !user ? children : <Navigate to="/infoUser" />;
 };
 
 function App() {
 
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={Theme}>
+      <CssBaseline />
       <Router>
         <Routes>
           <Route path='/' element={
@@ -41,15 +38,29 @@ function App() {
               <div className="backgroundLogin"></div>
             </PublicRoute>} />
           <Route path='/register' element={<Register />} />
-          <Route path='/chatAI' element={
+          <Route path='/infoUser' element={<InformacionUsuarios />} />
+          <Route path='/paginaChatAI' element={
             <PrivateRoute>
               <ChatAI />
               <div className="background"></div>
-            </PrivateRoute>} />
+            </PrivateRoute>} 
+          />
+          <Route path='/paginaFamiliar' element={
+            <PrivateRoute>
+              <PanelFamiliar />
+              <div className="backgroundFamiliar"></div>
+            </PrivateRoute>} 
+          />
+          <Route path='/paginaCuidador' element={
+            <PrivateRoute>
+              <PanelCuidador />
+              <div className="backgroundFamiliar"></div>
+            </PrivateRoute>} 
+          />
         </Routes>
       </Router>
     </ThemeProvider>
   )
 };
 
-export default App
+export default App;
