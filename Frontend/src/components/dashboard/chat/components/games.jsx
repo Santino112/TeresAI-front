@@ -1,12 +1,7 @@
-import { useEffect, useState, useRef } from "react";
-import { enviarPrompt } from "../exports/enviarPrompt.js";
-import axios from 'axios';
 import Sudoku from "./Sudoku.jsx";
 import Trivia from "./Trivia.jsx";
+import Crossword from "./Crossword.jsx";
 import { Typography, Button, TextField, Box, Stack } from "@mui/material";
-import { playTTS } from "../exports/playTTS.js";
-import { useWakeWord } from "../exports/useWakeWord.js";
-import { getMessages } from "../exports/conversaciones.js";
 import { InputAdornment, IconButton } from "@mui/material";
 
 const Games = () => {
@@ -72,6 +67,9 @@ const Games = () => {
                 </Box>
                 <Box sx={{mb: 3}}>
                     <Trivia />
+                </Box>
+                <Box sx={{mb: 3}}>
+                    <Crossword />
                 </Box>
             </Box>
         </Box>

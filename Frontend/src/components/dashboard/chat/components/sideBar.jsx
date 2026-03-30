@@ -7,6 +7,7 @@ import Chat from './chat.jsx';
 import Games from './games.jsx';
 import Calendar from './calendar.jsx';
 import ShoppingList from './shoppinglist.jsx';
+import News from './news.jsx';
 import MenuUsuario from './menu.jsx';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -26,6 +27,7 @@ import DrawRoundedIcon from '@mui/icons-material/DrawRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import GamesRoundedIcon from '@mui/icons-material/GamesRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
 import CircularProgress from '@mui/material/CircularProgress';
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
@@ -185,6 +187,21 @@ function ResponsiveDrawer(props) {
                     }}
                 >
                     <ShoppingCartRoundedIcon sx={{ mr: 1 }} /> Lista de compras
+                </Button>
+                <Button 
+                    onClick={() => {
+                        setPaginaActiva("noticias");
+                    }} 
+                    sx={{
+                        mb: 1,
+                        backgroundColor: "transparent",
+                        color: "#E6E6E6",
+                        "&:hover": {
+                            backgroundColor: "#3f4440"
+                        }
+                    }}
+                >
+                    <NewspaperIcon sx={{ mr: 1 }} /> Noticias
                 </Button>
             </Box>
             <Divider />
@@ -393,6 +410,8 @@ function ResponsiveDrawer(props) {
                         <Calendar />
                     ) : paginaActiva === "shopping" ? (
                         <ShoppingList />
+                    ) : paginaActiva === "noticias" ? (
+                        <News />
                     ) : (
                         <Chat
                             activeConversationId={activeConversationId}
