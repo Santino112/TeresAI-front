@@ -6,6 +6,7 @@ import { deleteConversation } from '../../exports/eliminarConversacion.js';
 import { useAuth } from '../../../../auth/AuthContext.jsx';
 import Chat from './chat.jsx';
 import Games from '../games/games.jsx';
+import Buscador from '../buscador/buscador.jsx';
 import Calendar from '../calendar/calendar.jsx';
 import MenuUsuario from './menu.jsx';
 import Perfil from '../profile/profile.jsx';
@@ -19,14 +20,15 @@ import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
+import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import SmartToyRoundedIcon from '@mui/icons-material/SmartToyRounded';
-import DrawRoundedIcon from '@mui/icons-material/DrawRounded';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import GamesRoundedIcon from '@mui/icons-material/GamesRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
-import CircularProgress from '@mui/material/CircularProgress';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
@@ -113,7 +115,7 @@ function ResponsiveDrawer(props) {
                 display: 'flex',
                 justifyContent: 'flex-start',
                 flexShrink: 0,
-                backgroundColor: "#313630",
+                backgroundColor: "#030414",
             }}>
                 <Typography variant="h6" noWrap component="div">
                     <SmartToyRoundedIcon fontSize='large' sx={{ verticalAlign: "bottom", mr: 1 }} /> TeresAI
@@ -125,7 +127,7 @@ function ResponsiveDrawer(props) {
                 alignItems: 'flex-start',
                 p: 1,
                 flexShrink: 0,
-                backgroundColor: "#313630",
+                backgroundColor: "#030414",
             }}>
                 <Button onClick={() => {
                     setActiveConversationId(null);
@@ -135,39 +137,52 @@ function ResponsiveDrawer(props) {
                         mt: 1,
                         mb: 1,
                         backgroundColor: "transparent",
-                        color: "#E6E6E6",
+                        color: "#ffffff",
                         "&:hover": {
-                            backgroundColor: "#3f4440"
+                            backgroundColor: "#2b2b2b"
                         }
-                    }}><DrawRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
-                <Button sx={{
-                    mb: 1,
-                    backgroundColor: "transparent",
-                    color: "#E6E6E6",
-                    "&:hover": {
-                        backgroundColor: "#3f4440"
-                    }
-                }}><SearchRoundedIcon sx={{ mr: 1 }} />Buscar chats</Button>
+                    }}><AddRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
                 <Button onClick={() => {
-                    setPaginaActiva("juegos");
-                }} sx={{
-                    mb: 1,
-                    backgroundColor: "transparent",
-                    color: "#E6E6E6",
-                    "&:hover": {
-                        backgroundColor: "#3f4440"
-                    }
-                }}><GamesRoundedIcon sx={{ mr: 1 }} />Juegos</Button>
+                    setPaginaActiva("buscador");
+                }}
+                    sx={{
+                        mb: 1,
+                        backgroundColor: "transparent",
+                        color: "#ffffff",
+                        "&:hover": {
+                            backgroundColor: "#2b2b2b"
+                        }
+                    }}><SearchRoundedIcon sx={{ mr: 1 }} />Buscar chats</Button>
                 <Button onClick={() => {
                     setPaginaActiva("calendario");
                 }} sx={{
                     mb: 1,
                     backgroundColor: "transparent",
-                    color: "#E6E6E6",
+                    color: "#ffffff",
                     "&:hover": {
-                        backgroundColor: "#3f4440"
+                        backgroundColor: "#2b2b2b"
                     }
                 }}><CalendarMonthRoundedIcon sx={{ mr: 1 }} />Calendario</Button>
+                <Button onClick={() => {
+                    setPaginaActiva("calendario");
+                }} sx={{
+                    mb: 1,
+                    backgroundColor: "transparent",
+                    color: "#ffffff",
+                    "&:hover": {
+                        backgroundColor: "#2b2b2b"
+                    }
+                }}><NewspaperIcon sx={{ mr: 1 }} />Noticias</Button>
+                <Button onClick={() => {
+                    setPaginaActiva("juegos");
+                }} sx={{
+                    mb: 1,
+                    backgroundColor: "transparent",
+                    color: "#ffffff",
+                    "&:hover": {
+                        backgroundColor: "#2b2b2b"
+                    }
+                }}><GamesRoundedIcon sx={{ mr: 1 }} />Juegos</Button>
                 <Divider />
                 <Typography variant="body1" sx={{
                     mt: 1,
@@ -182,11 +197,10 @@ function ResponsiveDrawer(props) {
                 minHeight: 0,
                 p: 1,
                 width: '100%',
-                backgroundColor: "#262a25",
-                borderRight: "1px solid #2f332f",
+                backgroundColor: "#030414",
                 /* Firefox */
                 scrollbarWidth: 'thin',
-                scrollbarColor: '#666 transparent',
+                scrollbarColor: '#323232 transparent',
 
                 /* Chrome / Edge / Safari */
                 '&::-webkit-scrollbar': {
@@ -204,13 +218,24 @@ function ResponsiveDrawer(props) {
                 },
             }}>
                 {isLoading ? (
-                    <Box sx={{ display: 'flex', justifyContent: "center", mt: 2 }}>
-                        <CircularProgress color="inherit" />
-                    </Box>
+                    <>
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                    </>
                 ) : (
                     Array.isArray(conversations) && conversations.map(conv => {
                         const isActive = conv.id === activeConversationId;
-
                         return (
                             <>
                                 <Button
@@ -221,14 +246,14 @@ function ResponsiveDrawer(props) {
                                         setPaginaActiva("chat");
                                     }}
                                     sx={{
-                                        backgroundColor: isActive ? "#353A36" : "transparent",
-                                        color: "#E6E6E6",
+                                        backgroundColor: isActive ? "#444444" : "transparent",
+                                        color: "#ffffff",
                                         mb: 1,
                                         borderRadius: 2,
                                         textTransform: 'none',
                                         fontWeight: isActive ? 600 : 400,
                                         "&:hover": {
-                                            backgroundColor: "#353A36",
+                                            backgroundColor: "#2b2b2b",
                                         }
                                     }}
                                 >
@@ -239,7 +264,7 @@ function ResponsiveDrawer(props) {
                                             handleMenuOpen(e, conv.id);
                                             e.stopPropagation();
                                         }}
-                                        sx={{ ml: "auto", color: "#ffffff", "&:hover": { color: "#fff" } }}
+                                        sx={{ ml: "auto", color: "#ffffff", "&:hover": { color: "#ffffff" } }}
                                     >
                                         <MoreHorizRoundedIcon fontSize="small" />
                                     </IconButton>
@@ -250,21 +275,40 @@ function ResponsiveDrawer(props) {
                                     onClose={handleMenuClose}
                                     MenuListProps={{
                                         sx: {
-                                            p: 0
+                                            p: 1,
+                                            fontSize: "21px",
+                                            backgroundColor: "#303030",
+                                            color: "#ffffff",
+                                            borderRadius: 3
                                         }
                                     }}
                                     PaperProps={{
-                                        sx: { backgroundColor: "#353A36", color: "#E6E6E6", minWidth: "160px", p: 0 }
+                                        sx: { backgroundColor: "#303030", color: "#ffffff", minWidth: "160px", p: 0, borderRadius: 3 }
                                     }}
                                 >
-                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }}>
+                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3 }}>
                                         <StarRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Favorito
                                     </MenuItem>
-                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }}>
+                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3 }}>
                                         <EditRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Renombrar
                                     </MenuItem>
+                                    <Divider sx={{
+                                        width: "100%",
+                                        "&::before, &::after": {
+                                            borderColor: "#ffffff",
+                                        },
+                                        m: 0,
+                                        p: 0
+                                    }}></Divider>
                                     <MenuItem onClick={(e) => { e.stopPropagation(); handleDelete(); handleMenuClose(); }}
-                                        sx={{ color: "#ff6b6b" }}
+                                        sx={{
+                                            color: "#ff6b6b",
+                                            borderRadius: 3,
+                                            "&:hover": {
+                                                backgroundColor: "#6b2a2a",
+                                                color: "#ff6b6b",
+                                            }
+                                        }}
                                     >
                                         <DeleteRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Eliminar
                                     </MenuItem>
@@ -298,7 +342,6 @@ function ResponsiveDrawer(props) {
                         lg: "none",
                         xl: "none"
                     },
-                    backgroundColor: "#262a25"
                 }}
             >
                 <Toolbar sx={{
@@ -314,6 +357,11 @@ function ResponsiveDrawer(props) {
                     >
                         <MenuIcon />
                     </IconButton>
+                    {activeConversationId && paginaActiva === "chat" && (
+                        <Typography noWrap sx={{ fontFamily: "'Lora', serif", fontSize: "1rem" }}>
+                            {conversations.find(c => c.id === activeConversationId)?.title || "Chat sin título"}
+                        </Typography>
+                    )}
                 </Toolbar>
             </AppBar>
             <Box
@@ -383,9 +431,22 @@ function ResponsiveDrawer(props) {
                     },
                 }}
             >
-                <Toolbar sx={{ boxShadow: "0px 4px 8px rgba(0,0,0,0.4)" }}>
-                    <Typography>Titulo de la conversación activa</Typography>
-                </Toolbar>
+                <Box sx={{
+                    height: "60px",
+                    backgroundColor: "#010215",
+                    flexShrink: 0,
+                    display: { xs: "block", sm: "block", md: "none", lg: "none", xl: "none" }
+                }} />
+                {activeConversationId && paginaActiva === "chat" && <Toolbar
+                    sx={{
+                        display: { xs: "none", sm: "none", md: "flex", lg: "flex", xl: "flex" },
+                        boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.2)",
+                        backgroundColor: "#010215",
+                        backdropFilter: "blur(30px)",
+                        zIndex: 1
+                    }} >
+                    {conversations.find(c => c.id === activeConversationId)?.title || "Chat sin título"}
+                </Toolbar>}
                 <Box sx={{
                     flexGrow: 1,
                     minHeight: 0,
@@ -394,12 +455,21 @@ function ResponsiveDrawer(props) {
                 }}>
                     {paginaActiva === "juegos" ? <Games />
                         : paginaActiva === "calendario" ? <Calendar />
-                        : paginaActiva === "perfil" ? <Perfil />
-                            : <Chat
-                                activeConversationId={activeConversationId}
-                                setActiveConversationId={setActiveConversationId}
-                                addConversation={addConversation}
-                            />
+                            : paginaActiva === "perfil" ? <Perfil />
+                                : paginaActiva === "buscador" ? <Buscador
+                                    activeConversationId={activeConversationId}
+                                    setActiveConversationId={setActiveConversationId}
+                                    setPaginaActiva={setPaginaActiva}
+                                    conversations={conversations}
+                                    setConversations={setConversations}
+                                    isLoading={isLoading}
+                                    setLoading={setLoading}
+                                />
+                                    : <Chat
+                                        activeConversationId={activeConversationId}
+                                        setActiveConversationId={setActiveConversationId}
+                                        addConversation={addConversation}
+                                    />
                     }
                 </Box>
             </Box>

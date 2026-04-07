@@ -1,6 +1,7 @@
 import Sudoku from "./Sudoku.jsx";
 import Trivia from "./Trivia.jsx";
-import { Typography, Button, TextField, Box, Stack } from "@mui/material";
+import { Typography, Box, Paper, Divider } from "@mui/material";
+import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 
 const Games = () => {
     return (
@@ -24,23 +25,39 @@ const Games = () => {
                     alignItems: "center",
                     flexGrow: 1,
                     width: "100%",
-                    backgroundColor: "#2f342d",
-                    p: 2
+                    background: `url(${fondoChatAI})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    p: 2,
                 }}
             >
-                <Typography variant="h2" sx={{
-                    mt: 2,
-                    fontSize: {
-                        xs: "1.5rem",
-                        sm: "1.5rem",
-                        md: "1.7rem",
-                        lg: "1.7rem",
-                        xl: "2rem"
-                    },
-                    fontFamily: "'Lora', serif",
-                    textAlign: "center"
-                }}>Juegos mentales</Typography>
-                <Box sx={{width: "900px"}}>
+                <Paper
+                    sx={{
+                        width: {
+                            xs: "100%",
+                            sm: "80%",
+                            md: "70%",
+                            lg: "75%",
+                            xl: "60%",
+                        },
+                        p: { xs: 2, sm: 3, md: 3 },
+                        borderRadius: 4,
+                        background: "transparent",
+                        flexGrow: 0,
+                    }}
+                >
+                    <Typography variant="h2" sx={{
+                        fontSize: {
+                            xs: "1.5rem",
+                            sm: "1.5rem",
+                            md: "1.5rem",
+                            lg: "1.7rem",
+                            xl: "1.8rem"
+                        },
+                        fontFamily: "'Lora', serif",
+                        textAlign: "center"
+                    }}>Juegos mentales</Typography>
                     <Typography variant="body2" sx={{
                         my: 2,
                         fontSize: {
@@ -56,13 +73,30 @@ const Games = () => {
                     }}>En esta sección podras encontrar una serie de juegos que te ayudaran a pasar el rato. Juegos divertidos y de memoria
                         para ejercitar la mente y mejorar el bienestar propio.
                     </Typography>
-                </Box>
-                <Box sx={{ my: 2, width: "800px", }}>
-                    <Sudoku />
-                </Box>
-                <Box sx={{ mb: 2, my: 1, width: "800px" }}>
-                    <Trivia />
-                </Box>
+                    <Divider sx={{
+                        my: 1,
+                        width: "100%",
+                        "&::before, &::after": {
+                            borderColor: "#ffffff",
+                        }
+                    }}>
+                        <Typography variant="body1" sx={{ color: "#ffffff" }}>~</Typography>
+                    </Divider>
+                    <Box sx={{ width: "100%", overflowX: "auto", margin: "0 auto" }}>
+                        <Sudoku />
+                    </Box>
+                    <Divider sx={{
+                        width: "100%",
+                        "&::before, &::after": {
+                            borderColor: "#ffffff",
+                        }
+                    }}>
+                        <Typography variant="body1" sx={{ color: "#ffffff" }}></Typography>
+                    </Divider>
+                    <Box sx={{ width: "100%", overflowX: "auto", margin: "0 auto" }}>
+                        <Trivia />
+                    </Box>
+                </Paper>
             </Box>
         </Box>
     )

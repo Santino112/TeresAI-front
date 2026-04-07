@@ -1,12 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import { enviarPrompt } from "../../exports/enviarPrompt.js";
-import { Typography, Button, TextField, Box, Stack } from "@mui/material";
+import { Typography, TextField, Box, CircularProgress } from "@mui/material";
 import { playTTS } from "../../exports/playTTS.js";
 import { useWakeWord } from "../../exports/useWakeWord.js";
 import { getMessages } from "../../exports/conversaciones.js";
 import { InputAdornment, IconButton } from "@mui/material";
 import { useAuth } from "../../../../auth/AuthContext.jsx";
 import { tomarDatosPerfiles } from '../../exports/datosInicialesUsuarios.js';
+import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 import ReactMarkDown from 'react-markdown';
 import BotonAudio from "../buttons/botonAudio.jsx";
 import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
@@ -19,7 +20,8 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   const [respuesta, setRespuesta] = useState("");
   const [ttsEnabled, setTtsEnabled] = useState(true);
   const [profile, setProfile] = useState(null);
-  const esPantallaInicial = mensajes.length === 0;
+  const [loadingMessages, setLoadingMessages] = useState(false);
+  const esPantallaInicial = mensajes.length === 0 && !loadingMessages && !activeConversationId;
   const { user } = useAuth();
   const scrollRef = useRef(null);
 
@@ -51,8 +53,10 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     };
 
     const fetchMessages = async () => {
+      setLoadingMessages(true);
       const data = await getMessages(activeConversationId);
       setMensajes(data);
+      setLoadingMessages(false);
     }
     fetchMessages();
   }, [activeConversationId]);
@@ -150,9 +154,18 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
         overflowY: "auto",
         overflowX: "hidden",
         minHeight: 0,
+        background: `url(${fondoChatAI})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
-      {esPantallaInicial ? (
+      {loadingMessages ? (
+        <Box sx={{ p: 5, display: "flex", flexDirection: "column",justifyContent: "center", alignItems: "center", gap: 2, flexGrow: 1 }}>
+          <Typography variant="h2" sx={{fontSize: "1rem", fontFamily: "'Lora', serif"}}>Cargando mensajes...</Typography>
+          <CircularProgress sx={{color: "#ffffff"}}/>
+        </Box>
+      ) : esPantallaInicial ? (
         <Box
           sx={{
             display: "flex",
@@ -167,22 +180,25 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
         >
           <Typography variant="h1" sx={{
             fontSize: {
-              xs: "1.7rem",
+              xs: "1.8rem",
               sm: "2rem",
               md: "2rem",
               lg: "2.5rem",
-              xl: "2.5rem"
+              xl: "2.8rem"
             },
-            fontFamily: "monospace",
-            mb: 2
-          }}>Buenas noches, {profile?.username} </Typography>
+            fontFamily: "'Lora', serif",
+            color: "#f0750a",
+            mb: 2,
+     
+            textAlign: "center"
+          }}>Buenas noches {profile?.username} </Typography>
           <Box
             component="form"
             onSubmit={mandarPrompt}
             sx={{ width: "100%", boxShadow: 4, borderRadius: 4 }}
           >
             <Box sx={{
-              backgroundColor: "#353A36",
+              backgroundColor: "#303030",
               borderRadius: 4,
               p: 1,
             }}>
@@ -200,7 +216,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   },
                   "& .MuiInputBase-input": {
                     color: "#ffffff",
-                    fontWeight: 600,
+                    fontWeight: 500,
                   },
                   "& fieldset": { border: "none" },
                 }}
@@ -217,18 +233,18 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                 alignItems: "center",
                 gap: 1,
                 px: 1,
-                pb: 0.5,
+                pb: 0.8,
               }}>
                 <Box>
                   <IconButton
                     onClick={() => setTtsEnabled((v) => !v)}
                     sx={{
                       backgroundColor: ttsEnabled ? "#ffffff" : "transparent",
-                      color: ttsEnabled ? "#2E2E2E" : "#ffffff",
-                      "&:hover": { backgroundColor: "#b3b3b3", color: "#2E2E2E" }
+                      color: ttsEnabled ? "#303030" : "#ffffff",
+                      "&:hover": { backgroundColor: "#dad7d7", color: "#303030" },
                     }}
                   >
-                    {ttsEnabled ? <VolumeUpRoundedIcon fontSize="medium" /> : <VolumeOffRoundedIcon fontSize="small" />}
+                    {ttsEnabled ? <VolumeUpRoundedIcon fontSize="medium" /> : <VolumeOffRoundedIcon fontSize="medium" />}
                   </IconButton>
                 </Box>
                 <Box>
@@ -241,9 +257,9 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   />
                   {hayTexto && (
                     <IconButton type='submit' sx={{
-                      backgroundColor: "#FFFFFF",
-                      color: "#2E2E2E",
-                      "&:hover": { backgroundColor: "#dcdcdc", color: "#2E2E2E" }
+                      backgroundColor: "#ffffff",
+                      color: "#303030",
+                      "&:hover": { backgroundColor: "#dad7d7", color: "#303030" }
                     }}>
                       <ArrowUpwardRoundedIcon fontSize="medium" />
                     </IconButton>
@@ -262,8 +278,8 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
               flexDirection: "column",
               maxWidth: "800px",
               width: "100%",
-              gap: 3,
-              p: 2
+              gap: 5,
+              p: 3
             }}
           >
             {mensajes.map((msg) => (
@@ -283,7 +299,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                     borderRadius: "15px",
                     fontFamily: "Arial, sans-serif",
                     color: "white",
-                    backgroundColor: msg.role === "user" ? "#353A36" : "",
+                    backgroundColor: msg.role === "user" ? "#303030" : "transparent",
                     boxShadow: msg.role === "user" ? 3 : 0,
                     "&:after": {
                       content: '""',
@@ -295,7 +311,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                           right: "-7px",
                           left: "auto",
                           borderWidth: "10px 0 10px 10px",
-                          borderColor: "transparent transparent transparent #353A36"
+                          borderColor: "transparent transparent transparent #303030"
                         }
                         : {
                           top: "6px",
@@ -350,7 +366,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                 </Box>
               </Box>
             ))}
-            <Box ref={bottomRef} sx={{ height: 0 }} />
           </Box>
           <Box
             component="form"
@@ -374,7 +389,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
             }}
           >
             <Box sx={{
-              backgroundColor: "#353A36",
+              backgroundColor: "#303030",
               borderRadius: {
                 xs: "16px 16px 0 0",
                 sm: "16px 16px 0 0",
@@ -415,15 +430,15 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                 alignItems: "center",
                 gap: 1,
                 px: 1,
-                pb: 0.5,
+                pb: 1,
               }}>
                 <Box>
                   <IconButton
                     onClick={() => setTtsEnabled((v) => !v)}
                     sx={{
                       backgroundColor: ttsEnabled ? "#ffffff" : "transparent",
-                      color: ttsEnabled ? "#2E2E2E" : "#ffffff",
-                      "&:hover": { backgroundColor: "#b3b3b3", color: "#2E2E2E" }
+                      color: ttsEnabled ? "#303030" : "#ffffff",
+                      "&:hover": { backgroundColor: "#dad7d7", color: "#303030" }
                     }}
                   >
                     {ttsEnabled ? <VolumeUpRoundedIcon fontSize="medium" /> : <VolumeOffRoundedIcon fontSize="medium" />}
@@ -439,10 +454,10 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   />
                   {hayTexto && (
                     <IconButton type='submit' sx={{
-                      backgroundColor: "#FFFFFF",
-                      color: "#2E2E2E",
+                      backgroundColor: "#ffffff",
+                      color: "#303030",
                       ml: 1,
-                      "&:hover": { backgroundColor: "#dcdcdc", color: "#2E2E2E" }
+                      "&:hover": { backgroundColor: "#dad7d7", color: "#303030" }
                     }}>
                       <ArrowUpwardRoundedIcon fontSize="medium" />
                     </IconButton>

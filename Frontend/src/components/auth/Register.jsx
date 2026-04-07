@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient.js';
-import { Typography, Button, TextField, Box, InputAdornment, IconButton, Divider, Alert } from '@mui/material';
+import { Typography, Button, TextField, Box, InputAdornment, IconButton, Divider, Alert, Card } from '@mui/material';
+import fondoLogin from "../../assets/images/fondoLogin.png"
 import imagenRegister from "../../assets/images/imagenRegister.jpg"
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import PasswordRoundedIcon from '@mui/icons-material/PasswordRounded';
@@ -114,50 +115,40 @@ const Register = () => {
             flexDirection: "row",
             alignItems: "center",
             minHeight: "100dvh",
-            width: "100dvw",
+            width: "100%",
             minWidth: 0,
             overflow: "hidden",
+            background: `url(${fondoLogin})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            px: { xs: 2, sm: 0 },
+            py: { xs: 4, sm: 0 },
         }}>
             <Box sx={{
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                minHeight: "100dvh",
-                width: {
-                    xs: "100%",
-                    sm: "100%",
-                    md: "55%",
-                    lg: "40%",
-                    xl: "40%"
-                },
-                backgroundColor: "#434a42",
+                minHeight: "560px",
+                width: "100%",
+                maxWidth: { xs: 440, sm: 440, md: 900, lg: 800 },
                 overflowY: "hidden"
             }}>
-                <Box sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    maxWidth: {
-                        xs: "300px",
-                        sm: "370px",
-                        md: "500px",
-                        lg: "500px",
-                        xl: "500px"
-                    },
-                    width: {
-                        xs: "75%",
-                        sm: "60%",
-                        md: "60%",
-                        lg: "50%",
-                        xl: "50%"
-                    },
-                    backgroundColor: "#626C66",
-                    p: 3,
-                    borderRadius: 4,
-                    boxShadow: 4
-                }}>
+                <Card
+                    elevation={0}
+                    sx={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        p: { xs: 3 },
+                        borderRadius: 0,
+                        background: "transparent",
+                        borderRadius: 3,
+                    }}
+                >
                     <Typography variant="h4" component="h1" sx={{
                         fontSize: {
                             xs: "1.7rem",
@@ -170,15 +161,22 @@ const Register = () => {
                     }} >
                         Registrate
                     </Typography>
-                    <Typography variant="body1" sx={{
+                    <Typography variant="body2" sx={{
+                        my: 1,
+                        fontSize: {
+                            xs: "1.2rem",
+                            sm: "1.2rem",
+                            md: "1.2rem",
+                            lg: "1.3rem",
+                            xl: "1.3rem",
+                        },
                         fontFamily: "'Lora', serif",
-                        mb: 1
                     }} >
                         Forma parte de nosotros
                     </Typography>
                     <Box component="form" onSubmit={handleRegister}>
                         <Divider sx={{
-                            my: 0,
+                            my: 1,
                             color: "#ffffff",
                             "&:after": {
                                 borderColor: "#ffffff"
@@ -190,7 +188,7 @@ const Register = () => {
                             <Typography variant="body1">~</Typography>
                         </Divider>
                         {errorAlert ?
-                            <Alert variant="filled" severity="error" sx={{ boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>
+                            <Alert severity="error" sx={{ boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>
                             :
                             null
                         }
@@ -203,9 +201,10 @@ const Register = () => {
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             sx={{
-                                backgroundColor: "#484848",
+                                backgroundColor: "#303030",
                                 borderRadius: 3,
                                 boxShadow: 3,
+                                my: 1,
                                 input: { color: "white" },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
@@ -241,9 +240,10 @@ const Register = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             sx={{
-                                backgroundColor: "#484848",
+                                backgroundColor: "#303030",
                                 borderRadius: 3,
                                 boxShadow: 3,
+                                my: 1,
                                 input: { color: "white" },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
@@ -280,9 +280,11 @@ const Register = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             sx={{
-                                backgroundColor: "#484848",
+                                backgroundColor: "#303030",
                                 borderRadius: 3,
                                 boxShadow: 3,
+                                my: 1,
+                                mb: 2,
                                 input: { color: "white" },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
@@ -325,14 +327,14 @@ const Register = () => {
                             color: "#ffffff",
                             fontWeight: "bold",
                             fontFamily: "Lora, serif",
-                            backgroundColor: "#918B76",
+                            backgroundColor: "#7a7664",
                             "&:hover": {
-                                backgroundColor: "#7a7664",
+                                backgroundColor: "#676456",
                             }
                         }}
                         >Registrarse</Button>
                     </Box>
-                </Box>
+                </Card>
             </Box>
             <Box sx={{
                 position: "relative",

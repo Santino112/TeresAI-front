@@ -1,5 +1,7 @@
 import { supabase } from "../../../../supabaseClient";
 
+//Almacenar la información en supabase
+////////////////////////////////////////
 export const saveProfile = async (userId, { username, role }) => {
     const { error } = await supabase
         .schema("public")
@@ -37,14 +39,14 @@ export const elderPeople = async (userId, { enfermedades, medicamentos, alergias
     return { success: true };
 }
 
-export const familyPeople = async (userId, { relacion, nombreelder }) => {
+export const familyPeople = async (userId, { relacion, nombreElder }) => {
     const { error } = await supabase
         .schema("public")
         .from("family_profiles")
         .insert({
             id: userId,
             relacion,
-            nombreelder
+            nombreElder
         });
 
     if (error) {
@@ -71,7 +73,10 @@ export const caregivePeople = async (userId, { geriatrico, adultosmayores, infoa
     };
     return { success: true };
 }
+////////////////////////////////////////
 
+//Tomar los datos de supabase
+////////////////////////////////////////
 export const tomarDatosPerfiles = async (userId) => {
     const { data, error } = await supabase
         .schema("public")
@@ -131,5 +136,74 @@ export const tomarDatosCuidadores = async (userId) => {
     }
     return data;
 };
+////////////////////////////////////////
 
+//Actualizar los datos de supabase
+////////////////////////////////////////
+export const actualizarDatosPerfiles = async (userId, { username, role }) => {
+    const { error } = await supabase
+        .schema("public")
+        .from("profiles")
+        .update({
+            username,
+            role
+        })
+        .eq("id", userId)
 
+    if (error) {
+        return { success: false, message: error.message };
+    };
+    return { success: true };
+};
+
+export const actualizarDatosElders = async (userId, { enfermedades, medicamentos, alergias, molestias, intereses }) => {
+    const { error } = await supabase
+        .schema("public")
+        .from("elder_profiles")
+        .update({
+            enfermedades,
+            medicamentos,
+            alergias,
+            molestias,
+            intereses
+        })
+        .eq("id", userId)
+
+    if (error) {
+        return { success: false, message: error.message };
+    };
+    return { success: true };
+};
+
+export const actualizarDatosFamiliares = async (userId, { relacion, nombreElder }) => {
+    const { error } = await supabase
+        .schema("public")
+        .from("family_profiles")
+        .update({
+            relacion,
+            nombreElder
+        })
+        .eq("id", userId)
+
+    if (error) {
+        return { success: false, message: error.message };
+    };
+    return { success: true };
+};
+
+export const actualizarDatosCuidadores = async (userId, { geriatrico, adultosmayores, infoamonitorear }) => {
+    const { error } = await supabase
+        .schema("public")
+        .from("caregiver_profiles")
+        .update({
+           geriatrico, 
+           adultosmayores,
+           infoamonitorear
+        })
+        .eq("id", userId)
+
+    if (error) {
+        return { success: false, message: error.message };
+    };
+    return { success: true };
+};

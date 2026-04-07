@@ -1,27 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from "../../../../../supabaseClient.js"
+import { useAuth } from "../../../../auth/AuthContext";
+import { tomarDatosPerfiles } from "../../exports/datosInicialesUsuarios.js";
 import Button from '@mui/material/Button';
+import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 import MenuItem from '@mui/material/MenuItem';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
+import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded';
 
-function IconMenu({setPaginaActiva}) {
+function IconMenu({ setPaginaActiva }) {
     const navigate = useNavigate();
+    const [profile, setProfile] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
+    const { user } = useAuth();
 
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    }
+    useEffect(() => {
+        if (!user) return;
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    }
+        const fetchInfoUser = async () => {
+            const data = await tomarDatosPerfiles(user.id);
+            if (data) setProfile(data);
+        }
+        fetchInfoUser();
+    }, [user]);
 
     const handleLogOut = async () => {
         await supabase.auth.signOut();
@@ -30,44 +38,68 @@ function IconMenu({setPaginaActiva}) {
         navigate('/');
     }
 
+    function stringAvatar(name) {
+        if (!name) return "";
+
+        const nameParts = name.trim().split(" ");
+
+        if (nameParts.length > 1) {
+            return `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase();
+        }
+
+        return nameParts[0][0].toUpperCase();
+    }
+
     return (
         <Box sx={{
-            backgroundColor: "#313630",
-            borderRight: "1px solid #2f332f",
-            p: 1
+            backgroundColor: "#030414",
         }}  >
             <Button
                 id='basic-button'
-                aria-controls={open ? 'basic-menu' : undefined}
-                aria-haspopup='true'
-                aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}
-                sx={{ color: "#ffffff" }}
+                fullWidth
+                onClick={(e) => setAnchorEl(e.currentTarget)}
+                sx={{ color: "#ffffff", justifyContent: "flex-start", p: 2 }}
             >
-                <SettingsRoundedIcon />
+                <Avatar sx={{ mr: 2, color: "#ffffff" }}>{stringAvatar(profile?.username)}</Avatar>
+                {profile?.username || "Usuario"}
+                <ExpandLessRoundedIcon fontSize="small" sx={{ ml: "auto" }} />
             </Button>
             <Menu
-                id='basic-menu'
                 anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
+                open={Boolean(anchorEl)}
+                onClose={() => setAnchorEl(null)}
+                anchorOrigin={{ vertical: "top", horizontal: "left" }}
+                transformOrigin={{ vertical: "bottom", horizontal: "right" }}
                 MenuListProps={{
                     sx: {
-                        p: 0
+                        p: 1,
+                        fontSize: "21px",
+                        backgroundColor: "#303030",
+                        color: "#ffffff",
+                        borderRadius: 3
                     }
                 }}
                 PaperProps={{
-                    sx: { backgroundColor: "#302e2e", color: "#E6E6E6", minWidth: "160px", p: 0 }
+                    sx: { backgroundColor: "#303030", color: "#ffffff", minWidth: "13%", p: 0, borderRadius: 3 }
                 }}
             >
-                <MenuItem onClick={() => setPaginaActiva("perfil")}>
-                    <PersonRoundedIcon fontSize='small' sx={{ mr: 1 }} />Perfil
+                <MenuItem onClick={() => setPaginaActiva("perfil")} sx={{borderRadius: 3}}>
+                    <PersonRoundedIcon fontSize='medium' sx={{ mr: 1 }} />Perfil
                 </MenuItem>
-                <MenuItem>
-                    <AutoAwesomeRoundedIcon fontSize='small' sx={{ mr: 1 }} /> Personalizar
+                <MenuItem sx={{borderRadius: 3}}>
+                    <AutoAwesomeRoundedIcon fontSize='medium' sx={{ mr: 1 }} /> Personalizar
                 </MenuItem>
-                <MenuItem onClick={handleLogOut}>
-                    <LogoutRoundedIcon fontSize="small" sx={{ mr: 1 }} />Cerrar sesión
+                <Divider sx={{
+                    width: "100%",
+                    "&::before, &::after": {
+                        borderColor: "#ffffff",
+                    },
+                    m: 0,
+                    p: 0
+                }}>
+                </Divider>
+                <MenuItem onClick={handleLogOut} sx={{borderRadius: 3}}>
+                    <LogoutRoundedIcon fontSize="medium" sx={{ mr: 1 }} />Cerrar sesión
                 </MenuItem>
 
             </Menu>
