@@ -102,7 +102,7 @@ export default function Crossword() {
     return r === selected.row || c === selected.col;
   };
 
-  // 🆕 separar palabras
+  // separar palabras
   const acrossClues = clues.filter(c => c.direction === "Horizontal");
   const downClues = clues.filter(c => c.direction === "Vertical");
   return (
@@ -193,7 +193,6 @@ export default function Crossword() {
                       </Typography>
                     )}
 
-                    {/* ✍️ letra */}
                     <Typography sx={{ color: "#fff", fontSize: "1rem" }}>
                       {cell}
                     </Typography>
@@ -235,7 +234,7 @@ export default function Crossword() {
         </Button>
       </Box>
 
-      {/* 🆕 PISTAS ORGANIZADAS */}
+      {/* PISTAS ORGANIZADAS */}
       <Box sx={{ width: "100%", maxWidth: 600, mt: 2, maxHeight: 200, overflowY: "auto" }}>
         <Typography sx={{ color: "#aaa", mb: 1 }}>
           Horizontales

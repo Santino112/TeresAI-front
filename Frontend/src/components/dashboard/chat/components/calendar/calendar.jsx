@@ -1,34 +1,70 @@
 import { useEffect, useState, useRef } from "react";
 import { Typography, Button, TextField, Box, Stack } from "@mui/material";
-import BotonCalendar from '../buttons/botonCalendar';
+import BotonCalendar from '../buttons/botonCalendar.jsx';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import api from "../../../../../api/axios.js";
+import { supabase } from "../../../../../supabaseClient.js";
+
 
 const Calendar = () => {
+    const [events, setEvents] = useState([]);
+
+    const fetchEvents = async () => {
+        const { data } = await supabase.auth.getSession();
+        const session = data.session;
+
+        if (!session) return;
+
+        const res = await api.get('/calendar/events', {
+            headers: {
+                Authorization: `Bearer ${session.access_token}`,
+            },
+        });
+
+        setEvents(res.data);
+    };
+    useEffect(() => {
+        fetchEvents();
+        const handleCalendarUpdated = () => {
+            console.log("Actualizando calendario...")
+            fetchEvents();
+        };
+        window.addEventListener("calendarUpdated", handleCalendarUpdated);
+        return () => {
+            window.removeEventListener("calendarUpdated", handleCalendarUpdated);
+        };
+    }, []);
+
     return (
         <Box
             sx={{
                 flexGrow: 1,
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
-                width: "100%",
-                overflowY: "auto",
-                overflowX: "hidden",
                 minHeight: 0,
             }}
         >
             <Box
                 sx={{
+                    flexGrow: 1,
+                    p: {
+                        xs: 2,
+                        md: 0
+                    },
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexGrow: 1,
+                    overflowX: "hidden",
+                    maxWidth: '1000px',
+                    minWidth: {
+                        xs: '390px',
+                        sm: '500px',
+                        md: '700px',
+                        lg: '900px',
+                        xl: '1000px'
+                    },
                     width: "100%",
-                    backgroundColor: "#2f342d",
-                    p: 2
                 }}
             >
                 <Typography variant="h3" sx={{
@@ -57,12 +93,13 @@ const Calendar = () => {
                     lineHeight: 1.8,
                 }}>En esta sección podrás tener una visualizacion de todos tus eventos agendados con teresa.
                 </Typography>
-                <Box sx={{mb: 2, width: "800px"}}>
+                <Box sx={{mb: 2}}>
                     <BotonCalendar />
                     <FullCalendar
                         plugins={[dayGridPlugin, timeGridPlugin]}
                         initialView="dayGridMonth"
                         locale="es"
+                        events={events}
                         headerToolbar={{
                             left: 'prev,next today',
                             center: 'title',
