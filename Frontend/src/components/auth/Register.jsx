@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient.js';
-import { Typography, Button, TextField, Box, InputAdornment, IconButton, Divider, Alert, Card } from '@mui/material';
+import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert, Card, AppBar, Toolbar } from '@mui/material';
+import TeresaiLogo from '../../assets/images/file.svg';
 import fondoLogin from "../../assets/images/fondoLogin.png"
 import imagenRegister from "../../assets/images/imagenRegister.jpg"
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
@@ -113,6 +114,7 @@ const Register = () => {
         <Box sx={{
             display: "flex",
             flexDirection: "row",
+            justifyContent: "center",
             alignItems: "center",
             minHeight: "100dvh",
             width: "100%",
@@ -123,20 +125,56 @@ const Register = () => {
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             px: { xs: 2, sm: 0 },
-            py: { xs: 4, sm: 0 },
+            py: 0
         }}>
             <Box sx={{
+                position: "relative",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
                 alignItems: "center",
-                minHeight: "560px",
-                width: "100%",
-                maxWidth: { xs: 440, sm: 440, md: 900, lg: 800 },
+                minHeight: "100dvh",
+                width: { xs: "100%", md: "40%" },
+                maxWidth: { xs: 440, sm: 440, md: 700, lg: 800 },
                 overflowY: "hidden"
             }}>
-                <Card
+                <AppBar
                     elevation={0}
+                    sx={{
+                        background: "transparent",
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        zIndex: 1100
+                    }}
+                >
+                    <Toolbar sx={{
+                        display: 'flex',
+                        justifyContent: 'flex-start',
+                    }}>
+                        <Box
+                            component="img"
+                            src={TeresaiLogo}
+                            alt="TERESAI Logo"
+                            sx={{
+                                position: "relative",
+                                right: {
+                                    xs: 63,
+                                    sm: 63,
+                                    md: 45,
+                                    lg: 45,
+                                    xl: 45
+                                },
+                                height: "110px",
+                                width: "auto",
+                                imageRendering: "auto",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => navigate('/')}
+                        />
+                    </Toolbar>
+                </AppBar>
+                <Card
                     sx={{
                         flex: 1,
                         display: "flex",
@@ -188,7 +226,7 @@ const Register = () => {
                             <Typography variant="body1">~</Typography>
                         </Divider>
                         {errorAlert ?
-                            <Alert severity="error" sx={{ boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>
+                            <Alert severity="error" sx={{ my: 1, boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>
                             :
                             null
                         }
@@ -229,8 +267,8 @@ const Register = () => {
                                     </InputAdornment>
                                 )
                             }}
-                        >
-                        </TextField>
+                        />
+                        <br />
                         <TextField
                             error={errorRegister}
                             placeholder="Correo electrónico"
@@ -268,8 +306,8 @@ const Register = () => {
                                     </InputAdornment>
                                 )
                             }}
-                        >
-                        </TextField>
+                        />
+                        <br />
                         <TextField
                             error={errorRegister}
                             placeholder="Contraseña"
@@ -284,7 +322,7 @@ const Register = () => {
                                 borderRadius: 3,
                                 boxShadow: 3,
                                 my: 1,
-                                mb: 2,
+                                mb: 1,
                                 input: { color: "white" },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
@@ -318,8 +356,7 @@ const Register = () => {
                                     </InputAdornment>
                                 )
                             }}
-                        >
-                        </TextField>
+                        />
                         <Button variant="contained" type="submit" fullWidth sx={{
                             mb: 1,
                             mt: 2,
@@ -331,8 +368,8 @@ const Register = () => {
                             "&:hover": {
                                 backgroundColor: "#676456",
                             }
-                        }}
-                        >Registrarse</Button>
+                        }}>Registrarse
+                        </Button>
                     </Box>
                 </Card>
             </Box>

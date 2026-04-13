@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { getConversations } from '../../exports/conversaciones.js';
 import { deleteConversation } from '../../exports/eliminarConversacion.js';
 import { useAuth } from '../../../../auth/AuthContext.jsx';
+import { supabase } from "../../../../../supabaseClient.js";
 import Chat from './chat.jsx';
 import Games from '../games/games.jsx';
 import Buscador from '../buscador/buscador.jsx';
@@ -14,7 +15,14 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
+import Backdrop from '@mui/material/Backdrop';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import StepContent from '@mui/material/StepContent';
+import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
@@ -36,6 +44,41 @@ import StarRoundedIcon from "@mui/icons-material/StarRounded";
 
 const drawerWidth = 290;
 
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 500,
+    bgcolor: '#030414',
+    border: '2px solid #000',
+    borderRadius: 3,
+    boxShadow: 24,
+    p: 4,
+};
+
+const steps = [
+    {
+        label: 'Escribe lo que quieras',
+        description: `Teresa esta preparada para poder responderte preguntas de la vida diaria, mantener una conversación normal, 
+        aconsejarte, escucharte y lo más importante de todo, actuar como cuidadora las 24 horas del dia, agendando eventos y recordando
+        cosas importantes. `,
+    },
+    {
+        label: 'Emergencias',
+        description:
+            `Ante casos de emergencia podes solicitarle a Teresa que envie una notificación a tu familiar o cuidador vinculado para que este se entere
+            de lo que esta sucediendo, todo con una simple solicitud.`,
+    },
+    {
+        label: 'Create an ad',
+        description: `Try out different ad text to see what brings in the most customers,
+              and learn how to enhance your ads using features like ad extensions.
+              If you run into any problems with your ads, find out how to tell if
+              they're running and how to resolve approval issues.`,
+    },
+];
+
 function ResponsiveDrawer(props) {
     const navigate = useNavigate();
     const { window } = props;
@@ -48,6 +91,36 @@ function ResponsiveDrawer(props) {
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [menuConvId, setMenuConvId] = useState(null);
     const { user, loading: authLoading } = useAuth();
+    //Modal
+    const [open, setOpen] = useState(false);
+    const handleCloseModal = async () => {
+
+        const { error } = await supabase
+            .schema("public")
+            .from('profiles')
+            .update({ is_new_user: false })
+            .eq('id', user.id);
+
+        if (!error) {
+            setOpen(false);
+        } else {
+            console.error("Error al actualizar estado de usuario:", error);
+        }
+    };
+    //Stepper dentro del modal
+    const [activeStep, setActiveStep] = useState(0);
+
+    const handleNext = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    };
+
+    const handleBack = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    };
+
+    const handleReset = () => {
+        setActiveStep(0);
+    };
 
     const addConversation = (newConversation) => {
         setConversations(prev => [newConversation, ...prev]);
@@ -76,7 +149,7 @@ function ResponsiveDrawer(props) {
     }
 
     useEffect(() => {
-        if (authLoading) return;
+        if (authLoading || !user) return;
 
         if (!user) {
             navigate('/');
@@ -84,6 +157,32 @@ function ResponsiveDrawer(props) {
         };
 
         fetchData();
+    }, [user, authLoading]);
+
+    useEffect(() => {
+        const fetchUserStatus = async () => {
+            if (authLoading || !user) return;
+
+            const { data, error } = await supabase
+                .schema("public")
+                .from('profiles')
+                .select('is_new_user')
+                .eq('id', user.id)
+                .single();
+
+            if (error) {
+                console.error("Error de Supabase:", error);
+                return;
+            }
+
+            if (data && data.is_new_user === true) {
+                setOpen(true);
+            } else {
+                setOpen(false);
+            }
+        };
+
+        fetchUserStatus();
     }, [user, authLoading]);
 
     const handleMenuOpen = (e, convId) => {
@@ -111,6 +210,75 @@ function ResponsiveDrawer(props) {
             flexDirection: 'column',
             height: '100dvh'
         }}>
+            {open && (
+                <Box>
+                    <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        open={open}
+                        closeAfterTransition
+                        slots={{ backdrop: Backdrop }}
+                        slotProps={{
+                            backdrop: {
+                                timeout: 500,
+                            },
+                        }}
+                    >
+                        <Fade in={open}>
+                            <Box sx={style}>
+                                <Typography variant='h6' sx={{ fontFamily: "'Lora', serif", mb: 1 }}>¿Cómo funciona la aplicación?</Typography>
+                                <Box sx={{ maxWidth: 400 }}>
+                                    <Stepper activeStep={activeStep} orientation="vertical">
+                                        {steps.map((step, index) => (
+                                            <Step key={step.label}>
+                                                <StepLabel
+                                                    optional={
+                                                        index === steps.length - 1 ? (
+                                                            <Typography variant="caption">Last step</Typography>
+                                                        ) : null
+                                                    }
+                                                >
+                                                    {step.label}
+                                                </StepLabel>
+                                                <StepContent>
+                                                    <Typography>{step.description}</Typography>
+                                                    <Box sx={{ mb: 2 }}>
+                                                        <Button
+                                                            variant="contained"
+                                                            onClick={handleNext}
+                                                            sx={{ mt: 1, mr: 1 }}
+                                                        >
+                                                            {index === steps.length - 1 ? 'Terminar' : 'Continuar'}
+                                                        </Button>
+                                                        <Button
+                                                            disabled={index === 0}
+                                                            onClick={handleBack}
+                                                            sx={{ mt: 1, mr: 1 }}
+                                                        >
+                                                            Atras
+                                                        </Button>
+                                                    </Box>
+                                                </StepContent>
+                                            </Step>
+                                        ))}
+                                    </Stepper>
+                                    {activeStep === steps.length && (
+                                        <Paper square elevation={0} sx={{ p: 3, bgcolor: "transparent" }}>
+                                            <Typography variant='body1' sx={{ fontFamily: "'Lora', serif", mb: 1 }}>¿Quieres volver a repetir el paso a paso?</Typography>
+                                            <Button variant="contained" onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
+                                                Reiniciar
+                                            </Button>
+                                            <Button onClick={handleCloseModal} sx={{ mt: 1, mr: 1 }}>
+                                                Empezar a usar TeresAI
+                                            </Button>
+                                        </Paper>
+                                    )}
+                                </Box>
+                            </Box>
+                        </Fade>
+                    </Modal>
+                </Box>
+            )}
             <Toolbar sx={{
                 display: 'flex',
                 justifyContent: 'flex-start',
@@ -163,16 +331,6 @@ function ResponsiveDrawer(props) {
                         backgroundColor: "#2b2b2b"
                     }
                 }}><CalendarMonthRoundedIcon sx={{ mr: 1 }} />Calendario</Button>
-                <Button onClick={() => {
-                    setPaginaActiva("calendario");
-                }} sx={{
-                    mb: 1,
-                    backgroundColor: "transparent",
-                    color: "#ffffff",
-                    "&:hover": {
-                        backgroundColor: "#2b2b2b"
-                    }
-                }}><NewspaperIcon sx={{ mr: 1 }} />Noticias</Button>
                 <Button onClick={() => {
                     setPaginaActiva("juegos");
                 }} sx={{
@@ -329,7 +487,6 @@ function ResponsiveDrawer(props) {
 
     return (
         <Box sx={{ display: 'flex', width: "100%" }}>
-            <CssBaseline />
             <AppBar
                 position="fixed"
                 sx={{
@@ -443,7 +600,8 @@ function ResponsiveDrawer(props) {
                         boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.2)",
                         backgroundColor: "#010215",
                         backdropFilter: "blur(30px)",
-                        zIndex: 1
+                        zIndex: 1,
+                        fontWeight: 600
                     }} >
                     {conversations.find(c => c.id === activeConversationId)?.title || "Chat sin título"}
                 </Toolbar>}

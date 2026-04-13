@@ -3,13 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { Typography, Button, TextField, Box, Select, MenuItem, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel } from "@mui/material";
 import { useAuth } from "../auth/AuthContext";
 import { supabase } from "../../supabaseClient";
-import { saveProfile, elderPeople, familyPeople, caregivePeople } from "../dashboard/chat/exports/datosInicialesUsuarios";
+import { saveProfile, elderPeople, familyPeople, caregivePeople, linkearUsuarios } from "../dashboard/chat/exports/datosInicialesUsuarios";
 import InfoElder from "./tipoUsuario/infoElder";
 import InfoFamiliar from "./tipoUsuario/infoFamiliar";
 import InfoCuidador from "./tipoUsuario/infoCuidador";
 import fondoInfoUser from "../../assets/images/fondoInfoUser.png";
 
 const InformacionUsuarios = () => {
+    const [isSaving, setIsSaving] = useState(false);
+    const [hasError, setHasError] = useState(false);
+    const isProcessingRef = useRef(false);
     const [errorAlert, setErrorAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [errorTextFields, setErrorTextFields] = useState(false);
@@ -20,6 +23,7 @@ const InformacionUsuarios = () => {
     const [sinGeriatrico, setSinGeriatrico] = useState(false);
     //Datos familiar
     const [nombreFamiliar, setNombreFamiliar] = useState("");
+    const [emailFamiliar, setEmailFamiliar] = useState("");
     const [tipoFamiliar, setTipoFamiliar] = useState("seleccione");
     //Datos elder
     const [tieneEnfermedad, setTieneEnfermedad] = useState("seleccione");
@@ -56,55 +60,78 @@ const InformacionUsuarios = () => {
     const handleStoreDatos = async (e) => {
         e.preventDefault();
 
-        const camposComunes = rol === "elder" && [tieneEnfermedad, tomaMedicamentos, tieneAlergias].some(v => v === "seleccione");
-        const campoFamiliar = rol === "familiar" && tipoFamiliar === "seleccione";
-
-        if (camposComunes || campoFamiliar) {
-            setErrorTextFields(true);
-            setAlertMessage("Por favor complete todos los campos en rojo.");
-            setErrorAlert(true);
-            setTimeout(() => {
-                setErrorAlert(false)
-                setErrorTextFields(false)
-            }, 5000);
-            return;
-        }
-
-        if (!nombre.trim()) {
-            setAlertMessage("El nombre es obligatorio.");
-            setErrorAlert(true);
-            setTimeout(() => {
-                setErrorAlert(false)
-                setErrorTextFields(false)
-            }, 5000);
-            return;
-        }
-
-        if (tieneEnfermedad === "si" && !enfermedad.trim()) {
-            setAlertMessage("Por favor, ingrese la/s enfermade/s que padece.");
+        if (!nombre.trim() || rol === "seleccione") {
+            setAlertMessage("El nombre y el rol son obligatorios.");
             setErrorAlert(true);
             setErrorTextFields(true);
-            setSeverity("error");
             setTimeout(() => {
                 setErrorAlert(false);
                 setErrorTextFields(false);
-            }, 5000);
+            }, 5000)
             return;
-        } else if (tomaMedicamentos === "si" && !medicamentos.trim()) {
-            setAlertMessage("Por favor, ingrese lo/s medicamento/s que toma.");
+        };
+
+        if (rol === "elder") {
+            const incompletos = [tieneEnfermedad, tomaMedicamentos, tieneAlergias].some((s) => s === "seleccione");
+            const detallesFaltantes =
+                (tieneEnfermedad === "si" && !enfermedad.trim()) ||
+                (tomaMedicamentos === "si" && !medicamentos.trim()) ||
+                (tieneAlergias === "si" && !alergias.trim());
+
+            if (incompletos || detallesFaltantes) {
+                setAlertMessage("Debe completar todos los campos en ROJO de la persona adulta.");
+                setErrorAlert(true);
+                setErrorTextFields(true);
+                setTimeout(() => {
+                    setErrorAlert(false);
+                    setErrorTextFields(false);
+                }, 5000);
+                return;
+            };
+        } else if (rol === "familiar") {
+            const incompleto = [tipoFamiliar].some((s) => s === "seleccione");
+            const detallesFaltantes =
+                !nombreFamiliar.trim() ||
+                !emailFamiliar.trim();
+
+            if (incompleto || detallesFaltantes) {
+                setAlertMessage("Debe completar todos los campos del familiar.");
+                setErrorAlert(true);
+                setErrorTextFields(true);
+                setTimeout(() => {
+                    setErrorAlert(false);
+                    setErrorTextFields(false);
+                }, 5000);
+                return;
+            };
+        } else {
+            if (!numAdultos || (!sinGeriatrico && !geriatrico.trim())) {
+                setAlertMessage("Debe completar todos los campos en ROJO del cuidador.");
+                setErrorAlert(true);
+                setErrorTextFields(true);
+                setTimeout(() => {
+                    setErrorAlert(false);
+                    setErrorTextFields(false);
+                }, 5000);
+                return;
+            };
+        };
+
+        setErrorAlert(false);
+        setErrorTextFields(false);
+        setIsSaving(true);
+        isProcessingRef.current = true;
+
+        const successStore = await saveProfile(user.id, {
+            username: nombre,
+            role: rol,
+            email: user.email
+        });
+
+        if (!successStore) {
+            setAlertMessage("Ocurrió un error al guardar tu perfil, intentá de nuevo.");
             setErrorAlert(true);
             setErrorTextFields(true);
-            setSeverity("error");
-            setTimeout(() => {
-                setErrorAlert(false);
-                setErrorTextFields(false);
-            }, 5000);
-            return;
-        } else if (tieneAlergias === "si" && !alergias.trim()) {
-            setAlertMessage("Por favor, ingrese la/s alergia/s que padece.");
-            setErrorAlert(true);
-            setErrorTextFields(true);
-            setSeverity("error");
             setTimeout(() => {
                 setErrorAlert(false);
                 setErrorTextFields(false);
@@ -112,80 +139,155 @@ const InformacionUsuarios = () => {
             return;
         };
 
-        setErrorTextFields(false);
+        try {
+            if (rol === "elder") {
+                const resultElder = await elderPeople(user.id, {
+                    enfermedades: enfermedad,
+                    medicamentos: medicamentos,
+                    alergias: alergias,
+                    molestias: molestias,
+                    intereses: gustos
+                });
+                if (!resultElder.success) {
+                    const { error: deleteError } = await supabase
+                        .schema("public")
+                        .from("profiles")
+                        .delete()
+                        .eq("id", user.id);
 
-        const successStore = await saveProfile(user.id, {
-            username: nombre,
-            role: rol,
-        });
+                    console.log("deleteError:", deleteError);
+                    isProcessingRef.current = false;
+                    setHasError(true);
+                    setAlertMessage(traducirError(resultElder.message));
+                    setErrorAlert(true);
+                    setErrorTextFields(true);
+                    setTimeout(() => {
+                        setErrorAlert(false);
+                        setErrorTextFields(false);
+                        setHasError(true);
+                    }, 5000);
+                    setTimeout(() => setIsSaving(false), 500);
+                    return;
+                } else {
+                    navigate("/paginaChatAI");
+                    return;
+                }
 
-        if (!successStore) {
-            setAlertMessage("Ocurrió un error al guardar tu perfil, intentá de nuevo.");
+            } else if (rol === "familiar") {
+
+                const resultLinkear = await linkearUsuarios(user.id, {
+                    emailFamiliar: emailFamiliar,
+                    rol: rol
+                });
+
+                if (!resultLinkear.success) {
+                    const { error: deleteError } = await supabase
+                        .schema("public")
+                        .from("profiles")
+                        .delete()
+                        .eq("id", user.id);
+
+                    console.log("deleteError:", deleteError);
+                    isProcessingRef.current = false;
+                    setHasError(true);
+                    setAlertMessage(resultLinkear.message);
+                    setErrorAlert(true);
+                    setErrorTextFields(true);
+                    setTimeout(() => {
+                        setErrorAlert(false);
+                        setErrorTextFields(false);
+                        setHasError(false);
+                    }, 5000);
+                    setTimeout(() => setIsSaving(false), 500);
+                    return;
+                }
+
+                const resultFamiliar = await familyPeople(user.id, {
+                    relacion: tipoFamiliar,
+                    nombreElder: nombreFamiliar
+                });
+
+                if (!resultFamiliar.success) {
+                    const { error: deleteError } = await supabase
+                        .schema("public")
+                        .from("profiles")
+                        .delete()
+                        .eq("id", user.id);
+
+                    console.log("deleteError:", deleteError);
+                    isProcessingRef.current = false;
+                    setHasError(true);
+                    setAlertMessage(traducirError(resultFamiliar.message));
+                    setErrorAlert(true);
+                    setErrorTextFields(true);
+                    setTimeout(() => {
+                        setErrorAlert(false);
+                        setErrorTextFields(false);
+                        setHasError(false);
+                    }, 5000);
+                    setTimeout(() => setIsSaving(false), 500);
+                    return;
+                }
+
+                navigate("/paginaFamiliar");
+                return;
+
+            } else if (rol === "cuidador") {
+                const resultCuidador = await caregivePeople(user.id, {
+                    geriatrico: geriatrico,
+                    adultosmayores: numAdultos,
+                    infoamonitorear: infoEspecifica
+                });
+                if (!resultCuidador.success) {
+                    const { error: deleteError } = await supabase
+                        .schema("public")
+                        .from("profiles")
+                        .delete()
+                        .eq("id", user.id);
+
+                    console.log("deleteError:", deleteError);
+                    isProcessingRef.current = false;
+                    setHasError(true);
+                    setAlertMessage(traducirError(resultCuidador.message));
+                    setErrorAlert(true);
+                    setErrorTextFields(true);
+                    setTimeout(() => {
+                        setErrorAlert(false);
+                        setErrorTextFields(false);
+                        setHasError(false);
+                    }, 5000);
+                    setTimeout(() => setIsSaving(false), 500); 
+                    return;
+                } else {
+                    navigate("/paginaCuidador");
+                    return;
+                }
+            };
+        } catch {
+            const { error: deleteError } = await supabase
+                .schema("public")
+                .from("profiles")
+                .delete()
+                .eq("id", user.id);
+
+            console.log("deleteError:", deleteError);
+            isProcessingRef.current = false;
+            setHasError(true);
+            setAlertMessage(traducirError("Ocurrio un error inesperado, reintentelo."));
             setErrorAlert(true);
+            setErrorTextFields(true);
             setTimeout(() => {
-                setErrorAlert(false)
-                setErrorTextFields(false)
+                setErrorAlert(false);
+                setErrorTextFields(false);
+                setHasError(false);
             }, 5000);
+            setTimeout(() => setIsSaving(false), 500); 
             return;
-        }
-
-        if (rol === "elder") {
-            const resultElder = await elderPeople(user.id, {
-                enfermedades: enfermedad,
-                medicamentos: medicamentos,
-                alergias: alergias,
-                molestias: molestias,
-                intereses: gustos
-            });
-            if (!resultElder.success) {
-                setAlertMessage(traducirError(resultElder.message));
-                setErrorAlert(true);
-                setTimeout(() => {
-                    setErrorAlert(false)
-                    setErrorTextFields(false)
-                }, 5000);
-                return;
-            }
-
-        } else if (rol === "familiar") {
-            const resultFamiliar = await familyPeople(user.id, {
-                relacion: tipoFamiliar,
-                nombreElder: nombreFamiliar
-            });
-            if (!resultFamiliar.success) {
-                setAlertMessage(traducirError(resultFamiliar.message));
-                setErrorAlert(true);
-                setTimeout(() => {
-                    setErrorAlert(false)
-                    setErrorTextFields(false)
-                }, 5000);
-                return;
-            }
-
-        } else {
-            const resultCuidador = await caregivePeople(user.id, {
-                geriatrico: geriatrico,
-                adultosmayores: numAdultos,
-                infoamonitorear: infoEspecifica
-            });
-            if (!resultCuidador.success) {
-                setAlertMessage(traducirError(resultCuidador.message));
-                setErrorAlert(true);
-                setTimeout(() => {
-                    setErrorAlert(false)
-                    setErrorTextFields(false)
-                }, 5000);
-                return;
-            }
-        }
-
-        if (rol === "elder") navigate("/paginaChatAI");
-        if (rol === "familiar") navigate("/paginaFamiliar");
-        if (rol === "cuidador") navigate("/paginaCuidador");
+        };
     };
 
     useEffect(() => {
-        if (authLoading) return;
+        if (authLoading || isSaving || isProcessingRef.current || hasError) return;
         if (!user) { navigate('/'); return; }
 
         const checkProfile = async () => {
@@ -194,18 +296,18 @@ const InformacionUsuarios = () => {
                 .from("profiles")
                 .select("role")
                 .eq("id", user.id)
-                .single();
+                .single()
 
-            if (data) {
+            if (data && !isProcessingRef.current) {
                 if (data.role === "elder") navigate("/paginaChatAI");
                 if (data.role === "familiar") navigate("/paginaFamiliar");
                 if (data.role === "cuidador") navigate("/paginaCuidador");
-            } else {
+            } else if (!data) {
                 setCheckingProfile(false);
             }
         };
         checkProfile();
-    }, [user, authLoading]);
+    }, [user, authLoading, isSaving, navigate, hasError]);
 
     if (checkingProfile) return null;
 
@@ -400,6 +502,8 @@ const InformacionUsuarios = () => {
                             <InfoFamiliar
                                 nombreFamiliar={nombreFamiliar}
                                 setNombreFamiliar={setNombreFamiliar}
+                                emailFamiliar={emailFamiliar}
+                                setEmailFamiliar={setEmailFamiliar}
                                 tipoFamiliar={tipoFamiliar}
                                 setTipoFamiliar={setTipoFamiliar}
                                 errorTextFields={errorTextFields}

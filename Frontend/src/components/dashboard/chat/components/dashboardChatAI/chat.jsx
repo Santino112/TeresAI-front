@@ -20,6 +20,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   const [respuesta, setRespuesta] = useState("");
   const [ttsEnabled, setTtsEnabled] = useState(true);
   const [profile, setProfile] = useState(null);
+  const [pensandoIA, setPensandoIA] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const esPantallaInicial = mensajes.length === 0 && !loadingMessages && !activeConversationId;
   const { user } = useAuth();
@@ -89,7 +90,9 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
       }
     ]);
 
+    setPensandoIA(true);
     const res = await enviarPrompt(texto, activeConversationId);
+    setPensandoIA(false);
 
     setMensajes(prev => [
       ...prev,
@@ -111,7 +114,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   };
 
   const mandarPrompt = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     const texto = prompt;
     setPrompt("");
     await enviarTexto(texto);
@@ -161,9 +164,9 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
       }}
     >
       {loadingMessages ? (
-        <Box sx={{ p: 5, display: "flex", flexDirection: "column",justifyContent: "center", alignItems: "center", gap: 2, flexGrow: 1 }}>
-          <Typography variant="h2" sx={{fontSize: "1rem", fontFamily: "'Lora', serif"}}>Cargando mensajes...</Typography>
-          <CircularProgress sx={{color: "#ffffff"}}/>
+        <Box sx={{ p: 5, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 2, flexGrow: 1 }}>
+          <Typography variant="h2" sx={{ fontSize: "1rem", fontFamily: "'Lora', serif" }}>Cargando mensajes...</Typography>
+          <CircularProgress sx={{ color: "#ffffff" }} />
         </Box>
       ) : esPantallaInicial ? (
         <Box
@@ -189,7 +192,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
             fontFamily: "'Lora', serif",
             color: "#f0750a",
             mb: 2,
-     
+
             textAlign: "center"
           }}>Buenas noches {profile?.username} </Typography>
           <Box
@@ -208,6 +211,12 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                 onChange={(e) => setPrompt(e.target.value)}
                 fullWidth
                 multiline
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    mandarPrompt();
+                  }
+                }}
                 maxRows={6}
                 sx={{
                   "& .MuiOutlinedInput-root": {
@@ -219,12 +228,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                     fontWeight: 500,
                   },
                   "& fieldset": { border: "none" },
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    mandarPrompt();
-                  }
                 }}
               />
               <Box sx={{
@@ -366,6 +369,20 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                 </Box>
               </Box>
             ))}
+            {pensandoIA && (
+              <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
+                <Box sx={{
+                  mb: 3,
+                  borderRadius: "15px",
+                  color: "#ffffff",
+                  fontStyle: "italic",
+                  fontSize: "1.05rem",
+                  fontFamily: "'Lora', serif"
+                }}>
+                  Pensando...
+                </Box>
+              </Box>
+            )}
           </Box>
           <Box
             component="form"

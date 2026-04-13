@@ -21,7 +21,6 @@ const Games = () => {
                 sx={{
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "center",
                     alignItems: "center",
                     flexGrow: 1,
                     width: "100%",
@@ -34,13 +33,10 @@ const Games = () => {
             >
                 <Paper
                     sx={{
-                        width: {
-                            xs: "100%",
-                            sm: "80%",
-                            md: "70%",
-                            lg: "75%",
-                            xl: "60%",
-                        },
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "flex-start",
+                        width: "%100",
                         p: { xs: 2, sm: 3, md: 3 },
                         borderRadius: 4,
                         background: "transparent",
@@ -55,11 +51,11 @@ const Games = () => {
                             lg: "1.7rem",
                             xl: "1.8rem"
                         },
+                        textAlign: {xs: "center", sm: "center", md: "start"},
                         fontFamily: "'Lora', serif",
-                        textAlign: "center"
                     }}>Juegos mentales</Typography>
                     <Typography variant="body2" sx={{
-                        my: 2,
+                        my: 1,
                         fontSize: {
                             xs: "1rem",
                             sm: "1rem",
@@ -67,14 +63,13 @@ const Games = () => {
                             lg: "1.3rem",
                             xl: "1.3rem",
                         },
+                        textAlign: {xs: "center", sm: "center", md: "start"},
                         fontFamily: "'Lora', serif",
-                        textAlign: "center",
                         lineHeight: 1.8,
                     }}>En esta sección podras encontrar una serie de juegos que te ayudaran a pasar el rato. Juegos divertidos y de memoria
                         para ejercitar la mente y mejorar el bienestar propio.
                     </Typography>
                     <Divider sx={{
-                        my: 1,
                         width: "100%",
                         "&::before, &::after": {
                             borderColor: "#ffffff",
@@ -82,7 +77,7 @@ const Games = () => {
                     }}>
                         <Typography variant="body1" sx={{ color: "#ffffff" }}>~</Typography>
                     </Divider>
-                    <Box sx={{ width: "100%", overflowX: "auto", margin: "0 auto" }}>
+                    <Box sx={{ width: "100%", overflow: "hidden", margin: "0 auto" }}>
                         <Sudoku />
                     </Box>
                     <Divider sx={{

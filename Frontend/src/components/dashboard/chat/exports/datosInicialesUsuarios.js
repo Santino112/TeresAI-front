@@ -2,7 +2,7 @@ import { supabase } from "../../../../supabaseClient";
 
 //Almacenar la información en supabase
 ////////////////////////////////////////
-export const saveProfile = async (userId, { username, role }) => {
+export const saveProfile = async (userId, { username, role, email }) => {
     const { error } = await supabase
         .schema("public")
         .from("profiles")
@@ -10,6 +10,7 @@ export const saveProfile = async (userId, { username, role }) => {
             id: userId,
             username,
             role,
+            email
         });
 
     if (error) {
@@ -39,14 +40,14 @@ export const elderPeople = async (userId, { enfermedades, medicamentos, alergias
     return { success: true };
 }
 
-export const familyPeople = async (userId, { relacion, nombreElder }) => {
+export const familyPeople = async (userId, { nombreElder, relacion }) => {
     const { error } = await supabase
         .schema("public")
         .from("family_profiles")
         .insert({
             id: userId,
-            relacion,
-            nombreElder
+            nombreElder,
+            relacion
         });
 
     if (error) {
@@ -196,14 +197,46 @@ export const actualizarDatosCuidadores = async (userId, { geriatrico, adultosmay
         .schema("public")
         .from("caregiver_profiles")
         .update({
-           geriatrico, 
-           adultosmayores,
-           infoamonitorear
+            geriatrico,
+            adultosmayores,
+            infoamonitorear
         })
         .eq("id", userId)
 
     if (error) {
         return { success: false, message: error.message };
     };
+    return { success: true };
+};
+
+//Linkear a los elders con sus familiares y cuidadores
+
+export const linkearUsuarios = async (userId, { emailFamiliar, rol }) => {
+    
+    const { data: elderData, error: elderError } = await supabase
+        .schema("public")
+        .from("profiles")
+        .select("id, role")
+        .eq("email", emailFamiliar)
+        .single()
+
+    if (elderError || !elderData) {
+        return { success: false, message: "No existe un usuario con ese email. Vuelva a intentar." };
+    } else if (elderData.role !== "elder") {
+        return { success: false, message: "El email no corresponde a un adulto mayor." };
+    }
+
+    const { error } = await supabase
+        .schema("public")
+        .from("links")
+        .insert({
+            elder_id: elderData.id,
+            linked_id: userId,
+            linked_role: rol
+        });
+
+    if (error) {
+        return { success: false, message: error.message };
+    }
     return { success: true };
 };

@@ -55,8 +55,7 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
             <Box
                 sx={{
                     display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
+                    flexDirection: "column",      
                     alignItems: "center",
                     flexGrow: 1,
                     width: "100%",
@@ -70,13 +69,10 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                 <Paper
                     name="form-familiar"
                     sx={{
-                        width: {
-                            xs: "100%",
-                            sm: "80%",
-                            md: "70%",
-                            lg: "75%",
-                            xl: "70%",
-                        },
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "flex-start",
+                        width: "%100",
                         p: { xs: 2, sm: 3, md: 3 },
                         borderRadius: 4,
                         background: "transparent",
@@ -108,11 +104,11 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                             lg: "1.7rem",
                             xl: "1.8rem"
                         },
+                        textAlign: {xs: "center", sm: "center", md: "start"},
                         fontFamily: "'Lora', serif",
-                        textAlign: "center"
                     }}>Buscador de chats</Typography>
                     <Typography variant="body2" sx={{
-                        my: 2,
+                        my: 1,
                         fontSize: {
                             xs: "1rem",
                             sm: "1rem",
@@ -120,14 +116,13 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                             lg: "1.3rem",
                             xl: "1.3rem",
                         },
+                        textAlign: {xs: "center", sm: "center", md: "start"},
                         fontFamily: "'Lora', serif",
-                        textAlign: "center",
                         lineHeight: 1.8,
                     }}>Aquí podrás buscar entre tus conversaciones anteriores para encontrar información relevante,
                         continuar una conversación previa o simplemente inciar una nueva conversacioón.
                     </Typography>
                     <Divider sx={{
-                        my: 1,
                         width: "100%",
                         "&::before, &::after": {
                             borderColor: "#ffffff",
@@ -163,8 +158,8 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                                     xs: "100%",
                                     sm: "100%",
                                     md: "100%",
-                                    lg: "35%",
-                                    xl: "25%"
+                                    lg: "24%",
+                                    xl: "16%"
                                 },
                                 color: "#ffffff",
                                 "&:hover": {
@@ -181,7 +176,7 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                                 input: {
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            <SearchRoundedIcon/>
+                                            <SearchRoundedIcon />
                                         </InputAdornment>
                                     ),
                                 },

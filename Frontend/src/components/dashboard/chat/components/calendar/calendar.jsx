@@ -23,7 +23,6 @@ const Calendar = () => {
                 sx={{
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "center",
                     alignItems: "center",
                     flexGrow: 1,
                     width: "100%",
@@ -36,13 +35,10 @@ const Calendar = () => {
             >
                 <Paper
                     sx={{
-                        width: {
-                            xs: "100%",
-                            sm: "80%",
-                            md: "70%",
-                            lg: "75%",
-                            xl: "60%",
-                        },
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "flex-start",
+                        width: "100%",
                         p: { xs: 2, sm: 3, md: 3 },
                         borderRadius: 4,
                         background: "transparent",
@@ -74,11 +70,12 @@ const Calendar = () => {
                             lg: "1.7rem",
                             xl: "1.8rem"
                         },
+                        textAlign: {xs: "center", sm: "center", md: "start"},
                         fontFamily: "'Lora', serif",
-                        textAlign: "center"
+                        
                     }}>Calendario</Typography>
                     <Typography variant="body2" sx={{
-                        my: 2,
+                        my: 1,
                         fontSize: {
                             xs: "1rem",
                             sm: "1rem",
@@ -86,13 +83,12 @@ const Calendar = () => {
                             lg: "1.3rem",
                             xl: "1.3rem",
                         },
+                        textAlign: {xs: "center", sm: "center", md: "start"},
                         fontFamily: "'Lora', serif",
-                        textAlign: "center",
                         lineHeight: 1.8,
                     }}>En esta sección podrás tener una visualización de todos tus eventos agendados con teresa. Puedes chequear por semana o mes.
                     </Typography>
                     <Divider sx={{
-                        my: 1,
                         width: "100%",
                         "&::before, &::after": {
                             borderColor: "#ffffff",
