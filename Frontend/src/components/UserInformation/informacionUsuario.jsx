@@ -125,7 +125,8 @@ const InformacionUsuarios = () => {
         const successStore = await saveProfile(user.id, {
             username: nombre,
             role: rol,
-            email: user.email
+            interests: gustos,
+            email: user?.email
         });
 
         if (!successStore) {
