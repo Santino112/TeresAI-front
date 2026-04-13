@@ -1,6 +1,6 @@
 import { supabase } from "../../../../supabaseClient";
 
-export const saveProfile = async (userId, { username, role }) => {
+export const saveProfile = async (userId, { username, role, email }) => {
     const { error } = await supabase
         .schema("public")
         .from("profiles")
@@ -8,6 +8,7 @@ export const saveProfile = async (userId, { username, role }) => {
             id: userId,
             username,
             role,
+            email,
         });
 
     if (error) {

@@ -7,6 +7,8 @@ import { useAuth } from '../../../../auth/AuthContext.jsx';
 import Chat from './chat.jsx';
 import Games from '../games/games.jsx';
 import Calendar from '../calendar/calendar.jsx';
+import News from '../news/news.jsx';
+import Shopping from '../shopping/shoppinglist.jsx';
 import MenuUsuario from './menu.jsx';
 import Perfil from '../profile/profile.jsx';
 import Menu from "@mui/material/Menu";
@@ -25,6 +27,8 @@ import SmartToyRoundedIcon from '@mui/icons-material/SmartToyRounded';
 import DrawRoundedIcon from '@mui/icons-material/DrawRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import GamesRoundedIcon from '@mui/icons-material/GamesRounded';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import CircularProgress from '@mui/material/CircularProgress';
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
@@ -168,6 +172,26 @@ function ResponsiveDrawer(props) {
                         backgroundColor: "#3f4440"
                     }
                 }}><CalendarMonthRoundedIcon sx={{ mr: 1 }} />Calendario</Button>
+                <Button onClick={() => {
+                    setPaginaActiva("Noticias");
+                }} sx={{
+                    mb: 1,
+                    backgroundColor: "transparent",
+                    color: "#E6E6E6",
+                    "&:hover": {
+                        backgroundColor: "#3f4440"
+                    }
+                }}><NewspaperIcon sx={{ mr: 1 }} />Noticias</Button>
+                <Button onClick={() => {
+                    setPaginaActiva("Lista de compras");
+                }} sx={{
+                    mb: 1,
+                    backgroundColor: "transparent",
+                    color: "#E6E6E6",
+                    "&:hover": {
+                        backgroundColor: "#3f4440"
+                    }
+                }}><ShoppingCartIcon sx={{ mr: 1 }} />Lista de compras</Button>
                 <Divider />
                 <Typography variant="body1" sx={{
                     mt: 1,
@@ -355,7 +379,7 @@ function ResponsiveDrawer(props) {
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    height: '100dvh',
+                    minHeight: '100dvh',
                     width: {
                         xs: "100%",
                         sm: "100%",
@@ -363,13 +387,13 @@ function ResponsiveDrawer(props) {
                     },
                     minWidth: 0,
                     flexGrow: 1,
-                    overflowY: 'hidden',
-                    scrollbarWidth: 'none',
+                    overflowY: 'auto',
+                    scrollbarWidth: 'thin',
                     scrollbarColor: '#666 transparent',
 
                     /* Chrome / Edge / Safari */
                     '&::-webkit-scrollbar': {
-                        display: 'none'
+                        width: '6px',
                     },
                     '&::-webkit-scrollbar-track': {
                         background: 'transparent',
@@ -394,6 +418,8 @@ function ResponsiveDrawer(props) {
                 }}>
                     {paginaActiva === "juegos" ? <Games />
                         : paginaActiva === "calendario" ? <Calendar />
+                        : paginaActiva === "Noticias" ? <News />
+                        : paginaActiva === "Lista de compras" ? <Shopping />
                         : paginaActiva === "perfil" ? <Perfil />
                             : <Chat
                                 activeConversationId={activeConversationId}
