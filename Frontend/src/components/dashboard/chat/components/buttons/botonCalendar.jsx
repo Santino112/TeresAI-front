@@ -25,14 +25,16 @@ const BotonCalendar = () => {
 
   return (
     <Button variant="contained" onClick={connectCalendar} sx={{
+      my: 1,
       mb: 1,
-      backgroundColor: "#EDEDED",
-      color: "#2E2E2E",
+      borderRadius: 3,
+      backgroundColor: "#444444",
+      color: "#ffffff",
       "&:hover": {
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#303030"
       }
     }}>
-      <CalendarMonthRoundedIcon sx={{ mr: 1 }} />Calendario
+      <CalendarMonthRoundedIcon sx={{ mr: 1 }} />Google Calendar
     </Button>
   );
 };

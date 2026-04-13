@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert, Card } from '@mui/material';
+import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert, Card, AppBar, Toolbar } from '@mui/material';
 import { supabase } from '../../supabaseClient.js';
+import fondoLogin from "../../assets/images/fondoLogin.png"
+import TeresaiLogo from '../../assets/images/file.svg';
 import imagenLogin from "../../assets/images/imagenLogin.jpg"
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import PasswordRoundedIcon from '@mui/icons-material/PasswordRounded';
@@ -65,27 +67,67 @@ const Login = () => {
         <Box sx={{
             display: "flex",
             flexDirection: "row",
+            justifyContent: "center",
             alignItems: "center",
             minHeight: "100dvh",
             width: "100%",
             minWidth: 0,
             overflow: "hidden",
-            backgroundColor: "#434a42",
+            background: `url(${fondoLogin})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
             px: { xs: 2, sm: 0 },
-            py: { xs: 4, sm: 0 },
+            py: 0
         }}>
             <Box sx={{
+                position: "relative",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
                 alignItems: "center",
-                minHeight: "560px",
-                width: "100%",
-                maxWidth: { xs: 440, sm: 440, md: 900, lg: 800 },
+                minHeight: "100dvh",
+                width: { xs: "100%", md: "40%" },
+                maxWidth: { xs: 440, sm: 440, md: 700, lg: 800 },
                 overflowY: "hidden",
             }}>
-                <Card
+                <AppBar
                     elevation={0}
+                    sx={{
+                        background: "transparent",
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        zIndex: 1100
+                    }}
+                >
+                    <Toolbar sx={{
+                        display: 'flex',
+                        justifyContent: 'flex-start',
+                    }}>
+                        <Box
+                            component="img"
+                            src={TeresaiLogo}
+                            alt="TERESAI Logo"
+                            sx={{
+                                position: "relative",
+                                right: {
+                                    xs: 63,
+                                    sm: 63,
+                                    md: 45,
+                                    lg: 45,
+                                    xl: 45
+                                },
+                                height: "110px",
+                                width: "auto",
+                                imageRendering: "auto",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => navigate('/')}
+                        />
+                    </Toolbar>
+                </AppBar>
+                <Card
                     sx={{
                         flex: 1,
                         display: "flex",
@@ -94,8 +136,7 @@ const Login = () => {
                         justifyContent: "center",
                         p: { xs: 3 },
                         borderRadius: 0,
-                        bgcolor: "#1e1e1e",
-                        boxShadow: "0 8px 40px rgba(0,0,0,0.5)",
+                        background: "transparent",
                         borderRadius: 3,
                     }}
                 >
@@ -112,7 +153,7 @@ const Login = () => {
                         Bienvenido de vuelta
                     </Typography>
                     <Divider sx={{
-
+                        my: 1,
                         width: "100%",
                         "&::before, &::after": {
                             borderColor: "#ffffff",
@@ -142,7 +183,7 @@ const Login = () => {
                     />
                     <Box component="form" onSubmit={loginUser}>
                         <Divider sx={{
-                            mt: 1,
+                            my: 1,
                             color: "#ffffff",
                             "&:after": {
                                 borderColor: "#ffffff"
@@ -154,7 +195,7 @@ const Login = () => {
                             <Typography variant="body2">O</Typography>
                         </Divider>
                         {errorAlert ?
-                            <Alert variant="filled" severity="error" sx={{ boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>
+                            <Alert severity="error" sx={{ boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>
                             :
                             null
                         }
@@ -167,9 +208,10 @@ const Login = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             sx={{
-                                backgroundColor: "#484848",
+                                backgroundColor: "#303030",
                                 borderRadius: 3,
                                 boxShadow: 3,
+                                my: 1,
                                 input: { color: "white" },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
@@ -207,9 +249,10 @@ const Login = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             sx={{
-                                backgroundColor: "#484848",
+                                backgroundColor: "#303030",
                                 borderRadius: 3,
                                 boxShadow: 3,
+                                my: 1,
                                 mb: 2,
                                 input: { color: "white" },
                                 "& .MuiOutlinedInput-root": {
@@ -263,6 +306,7 @@ const Login = () => {
                         <Typography variant='body1' sx={{
                             my: 0,
                             fontFamily: "'Lora', serif",
+                            textAlign: "center"
                         }}>¿No tienes una cuenta? crea una aquí!</Typography>
                         <Button variant="outlined" onClick={handleRegister} fullWidth
                             sx={{
@@ -275,7 +319,7 @@ const Login = () => {
                                 fontFamily: "'Lora', serif",
                                 fontWeight: "bold",
                                 "&:hover": {
-                                    backgroundColor: "#918B76",
+                                    backgroundColor: "#676456",
                                 }
                             }}>Registrate
                         </Button>
@@ -285,8 +329,10 @@ const Login = () => {
             <Box sx={{
                 display: {
                     xs: "none",
-                    sm: "none",
-                    md: "block"
+                    sm: "block",
+                    md: "block",
+                    lg: "block",
+                    xl: "block"
                 },
                 position: "relative",
                 height: "100dvh",

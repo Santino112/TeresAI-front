@@ -115,10 +115,10 @@ export default function Sudoku() {
         height: "100%",
         p: 2,
         gap: 2,
-        overflowY: "auto",
         borderRadius: 4,
         boxShadow: 1,
-        background: "linear-gradient(160deg, #1a1f1a 0%, #2f342d 100%)"
+        backgroundColor: "transparent",
+        mb: 2
       }}
     >
       {/* Título */}

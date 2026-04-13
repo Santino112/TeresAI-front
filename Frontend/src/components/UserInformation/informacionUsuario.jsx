@@ -3,18 +3,29 @@ import { useNavigate } from "react-router-dom";
 import { Typography, Button, TextField, Box, Select, MenuItem, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel } from "@mui/material";
 import { useAuth } from "../auth/AuthContext";
 import { supabase } from "../../supabaseClient";
-import { saveProfile, elderPeople, familyPeople, caregivePeople } from "../dashboard/chat/exports/datosInicialesUsuarios";
-import imagenInfoUsers from "../../assets/images/imagenInfoUsers.jpg";
+import { saveProfile, elderPeople, familyPeople, caregivePeople, linkearUsuarios } from "../dashboard/chat/exports/datosInicialesUsuarios";
+import InfoElder from "./tipoUsuario/infoElder";
+import InfoFamiliar from "./tipoUsuario/infoFamiliar";
+import InfoCuidador from "./tipoUsuario/infoCuidador";
+import fondoInfoUser from "../../assets/images/fondoInfoUser.png";
 
 const InformacionUsuarios = () => {
+    const [isSaving, setIsSaving] = useState(false);
+    const [hasError, setHasError] = useState(false);
+    const isProcessingRef = useRef(false);
     const [errorAlert, setErrorAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [errorTextFields, setErrorTextFields] = useState(false);
-    //
-    const [checkingProfile, setCheckingProfile] = useState(true);
-    const [nombre, setNombre] = useState("");
-    const [rol, setRol] = useState("elder");
-    //Rol de elder
+    //Datos cuidador
+    const [geriatrico, setGeriatrico] = useState("");
+    const [numAdultos, setNumAdultos] = useState("");
+    const [infoEspecifica, setInfoEspecifica] = useState("");
+    const [sinGeriatrico, setSinGeriatrico] = useState(false);
+    //Datos familiar
+    const [nombreFamiliar, setNombreFamiliar] = useState("");
+    const [emailFamiliar, setEmailFamiliar] = useState("");
+    const [tipoFamiliar, setTipoFamiliar] = useState("seleccione");
+    //Datos elder
     const [tieneEnfermedad, setTieneEnfermedad] = useState("seleccione");
     const [enfermedad, setEnfermedad] = useState("No");
     const [tomaMedicamentos, setTomaMedicamentos] = useState("seleccione");
@@ -23,18 +34,13 @@ const InformacionUsuarios = () => {
     const [alergias, setAlergias] = useState("No");
     const [molestias, setMolestias] = useState("");
     const [gustos, setGustos] = useState("");
-    //Rol de familiar
-    const [nombreFamiliar, setNombreFamiliar] = useState("");
-    const [tipoFamiliar, setTipoFamiliar] = useState("seleccione");
-    //Rol cuidador
-    const [geriatrico, setGeriatrico] = useState("");
-    const [numAdultos, setNumAdultos] = useState("");
-    const [infoEspecifica, setInfoEspecifica] = useState("");
-    const [sinGeriatrico, setSinGeriatrico] = useState(false);
-    //
+    //Datos del perfil
+    const [checkingProfile, setCheckingProfile] = useState(true);
+    const [nombre, setNombre] = useState("");
+    const [rol, setRol] = useState("elder");
+
     const { user, loading: authLoading } = useAuth();
     const navigate = useNavigate();
-    const label = { slotProps: { input: { 'aria-label': 'Checkbox demo' } } };
 
     const traducirError = (mensaje) => {
         const errores = {
@@ -54,31 +60,67 @@ const InformacionUsuarios = () => {
     const handleStoreDatos = async (e) => {
         e.preventDefault();
 
-        const camposComunes = rol === "elder" && [tieneEnfermedad, tomaMedicamentos, tieneAlergias].some(v => v === "seleccione");
-        const campoFamiliar = rol === "familiar" && tipoFamiliar === "seleccione";
-
-        if (camposComunes || campoFamiliar) {
+        if (!nombre.trim() || rol === "seleccione") {
+            setAlertMessage("El nombre y el rol son obligatorios.");
+            setErrorAlert(true);
             setErrorTextFields(true);
-            setAlertMessage("Por favor completá todos los campos.");
-            setErrorAlert(true);
             setTimeout(() => {
-                setErrorAlert(false)
-                setErrorTextFields(false)
-            }, 5000);
+                setErrorAlert(false);
+                setErrorTextFields(false);
+            }, 5000)
             return;
-        }
+        };
 
-        if (!nombre.trim()) {
-            setAlertMessage("El nombre es obligatorio.");
-            setErrorAlert(true);
-            setTimeout(() => {
-                setErrorAlert(false)
-                setErrorTextFields(false)
-            }, 5000);
-            return;
-        }
+        if (rol === "elder") {
+            const incompletos = [tieneEnfermedad, tomaMedicamentos, tieneAlergias].some((s) => s === "seleccione");
+            const detallesFaltantes =
+                (tieneEnfermedad === "si" && !enfermedad.trim()) ||
+                (tomaMedicamentos === "si" && !medicamentos.trim()) ||
+                (tieneAlergias === "si" && !alergias.trim());
 
+            if (incompletos || detallesFaltantes) {
+                setAlertMessage("Debe completar todos los campos en ROJO de la persona adulta.");
+                setErrorAlert(true);
+                setErrorTextFields(true);
+                setTimeout(() => {
+                    setErrorAlert(false);
+                    setErrorTextFields(false);
+                }, 5000);
+                return;
+            };
+        } else if (rol === "familiar") {
+            const incompleto = [tipoFamiliar].some((s) => s === "seleccione");
+            const detallesFaltantes =
+                !nombreFamiliar.trim() ||
+                !emailFamiliar.trim();
+
+            if (incompleto || detallesFaltantes) {
+                setAlertMessage("Debe completar todos los campos del familiar.");
+                setErrorAlert(true);
+                setErrorTextFields(true);
+                setTimeout(() => {
+                    setErrorAlert(false);
+                    setErrorTextFields(false);
+                }, 5000);
+                return;
+            };
+        } else {
+            if (!numAdultos || (!sinGeriatrico && !geriatrico.trim())) {
+                setAlertMessage("Debe completar todos los campos en ROJO del cuidador.");
+                setErrorAlert(true);
+                setErrorTextFields(true);
+                setTimeout(() => {
+                    setErrorAlert(false);
+                    setErrorTextFields(false);
+                }, 5000);
+                return;
+            };
+        };
+
+        setErrorAlert(false);
         setErrorTextFields(false);
+        setIsSaving(true);
+        isProcessingRef.current = true;
 
         const successStore = await saveProfile(user.id, {
             username: nombre,
@@ -90,70 +132,163 @@ const InformacionUsuarios = () => {
         if (!successStore) {
             setAlertMessage("Ocurrió un error al guardar tu perfil, intentá de nuevo.");
             setErrorAlert(true);
+            setErrorTextFields(true);
             setTimeout(() => {
-                setErrorAlert(false)
-                setErrorTextFields(false)
+                setErrorAlert(false);
+                setErrorTextFields(false);
             }, 5000);
             return;
-        }
+        };
 
-        if (rol === "elder") {
-            const resultElder = await elderPeople(user.id, {
-                enfermedades: enfermedad,
-                medicamentos: medicamentos,
-                alergias: alergias,
-                molestias: molestias,
-                intereses: gustos
-            });
-            if (!resultElder.success) {
-                setAlertMessage(traducirError(resultElder.message));
-                setErrorAlert(true);
-                setTimeout(() => {
-                    setErrorAlert(false)
-                    setErrorTextFields(false)
-                }, 5000);
+        try {
+            if (rol === "elder") {
+                const resultElder = await elderPeople(user.id, {
+                    enfermedades: enfermedad,
+                    medicamentos: medicamentos,
+                    alergias: alergias,
+                    molestias: molestias,
+                    intereses: gustos
+                });
+                if (!resultElder.success) {
+                    const { error: deleteError } = await supabase
+                        .schema("public")
+                        .from("profiles")
+                        .delete()
+                        .eq("id", user.id);
+
+                    console.log("deleteError:", deleteError);
+                    isProcessingRef.current = false;
+                    setHasError(true);
+                    setAlertMessage(traducirError(resultElder.message));
+                    setErrorAlert(true);
+                    setErrorTextFields(true);
+                    setTimeout(() => {
+                        setErrorAlert(false);
+                        setErrorTextFields(false);
+                        setHasError(true);
+                    }, 5000);
+                    setTimeout(() => setIsSaving(false), 500);
+                    return;
+                } else {
+                    navigate("/paginaChatAI");
+                    return;
+                }
+
+            } else if (rol === "familiar") {
+
+                const resultLinkear = await linkearUsuarios(user.id, {
+                    emailFamiliar: emailFamiliar,
+                    rol: rol
+                });
+
+                if (!resultLinkear.success) {
+                    const { error: deleteError } = await supabase
+                        .schema("public")
+                        .from("profiles")
+                        .delete()
+                        .eq("id", user.id);
+
+                    console.log("deleteError:", deleteError);
+                    isProcessingRef.current = false;
+                    setHasError(true);
+                    setAlertMessage(resultLinkear.message);
+                    setErrorAlert(true);
+                    setErrorTextFields(true);
+                    setTimeout(() => {
+                        setErrorAlert(false);
+                        setErrorTextFields(false);
+                        setHasError(false);
+                    }, 5000);
+                    setTimeout(() => setIsSaving(false), 500);
+                    return;
+                }
+
+                const resultFamiliar = await familyPeople(user.id, {
+                    relacion: tipoFamiliar,
+                    nombreElder: nombreFamiliar
+                });
+
+                if (!resultFamiliar.success) {
+                    const { error: deleteError } = await supabase
+                        .schema("public")
+                        .from("profiles")
+                        .delete()
+                        .eq("id", user.id);
+
+                    console.log("deleteError:", deleteError);
+                    isProcessingRef.current = false;
+                    setHasError(true);
+                    setAlertMessage(traducirError(resultFamiliar.message));
+                    setErrorAlert(true);
+                    setErrorTextFields(true);
+                    setTimeout(() => {
+                        setErrorAlert(false);
+                        setErrorTextFields(false);
+                        setHasError(false);
+                    }, 5000);
+                    setTimeout(() => setIsSaving(false), 500);
+                    return;
+                }
+
+                navigate("/paginaFamiliar");
                 return;
-            }
 
-        } else if (rol === "familiar") {
-            const resultFamiliar = await familyPeople(user.id, {
-                relacion: tipoFamiliar,
-                nombreelder: nombreFamiliar
-            });
-            if (!resultFamiliar.success) {
-                setAlertMessage(traducirError(resultFamiliar.message));
-                setErrorAlert(true);
-                setTimeout(() => {
-                    setErrorAlert(false)
-                    setErrorTextFields(false)
-                }, 5000);
-                return;
-            }
+            } else if (rol === "cuidador") {
+                const resultCuidador = await caregivePeople(user.id, {
+                    geriatrico: geriatrico,
+                    adultosmayores: numAdultos,
+                    infoamonitorear: infoEspecifica
+                });
+                if (!resultCuidador.success) {
+                    const { error: deleteError } = await supabase
+                        .schema("public")
+                        .from("profiles")
+                        .delete()
+                        .eq("id", user.id);
 
-        } else {
-            const resultCuidador = await caregivePeople(user.id, {
-                geriatrico: geriatrico,
-                adultosmayores: numAdultos,
-                infoamonitorear: infoEspecifica
-            });
-            if (!resultCuidador.success) {
-                setAlertMessage(traducirError(resultCuidador.message));
-                setErrorAlert(true);
-                setTimeout(() => {
-                    setErrorAlert(false)
-                    setErrorTextFields(false)
-                }, 5000);
-                return;
-            }
-        }
+                    console.log("deleteError:", deleteError);
+                    isProcessingRef.current = false;
+                    setHasError(true);
+                    setAlertMessage(traducirError(resultCuidador.message));
+                    setErrorAlert(true);
+                    setErrorTextFields(true);
+                    setTimeout(() => {
+                        setErrorAlert(false);
+                        setErrorTextFields(false);
+                        setHasError(false);
+                    }, 5000);
+                    setTimeout(() => setIsSaving(false), 500); 
+                    return;
+                } else {
+                    navigate("/paginaCuidador");
+                    return;
+                }
+            };
+        } catch {
+            const { error: deleteError } = await supabase
+                .schema("public")
+                .from("profiles")
+                .delete()
+                .eq("id", user.id);
 
-        if (rol === "elder") navigate("/paginaChatAI");
-        if (rol === "familiar") navigate("/paginaFamiliar");
-        if (rol === "cuidador") navigate("/paginaCuidador");
+            console.log("deleteError:", deleteError);
+            isProcessingRef.current = false;
+            setHasError(true);
+            setAlertMessage(traducirError("Ocurrio un error inesperado, reintentelo."));
+            setErrorAlert(true);
+            setErrorTextFields(true);
+            setTimeout(() => {
+                setErrorAlert(false);
+                setErrorTextFields(false);
+                setHasError(false);
+            }, 5000);
+            setTimeout(() => setIsSaving(false), 500); 
+            return;
+        };
     };
 
     useEffect(() => {
-        if (authLoading) return;
+        if (authLoading || isSaving || isProcessingRef.current || hasError) return;
         if (!user) { navigate('/'); return; }
 
         const checkProfile = async () => {
@@ -162,18 +297,18 @@ const InformacionUsuarios = () => {
                 .from("profiles")
                 .select("role")
                 .eq("id", user.id)
-                .single();
+                .single()
 
-            if (data) {
+            if (data && !isProcessingRef.current) {
                 if (data.role === "elder") navigate("/paginaChatAI");
                 if (data.role === "familiar") navigate("/paginaFamiliar");
                 if (data.role === "cuidador") navigate("/paginaCuidador");
-            } else {
+            } else if (!data) {
                 setCheckingProfile(false);
             }
         };
         checkProfile();
-    }, [user, authLoading]);
+    }, [user, authLoading, isSaving, navigate, hasError]);
 
     if (checkingProfile) return null;
 
@@ -184,7 +319,7 @@ const InformacionUsuarios = () => {
                     position: "fixed",
                     inset: 0,
                     zIndex: 0,
-                    background: `linear-gradient(to bottom, rgba(0, 0, 0, 0.67) 40%, rgba(0, 0, 0, 0.83) 100%), url(${imagenInfoUsers})`,
+                    background: `url(${fondoInfoUser})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
@@ -196,7 +331,7 @@ const InformacionUsuarios = () => {
                     zIndex: 1,
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "center",
+                    justifyContent: "",
                     alignItems: { xs: "flex-start", md: "center" },
                     minHeight: "100dvh",
                     width: "100%",
@@ -205,12 +340,18 @@ const InformacionUsuarios = () => {
                 }}>
                 {errorAlert ?
                     <Alert
-                        variant="filled"
                         severity="error"
                         sx={{
                             position: "fixed",
                             top: 20,
                             left: "50%",
+                            width: {
+                                xs: "85%",
+                                sm: "auto",
+                                md: "auto",
+                                lg: "auto",
+                                xl: "auto"
+                            },
                             transform: "translateX(-50%)",
                             zIndex: 9999,
                             boxShadow: 4,
@@ -225,11 +366,11 @@ const InformacionUsuarios = () => {
                 <Paper
                     component="form"
                     onSubmit={handleStoreDatos}
-                    elevation={6}
                     sx={{
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
+                        border: "none",
                         width: {
                             xs: "100%",
                             sm: "80%",
@@ -239,8 +380,9 @@ const InformacionUsuarios = () => {
                         },
                         p: { xs: 2, sm: 3, md: 3 },
                         borderRadius: 4,
-                        bgcolor: "#626C66",
+                        background: "transparent",
                         gap: 1,
+                        color: "#ffffff",
                     }}
                 >
                     <Typography variant="h5"
@@ -271,7 +413,7 @@ const InformacionUsuarios = () => {
                             fullWidth
                             margin="dense"
                             sx={{
-                                backgroundColor: "#484848",
+                                backgroundColor: "#303030",
                                 borderRadius: 3,
                                 boxShadow: 3,
                                 input: { color: "white" },
@@ -304,13 +446,13 @@ const InformacionUsuarios = () => {
                                 PaperProps: {
                                     sx: {
                                         borderRadius: 3,
-                                        backgroundColor: "#534d4d",
-                                        color: "#E6E6E6",
+                                        backgroundColor: "#303030",
+                                        color: "#ffffff",
                                     }
                                 },
                                 MenuListProps: { sx: { p: 0 } }
                             }} sx={{
-                                backgroundColor: "#484848",
+                                backgroundColor: "#303030",
                                 borderRadius: 3,
                                 boxShadow: 3,
                                 mt: 1,
@@ -336,542 +478,52 @@ const InformacionUsuarios = () => {
                         </Select>
                         <FormHelperText>Si sos adulto mayor no cambies de opción</FormHelperText>
                     </Box>
-                    {rol === "elder" ? (
-                        <>
-                            <Box sx={{ mb: 1, width: "100%" }}>
-                                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Sufris de alguna enfermedad?</Typography>
-                                <Select
-                                    error={errorTextFields}
-                                    labelId="demo-simple-select-helper-label"
-                                    id="demo-simple-select-helper"
-                                    value={tieneEnfermedad}
-                                    fullWidth
-                                    onChange={(e) => {
-                                        setTieneEnfermedad(e.target.value)
-                                        e.target.value === "si" ? setEnfermedad("") : setEnfermedad("No")
-                                    }
-                                    }
-                                    MenuProps={{
-                                        PaperProps: {
-                                            sx: {
-                                                borderRadius: 3,
-                                                backgroundColor: "#534d4d",
-                                                color: "#E6E6E6",
-                                            }
-                                        },
-                                        MenuListProps: { sx: { p: 0 } }
-                                    }} sx={{
-                                        backgroundColor: "#484848",
-                                        borderRadius: 3,
-                                        boxShadow: 3,
-                                        mt: 1,
-                                        input: { color: "white" },
-                                        "& .MuiOutlinedInput-root": {
-                                            borderRadius: 3,
-                                            pr: 1,
-                                        },
-                                        "& fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&:hover fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "gray"
-                                        },
-                                        mb: 1
-                                    }}
-                                >
-                                    <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
-                                    <MenuItem value="si">Si</MenuItem>
-                                    <MenuItem value="no">No</MenuItem>
-                                </Select>
-                                {tieneEnfermedad === "si" && (
-                                    <Box sx={{ width: "100%" }}>
-                                        <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cúal/es? Escribilas</Typography>
-                                        <TextField
-                                            error={errorTextFields}
-                                            placeholder="Escribilas..."
-                                            value={enfermedad}
-                                            onChange={(e) => setEnfermedad(e.target.value)}
-                                            variant="outlined"
-                                            multiline
-                                            minRows={4}
-                                            maxRows={4}
-                                            fullWidth
-                                            margin="dense"
-                                            sx={{
-                                                backgroundColor: "#484848",
-                                                borderRadius: 3,
-                                                boxShadow: 3,
-                                                input: { color: "white" },
-                                                "& .MuiOutlinedInput-root": {
-                                                    borderRadius: 3,
-                                                    pr: 1,
-                                                },
-                                                "& fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&:hover fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&.Mui-focused fieldset": {
-                                                    borderColor: "gray"
-                                                }
-                                            }}
-                                        ></TextField>
-                                    </Box>
-                                )}
-                            </Box>
-
-                            <Box sx={{ my: 0, width: "100%" }}>
-                                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Tomas medicamentos?</Typography>
-                                <Select
-                                    error={errorTextFields}
-                                    labelId="demo-simple-select-helper-label"
-                                    id="demo-simple-select-helper"
-                                    value={tomaMedicamentos}
-                                    fullWidth
-                                    onChange={(e) => {
-                                        setTomaMedicamentos(e.target.value);
-                                        e.target.value === "si" ? setMedicamentos("") : setMedicamentos("No")
-                                    }
-                                    }
-                                    MenuProps={{
-                                        PaperProps: {
-                                            sx: {
-                                                borderRadius: 3,
-                                                backgroundColor: "#534d4d",
-                                                color: "#E6E6E6",
-                                            }
-                                        },
-                                        MenuListProps: { sx: { p: 0 } }
-                                    }} sx={{
-                                        backgroundColor: "#484848",
-                                        borderRadius: 3,
-                                        boxShadow: 3,
-                                        mt: 1,
-                                        input: { color: "white" },
-                                        "& .MuiOutlinedInput-root": {
-                                            borderRadius: 3,
-                                            pr: 1,
-                                        },
-                                        "& fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&:hover fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "gray"
-                                        },
-                                        mb: 1
-                                    }}
-                                >
-                                    <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
-                                    <MenuItem value="si">Si</MenuItem>
-                                    <MenuItem value="no">No</MenuItem>
-                                </Select>
-                                {tomaMedicamentos === "si" && (
-                                    <Box sx={{ width: "100%" }}>
-                                        <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cúal/es? Escribilos</Typography>
-                                        <TextField
-                                            error={errorTextFields}
-                                            placeholder="Escribilos..."
-                                            value={medicamentos}
-                                            onChange={(e) => setMedicamentos(e.target.value)}
-                                            variant="outlined"
-                                            multiline
-                                            minRows={4}
-                                            maxRows={4}
-                                            fullWidth
-                                            margin="dense"
-                                            sx={{
-                                                backgroundColor: "#484848",
-                                                borderRadius: 3,
-                                                boxShadow: 3,
-                                                input: { color: "white" },
-                                                "& .MuiOutlinedInput-root": {
-                                                    borderRadius: 3,
-                                                    pr: 1,
-                                                },
-                                                "& fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&:hover fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&.Mui-focused fieldset": {
-                                                    borderColor: "gray"
-                                                }
-                                            }}
-                                        ></TextField>
-                                    </Box>
-                                )}
-                            </Box>
-
-                            <Box sx={{ my: 0, width: "100%" }}>
-                                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Sufris de alergias?</Typography>
-                                <Select
-                                    error={errorTextFields}
-                                    labelId="demo-simple-select-helper-label"
-                                    id="demo-simple-select-helper"
-                                    value={tieneAlergias}
-                                    fullWidth
-                                    onChange={(e) => {
-                                        setTieneAlergias(e.target.value)
-                                        e.target.value === "si" ? setAlergias("") : setAlergias("No")
-                                    }
-                                    }
-                                    MenuProps={{
-                                        PaperProps: {
-                                            sx: {
-                                                borderRadius: 3,
-                                                backgroundColor: "#534d4d",
-                                                color: "#E6E6E6",
-                                            }
-                                        },
-                                        MenuListProps: { sx: { p: 0 } }
-                                    }} sx={{
-                                        backgroundColor: "#484848",
-                                        borderRadius: 3,
-                                        boxShadow: 3,
-                                        mt: 1,
-                                        input: { color: "white" },
-                                        "& .MuiOutlinedInput-root": {
-                                            borderRadius: 3,
-                                            pr: 1,
-                                        },
-                                        "& fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&:hover fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "gray"
-                                        },
-                                        mb: 1
-                                    }}
-                                >
-                                    <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
-                                    <MenuItem value="si">Si</MenuItem>
-                                    <MenuItem value="no">No</MenuItem>
-                                </Select>
-                                {tieneAlergias === "si" && (
-                                    <Box sx={{ width: "100%" }}>
-                                        <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cúal/es? Escribilas</Typography>
-                                        <TextField
-                                            error={errorTextFields}
-                                            placeholder="Escribilas..."
-                                            value={alergias}
-                                            onChange={(e) => setAlergias(e.target.value)}
-                                            variant="outlined"
-                                            multiline
-                                            minRows={4}
-                                            maxRows={4}
-                                            fullWidth
-                                            margin="dense"
-                                            sx={{
-                                                backgroundColor: "#484848",
-                                                borderRadius: 3,
-                                                boxShadow: 3,
-                                                input: { color: "white" },
-                                                "& .MuiOutlinedInput-root": {
-                                                    borderRadius: 3,
-                                                    pr: 1,
-                                                },
-                                                "& fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&:hover fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&.Mui-focused fieldset": {
-                                                    borderColor: "gray"
-                                                }
-                                            }}
-                                        ></TextField>
-                                    </Box>
-                                )}
-                            </Box>
-
-                            <Box sx={{ my: 0, width: "100%" }}>
-                                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Hay algo que no te guste o te moleste?</Typography>
-                                <TextField
-                                    placeholder="Escribilas..."
-                                    value={molestias}
-                                    onChange={(e) => setMolestias(e.target.value)}
-                                    variant="outlined"
-                                    multiline
-                                    minRows={4}
-                                    maxRows={4}
-                                    fullWidth
-                                    margin="dense"
-                                    sx={{
-                                        backgroundColor: "#484848",
-                                        borderRadius: 3,
-                                        boxShadow: 3,
-                                        input: { color: "white" },
-                                        "& .MuiOutlinedInput-root": {
-                                            borderRadius: 3,
-                                            pr: 1,
-                                        },
-                                        "& fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&:hover fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "gray"
-                                        }
-                                    }}
-                                ></TextField>
-                            </Box>
-
-                            <Box sx={{ my: 1, width: "100%" }}>
-                                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Qué cosas te gustan hacer?</Typography>
-                                <TextField
-                                    placeholder="Escribilas..."
-                                    value={gustos}
-                                    onChange={(e) => setGustos(e.target.value)}
-                                    variant="outlined"
-                                    multiline
-                                    fullWidth
-                                    minRows={4}
-                                    maxRows={4}
-                                    margin="dense"
-                                    sx={{
-                                        backgroundColor: "#484848",
-                                        borderRadius: 3,
-                                        boxShadow: 3,
-                                        input: { color: "white" },
-                                        "& .MuiOutlinedInput-root": {
-                                            borderRadius: 3,
-                                            pr: 1,
-                                        },
-                                        "& fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&:hover fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "gray"
-                                        }
-                                    }}
-                                ></TextField>
-                            </Box>
-                        </>
-
-                    ) : rol === "familiar" ? (
-                        <>
-                            <Box sx={{ my: 0, width: "100%" }}>
-                                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿A que familiar cuidas?</Typography>
-                                <TextField
-                                    error={errorTextFields}
-                                    placeholder="Nombre"
-                                    value={nombreFamiliar}
-                                    onChange={(e) => setNombreFamiliar(e.target.value)}
-                                    variant="outlined"
-                                    fullWidth
-                                    margin="dense"
-                                    sx={{
-                                        backgroundColor: "#484848",
-                                        borderRadius: 3,
-                                        boxShadow: 3,
-                                        input: { color: "white" },
-                                        "& .MuiOutlinedInput-root": {
-                                            borderRadius: 3,
-                                            pr: 1,
-                                        },
-                                        "& fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&:hover fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "gray"
-                                        }
-                                    }}
-                                ></TextField>
-                            </Box>
-
-                            <Box sx={{ my: 0, width: "100%" }}>
-                                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cual es tu relación con esa persona?</Typography>
-                                <Select
-                                    error={errorTextFields}
-                                    labelId="demo-simple-select-helper-label"
-                                    id="demo-simple-select-helper"
-                                    value={tipoFamiliar}
-                                    fullWidth
-                                    onChange={(e) => setTipoFamiliar(e.target.value)}
-                                    MenuProps={{
-                                        PaperProps: {
-                                            sx: {
-                                                borderRadius: 3,
-                                                backgroundColor: "#534d4d",
-                                                color: "#E6E6E6",
-                                            }
-                                        },
-                                        MenuListProps: { sx: { p: 0 } }
-                                    }} sx={{
-                                        backgroundColor: "#484848",
-                                        borderRadius: 3,
-                                        boxShadow: 3,
-                                        mt: 1,
-                                        input: { color: "white" },
-                                        "& .MuiOutlinedInput-root": {
-                                            borderRadius: 3,
-                                            pr: 1,
-                                        },
-                                        "& fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&:hover fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "gray"
-                                        },
-                                        mb: 1
-                                    }}
-                                >
-                                    <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
-                                    <MenuItem value="hijo">Hijo</MenuItem>
-                                    <MenuItem value="nieto">Nieto</MenuItem>
-                                    <MenuItem value="sobrino">Sobrino</MenuItem>
-                                    <MenuItem value="otro">Ninguno de los anteriores</MenuItem>
-                                </Select>
-                            </Box>
-                        </>
-                    ) : (
-                        <>
-                            <Box sx={{ my: 0, width: "100%" }}>
-                                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿En qué geriátrico trabajas?</Typography>
-                                <TextField
-                                    disabled={sinGeriatrico}
-                                    error={errorTextFields}
-                                    placeholder="Nombre"
-                                    value={geriatrico}
-                                    onChange={(e) => setGeriatrico(e.target.value)}
-                                    variant="outlined"
-                                    fullWidth
-                                    margin="dense"
-                                    sx={{
-                                        backgroundColor: "#484848",
-                                        borderRadius: 3,
-                                        boxShadow: 3,
-                                        input: { color: "white" },
-                                        "& .MuiOutlinedInput-root": {
-                                            borderRadius: 3,
-                                            pr: 1,
-                                        },
-                                        "& fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&:hover fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "gray"
-                                        },
-                                        "& .MuiOutlinedInput-root.Mui-disabled fieldset": {
-                                            borderColor: "transparent",
-                                        }
-                                    }}
-                                ></TextField>
-                            </Box>
-                            <Box sx={{ width: "100%" }}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={sinGeriatrico}
-                                            onChange={(e) => {
-                                                setSinGeriatrico(e.target.checked);
-                                                e.target.checked ? setGeriatrico("No trabajo en un geriátrico") : setGeriatrico("");
-                                            }
-                                            }
-                                        />
-                                    }
-                                    label={
-                                        <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>No trabajo en un geriátrico</Typography>
-                                    }
-                                />
-                            </Box>
-                            <Box sx={{ my: 0, width: "100%" }}>
-                                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>¿Cuántos adultos mayores tenes a tu cargo?</Typography>
-                                <TextField
-                                    error={errorTextFields}
-                                    placeholder=""
-                                    type="number"
-                                    value={numAdultos}
-                                    onChange={(e) => setNumAdultos(e.target.value)}
-                                    variant="outlined"
-                                    fullWidth
-                                    margin="dense"
-                                    sx={{
-                                        backgroundColor: "#484848",
-                                        borderRadius: 3,
-                                        boxShadow: 3,
-                                        input: { color: "white" },
-                                        "& .MuiOutlinedInput-root": {
-                                            borderRadius: 3,
-                                            pr: 1,
-                                        },
-                                        "& fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&:hover fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "gray"
-                                        }
-                                    }}
-                                ></TextField>
-                            </Box>
-
-                            <Box sx={{ my: 0, width: "100%" }}>
-                                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Hay algo especifico que necesites monitorear?</Typography>
-                                <TextField
-                                    error={errorTextFields}
-                                    placeholder="Escribilo..."
-                                    value={infoEspecifica}
-                                    onChange={(e) => setInfoEspecifica(e.target.value)}
-                                    variant="outlined"
-                                    fullWidth
-                                    multiline
-                                    minRows={4}
-                                    maxRows={4}
-                                    margin="dense"
-                                    sx={{
-                                        backgroundColor: "#484848",
-                                        borderRadius: 3,
-                                        boxShadow: 3,
-                                        input: { color: "white" },
-                                        "& .MuiOutlinedInput-root": {
-                                            borderRadius: 3,
-                                            pr: 1,
-                                        },
-                                        "& fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&:hover fieldset": {
-                                            borderColor: "transparent"
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "gray"
-                                        }
-                                    }}
-                                ></TextField>
-                            </Box>
-                        </>
-                    )}
+                    {rol === "elder" ?
+                        <InfoElder
+                            tieneEnfermedad={tieneEnfermedad}
+                            setTieneEnfermedad={setTieneEnfermedad}
+                            enfermedad={enfermedad}
+                            setEnfermedad={setEnfermedad}
+                            tomaMedicamentos={tomaMedicamentos}
+                            setTomaMedicamentos={setTomaMedicamentos}
+                            medicamentos={medicamentos}
+                            setMedicamentos={setMedicamentos}
+                            tieneAlergias={tieneAlergias}
+                            setTieneAlergias={setTieneAlergias}
+                            alergias={alergias}
+                            setAlergias={setAlergias}
+                            molestias={molestias}
+                            setMolestias={setMolestias}
+                            gustos={gustos}
+                            setGustos={setGustos}
+                            errorTextFields={errorTextFields}
+                            setErrorTextFields={setErrorTextFields}
+                        />
+                        : rol === "familiar" ?
+                            <InfoFamiliar
+                                nombreFamiliar={nombreFamiliar}
+                                setNombreFamiliar={setNombreFamiliar}
+                                emailFamiliar={emailFamiliar}
+                                setEmailFamiliar={setEmailFamiliar}
+                                tipoFamiliar={tipoFamiliar}
+                                setTipoFamiliar={setTipoFamiliar}
+                                errorTextFields={errorTextFields}
+                                setErrorTextFields={setErrorTextFields}
+                            />
+                            : <InfoCuidador
+                                geriatrico={geriatrico}
+                                setGeriatrico={setGeriatrico}
+                                numAdultos={numAdultos}
+                                setNumAdultos={setNumAdultos}
+                                infoEspecifica={infoEspecifica}
+                                setInfoEspecifica={setInfoEspecifica}
+                                sinGeriatrico={sinGeriatrico}
+                                setSinGeriatrico={setSinGeriatrico}
+                                errorTextFields={errorTextFields}
+                                setErrorTextFields={setErrorTextFields}
+                            />
+                    }
                     <Divider sx={{
-
                         width: "100%",
                         "&::before, &::after": {
                             borderColor: "#ffffff",
@@ -882,14 +534,13 @@ const InformacionUsuarios = () => {
                     <Box sx={{ width: "100%" }}>
                         <Button variant="contained" type="submit" fullWidth
                             sx={{
-
                                 boxShadow: 3,
                                 color: "#ffffff",
-                                backgroundColor: "#918B76",
+                                backgroundColor: "#7a7664",
                                 fontFamily: "'Lora', serif",
                                 fontWeight: "bold",
                                 "&:hover": {
-                                    backgroundColor: "#7a7664",
+                                    backgroundColor: "#676456",
                                 }
                             }}>Guardar
                         </Button>
