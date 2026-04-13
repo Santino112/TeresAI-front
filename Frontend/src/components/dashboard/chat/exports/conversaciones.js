@@ -1,4 +1,4 @@
-import api from '../../../../api/axios';
+import api from '../../../../api/axios.js';
 
 export const getConversations = async () => {
   const { data } = await api.get('/ai/conversacionesDeUser');

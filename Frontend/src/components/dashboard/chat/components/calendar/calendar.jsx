@@ -1,26 +1,57 @@
-import { Typography, Box, Paper, Divider } from "@mui/material";
-import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import BotonCalendar from '../buttons/botonCalendar';
+import { useEffect, useState, useRef } from "react";
+import { Typography, Button, TextField, Box, Stack } from "@mui/material";
+import BotonCalendar from '../buttons/botonCalendar.jsx';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import api from "../../../../../api/axios.js";
+import { supabase } from "../../../../../supabaseClient.js";
 
 const Calendar = () => {
+    const [events, setEvents] = useState([]);
+
+    const fetchEvents = async () => {
+        const { data } = await supabase.auth.getSession();
+        const session = data.session;
+
+        if (!session) return;
+
+        const res = await api.get('/calendar/events', {
+            headers: {
+                Authorization: `Bearer ${session.access_token}`,
+            },
+        });
+
+        setEvents(res.data);
+    };
+    useEffect(() => {
+        fetchEvents();
+        const handleCalendarUpdated = () => {
+            console.log("Actualizando calendario...")
+            fetchEvents();
+        };
+        window.addEventListener("calendarUpdated", handleCalendarUpdated);
+        return () => {
+            window.removeEventListener("calendarUpdated", handleCalendarUpdated);
+        };
+    }, []);
+
     return (
         <Box
             sx={{
                 flexGrow: 1,
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
-                width: "100%",
-                overflowY: "auto",
-                overflowX: "hidden",
                 minHeight: 0,
             }}
         >
             <Box
                 sx={{
+                    flexGrow: 1,
+                    p: {
+                        xs: 2,
+                        md: 0
+                    },
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",

@@ -25,6 +25,26 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   const esPantallaInicial = mensajes.length === 0 && !loadingMessages && !activeConversationId;
   const { user } = useAuth();
   const scrollRef = useRef(null);
+  const bottomRef = useRef(null);
+
+  const time = new Date().getHours();
+  const isMorning = time >= 6 && time < 12;
+  const isAfternoon = time >= 12 && time < 18;
+  const isEvening = time >= 18 && time < 24;
+
+  const frasesSaludo = [
+    "Buenos días",
+    "Buenas tardes",
+    "Buenas noches"
+  ];
+
+  if (isMorning) {
+    frasesSaludo[0] = "Buenos días";
+  } else if (isAfternoon) {
+    frasesSaludo[0] = "Buenas tardes";
+  } else if (isEvening) {
+    frasesSaludo[0] = "Buenas noches";
+  }
 
   const frases = [
     "¿Qué haremos hoy?",
@@ -81,6 +101,35 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   const enviarTexto = async (texto) => {
     if (!texto.trim()) return;
 
+    let location = null;
+
+    try {
+      location = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const coords = {
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude
+            };
+            console.log("Ubicación obtenida:", coords);
+            resolve(coords);
+          },
+          (err) => {
+            console.warn("No se pudo obtener ubicación:", err.message);
+            resolve(null);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 300000
+          }
+        );
+      });
+    } catch (error) {
+      console.warn("Error al obtener ubicación:", error);
+      location = null;
+    }
+
     setMensajes(prev => [
       ...prev,
       {
@@ -93,6 +142,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     setPensandoIA(true);
     const res = await enviarPrompt(texto, activeConversationId);
     setPensandoIA(false);
+    console.log("Enviando al backend - prompt:", texto, "location:", location);
 
     setMensajes(prev => [
       ...prev,
@@ -104,6 +154,13 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     ]);
 
     setRespuesta(res);
+
+    if (res.calendarEventCreated) {
+      window.dispatchEvent(new Event("calendarUpdated"));
+    };
+    if (res.shoppingListUpdated) {
+      window.dispatchEvent(new Event("shoppingListUpdated"));
+    };
 
     if (!activeConversationId && res.conversationId) {
       setActiveConversationId(res.conversationId);
@@ -140,6 +197,11 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   }, [activeConversationId]);
 
   useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
@@ -197,7 +259,10 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
           }}>Buenas noches {profile?.username} </Typography>
           <Box
             component="form"
-            onSubmit={mandarPrompt}
+            onSubmit={(e) => {
+              e.preventDefault();
+              mandarPrompt();
+            }}
             sx={{ width: "100%", boxShadow: 4, borderRadius: 4 }}
           >
             <Box sx={{
@@ -386,7 +451,10 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
           </Box>
           <Box
             component="form"
-            onSubmit={mandarPrompt}
+            onSubmit={(e) => {
+              e.preventDefault();
+              mandarPrompt();
+            }}
             sx={{
               width: "100%",
               maxWidth: "800px",
@@ -490,4 +558,3 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
 };
 
 export default Chat;
-

@@ -1,7 +1,8 @@
 import Sudoku from "./Sudoku.jsx";
 import Trivia from "./Trivia.jsx";
-import { Typography, Box, Paper, Divider } from "@mui/material";
-import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
+import Crossword from "./Crossword.jsx";
+import { Typography, Button, TextField, Box, Stack } from "@mui/material";
+import { InputAdornment, IconButton } from "@mui/material";
 
 const Games = () => {
     return (
@@ -10,15 +11,16 @@ const Games = () => {
                 flexGrow: 1,
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
-                width: "100%",
-                overflowY: "auto",
-                overflowX: "hidden",
                 minHeight: 0,
             }}
         >
             <Box
                 sx={{
+                    flexGrow: 1,
+                    p: {
+                        xs: 2,
+                        md: 0
+                    },
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
