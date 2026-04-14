@@ -11,6 +11,7 @@ import Buscador from '../buscador/buscador.jsx';
 import Calendar from '../calendar/calendar.jsx';
 import News from '../news/news.jsx';
 import Shopping from '../shopping/shoppinglist.jsx';
+import Notes from '../notes.jsx';
 import MenuUsuario from './menu.jsx';
 import Perfil from '../profile/profile.jsx';
 import Menu from "@mui/material/Menu";
@@ -38,8 +39,9 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import GamesRoundedIcon from '@mui/icons-material/GamesRounded';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
+import StickyNote2RoundedIcon from '@mui/icons-material/StickyNote2Rounded';
+import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
@@ -366,6 +368,16 @@ function ResponsiveDrawer(props) {
                         backgroundColor: "#2b2b2b"
                     }
                 }}><ShoppingCartIcon sx={{ mr: 1 }} />Lista de compras</Button>
+                <Button onClick={() => {
+                    setPaginaActiva("notas");
+                }} sx={{
+                    mb: 1,
+                    backgroundColor: "transparent",
+                    color: "#E6E6E6",
+                    "&:hover": {
+                        backgroundColor: "#3f4440"
+                    }
+                }}><StickyNote2RoundedIcon sx={{ mr: 1 }} />Notas</Button>
                 <Divider />
             </Box>
             <Box sx={{
@@ -653,9 +665,10 @@ function ResponsiveDrawer(props) {
                                     isLoading={isLoading}
                                     setLoading={setLoading}
                                 />
-                                    : paginaActiva === "Noticias" ? <News />
+                                : paginaActiva === "Noticias" ? <News />
                                         : paginaActiva === "Lista de compras" ? <Shopping />
-                                            : paginaActiva === "perfil" ? <Perfil />
+                                            : paginaActiva === "notas" ? <Notes />
+                        : paginaActiva === "perfil" ? <Perfil />
                                                 : <Chat
                                                     activeConversationId={activeConversationId}
                                                     setActiveConversationId={setActiveConversationId}
