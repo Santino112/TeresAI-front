@@ -1,7 +1,8 @@
 import Sudoku from "./Sudoku.jsx";
 import Trivia from "./Trivia.jsx";
 import Crossword from "./Crossword.jsx";
-import { Typography, Button, TextField, Box, Stack } from "@mui/material";
+import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
+import { Typography, Button, TextField, Box, Stack, Paper, Divider } from "@mui/material";
 import { InputAdornment, IconButton } from "@mui/material";
 
 const Games = () => {
@@ -17,14 +18,9 @@ const Games = () => {
             <Box
                 sx={{
                     flexGrow: 1,
-                    p: {
-                        xs: 2,
-                        md: 0
-                    },
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    flexGrow: 1,
                     width: "100%",
                     background: `url(${fondoChatAI})`,
                     backgroundSize: "cover",
@@ -35,6 +31,7 @@ const Games = () => {
             >
                 <Paper
                     sx={{
+                        flexGrow: 0,
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "flex-start",
@@ -42,7 +39,7 @@ const Games = () => {
                         p: { xs: 2, sm: 3, md: 3 },
                         borderRadius: 4,
                         background: "transparent",
-                        flexGrow: 0,
+
                     }}
                 >
                     <Typography variant="h2" sx={{
@@ -55,7 +52,7 @@ const Games = () => {
                         },
                         textAlign: {xs: "center", sm: "center", md: "start"},
                         fontFamily: "'Lora', serif",
-                    }}>Juegos mentales</Typography>
+                    }}>Juegos mentales 🎲</Typography>
                     <Typography variant="body2" sx={{
                         my: 1,
                         fontSize: {
@@ -81,6 +78,17 @@ const Games = () => {
                     </Divider>
                     <Box sx={{ width: "100%", overflow: "hidden", margin: "0 auto" }}>
                         <Sudoku />
+                    </Box>
+                    <Divider sx={{
+                        width: "100%",
+                        "&::before, &::after": {
+                            borderColor: "#ffffff",
+                        }
+                    }}>
+                        <Typography variant="body1" sx={{ color: "#ffffff" }}></Typography>
+                    </Divider>
+                     <Box sx={{ width: "100%", overflowX: "auto", margin: "0 auto" }}>
+                        <Crossword />
                     </Box>
                     <Divider sx={{
                         width: "100%",

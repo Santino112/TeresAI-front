@@ -27,10 +27,6 @@ const Profile = () => {
                 flexGrow: 1,
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
-                width: "100%",
-                overflowY: "auto",
-                overflowX: "hidden",
                 minHeight: 0,
             }}
         >
@@ -38,7 +34,6 @@ const Profile = () => {
                 sx={{
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "center",
                     alignItems: "center",
                     flexGrow: 1,
                     width: "100%",
@@ -50,8 +45,8 @@ const Profile = () => {
                 }}
             >
                 {!profile ? (
-                    <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-                        <Typography variant="h2" sx={{ fontSize: "1rem", fontFamily: "'Lora', serif" }}>Cargando mensajes...</Typography>
+                    <Box sx={{ p: 5, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 2, flexGrow: 1 }}>
+                        <Typography variant="h2" sx={{ fontSize: "1rem", fontFamily: "'Lora', serif" }}>Cargando perfil...</Typography>
                         <CircularProgress sx={{ color: "#ffffff" }} />
                     </Box>
                 ) : profile?.role === "elder" ? <ProfileElder profile={profile} setProfile={setProfile} />

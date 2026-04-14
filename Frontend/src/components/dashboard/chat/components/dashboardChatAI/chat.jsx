@@ -256,7 +256,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
             mb: 2,
 
             textAlign: "center"
-          }}>Buenas noches {profile?.username} </Typography>
+          }}>Buenas noches, {profile?.username} </Typography>
           <Box
             component="form"
             onSubmit={(e) => {

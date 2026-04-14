@@ -114,7 +114,7 @@ export default function Crossword() {
       p: 2,
       gap: 2,
       overflowY: "auto",
-      background: "linear-gradient(160deg, #1a1f1a 0%, #2f342d 100%)"
+      background: "transparent"
     }}>
 
       <Typography sx={{
