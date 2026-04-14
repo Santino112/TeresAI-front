@@ -11,7 +11,7 @@ import Buscador from '../buscador/buscador.jsx';
 import Calendar from '../calendar/calendar.jsx';
 import News from '../news/news.jsx';
 import Shopping from '../shopping/shoppinglist.jsx';
-import Notes from '../notes.jsx';
+import Notes from '../notes/notes.jsx';
 import MenuUsuario from './menu.jsx';
 import Perfil from '../profile/profile.jsx';
 import Menu from "@mui/material/Menu";
