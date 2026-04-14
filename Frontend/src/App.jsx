@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { useAuth } from './components/auth/AuthContext.jsx';
+import { ThemeProvider } from "@mui/material/styles";
+import { AuthProvider, useAuth } from "./components/auth/AuthContext.jsx";
 import { Theme } from './theme/theme.jsx';
 import { CssBaseline } from '@mui/material';
-import Login from './components/auth/Login.jsx';
+import Login from "./components/auth/Login.jsx";
 import InformacionUsuarios from './components/UserInformation/informacionUsuario.jsx';
 import Register from './components/auth/Register.jsx';
 import ChatAI from './components/dashboard/chat/paginaChatAI.jsx';
@@ -28,38 +28,40 @@ const PublicRoute = ({ children }) => {
 function App() {
 
   return (
-    <ThemeProvider theme={Theme}>
-      <CssBaseline />
-      <Router>
-        <Routes>
-          <Route path='/' element={
-            <PublicRoute>
-              <Login />
-              <div className="backgroundLogin"></div>
-            </PublicRoute>} />
-          <Route path='/register' element={<Register />} />
-          <Route path='/infoUser' element={<InformacionUsuarios />} />
-          <Route path='/paginaChatAI' element={
-            <PrivateRoute>
-              <ChatAI />
-              <div className="background"></div>
-            </PrivateRoute>} 
-          />
-          <Route path='/paginaFamiliar' element={
-            <PrivateRoute>
-              <PanelFamiliar />
-              <div className="backgroundFamiliar"></div>
-            </PrivateRoute>} 
-          />
-          <Route path='/paginaCuidador' element={
-            <PrivateRoute>
-              <PanelCuidador />
-              <div className="backgroundFamiliar"></div>
-            </PrivateRoute>} 
-          />
-        </Routes>
-      </Router>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider theme={Theme}>
+        <CssBaseline />
+        <Router>
+          <Routes>
+            <Route path='/' element={
+              <PublicRoute>
+                <Login />
+                <div className="backgroundLogin"></div>
+              </PublicRoute>} />
+            <Route path='/register' element={<Register />} />
+            <Route path='/infoUser' element={<InformacionUsuarios />} />
+            <Route path='/paginaChatAI' element={
+              <PrivateRoute>
+                <ChatAI />
+                <div className="background"></div>
+              </PrivateRoute>}
+            />
+            <Route path='/paginaFamiliar' element={
+              <PrivateRoute>
+                <PanelFamiliar />
+                <div className="backgroundFamiliar"></div>
+              </PrivateRoute>}
+            />
+            <Route path='/paginaCuidador' element={
+              <PrivateRoute>
+                <PanelCuidador />
+                <div className="backgroundFamiliar"></div>
+              </PrivateRoute>}
+            />
+          </Routes>
+        </Router>
+      </ThemeProvider>
+    </AuthProvider>
   )
 };
 

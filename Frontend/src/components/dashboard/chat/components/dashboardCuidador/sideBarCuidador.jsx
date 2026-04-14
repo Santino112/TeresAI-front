@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MenuUsuario from './menu.jsx';
+import Perfil from '../profile/profile.jsx';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -27,6 +28,7 @@ function ResponsiveDrawer(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
+    const [paginaActiva, setPaginaActiva] = useState("");
     const [isLoading, setLoading] = useState(true);
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [menuConvId, setMenuConvId] = useState(null);
@@ -157,7 +159,7 @@ function ResponsiveDrawer(props) {
             </Box>
             <Divider />
             <Box>
-                <MenuUsuario />
+                <MenuUsuario setPaginaActiva={setPaginaActiva} />
             </Box>
         </Box >
     );
@@ -267,6 +269,14 @@ function ResponsiveDrawer(props) {
                 <Toolbar sx={{ boxShadow: "0px 4px 8px rgba(0,0,0,0.4)" }}>
                     <Typography>Estas en la pagina del cuidador</Typography>
                 </Toolbar>
+                <Box sx={{
+                    flexGrow: 1,
+                    minHeight: 0,
+                    display: "flex",
+                    overflowY: "hidden"
+                }}>
+                    {paginaActiva === "perfil"} <Perfil />
+                </Box>
             </Box>
         </Box>
     );

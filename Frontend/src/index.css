@@ -1,0 +1,21 @@
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #363636 #000000; /* [Color de la barra] [Color del fondo] */
+}
+
+::-webkit-scrollbar {
+  width: 10px; /* Ancho del scroll vertical */
+  background-color: #000000; /* Fondo negro para que no se vea blanco */
+}
+
+/* 2. La barrita que se mueve (el "pulgar") */
+::-webkit-scrollbar-thumb {
+  background: #02031e; /* Tu azul oscuro */
+  border-radius: 10px;
+  border: 2px solid #000000; /* Crea un efecto de separación elegante */
+}
+
+/* 3. Cuando pasas el mouse por encima de la barrita */
+::-webkit-scrollbar-thumb:hover {
+  background: #0a0c3a; /* Un azul un poco más vibrante al interactuar */
+}

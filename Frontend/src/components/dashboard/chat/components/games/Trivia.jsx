@@ -138,9 +138,9 @@ export default function Trivia() {
         p: 3,
         gap: 2,
         overflowY: "auto",
-        background: "linear-gradient(160deg, #1a1f1a 0%, #2f342d 100%)",
+        backgroundColor: "transparent",
         borderRadius: 4,
-        boxShadow: 1
+        boxShadow: 1,
       }}
     >
       {/* Título */}
