@@ -9,6 +9,7 @@ import Games from '../games/games.jsx';
 import Calendar from '../calendar/calendar.jsx';
 import News from '../news/news.jsx';
 import Shopping from '../shopping/shoppinglist.jsx';
+import Notes from '../notes.jsx';
 import MenuUsuario from './menu.jsx';
 import Perfil from '../profile/profile.jsx';
 import Menu from "@mui/material/Menu";
@@ -29,6 +30,7 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import GamesRoundedIcon from '@mui/icons-material/GamesRounded';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
+import StickyNote2RoundedIcon from '@mui/icons-material/StickyNote2Rounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import CircularProgress from '@mui/material/CircularProgress';
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
@@ -192,6 +194,16 @@ function ResponsiveDrawer(props) {
                         backgroundColor: "#3f4440"
                     }
                 }}><ShoppingCartIcon sx={{ mr: 1 }} />Lista de compras</Button>
+                <Button onClick={() => {
+                    setPaginaActiva("notas");
+                }} sx={{
+                    mb: 1,
+                    backgroundColor: "transparent",
+                    color: "#E6E6E6",
+                    "&:hover": {
+                        backgroundColor: "#3f4440"
+                    }
+                }}><StickyNote2RoundedIcon sx={{ mr: 1 }} />Notas</Button>
                 <Divider />
                 <Typography variant="body1" sx={{
                     mt: 1,
@@ -418,8 +430,9 @@ function ResponsiveDrawer(props) {
                 }}>
                     {paginaActiva === "juegos" ? <Games />
                         : paginaActiva === "calendario" ? <Calendar />
-                        : paginaActiva === "Noticias" ? <News />
+                    : paginaActiva === "Noticias" ? <News />
                         : paginaActiva === "Lista de compras" ? <Shopping />
+                        : paginaActiva === "notas" ? <Notes />
                         : paginaActiva === "perfil" ? <Perfil />
                             : <Chat
                                 activeConversationId={activeConversationId}
