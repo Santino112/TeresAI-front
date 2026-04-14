@@ -1,8 +1,9 @@
 import Sudoku from "./Sudoku.jsx";
 import Trivia from "./Trivia.jsx";
 import Crossword from "./Crossword.jsx";
-import { Typography, Button, TextField, Box, Stack } from "@mui/material";
+import { Typography, Button, TextField, Box, Stack, Divider } from "@mui/material";
 import { InputAdornment, IconButton } from "@mui/material";
+import fondoChatAI from "../../../../../assets/images/fondoChatAI.png"
 
 const Games = () => {
     return (
@@ -17,14 +18,9 @@ const Games = () => {
             <Box
                 sx={{
                     flexGrow: 1,
-                    p: {
-                        xs: 2,
-                        md: 0
-                    },
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    flexGrow: 1,
                     width: "100%",
                     background: `url(${fondoChatAI})`,
                     backgroundSize: "cover",
@@ -92,6 +88,17 @@ const Games = () => {
                     </Divider>
                     <Box sx={{ width: "100%", overflowX: "auto", margin: "0 auto" }}>
                         <Trivia />
+                    </Box>
+                    <Divider sx={{
+                        width: "100%",
+                        "&::before, &::after": {
+                            borderColor: "#ffffff",
+                        }
+                    }}>
+                        <Typography variant="body1" sx={{ color: "#ffffff" }}></Typography>
+                    </Divider>
+                    <Box sx={{ width: "100%", overflowX: "auto", margin: "0 auto" }}>
+                        <Crossword />
                     </Box>
                 </Paper>
             </Box>

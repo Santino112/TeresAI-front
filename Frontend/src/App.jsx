@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from "@mui/material/styles";
 import { AuthProvider, useAuth } from "./components/auth/AuthContext.jsx";
 import { Theme } from './theme/theme.jsx';
@@ -31,8 +31,7 @@ function App() {
     <AuthProvider>
       <ThemeProvider theme={Theme}>
         <CssBaseline />
-        <Router>
-          <Routes>
+        <Routes>
             <Route path='/' element={
               <PublicRoute>
                 <Login />
@@ -59,7 +58,6 @@ function App() {
               </PrivateRoute>}
             />
           </Routes>
-        </Router>
       </ThemeProvider>
     </AuthProvider>
   )

@@ -42,7 +42,6 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
 import StickyNote2RoundedIcon from '@mui/icons-material/StickyNote2Rounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
-import NewspaperIcon from '@mui/icons-material/Newspaper';
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";

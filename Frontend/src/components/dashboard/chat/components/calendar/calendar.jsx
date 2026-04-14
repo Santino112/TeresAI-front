@@ -1,11 +1,12 @@
 import { useEffect, useState, useRef } from "react";
-import { Typography, Button, TextField, Box, Stack } from "@mui/material";
+import { Typography, Button, TextField, Box, Stack, Paper, Divider } from "@mui/material";
 import BotonCalendar from '../buttons/botonCalendar.jsx';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import api from "../../../../../api/axios.js";
 import { supabase } from "../../../../../supabaseClient.js";
+import fondoChatAI from "../../../../../assets/images/fondoChatAI.png"
 
 const Calendar = () => {
     const [events, setEvents] = useState([]);
@@ -48,14 +49,9 @@ const Calendar = () => {
             <Box
                 sx={{
                     flexGrow: 1,
-                    p: {
-                        xs: 2,
-                        md: 0
-                    },
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    flexGrow: 1,
                     width: "100%",
                     background: `url(${fondoChatAI})`,
                     backgroundSize: "cover",
