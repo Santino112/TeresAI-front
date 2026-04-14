@@ -11,7 +11,7 @@ import Buscador from '../buscador/buscador.jsx';
 import Calendar from '../calendar/calendar.jsx';
 import News from '../news/news.jsx';
 import Shopping from '../shopping/shoppinglist.jsx';
-import Notes from '../notes.jsx';
+import Notes from '../notes/notes.jsx';
 import MenuUsuario from './menu.jsx';
 import Perfil from '../profile/profile.jsx';
 import Menu from "@mui/material/Menu";
@@ -298,8 +298,10 @@ function ResponsiveDrawer(props) {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'flex-start',
+                overflowY: "auto",
+                maxHeight: "500px",
+                minHeight: "280px",
                 p: 1,
-                flexShrink: 0,
                 backgroundColor: "#030414",
             }}>
                 <Button onClick={() => {
@@ -337,13 +339,23 @@ function ResponsiveDrawer(props) {
                     }
                 }}><CalendarMonthRoundedIcon sx={{ mr: 1 }} />Calendario</Button>
                 <Button onClick={() => {
+                    setPaginaActiva("juegos");
+                }} sx={{
+                    mb: 1,
+                    backgroundColor: "transparent",
+                    color: "#ffffff",
+                    "&:hover": {
+                        backgroundColor: "#2b2b2b"
+                    }
+                }}><GamesRoundedIcon sx={{ mr: 1 }} />Juegos</Button>
+                <Button onClick={() => {
                     setPaginaActiva("Noticias");
                 }} sx={{
                     mb: 1,
                     backgroundColor: "transparent",
                     color: "#E6E6E6",
                     "&:hover": {
-                        backgroundColor: "#3f4440"
+                        backgroundColor: "#2b2b2b"
                     }
                 }}><NewspaperIcon sx={{ mr: 1 }} />Noticias</Button>
                 <Button onClick={() => {
@@ -353,7 +365,7 @@ function ResponsiveDrawer(props) {
                     backgroundColor: "transparent",
                     color: "#E6E6E6",
                     "&:hover": {
-                        backgroundColor: "#3f4440"
+                        backgroundColor: "#2b2b2b"
                     }
                 }}><ShoppingCartIcon sx={{ mr: 1 }} />Lista de compras</Button>
                 <Button onClick={() => {
@@ -367,12 +379,16 @@ function ResponsiveDrawer(props) {
                     }
                 }}><StickyNote2RoundedIcon sx={{ mr: 1 }} />Notas</Button>
                 <Divider />
-                <Typography variant="body1" sx={{
-                    mt: 1,
-                    ml: 1
-                }}>Chats</Typography>
             </Box>
-            <Divider />
+            <Box sx={{
+                backgroundColor: "#030414",
+                p: 1
+            }}>
+                <Typography variant="body1" sx={{
+                    backgroundColor: "#030414",
+                    pl: 1
+                }}>Conversaciones</Typography>
+            </Box>
             <Box sx={{
                 flexGrow: 1,
                 overflowY: "auto",
@@ -622,6 +638,7 @@ function ResponsiveDrawer(props) {
                 {activeConversationId && paginaActiva === "chat" && <Toolbar
                     sx={{
                         display: { xs: "none", sm: "none", md: "flex", lg: "flex", xl: "flex" },
+                        position: "fixed",
                         boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.2)",
                         backgroundColor: "#010215",
                         backdropFilter: "blur(30px)",

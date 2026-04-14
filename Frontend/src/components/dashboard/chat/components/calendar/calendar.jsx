@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Typography, Button, TextField, Box, Stack, Paper, Divider } from "@mui/material";
+import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 import BotonCalendar from '../buttons/botonCalendar.jsx';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -48,7 +49,6 @@ const Calendar = () => {
         >
             <Box
                 sx={{
-                    flexGrow: 1,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -70,23 +70,6 @@ const Calendar = () => {
                         borderRadius: 4,
                         background: "transparent",
                         flexGrow: 0,
-                        scrollbarWidth: 'thin',
-                        scrollbarColor: '#404040 transparent',
-
-                        /* Chrome / Edge / Safari */
-                        '&::-webkit-scrollbar': {
-                            width: '6px',
-                        },
-                        '&::-webkit-scrollbar-track': {
-                            background: 'transparent',
-                        },
-                        '&::-webkit-scrollbar-thumb': {
-                            backgroundColor: '#2f2f2f',
-                            borderRadius: '8px',
-                        },
-                        '&::-webkit-scrollbar-thumb:hover': {
-                            backgroundColor: '#444',
-                        },
                     }}
                 >
                     <Typography variant="h3" sx={{
@@ -99,8 +82,7 @@ const Calendar = () => {
                         },
                         textAlign: {xs: "center", sm: "center", md: "start"},
                         fontFamily: "'Lora', serif",
-                        
-                    }}>Calendario</Typography>
+                    }}>Calendario 🗓️</Typography>
                     <Typography variant="body2" sx={{
                         my: 1,
                         fontSize: {

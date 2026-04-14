@@ -55,7 +55,7 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
             <Box
                 sx={{
                     display: "flex",
-                    flexDirection: "column",      
+                    flexDirection: "column",
                     alignItems: "center",
                     flexGrow: 1,
                     width: "100%",
@@ -104,9 +104,9 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                             lg: "1.7rem",
                             xl: "1.8rem"
                         },
-                        textAlign: {xs: "center", sm: "center", md: "start"},
+                        textAlign: { xs: "center", sm: "center", md: "start" },
                         fontFamily: "'Lora', serif",
-                    }}>Buscador de chats</Typography>
+                    }}>Buscador de chats 🔎</Typography>
                     <Typography variant="body2" sx={{
                         my: 1,
                         fontSize: {
@@ -116,7 +116,7 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                             lg: "1.3rem",
                             xl: "1.3rem",
                         },
-                        textAlign: {xs: "center", sm: "center", md: "start"},
+                        textAlign: { xs: "center", sm: "center", md: "start" },
                         fontFamily: "'Lora', serif",
                         lineHeight: 1.8,
                     }}>Aquí podrás buscar entre tus conversaciones anteriores para encontrar información relevante,
@@ -151,8 +151,14 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                             setPaginaActiva("chat");
                         }}
                             sx={{
-                                backgroundColor: "#303030",
                                 borderRadius: 3,
+                                boxShadow: 3,
+                                backgroundColor: "#0978a0",
+                                fontFamily: "'Lora', serif",
+                                fontWeight: "bold",
+                                "&:hover": {
+                                    backgroundColor: "#066688",
+                                },
                                 fontSize: "0.9rem",
                                 width: {
                                     xs: "100%",
@@ -162,9 +168,6 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                                     xl: "16%"
                                 },
                                 color: "#ffffff",
-                                "&:hover": {
-                                    backgroundColor: "#2b2b2b"
-                                }
                             }}><AddRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
                         <TextField
                             value={busqueda}
