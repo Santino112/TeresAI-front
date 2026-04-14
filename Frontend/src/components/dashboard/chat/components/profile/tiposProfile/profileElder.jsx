@@ -47,7 +47,7 @@ const ProfileElder = ({ profile, setProfile }) => {
         if (!user) return;
 
         const fetchInfoElder = async () => {
-            setLoadingData(true); 
+            setLoadingData(true);
             try {
                 const data = await tomarDatosElder(user.id);
                 if (data) {
@@ -215,31 +215,29 @@ const ProfileElder = ({ profile, setProfile }) => {
                 component="form"
                 onSubmit={handleUpdateDatos}
                 sx={{
-                    width: {
-                        xs: "100%",
-                        sm: "80%",
-                        md: "70%",
-                        lg: "75%",
-                        xl: "60%",
-                    },
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    width: "%100",
                     p: { xs: 2, sm: 3, md: 4 },
                     borderRadius: 4,
                     background: "transparent",
+                    flexGrow: 0,
                 }}
             >
-                <Typography variant="h2" sx={{
+                <Typography variant="h3" sx={{
                     fontSize: {
-                        xs: "1.2rem",
-                        sm: "1.3rem",
+                        xs: "1.5rem",
+                        sm: "1.5rem",
                         md: "1.5rem",
                         lg: "1.7rem",
                         xl: "1.8rem"
                     },
                     fontFamily: "'Lora', serif",
-                    textAlign: "center"
-                }}><strong>Perfil</strong> de usuario</Typography>
+                    textAlign: { xs: "center", sm: "center", md: "start" },
+                }}><strong>Perfil</strong> de usuario 🧞‍♂️</Typography>
                 <Typography variant="body2" sx={{
-                    my: 2,
+                    my: 1,
                     fontSize: {
                         xs: "1rem",
                         sm: "1rem",
@@ -248,7 +246,7 @@ const ProfileElder = ({ profile, setProfile }) => {
                         xl: "1.3rem",
                     },
                     fontFamily: "'Lora', serif",
-                    textAlign: "center",
+                    textAlign: { xs: "center", sm: "center", md: "start" },
                     lineHeight: 1.8,
                 }}>Aquí podrás actualizar toda la información de tu usuario elder. Puedes agregar datos sobre tu salud, tus gustos, tus intereses, o cualquier información que quieras compartir para que la inteligencia artificial pueda conocerte mejor y brindarte una mejor experiencia.
                 </Typography>
@@ -695,10 +693,11 @@ const ProfileElder = ({ profile, setProfile }) => {
                         </Box>
                     </Grid>
                 </Grid>
-                <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "30%" }, mt: 2 }}>
+                <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "20%" }, mt: 2 }}>
                     <Button variant="contained" type="submit" fullWidth disabled={loading || !hasChanges}
                         sx={{
                             boxShadow: 3,
+                            my: 1,
                             mb: 1,
                             color: "#ffffff",
                             backgroundColor: "#0978a0",
