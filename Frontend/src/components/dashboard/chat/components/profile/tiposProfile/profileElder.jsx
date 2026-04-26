@@ -1,8 +1,7 @@
-import { useState, useEffect, useEffectEvent } from "react";
+import { useState, useEffect } from "react";
 import { Typography, Button, TextField, Box, Divider, Select, MenuItem, Alert, Grid, Paper, Skeleton } from "@mui/material";
 import { tomarDatosElder, actualizarDatosElders, actualizarDatosPerfiles } from "../../../exports/datosInicialesUsuarios";
-import { useAuth } from "../../../../../auth/AuthContext";
-import fondoChatAI from "../../../../../../assets/images/fondoChatAI.png";
+import { useAuth } from "../../../../../auth/useAuth.jsx";
 import CircularProgress from '@mui/material/CircularProgress';
 
 const ProfileElder = ({ profile, setProfile }) => {
@@ -147,7 +146,6 @@ const ProfileElder = ({ profile, setProfile }) => {
             setSeverity("error");
             setTimeout(() => {
                 setErrorAlert(false)
-                setErrorTextFields(false)
             }, 5000);
             setLoading(false);
             return;

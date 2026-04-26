@@ -5,7 +5,7 @@ import { playTTS } from "../../exports/playTTS.js";
 import { useWakeWord } from "../../exports/useWakeWord.js";
 import { getMessages } from "../../exports/conversaciones.js";
 import { InputAdornment, IconButton } from "@mui/material";
-import { useAuth } from "../../../../auth/AuthContext.jsx";
+import { useAuth } from "../../../../auth/useAuth.jsx";
 import { tomarDatosPerfiles } from '../../exports/datosInicialesUsuarios.js';
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 import ReactMarkDown from 'react-markdown';
@@ -31,20 +31,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   const isMorning = time >= 6 && time < 12;
   const isAfternoon = time >= 12 && time < 18;
   const isEvening = time >= 18 && time < 24;
-
-  const frasesSaludo = [
-    "Buenos días",
-    "Buenas tardes",
-    "Buenas noches"
-  ];
-
-  if (isMorning) {
-    frasesSaludo[0] = "Buenos días";
-  } else if (isAfternoon) {
-    frasesSaludo[0] = "Buenas tardes";
-  } else if (isEvening) {
-    frasesSaludo[0] = "Buenas noches";
-  }
+  const saludo = isMorning? "¡Buenos días" : isAfternoon? "¡Buenas tardes" : isEvening? "¡Buenas noches" : "¡Buenas noches";
 
   const frases = [
     "¿Qué haremos hoy?",
@@ -104,7 +91,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     let location = null;
 
     try {
-      location = await new Promise((resolve, reject) => {
+      location = await new Promise((resolve) => {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
             const coords = {
@@ -140,7 +127,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     ]);
 
     setPensandoIA(true);
-    const res = await enviarPrompt(texto, activeConversationId);
+    const res = await enviarPrompt(texto, activeConversationId, location);
     setPensandoIA(false);
     console.log("Enviando al backend - prompt:", texto, "location:", location);
 
@@ -182,12 +169,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   };
 
   const hayTexto = prompt.trim().length > 0;
-  const botonActivo = hayTexto ? 'enviar' : 'audio'
-
-  const botones = [
-    { tipo: botonActivo }
-  ];
-
   useEffect(() => {
     if (!activeConversationId) {
       setMensajes([]);
@@ -256,7 +237,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
             mb: 2,
 
             textAlign: "center"
-          }}>Buenas noches, {profile?.username} </Typography>
+          }}>{saludo}, {profile?.username}</Typography>
           <Box
             component="form"
             onSubmit={(e) => {

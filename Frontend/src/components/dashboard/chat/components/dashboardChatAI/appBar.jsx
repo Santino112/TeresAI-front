@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -12,8 +11,7 @@ import Menu from '@mui/material/Menu';
 import Button from '@mui/material/Button';
 
 export default function MenuAppBar() {
-  const navigate = useNavigate();
-  const [auth, setAuth] = React.useState(true);
+  const auth = true;
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleMenu = (event) => {

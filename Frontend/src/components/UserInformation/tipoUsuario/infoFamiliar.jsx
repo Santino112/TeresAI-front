@@ -8,8 +8,7 @@ const InfoFamiliar = (
         setEmailFamiliar,
         tipoFamiliar,
         setTipoFamiliar,
-        errorTextFields,
-        setErrorTextFields
+        errorTextFields
     }
 ) => {
 

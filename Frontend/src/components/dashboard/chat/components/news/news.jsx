@@ -59,12 +59,11 @@ export default function News() {
     >
       <Box
         sx={{
-          flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          flexGrow: 1,
-          width: "100%",
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
           background: `url(${fondoChatAI})`,
           backgroundSize: "cover",
           backgroundPosition: "center",

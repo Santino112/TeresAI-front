@@ -1,7 +1,7 @@
-import { useState, useEffect, useEffectEvent } from "react";
+import { useState, useEffect } from "react";
 import { Typography, Button, TextField, Box, Divider, Select, MenuItem, Alert, Grid, Paper } from "@mui/material";
 import { tomarDatosFamiliares, actualizarDatosFamiliares, actualizarDatosPerfiles } from "../../../exports/datosInicialesUsuarios";
-import { useAuth } from "../../../../../auth/AuthContext";
+import { useAuth } from "../../../../../auth/useAuth.jsx";
 import CircularProgress from '@mui/material/CircularProgress';
 
 const ProfileFamiliar = ({ profile, setProfile }) => {
@@ -90,7 +90,6 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
             setSeverity("error");
             setTimeout(() => {
                 setErrorAlert(false)
-                setErrorTextFields(false)
             }, 5000);
             setLoading(false);
             return;

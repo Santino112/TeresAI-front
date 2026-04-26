@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getConversations } from '../../exports/conversaciones.js';
 import { deleteConversation } from '../../exports/eliminarConversacion.js';
-import { useAuth } from '../../../../auth/AuthContext.jsx';
+import { useAuth } from '../../../../auth/useAuth.jsx';
 import { supabase } from "../../../../../supabaseClient.js";
 import Chat from './chat.jsx';
 import Games from '../games/games.jsx';

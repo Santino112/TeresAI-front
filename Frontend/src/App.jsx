@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from "@mui/material/styles";
-import { AuthProvider, useAuth } from "./components/auth/AuthContext.jsx";
+import { AuthProvider } from "./components/auth/AuthContext.jsx";
+import { useAuth } from "./components/auth/useAuth.jsx";
 import { Theme } from './theme/theme.jsx';
 import { CssBaseline } from '@mui/material';
 import Login from "./components/auth/Login.jsx";

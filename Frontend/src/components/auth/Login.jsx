@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert, Card, AppBar, Toolbar } from '@mui/material';
 import { supabase } from '../../supabaseClient.js';
@@ -135,7 +135,6 @@ const Login = () => {
                         alignItems: "center",
                         justifyContent: "center",
                         p: { xs: 3 },
-                        borderRadius: 0,
                         background: "transparent",
                         borderRadius: 3,
                     }}
@@ -167,7 +166,7 @@ const Login = () => {
                     }}>Ingresa o registrate con Google</Typography>
                     <GoogleLogin
                         onSuccess={async (credentialResponse) => {
-                            const { data, error } = await supabase.auth.signInWithIdToken({
+                            const { error } = await supabase.auth.signInWithIdToken({
                                 provider: 'google',
                                 token: credentialResponse.credential,
                             });

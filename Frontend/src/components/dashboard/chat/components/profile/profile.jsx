@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../../../../auth/AuthContext";
+import { useAuth } from "../../../../auth/useAuth.jsx";
 import { tomarDatosPerfiles } from "../../exports/datosInicialesUsuarios";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 import ProfileElder from "./tiposProfile/profileElder";

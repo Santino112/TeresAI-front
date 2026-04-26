@@ -10,7 +10,7 @@ import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 
-function IconMenu() {
+function IconMenu({ setPaginaActiva }) {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);

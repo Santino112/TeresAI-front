@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient.js';
 import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert, Card, AppBar, Toolbar } from '@mui/material';
@@ -182,7 +182,6 @@ const Register = () => {
                         alignItems: "center",
                         justifyContent: "center",
                         p: { xs: 3 },
-                        borderRadius: 0,
                         background: "transparent",
                         borderRadius: 3,
                     }}
