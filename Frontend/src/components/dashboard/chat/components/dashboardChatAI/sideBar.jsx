@@ -5,15 +5,15 @@ import { getConversations } from '../../exports/conversaciones.js';
 import { deleteConversation } from '../../exports/eliminarConversacion.js';
 import { useAuth } from '../../../../auth/useAuth.jsx';
 import { supabase } from "../../../../../supabaseClient.js";
-import Chat from './chat.jsx';
-import Games from '../games/games.jsx';
-import Buscador from '../buscador/buscador.jsx';
-import Calendar from '../calendar/calendar.jsx';
-import News from '../news/news.jsx';
-import Shopping from '../shopping/shoppinglist.jsx';
-import Notes from '../notes/notes.jsx';
-import MenuUsuario from './menu.jsx';
-import Perfil from '../profile/profile.jsx';
+import Chat from './Chat.jsx';
+import Games from '../games/Games.jsx';
+import Buscador from '../buscador/Buscador.jsx';
+import Calendar from '../calendar/Calendar.jsx';
+import News from '../news/News.jsx';
+import Shopping from '../shopping/Shoppinglist.jsx';
+import Notes from '../notes/Notes.jsx';
+import MenuUsuario from './Menu.jsx';
+import Perfil from '../profile/Profile.jsx';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AppBar from '@mui/material/AppBar';
@@ -46,6 +46,9 @@ import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
+import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
+import MicOffRoundedIcon from "@mui/icons-material/MicOffRounded";
 
 const drawerWidth = 290;
 
@@ -54,34 +57,71 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 500,
+    width: "90%",
+    maxWidth: 500,
+    overflowY: "auto",
+    maxHeight: '90dvh',
     bgcolor: '#030414',
-    border: '2px solid #000',
+    border: '2px solid #f0750a',
     borderRadius: 3,
     boxShadow: 24,
-    p: 4,
+    p: { xs: 2, sm: 3, md: 4 },
 };
 
 const steps = [
     {
-        label: 'Escribe lo que quieras',
-        description: `Teresa esta preparada para poder responderte preguntas de la vida diaria, mantener una conversación normal, 
-        aconsejarte, escucharte y lo más importante de todo, actuar como cuidadora las 24 horas del dia, agendando eventos y recordando
-        cosas importantes. `,
+        label: "¿Qué puedes decirle a Teresa?",
+        description: (
+            <Typography variant='body1' sx={{ lineHeight: 1.8 }}>
+                Ella está diseñada para acompañarte en <strong>todo</strong> momento. Puedes consultarle dudas de la vida diaria, mantener una charla casual o
+                pedirle consejos. Lo más importante: es tu cuidadora 24/7, capaz de organizar tu agenda, recordarte tareas críticas, armar tu lista de compras y
+                estar pendiente de lo que necesites en cualquier momento del día.
+            </Typography>
+        )
     },
     {
         label: 'Emergencias',
-        description:
-            `Ante casos de emergencia podes solicitarle a Teresa que envie una notificación a tu familiar o cuidador vinculado para que este se entere
-            de lo que esta sucediendo, todo con una simple solicitud.`,
+        description: (
+            <Typography variant='body1' sx={{ lineHeight: 1.8 }}>
+                En caso de <strong>emergencia</strong>, Teresa puede notificar de inmediato a tu familiar o cuidador vinculado. Con solo pedírselo, ellos recibirán un aviso para estar al tanto de lo que sucede al instante
+            </Typography>
+        )
+
     },
     {
-        label: 'Create an ad',
-        description: `Try out different ad text to see what brings in the most customers,
-              and learn how to enhance your ads using features like ad extensions.
-              If you run into any problems with your ads, find out how to tell if
-              they're running and how to resolve approval issues.`,
+        label: 'Hablar con teresa',
+        description: (
+            <Typography variant='body1' sx={{ lineHeight: 1.8 }}>
+                Para hablar con Teresa, utiliza el campo de texto centrado en pantalla. Aquí puedes escribir consultas, números o cualquier información.
+                <br /><br />
+                Debajo del campo de texto encontrarás tres herramientas principales:
+                <br />
+                • El botón <strong>enviar</strong> <ArrowUpwardRoundedIcon fontSize='small' sx={{ verticalAlign: "middle", mx: 0.5, color: '#f0750a' }} /> aparecerá al escribir y sirve para procesar tu mensaje.
+                <br />
+                • Si prefieres usar tu voz, mantén presionado el botón de <strong>audio</strong> <MicOffRoundedIcon fontSize='small' sx={{ verticalAlign: "middle", mx: 0.5, color: '#f0750a' }} /> y suéltalo al terminar de hablar.
+                <br />
+                • A la izquierda, el botón de <strong>voz</strong> <VolumeOffRoundedIcon fontSize='small' sx={{ verticalAlign: "middle", mx: 0.5, color: '#f0750a' }} /> permitirá que la IA lea sus respuestas en voz alta.
+            </Typography>
+        )
     },
+    {
+        label: "Mucho más que un chat",
+        description: (
+            <Typography variant='body1' sx={{ lineHeight: 1.8 }}>
+                Además de conversar con Teresa, tienes a tu disposición herramientas diseñadas para tu día a día:
+                <br /><br />
+                • <strong>Calendario</strong>: Consulta todos los eventos y recordatorios que le hayas pedido a Teresa agendar.
+                <br />
+                • <strong>Entrenamiento Mental</strong>: Una sección de juegos diseñada específicamente para ejercitar tu memoria.
+                <br />
+                • <strong>Noticias a medida</strong>: Accede a las novedades más destacadas, seleccionadas especialmente por Teresa para vos.
+                <br />
+                • <strong>Lista de Compras</strong>: Llevá el control de lo que necesitas, ya sea pidiéndoselo a Teresa o anotándolo vos mismo.
+                <br />
+                • <strong>Notas</strong>: Un espacio seguro para escribir cualquier detalle y que no se te olvide nada.
+            </Typography>
+        )
+    }
 ];
 
 function ResponsiveDrawer(props) {
@@ -98,6 +138,7 @@ function ResponsiveDrawer(props) {
     const { user, loading: authLoading } = useAuth();
     //Modal
     const [open, setOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
     const handleCloseModal = async () => {
 
         const { error } = await supabase
@@ -112,7 +153,6 @@ function ResponsiveDrawer(props) {
             console.error("Error al actualizar estado de usuario:", error);
         }
     };
-    //Stepper dentro del modal
     const [activeStep, setActiveStep] = useState(0);
 
     const handleNext = () => {
@@ -128,7 +168,25 @@ function ResponsiveDrawer(props) {
     };
 
     const addConversation = (newConversation) => {
-        setConversations(prev => [newConversation, ...prev]);
+        setConversations(prev => {
+            const index = prev.findIndex(c => c.id === newConversation.id);
+
+            if (index !== -1) {
+
+                if (prev[index].title === newConversation.title) {
+                    return prev;
+                }
+
+                const updatedConversations = [...prev];
+                updatedConversations[index] = {
+                    ...updatedConversations[index],
+                    ...newConversation,
+                    title: newConversation.title || updatedConversations[index].title
+                };
+                return updatedConversations;
+            }
+            return [newConversation, ...prev];
+        });
     };
 
     const handleDrawerClose = () => {
@@ -202,10 +260,19 @@ function ResponsiveDrawer(props) {
     };
 
     const handleDelete = async () => {
-        const success = await deleteConversation(menuConvId);
+        const idABorrar = menuConvId;
+
+        const success = await deleteConversation(idABorrar);
+
         if (success) {
-            setConversations(prev => prev.filter(c => c.id !== activeConversationId));
-            if (activeConversationId === menuConvId) setActiveConversationId(null);
+            setConversations(prev => {
+                const nuevaLista = prev.filter(c => String(c.id) !== String(idABorrar));
+                return nuevaLista;
+            });
+            if (activeConversationId === idABorrar) {
+                setActiveConversationId(null);
+            }
+            setAnchorEl(null);
         }
     };
 
@@ -232,17 +299,11 @@ function ResponsiveDrawer(props) {
                         <Fade in={open}>
                             <Box sx={style}>
                                 <Typography variant='h6' sx={{ fontFamily: "'Lora', serif", mb: 1 }}>¿Cómo funciona la aplicación?</Typography>
-                                <Box sx={{ maxWidth: 400 }}>
+                                <Box sx={{ width: "100%" }}>
                                     <Stepper activeStep={activeStep} orientation="vertical">
                                         {steps.map((step, index) => (
                                             <Step key={step.label}>
-                                                <StepLabel
-                                                    optional={
-                                                        index === steps.length - 1 ? (
-                                                            <Typography variant="caption">Last step</Typography>
-                                                        ) : null
-                                                    }
-                                                >
+                                                <StepLabel>
                                                     {step.label}
                                                 </StepLabel>
                                                 <StepContent>
@@ -251,14 +312,29 @@ function ResponsiveDrawer(props) {
                                                         <Button
                                                             variant="contained"
                                                             onClick={handleNext}
-                                                            sx={{ mt: 1, mr: 1 }}
+                                                            sx={{
+                                                                backgroundColor: "#0978a0",
+                                                                fontFamily: "'Lora', serif",
+                                                                fontWeight: "bold",
+                                                                color: "#ffffff",
+                                                                mt: 1,
+                                                                mr: 1,
+                                                                "&:hover": {
+                                                                    backgroundColor: "#066688",
+                                                                },
+                                                            }}
                                                         >
                                                             {index === steps.length - 1 ? 'Terminar' : 'Continuar'}
                                                         </Button>
                                                         <Button
                                                             disabled={index === 0}
                                                             onClick={handleBack}
-                                                            sx={{ mt: 1, mr: 1 }}
+                                                            sx={{
+                                                                fontFamily: "'Lora', serif",
+                                                                fontWeight: "bold",
+                                                                mt: 1,
+                                                                mr: 1
+                                                            }}
                                                         >
                                                             Atras
                                                         </Button>
@@ -270,11 +346,26 @@ function ResponsiveDrawer(props) {
                                     {activeStep === steps.length && (
                                         <Paper square elevation={0} sx={{ p: 3, bgcolor: "transparent" }}>
                                             <Typography variant='body1' sx={{ fontFamily: "'Lora', serif", mb: 1 }}>¿Quieres volver a repetir el paso a paso?</Typography>
-                                            <Button variant="contained" onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-                                                Reiniciar
-                                            </Button>
-                                            <Button onClick={handleCloseModal} sx={{ mt: 1, mr: 1 }}>
+                                            <Button variant="contained" onClick={handleCloseModal} sx={{
+                                                backgroundColor: "#0978a0",
+                                                fontFamily: "'Lora', serif",
+                                                fontWeight: "bold",
+                                                color: "#ffffff",
+                                                mt: 1,
+                                                mr: 1,
+                                                "&:hover": {
+                                                    backgroundColor: "#066688",
+                                                },
+                                            }}>
                                                 Empezar a usar TeresAI
+                                            </Button>
+                                            <Button onClick={handleReset} sx={{
+                                                fontFamily: "'Lora', serif",
+                                                fontWeight: "bold",
+                                                mt: 1,
+                                                mr: 1
+                                            }}>
+                                                Reiniciar
                                             </Button>
                                         </Paper>
                                     )}
@@ -300,27 +391,30 @@ function ResponsiveDrawer(props) {
                 alignItems: 'flex-start',
                 overflowY: "auto",
                 maxHeight: "500px",
+                width: "100%",
                 minHeight: "280px",
                 p: 1,
                 backgroundColor: "#030414",
             }}>
-                <Button onClick={() => {
+                <Button fullWidth onClick={() => {
                     setActiveConversationId(null);
                     setPaginaActiva("chat");
                 }}
                     sx={{
+                        justifyContent: "flex-start",
+                        backgroundColor: "transparent",
                         mt: 1,
                         mb: 1,
-                        backgroundColor: "transparent",
                         color: "#ffffff",
                         "&:hover": {
                             backgroundColor: "#2b2b2b"
                         }
                     }}><AddRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
-                <Button onClick={() => {
+                <Button fullWidth onClick={() => {
                     setPaginaActiva("buscador");
                 }}
                     sx={{
+                        justifyContent: "flex-start",
                         mb: 1,
                         backgroundColor: "transparent",
                         color: "#ffffff",
@@ -328,9 +422,10 @@ function ResponsiveDrawer(props) {
                             backgroundColor: "#2b2b2b"
                         }
                     }}><SearchRoundedIcon sx={{ mr: 1 }} />Buscar chats</Button>
-                <Button onClick={() => {
+                <Button fullWidth onClick={() => {
                     setPaginaActiva("calendario");
                 }} sx={{
+                    justifyContent: "flex-start",
                     mb: 1,
                     backgroundColor: "transparent",
                     color: "#ffffff",
@@ -338,9 +433,10 @@ function ResponsiveDrawer(props) {
                         backgroundColor: "#2b2b2b"
                     }
                 }}><CalendarMonthRoundedIcon sx={{ mr: 1 }} />Calendario</Button>
-                <Button onClick={() => {
+                <Button fullWidth onClick={() => {
                     setPaginaActiva("juegos");
                 }} sx={{
+                    justifyContent: "flex-start",
                     mb: 1,
                     backgroundColor: "transparent",
                     color: "#ffffff",
@@ -348,38 +444,41 @@ function ResponsiveDrawer(props) {
                         backgroundColor: "#2b2b2b"
                     }
                 }}><GamesRoundedIcon sx={{ mr: 1 }} />Juegos</Button>
-                <Button onClick={() => {
+                <Button fullWidth onClick={() => {
                     setPaginaActiva("Noticias");
                 }} sx={{
+                    justifyContent: "flex-start",
                     mb: 1,
                     backgroundColor: "transparent",
-                    color: "#E6E6E6",
+                    color: "#ffffff",
                     "&:hover": {
                         backgroundColor: "#2b2b2b"
                     }
                 }}><NewspaperIcon sx={{ mr: 1 }} />Noticias</Button>
-                <Button onClick={() => {
+                <Button fullWidth onClick={() => {
                     setPaginaActiva("Lista de compras");
                 }} sx={{
+                    justifyContent: "flex-start",
                     mb: 1,
                     backgroundColor: "transparent",
-                    color: "#E6E6E6",
+                    color: "#ffffff",
                     "&:hover": {
                         backgroundColor: "#2b2b2b"
                     }
                 }}><ShoppingCartIcon sx={{ mr: 1 }} />Lista de compras</Button>
-                <Button onClick={() => {
+                <Button fullWidth onClick={() => {
                     setPaginaActiva("notas");
                 }} sx={{
+                    justifyContent: "flex-start",
                     mb: 1,
                     backgroundColor: "transparent",
-                    color: "#E6E6E6",
+                    color: "#ffffff",
                     "&:hover": {
-                        backgroundColor: "#3f4440"
+                        backgroundColor: "#2b2b2b"
                     }
                 }}><StickyNote2RoundedIcon sx={{ mr: 1 }} />Notas</Button>
-                <Divider />
             </Box>
+            <Divider />
             <Box sx={{
                 backgroundColor: "#030414",
                 p: 1
@@ -524,8 +623,6 @@ function ResponsiveDrawer(props) {
         </Box >
     );
 
-    const container = window !== undefined ? () => window().document.body : undefined;
-
     return (
         <Box sx={{ display: 'flex', width: "100%" }}>
             <AppBar
@@ -568,7 +665,6 @@ function ResponsiveDrawer(props) {
                 aria-label="mailbox folders"
             >
                 <Drawer
-                    container={container}
                     variant="temporary"
                     open={mobileOpen}
                     onTransitionEnd={handleDrawerTransitionEnd}
@@ -601,7 +697,8 @@ function ResponsiveDrawer(props) {
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    minHeight: '100dvh',
+                    height: '100dvh',
+                    maxHeight: "100dvh",
                     width: {
                         xs: "100%",
                         sm: "100%",
@@ -609,10 +706,9 @@ function ResponsiveDrawer(props) {
                     },
                     minWidth: 0,
                     flexGrow: 1,
-                    overflowY: 'auto',
+                    overflowY: 'hidden',
                     scrollbarWidth: 'thin',
                     scrollbarColor: '#666 transparent',
-
                     /* Chrome / Edge / Safari */
                     '&::-webkit-scrollbar': {
                         width: '6px',
@@ -633,7 +729,7 @@ function ResponsiveDrawer(props) {
                     height: "60px",
                     backgroundColor: "#010215",
                     flexShrink: 0,
-                    display: { xs: "block", sm: "block", md: "none", lg: "none", xl: "none" }
+                    display: { xs: "block", sm: "block", md: "none", lg: "none", xl: "none" },
                 }} />
                 {activeConversationId && paginaActiva === "chat" && <Toolbar
                     sx={{
@@ -646,12 +742,14 @@ function ResponsiveDrawer(props) {
                         fontWeight: 600
                     }} >
                     {conversations.find(c => c.id === activeConversationId)?.title || "Chat sin título"}
-                </Toolbar>}
+                </Toolbar>
+                }
                 <Box sx={{
                     flexGrow: 1,
+                    height: 0,
                     minHeight: 0,
                     display: "flex",
-                    overflowY: "hidden"
+                    overflowY: "hidden",
                 }}>
                     {paginaActiva === "juegos" ? <Games />
                         : paginaActiva === "calendario" ? <Calendar />
@@ -665,10 +763,9 @@ function ResponsiveDrawer(props) {
                                     isLoading={isLoading}
                                     setLoading={setLoading}
                                 />
-                                : paginaActiva === "Noticias" ? <News />
+                                    : paginaActiva === "Noticias" ? <News />
                                         : paginaActiva === "Lista de compras" ? <Shopping />
                                             : paginaActiva === "notas" ? <Notes />
-                        : paginaActiva === "perfil" ? <Perfil />
                                                 : <Chat
                                                     activeConversationId={activeConversationId}
                                                     setActiveConversationId={setActiveConversationId}

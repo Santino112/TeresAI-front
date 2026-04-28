@@ -35,9 +35,6 @@ html {
   position: fixed;
   inset: 0;
   overflow: hidden;
-  background: linear-gradient(160deg, #212221 30%, #2e2c2c 70%);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: 1;
+  z-index: -1;
+  width: 100%;
 }

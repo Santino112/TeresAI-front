@@ -1,18 +1,15 @@
-import Sudoku from "./Sudoku.jsx";
-import Trivia from "./Trivia.jsx";
-import Crossword from "./Crossword.jsx";
-import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import { Typography, Box, Paper, Divider } from "@mui/material";
+import { useEffect, useState, useRef } from "react";
+import { Typography, Button, TextField, Box, Stack, Paper, Divider } from "@mui/material";
+import fondoChatAI from "../../../../../../assets/images/fondoChatAI.png";
 
-const Games = () => {
+const Familiar = () => {
     return (
-
         <Box
             sx={{
-                flexGrow: 1,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                flexGrow: 1,
                 width: "100%",
                 height: "100%",
                 overflow: "auto",
@@ -20,23 +17,22 @@ const Games = () => {
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
-                p: 2,
+                p: 2
             }}
         >
             <Paper
                 sx={{
-                    flexGrow: 0,
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-start",
-                    width: "%100",
+                    width: "100%",
                     p: { xs: 2, sm: 3, md: 3 },
                     borderRadius: 4,
                     background: "transparent",
-
+                    flexGrow: 0,
                 }}
             >
-                <Typography variant="h2" sx={{
+                <Typography variant="h3" sx={{
                     fontSize: {
                         xs: "1.5rem",
                         sm: "1.5rem",
@@ -46,21 +42,20 @@ const Games = () => {
                     },
                     textAlign: { xs: "center", sm: "center", md: "start" },
                     fontFamily: "'Lora', serif",
-                }}>Juegos mentales 🎲</Typography>
+                }}>Mi familiar 🧑‍🧑‍🧒‍🧒</Typography>
                 <Typography variant="body2" sx={{
                     my: 1,
                     fontSize: {
                         xs: "1rem",
                         sm: "1rem",
                         md: "1.2rem",
-                        lg: "1.3rem",
-                        xl: "1.3rem",
+                        lg: "1.2rem",
+                        xl: "1.2rem",
                     },
                     textAlign: { xs: "center", sm: "center", md: "start" },
                     fontFamily: "'Lora', serif",
                     lineHeight: 1.8,
-                }}>En esta sección podras encontrar una serie de juegos que te ayudaran a pasar el rato. Juegos divertidos y de memoria
-                    para ejercitar la mente y mejorar el bienestar propio.
+                }}>En esta sección podrás tener una visualización de todos tus eventos agendados con teresa. Puedes chequear por semana o mes.
                 </Typography>
                 <Divider sx={{
                     width: "100%",
@@ -70,34 +65,9 @@ const Games = () => {
                 }}>
                     <Typography variant="body1" sx={{ color: "#ffffff" }}>~</Typography>
                 </Divider>
-                <Box sx={{ width: "100%", overflow: "hidden", margin: "0 auto" }}>
-                    <Sudoku />
-                </Box>
-                <Divider sx={{
-                    width: "100%",
-                    "&::before, &::after": {
-                        borderColor: "#ffffff",
-                    }
-                }}>
-                    <Typography variant="body1" sx={{ color: "#ffffff" }}></Typography>
-                </Divider>
-                <Box sx={{ width: "100%", overflowX: "auto", margin: "0 auto" }}>
-                    <Crossword />
-                </Box>
-                <Divider sx={{
-                    width: "100%",
-                    "&::before, &::after": {
-                        borderColor: "#ffffff",
-                    }
-                }}>
-                    <Typography variant="body1" sx={{ color: "#ffffff" }}></Typography>
-                </Divider>
-                <Box sx={{ width: "100%", overflowX: "auto", margin: "0 auto" }}>
-                    <Trivia />
-                </Box>
             </Paper>
         </Box>
-    )
+    );
 };
 
-export default Games;
+export default Familiar;

@@ -5,6 +5,7 @@ import { useAuth } from "../../../../../auth/useAuth.jsx";
 import CircularProgress from '@mui/material/CircularProgress';
 
 const ProfileElder = ({ profile, setProfile }) => {
+    const [usernameLocal, setUsernameLocal] = useState(profile?.username || "");
     const [tieneEnfermedad, setTieneEnfermedad] = useState("seleccione");
     const [enfermedad, setEnfermedad] = useState("No");
     const [tomaMedicamentos, setTomaMedicamentos] = useState("seleccione");
@@ -52,7 +53,6 @@ const ProfileElder = ({ profile, setProfile }) => {
                 if (data) {
                     setProfileElder(data);
                     setOriginalData(data);
-                    setOriginalUsername(data.username);
                 }
             } catch (error) {
                 console.error("Error cargando datos:", error);
@@ -64,46 +64,77 @@ const ProfileElder = ({ profile, setProfile }) => {
     }, [user]);
 
     useEffect(() => {
-        if (!profileElder) return;
+        if (!dataLoaded) return;
 
-        if (profileElder.enfermedades === "No") {
-            setTieneEnfermedad("no");
+        localStorage.setItem(`draft_familiar_${user?.id}`, JSON.stringify({
+            username: usernameLocal,
+            enfermedad,
+            medicamentos,
+            alergias,
+            gustos,
+            molestias
+        }));
+    }, [usernameLocal, enfermedad, medicamentos, alergias, gustos, molestias, dataLoaded]);
+
+    useEffect(() => {
+        if (!profileElder || !profile || originalUsername !== null) return;
+
+        const draft = localStorage.getItem(`draft_familiar_${user?.id}`);
+        if (draft) {
+            const parsed = JSON.parse(draft);
+            setUsernameLocal(parsed.username || profile?.username);
+            setProfile({ ...profile, username: parsed.username });
+            setTieneEnfermedad(parsed.enfermedad === "No" ? "no" : "si");
+            setTomaMedicamentos(parsed.medicamentos === "No" ? "no" : "si");
+            setTieneAlergias(parsed.alergias === "No" ? "no" : "si");
+            setEnfermedad(parsed.enfermedad || "No");
+            setMedicamentos(parsed.medicamentos || "No");
+            setAlergias(parsed.alergias || "No");
+            setGustos(parsed.gustos || "");
+            setMolestias(parsed.molestias || "");
+            setOriginalUsername(profile?.username);
+            setDataLoaded(true);
         } else {
-            setTieneEnfermedad("si");
-            setEnfermedad(profileElder.enfermedades);
+            if (profileElder.enfermedades === "No") {
+                setTieneEnfermedad("no");
+            } else {
+                setTieneEnfermedad("si");
+                setEnfermedad(profileElder.enfermedades);
+            }
+
+            if (profileElder.medicamentos === "No") {
+                setTomaMedicamentos("no");
+            } else {
+                setTomaMedicamentos("si");
+                setMedicamentos(profileElder.medicamentos);
+            }
+
+            if (profileElder.alergias === "No") {
+                setTieneAlergias("no");
+            } else {
+                setTieneAlergias("si");
+                setAlergias(profileElder.alergias);
+            }
+
+            setMolestias(profileElder.molestias);
+            setGustos(profileElder.intereses);
         }
 
-        if (profileElder.medicamentos === "No") {
-            setTomaMedicamentos("no");
-        } else {
-            setTomaMedicamentos("si");
-            setMedicamentos(profileElder.medicamentos);
-        }
-
-        if (profileElder.alergias === "No") {
-            setTieneAlergias("no");
-        } else {
-            setTieneAlergias("si");
-            setAlergias(profileElder.alergias);
-        }
-
-        setMolestias(profileElder.molestias);
-        setGustos(profileElder.intereses);
-
+        setOriginalUsername(profile?.username);
         setDataLoaded(true);
-    }, [profileElder]);
+    }, [profileElder, profile]);
 
     useEffect(() => {
         if (!originalData || !dataLoaded) return;
 
-        const changed = profile?.username !== originalUsername ||
+        const changed = usernameLocal !== originalUsername ||
             enfermedad !== originalData.enfermedades ||
             medicamentos !== originalData.medicamentos ||
             alergias !== originalData.alergias ||
             molestias !== originalData.molestias ||
             gustos !== originalData.intereses;
         setHasChanges(changed);
-    }, [profile?.username, enfermedad, medicamentos, alergias, molestias, gustos, originalData, dataLoaded]);
+    }, [usernameLocal, enfermedad, medicamentos, alergias, molestias, gustos, originalData, dataLoaded]);
 
     const handleUpdateDatos = async (e) => {
         e.preventDefault();
@@ -169,6 +200,17 @@ const ProfileElder = ({ profile, setProfile }) => {
                 setLoading(false);
                 return;
             } else {
+                localStorage.removeItem(`draft_familiar_${user?.id}`);
+                setOriginalUsername(profile?.username);
+                setOriginalData({
+                    ...originalData,
+                    enfermedades: enfermedad,
+                    medicamentos: medicamentos,
+                    alergias: alergias,
+                    intereses: gustos,
+                    molestias: molestias
+                })
+
                 setAlertMessage("El perfil se actualizó correctamente.");
                 setErrorAlert(true);
                 setSeverity("success");
@@ -233,7 +275,7 @@ const ProfileElder = ({ profile, setProfile }) => {
                     },
                     fontFamily: "'Lora', serif",
                     textAlign: { xs: "center", sm: "center", md: "start" },
-                }}><strong>Perfil</strong> de usuario 🧞‍♂️</Typography>
+                }}><strong>Perfil</strong> de usuario 🧓</Typography>
                 <Typography variant="body2" sx={{
                     my: 1,
                     fontSize: {
@@ -269,8 +311,12 @@ const ProfileElder = ({ profile, setProfile }) => {
                                 <>
                                     <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cómo te llamas?</Typography>
                                     <TextField
-                                        value={profile?.username}
-                                        onChange={(e) => setProfile({ ...profile, username: e.target.value })}
+                                        value={usernameLocal}
+                                        onChange={(e) => {
+                                            setUsernameLocal(e.target.value);
+                                            setProfile({ ...profile, username: e.target.value });
+                                        }
+                                        }
                                         placeholder="Nombre completo"
                                         variant="outlined"
                                         fullWidth

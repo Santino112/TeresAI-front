@@ -1,8 +1,12 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MenuUsuario from './menu.jsx';
-import Perfil from '../profile/profile.jsx';
+import MenuUsuario from './Menu.jsx';
+import Inicio from "./inicio.jsx";
+import Chat from "./chatIA/Chat.jsx";
+import Perfil from '../profile/Profile.jsx';
+import Calendar from "../calendar/Calendar.jsx";
+import Familiar from './familiar/Familiar.jsx';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,6 +18,9 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import SmartToyRoundedIcon from '@mui/icons-material/SmartToyRounded';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import QuestionAnswerRoundedIcon from '@mui/icons-material/QuestionAnswerRounded';
+import ElderlyRoundedIcon from '@mui/icons-material/ElderlyRounded';
 import DrawRoundedIcon from '@mui/icons-material/DrawRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import GamesRoundedIcon from '@mui/icons-material/GamesRounded';
@@ -28,7 +35,10 @@ function ResponsiveDrawer(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
-    const [paginaActiva, setPaginaActiva] = useState("");
+    const [paginaActiva, setPaginaActiva] = useState("inicio");
+    const [isLoading, setLoading] = useState(true);
+    const [menuAnchor, setMenuAnchor] = useState(null);
+    const [menuConvId, setMenuConvId] = useState(null);
     const { user, loading: authLoading } = useAuth();
 
     const handleDrawerClose = () => {
@@ -65,7 +75,7 @@ function ResponsiveDrawer(props) {
                 display: 'flex',
                 justifyContent: 'flex-start',
                 flexShrink: 0,
-                backgroundColor: "#313630",
+                backgroundColor: "#030414",
             }}>
                 <Typography variant="h6" noWrap component="div">
                     <SmartToyRoundedIcon fontSize='large' sx={{ verticalAlign: "bottom", mr: 1 }} /> TeresAI
@@ -75,48 +85,55 @@ function ResponsiveDrawer(props) {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'flex-start',
+                overflowY: "auto",
+                maxHeight: "500px",
+                width: "100%",
+                minHeight: "280px",
                 p: 1,
-                flexShrink: 0,
-                backgroundColor: "#313630",
+                backgroundColor: "#030414",
             }}>
-                <Button sx={{
+                <Button fullWidth onClick={() => {
+                    setPaginaActiva("inicio");
+                }} sx={{
+                    justifyContent: "flex-start",
+                    backgroundColor: "transparent",
                     mt: 1,
                     mb: 1,
-                    backgroundColor: "transparent",
-                    color: "#E6E6E6",
+                    color: "#ffffff",
                     "&:hover": {
-                        backgroundColor: "#3f4440"
+                        backgroundColor: "#2b2b2b"
                     }
-                }}><DrawRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
-                <Button sx={{
-                    mb: 1,
+                }}><HomeRoundedIcon sx={{ mr: 1 }} />Inicio</Button>
+                <Button fullWidth onClick={() => {setPaginaActiva("chat")}} sx={{
+                    justifyContent: "flex-start",
                     backgroundColor: "transparent",
-                    color: "#E6E6E6",
+                    mt: 1,
+                    mb: 1,
+                    color: "#ffffff",
                     "&:hover": {
-                        backgroundColor: "#3f4440"
+                        backgroundColor: "#2b2b2b"
                     }
-                }}><SearchRoundedIcon sx={{ mr: 1 }} />Buscar chats</Button>
-                <Button sx={{
-                    mb: 1,
+                }}><QuestionAnswerRoundedIcon sx={{ mr: 1 }} />Chat</Button>
+                <Button fullWidth onClick={() => { setPaginaActiva("familiar") }} sx={{
+                    justifyContent: "flex-start",
                     backgroundColor: "transparent",
-                    color: "#E6E6E6",
+                    mt: 1,
+                    mb: 1,
+                    color: "#ffffff",
                     "&:hover": {
-                        backgroundColor: "#3f4440"
+                        backgroundColor: "#2b2b2b"
                     }
-                }}><GamesRoundedIcon sx={{ mr: 1 }} />Juegos</Button>
-                <Button sx={{
-                    mb: 1,
+                }}><ElderlyRoundedIcon sx={{ mr: 1 }} />Mi familiar</Button>
+                <Button fullWidth onClick={() => { setPaginaActiva("calendario") }} sx={{
+                    justifyContent: "flex-start",
                     backgroundColor: "transparent",
-                    color: "#E6E6E6",
+                    mt: 1,
+                    mb: 1,
+                    color: "#ffffff",
                     "&:hover": {
-                        backgroundColor: "#3f4440"
+                        backgroundColor: "#2b2b2b"
                     }
                 }}><CalendarMonthRoundedIcon sx={{ mr: 1 }} />Calendario</Button>
-                <Divider />
-                <Typography variant="body1" sx={{
-                    mt: 1,
-                    ml: 1
-                }}>Chats</Typography>
             </Box>
             <Divider />
             <Box sx={{
@@ -126,11 +143,10 @@ function ResponsiveDrawer(props) {
                 minHeight: 0,
                 p: 1,
                 width: '100%',
-                backgroundColor: "#262a25",
-                borderRight: "1px solid #2f332f",
+                backgroundColor: "#030414",
                 /* Firefox */
                 scrollbarWidth: 'thin',
-                scrollbarColor: '#666 transparent',
+                scrollbarColor: '#323232 transparent',
 
                 /* Chrome / Edge / Safari */
                 '&::-webkit-scrollbar': {
@@ -155,8 +171,6 @@ function ResponsiveDrawer(props) {
         </Box >
     );
 
-    const container = window !== undefined ? () => window().document.body : undefined;
-
     return (
         <Box sx={{ display: 'flex', width: "100%" }}>
             <CssBaseline />
@@ -172,7 +186,6 @@ function ResponsiveDrawer(props) {
                         lg: "none",
                         xl: "none"
                     },
-                    backgroundColor: "#262a25"
                 }}
             >
                 <Toolbar sx={{
@@ -196,7 +209,6 @@ function ResponsiveDrawer(props) {
                 aria-label="mailbox folders"
             >
                 <Drawer
-                    container={container}
                     variant="temporary"
                     open={mobileOpen}
                     onTransitionEnd={handleDrawerTransitionEnd}
@@ -230,6 +242,7 @@ function ResponsiveDrawer(props) {
                     display: 'flex',
                     flexDirection: 'column',
                     height: '100dvh',
+                    maxHeight: "100dvh",
                     width: {
                         xs: "100%",
                         sm: "100%",
@@ -238,12 +251,11 @@ function ResponsiveDrawer(props) {
                     minWidth: 0,
                     flexGrow: 1,
                     overflowY: 'hidden',
-                    scrollbarWidth: 'none',
+                    scrollbarWidth: 'thin',
                     scrollbarColor: '#666 transparent',
-
                     /* Chrome / Edge / Safari */
                     '&::-webkit-scrollbar': {
-                        display: 'none'
+                        width: '6px',
                     },
                     '&::-webkit-scrollbar-track': {
                         background: 'transparent',
@@ -257,16 +269,37 @@ function ResponsiveDrawer(props) {
                     },
                 }}
             >
-                <Toolbar sx={{ boxShadow: "0px 4px 8px rgba(0,0,0,0.4)" }}>
-                    <Typography>Estas en la pagina del familiar</Typography>
+                <Box sx={{
+                    height: "60px",
+                    backgroundColor: "#010215",
+                    flexShrink: 0,
+                    display: { xs: "block", sm: "block", md: "none", lg: "none", xl: "none" },
+                }} />
+                {paginaActiva === "inicio" && <Toolbar
+                    sx={{
+                        display: { xs: "none", sm: "none", md: "flex", lg: "flex", xl: "flex" },
+                        position: "fixed",
+                        boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.2)",
+                        backgroundColor: "#010215",
+                        backdropFilter: "blur(30px)",
+                        zIndex: 1,
+                        fontWeight: 600
+                    }} >
                 </Toolbar>
+                }
                 <Box sx={{
                     flexGrow: 1,
+                    height: 0,
                     minHeight: 0,
                     display: "flex",
-                    overflowY: "hidden"
+                    overflowY: "hidden",
                 }}>
-                    {paginaActiva === "perfil"} <Perfil />
+                    {paginaActiva === "chat" ? <Chat />
+                        : paginaActiva === "perfil" ? <Perfil />
+                            : paginaActiva === "calendario" ? <Calendar />
+                                : paginaActiva === "familiar" ? <Familiar />
+                                    : <Inicio />
+                    }
                 </Box>
             </Box>
         </Box>

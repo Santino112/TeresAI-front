@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from "../../../../../supabaseClient.js"
-import { useAuth } from "../../../../auth/useAuth.jsx";
+import { useAuth } from "../../../../auth/AuthContext.jsx";
 import { tomarDatosPerfiles } from "../../exports/datosInicialesUsuarios.js";
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
@@ -29,12 +29,12 @@ function IconMenu({ setPaginaActiva }) {
             if (data) setProfile(data);
         }
         fetchInfoUser();
-    }, [user]);
+    }, [user, profile]);
 
     const handleLogOut = async () => {
         await supabase.auth.signOut();
         const { data } = await supabase.auth.getSession();
-        console.log(data.session);
+        setAnchorEl(false);
         navigate('/');
     }
 
@@ -80,10 +80,25 @@ function IconMenu({ setPaginaActiva }) {
                     }
                 }}
                 PaperProps={{
-                    sx: { backgroundColor: "#303030", color: "#ffffff", minWidth: "13%", p: 0, borderRadius: 3 }
+                    sx: { backgroundColor: "#303030", color: "#ffffff", minWidth: {xs: "53%", sm: "30%", md: "22%", lg: "17%", xl: "13%"}, p: 0, borderRadius: 3 }
                 }}
             >
-                <MenuItem onClick={() => setPaginaActiva("perfil")} sx={{borderRadius: 3}}>
+                <MenuItem disabled sx={{borderRadius: 3}}>
+                    <Typography variant='body2' sx={{position: "relative", left: "7px"}}>{profile?.email}</Typography>
+                </MenuItem>
+                <Divider sx={{
+                    width: "100%",
+                    "&::before, &::after": {
+                        borderColor: "#ffffff",
+                    },
+                    m: 0,
+                    p: 0
+                }}>
+                </Divider>
+                <MenuItem onClick={() => { 
+                    setPaginaActiva("perfil");
+                    setAnchorEl(false);
+                }} sx={{borderRadius: 3}}>
                     <PersonRoundedIcon fontSize='medium' sx={{ mr: 1 }} />Perfil
                 </MenuItem>
                 <MenuItem sx={{borderRadius: 3}}>
@@ -101,7 +116,6 @@ function IconMenu({ setPaginaActiva }) {
                 <MenuItem onClick={handleLogOut} sx={{borderRadius: 3}}>
                     <LogoutRoundedIcon fontSize="medium" sx={{ mr: 1 }} />Cerrar sesión
                 </MenuItem>
-
             </Menu>
         </Box >
     );

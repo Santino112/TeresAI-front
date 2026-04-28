@@ -212,7 +212,7 @@ export const actualizarDatosCuidadores = async (userId, { geriatrico, adultosmay
 //Linkear a los elders con sus familiares y cuidadores
 
 export const linkearUsuarios = async (userId, { emailFamiliar, rol }) => {
-    
+
     const { data: elderData, error: elderError } = await supabase
         .schema("public")
         .from("profiles")
@@ -236,7 +236,38 @@ export const linkearUsuarios = async (userId, { emailFamiliar, rol }) => {
         });
 
     if (error) {
+        if (error.message.includes("unique_link") || error.message.includes("duplicate key value")) {
+            return { success: false, message: "Ya estás vinculado con ese adulto mayor." };
+        }
         return { success: false, message: error.message };
     }
     return { success: true };
+};
+
+//Actualizar datos de la cuenta
+
+export const updateEmail = async (userId, { nuevoEmail }) => {
+
+    const { error } = await supabase.auth.updateUser({
+        email: nuevoEmail
+    });
+
+    if (error) {
+        console.log("Error supabase:", error.message);
+        return { success: false, message: error.message };
+    }
+    return { success: true, message: "Actualizado con éxito, revisa tu casilla de email para confirmarlo" };
+};
+
+export const updateContraseña = async (userId, { nuevaContraseña }) => {
+
+    const { error } = await supabase.auth.updateUser({
+        password: nuevaContraseña
+    });
+
+    if (error) {
+        console.log("Error supabase:", error.message);
+        return { success: true, message: error.message };
+    };
+    return { success: true, message: "Contraseña actualizada con éxito" };
 };
