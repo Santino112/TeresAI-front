@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MenuUsuario from './menu.jsx';
-import Perfil from '../profile/profile.jsx';
+import Perfil from '../profile/Profile.jsx';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';

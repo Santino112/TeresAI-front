@@ -17,3 +17,11 @@ export const playTTS = async (text) => {
   currentAudio = new Audio(audioUrl);
   currentAudio.play();
 };
+
+export const stopTTS = () => {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+};

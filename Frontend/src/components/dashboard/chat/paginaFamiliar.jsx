@@ -1,4 +1,4 @@
-import ResponsiveDrawer from "./components/dashboardFamiliar/sideBarFamiliar";
+import ResponsiveDrawer from "./components/dashboardFamiliar/SideBarFamiliar";
 
 const PanelFamiliar = () => {
     return(
