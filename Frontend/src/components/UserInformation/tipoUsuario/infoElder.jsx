@@ -19,7 +19,6 @@ const InfoElder = (
         gustos,
         setGustos,
         errorTextFields,
-        setErrorTextFields,
     }
 ) => {
     return (

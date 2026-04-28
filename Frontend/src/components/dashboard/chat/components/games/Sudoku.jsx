@@ -22,7 +22,7 @@ export default function Sudoku() {
   const [won, setWon] = useState(false);
   const [checked, setChecked] = useState(false);
 
-  const fetchBoard = useCallback(async (diff = difficulty) => {
+  const fetchBoard = useCallback(async () => {
     setLoading(true);
     setWon(false);
     setChecked(false);
@@ -41,7 +41,7 @@ export default function Sudoku() {
       console.error("Error fetching sudoku:", e);
     }
     setLoading(false);
-  }, [difficulty]);
+  }, []);
 
   useEffect(() => {
     fetchBoard();

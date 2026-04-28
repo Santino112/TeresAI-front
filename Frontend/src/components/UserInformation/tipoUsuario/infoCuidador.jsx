@@ -10,12 +10,9 @@ const InfoCuidador = (
          setInfoEspecifica,
          sinGeriatrico,
          setSinGeriatrico,
-         errorTextFields,
-         setErrorTextFields
+        errorTextFields
     }
 ) => {
-    const label = { slotProps: { input: { 'aria-label': 'Checkbox demo' } } };
-
     return (
         <>
             <Box sx={{ my: 0, width: "100%" }}>

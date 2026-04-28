@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../../../../auth/AuthContext.jsx';
+import { useState } from 'react';
 import { Typography, Button, TextField, Box, Paper, Menu, MenuItem, Divider, Skeleton, Input, InputAdornment } from "@mui/material";
 import { deleteConversation } from '../../exports/eliminarConversacion.js';
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
@@ -11,7 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 
-const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActiva, conversations, setConversations, isLoading, setLoading }) => {
+const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActiva, conversations, setConversations, isLoading }) => {
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [menuConvId, setMenuConvId] = useState(null);
     const [busqueda, setBusqueda] = useState("");
@@ -200,7 +199,7 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                             }}
                         />
                     </Box>
-                    <Box sx={{ maxHeight: "500px", minHeight: "500px", backgroundColor: "#303030", p: 1, overflowY: "auto", maxHeight: "500px", borderRadius: 3 }}>
+                    <Box sx={{ maxHeight: "500px", minHeight: "500px", backgroundColor: "#303030", p: 1, overflowY: "auto", borderRadius: 3 }}>
                         {isLoading ? (
                             <>
                                 <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />

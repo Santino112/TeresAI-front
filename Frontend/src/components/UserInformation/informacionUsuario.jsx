@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Typography, Button, TextField, Box, Select, MenuItem, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel } from "@mui/material";
-import { useAuth } from "../auth/AuthContext";
+import { useAuth } from "../auth/useAuth.jsx";
 import { supabase } from "../../supabaseClient";
 import { saveProfile, elderPeople, familyPeople, caregivePeople, linkearUsuarios } from "../dashboard/chat/exports/datosInicialesUsuarios";
 import InfoElder from "./tipoUsuario/InfoElder";

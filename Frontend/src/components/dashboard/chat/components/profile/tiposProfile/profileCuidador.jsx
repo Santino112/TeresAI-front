@@ -1,7 +1,7 @@
-import { useState, useEffect, useEffectEvent } from "react";
+import { useState, useEffect } from "react";
 import { Typography, Button, TextField, Box, Paper, Divider, Alert, FormControlLabel, Checkbox, Grid } from "@mui/material";
 import { tomarDatosCuidadores, actualizarDatosCuidadores, actualizarDatosPerfiles } from "../../../exports/datosInicialesUsuarios";
-import { useAuth } from "../../../../../auth/AuthContext";
+import { useAuth } from "../../../../../auth/useAuth.jsx";
 import CircularProgress from '@mui/material/CircularProgress';
 
 
@@ -84,10 +84,9 @@ const ProfileCuidador = ({ profile, setProfile }) => {
             setAlertMessage("Ocurrió un error al guardar tu perfil, intentá de nuevo.");
             setErrorAlert(true);
             setSeverity("error");
-            setTimeout(() => {
-                setErrorAlert(false)
-                setErrorTextFields(false)
-            }, 5000);
+                setTimeout(() => {
+                    setErrorAlert(false)
+                }, 5000);
             setLoading(false);
             return;
         }
@@ -282,6 +281,7 @@ const ProfileCuidador = ({ profile, setProfile }) => {
                             <FormControlLabel
                                 control={
                                     <Checkbox
+                                        checked={sinGeriatrico}
                                         onChange={(e) => {
                                             setSinGeriatrico(e.target.checked);
                                             e.target.checked ? setGeriatrico("No trabajo en un geriátrico") : setGeriatrico("");

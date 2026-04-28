@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Typography, Button, TextField, Box, Stack, Paper, Divider } from "@mui/material";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 import BotonCalendar from '../buttons/BotonCalendar.jsx';
@@ -7,6 +7,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import api from "../../../../../api/axios.js";
 import { supabase } from "../../../../../supabaseClient.js";
+import fondoChatAI from "../../../../../assets/images/fondoChatAI.png"
 
 const Calendar = () => {
     const [events, setEvents] = useState([]);
@@ -116,24 +117,25 @@ const Calendar = () => {
                     "& .fc-toolbar-title": {
                         fontSize: "1rem !important",
 
-                    },
-                    "& .fc-col-header-cell": {
-                        fontSize: "0.85rem !important",
-                    },
-                    "& .fc-daygrid-day-number": {
-                        fontSize: "0.85rem !important",
-                    }
-                }}>
-                    <BotonCalendar />
-                    <FullCalendar
-                        plugins={[dayGridPlugin, timeGridPlugin]}
-                        initialView="dayGridMonth"
-                        locale="es"
-                        headerToolbar={{
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'dayGridMonth,timeGridWeek'
-                        }}
+                        },
+                        "& .fc-col-header-cell": {
+                            fontSize: "0.85rem !important",
+                        },
+                        "& .fc-daygrid-day-number": {
+                            fontSize: "0.85rem !important",
+                        }
+                    }}>
+                        <BotonCalendar />
+                        <FullCalendar
+                            plugins={[dayGridPlugin, timeGridPlugin]}
+                            initialView="dayGridMonth"
+                            locale="es"
+                            headerToolbar={{
+                                left: 'prev,next today',
+                                center: 'title',
+                                right: 'dayGridMonth,timeGridWeek'
+                            }}
+                            events={events}
 
                     />
                 </Box>

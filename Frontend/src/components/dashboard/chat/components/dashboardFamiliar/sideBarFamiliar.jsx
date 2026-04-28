@@ -26,7 +26,7 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import GamesRoundedIcon from '@mui/icons-material/GamesRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useAuth } from '../../../../auth/AuthContext.jsx';
+import { useAuth } from '../../../../auth/useAuth.jsx';
 
 const drawerWidth = 290;
 
@@ -64,12 +64,6 @@ function ResponsiveDrawer(props) {
             return;
         };
     }, [user, authLoading]);
-
-    const handleMenuOpen = (e, convId) => {
-        e.stopPropagation();
-        setMenuAnchor(e.currentTarget);
-        setMenuConvId(convId);
-    };
 
     const drawer = (
         <Box sx={{

@@ -14,7 +14,6 @@ const cloneGrid = (grid) => grid.map(row => [...row]);
 export default function Crossword() {
   const [grid, setGrid] = useState(null);
   const [solution, setSolution] = useState(null);
-  const [words, setWords] = useState([]);
   const [selected, setSelected] = useState(null);
   const [difficulty, setDifficulty] = useState("easy");
   const [loading, setLoading] = useState(false);
@@ -42,7 +41,6 @@ export default function Crossword() {
         )
       );
       
-      setWords(data.words);
       setClues(data.clues || []);
       setNumbers(data.numbers || []);
 

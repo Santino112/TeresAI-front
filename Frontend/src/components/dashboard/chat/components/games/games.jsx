@@ -2,8 +2,7 @@ import Sudoku from "./Sudoku.jsx";
 import Trivia from "./Trivia.jsx";
 import Crossword from "./Crossword.jsx";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import { Typography, Button, TextField, Box, Stack, Paper, Divider } from "@mui/material";
-import { InputAdornment, IconButton } from "@mui/material";
+import { Typography, Box, Paper, Divider } from "@mui/material";
 
 const Games = () => {
     return (

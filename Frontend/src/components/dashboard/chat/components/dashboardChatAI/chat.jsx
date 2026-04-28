@@ -5,7 +5,7 @@ import { playTTS, stopTTS } from "../../exports/playTTS.js";
 import { useWakeWord } from "../../exports/useWakeWord.js";
 import { getMessages } from "../../exports/conversaciones.js";
 import { InputAdornment, IconButton } from "@mui/material";
-import { useAuth } from "../../../../auth/AuthContext.jsx";
+import { useAuth } from "../../../../auth/useAuth.jsx";
 import { tomarDatosPerfiles } from '../../exports/datosInicialesUsuarios.js';
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 import axios from "axios";
@@ -144,8 +144,17 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     setMensajes(prev => [...prev, { id: crypto.randomUUID(), role: 'user', content: texto }]);
     setPensandoIA(conversationIdAlEnviar);
 
+    const conversationIdAlEnviar = activeConversationId;
+    setPensandoIA(conversationIdAlEnviar);
+
+    if (abortRef.current) abortRef.current.abort();
+    abortRef.current = new AbortController();
+
+    setMensajes(prev => [...prev, { id: crypto.randomUUID(), role: 'user', content: texto }]);
+    setPensandoIA(conversationIdAlEnviar);
+
     try {
-      location = await new Promise((resolve, reject) => {
+      location = await new Promise((resolve) => {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
             const coords = {
