@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient.js';
 import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert, Card, AppBar, Toolbar } from '@mui/material';
-import TeresaiLogo from '../../assets/images/file.svg';
+import TeresaiLogo from '../../assets/images/logo_teresAI.svg';
 import fondoLogin from "../../assets/images/fondoLogin.png"
 import imagenRegister from "../../assets/images/imagenRegister.jpg"
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';

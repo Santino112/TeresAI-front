@@ -15,6 +15,53 @@ import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
 
+const GEO_TIMEOUT_ERROR_CODE = 3;
+
+const getCurrentLocation = async () => {
+  if (!("geolocation" in navigator)) {
+    console.info("Geolocation no disponible en este navegador.");
+    return null;
+  }
+
+  const getPosition = (options) =>
+    new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    });
+
+  try {
+    const quickPosition = await getPosition({
+      enableHighAccuracy: false,
+      timeout: 6000,
+      maximumAge: 600000
+    });
+
+    return {
+      lat: quickPosition.coords.latitude,
+      lng: quickPosition.coords.longitude
+    };
+  } catch (firstError) {
+    if (firstError?.code !== GEO_TIMEOUT_ERROR_CODE) {
+      console.warn("No se pudo obtener ubicacion:", firstError?.message);
+      return null;
+    }
+  }
+
+  try {
+    const retryPosition = await getPosition({
+      enableHighAccuracy: true,
+      timeout: 12000,
+      maximumAge: 0
+    });
+
+    return {
+      lat: retryPosition.coords.latitude,
+      lng: retryPosition.coords.longitude
+    };
+  } catch (retryError) {
+    console.warn("No se pudo obtener ubicacion tras reintento:", retryError?.message);
+    return null;
+  }
+};
 const Chat = ({ activeConversationId, setActiveConversationId, addConversation }) => {
   const [prompt, setPrompt] = useState("");
   const [mensajes, setMensajes] = useState([]);
@@ -129,7 +176,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
       if (data) setProfile(data);
     }
     fetchInfoUser();
-  }, [user, profile]);
+  }, [user?.id]);
 
   const enviarTexto = async (texto) => {
     if (!texto.trim()) return;
@@ -144,37 +191,11 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     setMensajes(prev => [...prev, { id: crypto.randomUUID(), role: 'user', content: texto }]);
     setPensandoIA(conversationIdAlEnviar);
 
-    const conversationIdAlEnviar = activeConversationId;
-    setPensandoIA(conversationIdAlEnviar);
-
-    if (abortRef.current) abortRef.current.abort();
-    abortRef.current = new AbortController();
-
-    setMensajes(prev => [...prev, { id: crypto.randomUUID(), role: 'user', content: texto }]);
-    setPensandoIA(conversationIdAlEnviar);
-
     try {
-      location = await new Promise((resolve) => {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            const coords = {
-              lat: pos.coords.latitude,
-              lng: pos.coords.longitude
-            };
-            console.log("Ubicación obtenida:", coords);
-            resolve(coords);
-          },
-          (err) => {
-            console.warn("No se pudo obtener ubicación:", err.message);
-            resolve(null);
-          },
-          {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 300000
-          }
-        );
-      });
+      location = await getCurrentLocation();
+      if (location) {
+        console.log("Ubicacion obtenida:", location);
+      }
       const res = await enviarPrompt(texto, conversationIdAlEnviar, location, abortRef.current.signal);
 
       if (activeConversationIdRef.current === conversationIdAlEnviar) {

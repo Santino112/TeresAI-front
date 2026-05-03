@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from "../../../../../supabaseClient.js"
-import { useAuth } from "../../../../auth/AuthContext.jsx";
+import { useAuth } from "../../../../auth/useAuth.jsx";
 import { tomarDatosPerfiles } from "../../exports/datosInicialesUsuarios.js";
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
@@ -29,7 +29,7 @@ function IconMenu({ setPaginaActiva }) {
             if (data) setProfile(data);
         }
         fetchInfoUser();
-    }, [user, profile]);
+    }, [user?.id]);
 
     const handleLogOut = async () => {
         await supabase.auth.signOut();

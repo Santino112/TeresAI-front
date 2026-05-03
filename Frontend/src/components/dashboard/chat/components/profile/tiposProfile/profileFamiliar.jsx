@@ -1,7 +1,7 @@
 import { useState, useEffect, useEffectEvent, useRef } from "react";
 import { Typography, Button, TextField, Box, Divider, Select, MenuItem, Alert, Grid, Paper, InputAdornment, IconButton } from "@mui/material";
 import { tomarDatosFamiliares, actualizarDatosFamiliares, actualizarDatosPerfiles, updateEmail, updateContraseña, linkearUsuarios } from "../../../exports/datosInicialesUsuarios";
-import { useAuth } from "../../../../../auth/AuthContext";
+import { useAuth } from "../../../../../auth/useAuth.jsx";
 import CircularProgress from '@mui/material/CircularProgress';
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import MarkEmailReadRoundedIcon from '@mui/icons-material/MarkEmailReadRounded';

@@ -29,7 +29,7 @@ const Games = () => {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-start",
-                    width: "%100",
+                    width: "100%",
                     p: { xs: 2, sm: 3, md: 3 },
                     borderRadius: 4,
                     background: "transparent",

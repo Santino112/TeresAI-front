@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert, Card, AppBar, Toolbar } from '@mui/material';
 import { supabase } from '../../supabaseClient.js';
 import fondoLogin from "../../assets/images/fondoLogin.png"
-import TeresaiLogo from '../../assets/images/file.svg';
+import TeresaiLogo from '../../assets/images/logo_teresAI.svg';
 import imagenLogin from "../../assets/images/imagenLogin.jpg"
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import PasswordRoundedIcon from '@mui/icons-material/PasswordRounded';

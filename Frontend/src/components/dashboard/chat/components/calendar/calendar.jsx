@@ -7,7 +7,6 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import api from "../../../../../api/axios.js";
 import { supabase } from "../../../../../supabaseClient.js";
-import fondoChatAI from "../../../../../assets/images/fondoChatAI.png"
 
 const Calendar = () => {
     const [events, setEvents] = useState([]);

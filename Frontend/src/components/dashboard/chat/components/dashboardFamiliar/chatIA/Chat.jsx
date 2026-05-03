@@ -1,14 +1,264 @@
 import { useEffect, useState, useRef } from "react";
-import { Typography, TextField, Box, CircularProgress } from "@mui/material";
-import { InputAdornment, IconButton } from "@mui/material";
+import { Typography, TextField, Box, CircularProgress, IconButton } from "@mui/material";
+import { enviarPromptFamiliar } from "../../../exports/enviarPromptFamiliar.js";
+import { playTTS, stopTTS } from "../../../exports/playTTS.js";
+import { useWakeWord } from "../../../exports/useWakeWord.js";
+import { getMessagesFamiliar } from "../../../exports/conversacionesFamiliar.js";
+import { useAuth } from "../../../../../auth/useAuth.jsx";
+import { tomarDatosPerfiles } from "../../../exports/datosInicialesUsuarios.js";
 import fondoChatAI from "../../../../../../assets/images/fondoChatAI.png";
 import axios from "axios";
-import ReactMarkDown from 'react-markdown';
-import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
+import ReactMarkDown from "react-markdown";
+import BotonAudio from "../../buttons/BotonAudio.jsx";
+import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
 
-const Chat = () => {
+const GEO_TIMEOUT_ERROR_CODE = 3;
+
+const getCurrentLocation = async () => {
+  if (!("geolocation" in navigator)) {
+    return null;
+  }
+
+  const getPosition = (options) =>
+    new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    });
+
+  try {
+    const quickPosition = await getPosition({
+      enableHighAccuracy: false,
+      timeout: 6000,
+      maximumAge: 600000
+    });
+
+    return {
+      lat: quickPosition.coords.latitude,
+      lng: quickPosition.coords.longitude
+    };
+  } catch (firstError) {
+    if (firstError?.code !== GEO_TIMEOUT_ERROR_CODE) {
+      return null;
+    }
+  }
+
+  try {
+    const retryPosition = await getPosition({
+      enableHighAccuracy: true,
+      timeout: 12000,
+      maximumAge: 0
+    });
+
+    return {
+      lat: retryPosition.coords.latitude,
+      lng: retryPosition.coords.longitude
+    };
+  } catch {
+    return null;
+  }
+};
+
+const Chat = ({ activeConversationId, setActiveConversationId, addConversation }) => {
+  const [prompt, setPrompt] = useState("");
+  const [mensajes, setMensajes] = useState([]);
+  const [respuesta, setRespuesta] = useState("");
+  const [ttsEnabled, setTtsEnabled] = useState(false);
+  const [profile, setProfile] = useState(null);
+  const [pensandoIA, setPensandoIA] = useState(null);
+  const [loadingMessages, setLoadingMessages] = useState(false);
+  const esPantallaInicial = mensajes.length === 0 && !loadingMessages && !activeConversationId;
+  const { user } = useAuth();
+  const activeConversationIdRef = useRef(activeConversationId);
+  const scrollRef = useRef(null);
+  const abortRef = useRef(null);
+
+  let saludo = "";
+  const time = new Date().getHours();
+
+  if (time >= 6 && time < 12) saludo = "Buenos dias";
+  else if (time >= 12 && time <= 19) saludo = "Buenas tardes";
+  else saludo = "Buenas noches";
+
+  const frases = [
+    "Que quieres saber sobre tu familiar hoy?",
+    "Puedes preguntarme por su historial reciente.",
+    "Estoy para ayudarte con informacion de tu adulto mayor.",
+    "Preguntame por conversaciones, salud o intereses.",
+    "Necesitas ayuda con algo de tu familiar?"
+  ];
+  const [fraseActual, setFraseActual] = useState(frases[0]);
+
+  const frasesParaIA = [
+    "Pensando...",
+    "Analizando informacion vinculada...",
+    "Revisando conversaciones previas...",
+    "Teresa esta preparando la respuesta..."
+  ];
+  const [fraseParaChat, setFraseParaChat] = useState(frasesParaIA[0]);
+
+  const audioRef = useRef(null);
+
+  const { startWake, stopWake } = useWakeWord(() => {
+    audioRef.current?.startRecording();
+  });
+
+  useEffect(() => {
+    startWake();
+    return () => stopWake();
+  }, []);
+
+  useEffect(() => {
+    if (!scrollRef.current) return;
+
+    setTimeout(() => {
+      scrollRef.current?.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth"
+      });
+    }, 50);
+  }, [mensajes, pensandoIA]);
+
+  useEffect(() => {
+    activeConversationIdRef.current = activeConversationId;
+  }, [activeConversationId]);
+
+  useEffect(() => {
+    let intervalo;
+
+    if (pensandoIA === activeConversationId) {
+      intervalo = setInterval(() => {
+        setFraseParaChat((prevFrase) => {
+          const indiceActual = frasesParaIA.indexOf(prevFrase);
+          const siguienteIndice = (indiceActual + 1) % frasesParaIA.length;
+          return frasesParaIA[siguienteIndice];
+        });
+      }, 3000);
+    } else {
+      setFraseParaChat(frasesParaIA[0]);
+    }
+
+    return () => clearInterval(intervalo);
+  }, [pensandoIA, activeConversationId]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    if (!activeConversationId) {
+      setMensajes([]);
+      return;
+    }
+
+    const fetchMessages = async () => {
+      setLoadingMessages(true);
+      const data = await getMessagesFamiliar(activeConversationId);
+      if (!mounted) return;
+      setMensajes(data || []);
+      setLoadingMessages(false);
+    };
+
+    fetchMessages();
+
+    return () => {
+      mounted = false;
+    };
+  }, [activeConversationId]);
+
+  useEffect(() => {
+    if (respuesta?.text && ttsEnabled) {
+      playTTS(respuesta.text);
+    }
+  }, [respuesta, ttsEnabled]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchInfoUser = async () => {
+      const data = await tomarDatosPerfiles(user.id);
+      if (data) setProfile(data);
+    };
+
+    fetchInfoUser();
+  }, [user?.id]);
+
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      setFraseActual((prevFrase) => {
+        const indiceActual = frases.indexOf(prevFrase);
+        const siguienteIndice = (indiceActual + 1) % frases.length;
+        return frases[siguienteIndice];
+      });
+    }, 4000);
+
+    return () => clearInterval(intervalo);
+  }, []);
+
+  const enviarTexto = async (texto) => {
+    if (!texto.trim()) return;
+
+    let location = null;
+    const conversationIdAlEnviar = activeConversationId;
+
+    setPensandoIA(conversationIdAlEnviar);
+
+    if (abortRef.current) abortRef.current.abort();
+    abortRef.current = new AbortController();
+
+    setMensajes((prev) => [...prev, { id: crypto.randomUUID(), role: "user", content: texto }]);
+
+    try {
+      location = await getCurrentLocation();
+
+      const res = await enviarPromptFamiliar(
+        texto,
+        conversationIdAlEnviar,
+        location,
+        abortRef.current.signal
+      );
+
+      if (activeConversationIdRef.current === conversationIdAlEnviar) {
+        setPensandoIA(null);
+        setMensajes((prev) => [
+          ...prev,
+          { id: crypto.randomUUID(), role: "assistant", content: res.text }
+        ]);
+        setRespuesta(res);
+      }
+
+      if (res.conversation) {
+        addConversation?.(res.conversation);
+        if (!conversationIdAlEnviar) {
+          setActiveConversationId?.(res.conversation.id);
+          setPensandoIA(res.conversation.id);
+        }
+      }
+    } catch (error) {
+      if (error.name === "AbortError" || error.name === "CanceledError" || axios.isCancel(error)) return;
+      setPensandoIA(null);
+      setMensajes((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content: "Ocurrio un error al procesar el mensaje. Intenta de nuevo."
+        }
+      ]);
+      console.error("Error en chat familiar:", error);
+    }
+  };
+
+  const mandarPrompt = async (e) => {
+    if (e) e.preventDefault();
+    const texto = prompt;
+    setPrompt("");
+    await enviarTexto(texto);
+  };
+
+  const recibirTextoDeAudio = async (texto) => {
+    await enviarTexto(texto);
+  };
+
+  const hayTexto = prompt.trim().length > 0;
 
   return (
     <Box
@@ -22,7 +272,7 @@ const Chat = () => {
         background: `url(${fondoChatAI})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
+        backgroundRepeat: "no-repeat"
       }}
     >
       {loadingMessages ? (
@@ -43,20 +293,22 @@ const Chat = () => {
             p: 2
           }}
         >
-          <Typography variant="h1" sx={{
-            fontSize: {
-              xs: "1.5rem",
-              sm: "2rem",
-              md: "2rem",
-              lg: "2.5rem",
-              xl: "2.8rem"
-            },
-            fontFamily: "'Lora', serif",
-            color: "#f0750a",
-            mb: 2,
-
-            textAlign: "center"
-          }}>
+          <Typography
+            variant="h1"
+            sx={{
+              fontSize: {
+                xs: "1.5rem",
+                sm: "2rem",
+                md: "2rem",
+                lg: "2.5rem",
+                xl: "2.8rem"
+              },
+              fontFamily: "'Lora', serif",
+              color: "#f0750a",
+              mb: 2,
+              textAlign: "center"
+            }}
+          >
             {saludo}, {profile?.username}
           </Typography>
           <Box
@@ -84,11 +336,7 @@ const Chat = () => {
               }
             }}
           >
-            <Box sx={{
-              backgroundColor: "#303030",
-              borderRadius: 4,
-              p: 1,
-            }}>
+            <Box sx={{ backgroundColor: "#303030", borderRadius: 4, p: 1 }}>
               <TextField
                 placeholder={fraseActual}
                 value={prompt}
@@ -105,23 +353,16 @@ const Chat = () => {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 4,
-                    backgroundColor: "transparent",
+                    backgroundColor: "transparent"
                   },
                   "& .MuiInputBase-input": {
                     color: "#ffffff",
-                    fontWeight: 500,
+                    fontWeight: 500
                   },
-                  "& fieldset": { border: "none" },
+                  "& fieldset": { border: "none" }
                 }}
               />
-              <Box sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 1,
-                px: 1,
-                pb: 0.8,
-              }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 1, px: 1, pb: 0.8 }}>
                 <Box>
                   <IconButton
                     onClick={() => {
@@ -134,7 +375,7 @@ const Chat = () => {
                     sx={{
                       backgroundColor: ttsEnabled ? "#ffffff" : "transparent",
                       color: ttsEnabled ? "#303030" : "#ffffff",
-                      "&:hover": { backgroundColor: "#dad7d7", color: "#303030" },
+                      "&:hover": { backgroundColor: "#dad7d7", color: "#303030" }
                     }}
                   >
                     {ttsEnabled ? <VolumeUpRoundedIcon fontSize="medium" /> : <VolumeOffRoundedIcon fontSize="medium" />}
@@ -149,11 +390,14 @@ const Chat = () => {
                     sx={{ display: hayTexto ? "none" : "inline-flex" }}
                   />
                   {hayTexto && (
-                    <IconButton type='submit' sx={{
-                      backgroundColor: "#ffffff",
-                      color: "#303030",
-                      "&:hover": { backgroundColor: "#dad7d7", color: "#303030" }
-                    }}>
+                    <IconButton
+                      type="submit"
+                      sx={{
+                        backgroundColor: "#ffffff",
+                        color: "#303030",
+                        "&:hover": { backgroundColor: "#dad7d7", color: "#303030" }
+                      }}
+                    >
                       <ArrowUpwardRoundedIcon fontSize="medium" />
                     </IconButton>
                   )}
@@ -164,13 +408,7 @@ const Chat = () => {
         </Box>
       ) : (
         <>
-          <Box sx={{
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-            width: "100%",
-            overflow: "hidden"
-          }}>
+          <Box sx={{ display: "flex", flexDirection: "column", height: "100%", width: "100%", overflow: "hidden" }}>
             <Box
               ref={scrollRef}
               sx={{
@@ -183,7 +421,7 @@ const Chat = () => {
                 width: "100%",
                 gap: 5,
                 p: { xs: 2, sm: 2, md: 3, lg: 3, xl: 3 },
-                scrollbarWidth: 'thin'
+                scrollbarWidth: "thin"
               }}
             >
               {mensajes.map((msg) => (
@@ -193,7 +431,7 @@ const Chat = () => {
                     display: "flex",
                     maxWidth: "800px",
                     width: "100%",
-                    justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
+                    justifyContent: msg.role === "user" ? "flex-end" : "flex-start"
                   }}
                 >
                   <Box
@@ -230,41 +468,51 @@ const Chat = () => {
                     }}
                   >
                     <ReactMarkDown
-                      components={msg.role === "user" ? {
-                        p: ({ children }) => (
-                          <Typography sx={{
-                            fontSize: "1.05rem",
-                            lineHeight: 1.8,
-                            color: "#E6E6E6",
-                            m: 0,
-                            textAlign: "left"
-                          }}>
-                            {children}
-                          </Typography>
-                        ),
-                      } : {
-                        p: ({ children }) => (
-                          <Typography sx={{
-                            fontSize: "1.05rem",
-                            lineHeight: 1.8,
-                            mb: 1,
-                            color: "#E6E6E6",
-                            textAlign: "left"
-                          }}>
-                            {children}
-                          </Typography>
-                        ),
-                        li: ({ children }) => (
-                          <li style={{
-                            fontSize: "1.05rem",
-                            lineHeight: 1.8,
-                            color: "#E6E6E6",
-                            textAlign: "left"
-                          }}>
-                            {children}
-                          </li>
-                        ),
-                      }}
+                      components={
+                        msg.role === "user"
+                          ? {
+                            p: ({ children }) => (
+                              <Typography
+                                sx={{
+                                  fontSize: "1.05rem",
+                                  lineHeight: 1.8,
+                                  color: "#E6E6E6",
+                                  m: 0,
+                                  textAlign: "left"
+                                }}
+                              >
+                                {children}
+                              </Typography>
+                            )
+                          }
+                          : {
+                            p: ({ children }) => (
+                              <Typography
+                                sx={{
+                                  fontSize: "1.05rem",
+                                  lineHeight: 1.8,
+                                  mb: 1,
+                                  color: "#E6E6E6",
+                                  textAlign: "left"
+                                }}
+                              >
+                                {children}
+                              </Typography>
+                            ),
+                            li: ({ children }) => (
+                              <li
+                                style={{
+                                  fontSize: "1.05rem",
+                                  lineHeight: 1.8,
+                                  color: "#E6E6E6",
+                                  textAlign: "left"
+                                }}
+                              >
+                                {children}
+                              </li>
+                            )
+                          }
+                      }
                     >
                       {msg.content}
                     </ReactMarkDown>
@@ -273,15 +521,17 @@ const Chat = () => {
               ))}
               {pensandoIA === activeConversationId && (
                 <Box sx={{ display: "flex", justifyContent: "flex-start", width: "100%", maxWidth: "800px", pl: 2 }}>
-                  <Box sx={{
-                    maxWidth: "800px",
-                    width: "100%",
-                    mb: 3,
-                    color: "#ffffff",
-                    fontStyle: "italic",
-                    fontSize: "1.05rem",
-                    fontFamily: "'Lora', serif"
-                  }}>
+                  <Box
+                    sx={{
+                      maxWidth: "800px",
+                      width: "100%",
+                      mb: 3,
+                      color: "#ffffff",
+                      fontStyle: "italic",
+                      fontSize: "1.05rem",
+                      fontFamily: "'Lora', serif"
+                    }}
+                  >
                     {fraseParaChat}
                   </Box>
                 </Box>
@@ -300,23 +550,25 @@ const Chat = () => {
               width: "100%",
               flexShrink: 0,
               my: 1,
-              mb: { xs: 0, sm: 0, md: 1, lg: 2, xl: 2 },
+              mb: { xs: 0, sm: 0, md: 1, lg: 2, xl: 2 }
             }}
           >
-            <Box sx={{
-              width: "100%",
-              maxWidth: "800px",
-              backgroundColor: "#303030",
-              borderRadius: {
-                xs: "16px 16px 0 0",
-                sm: "16px 16px 0 0",
-                md: 4,
-                lg: 4,
-                xl: 4
-              },
-              boxShadow: 4,
-              p: 1,
-            }}>
+            <Box
+              sx={{
+                width: "100%",
+                maxWidth: "800px",
+                backgroundColor: "#303030",
+                borderRadius: {
+                  xs: "16px 16px 0 0",
+                  sm: "16px 16px 0 0",
+                  md: 4,
+                  lg: 4,
+                  xl: 4
+                },
+                boxShadow: 4,
+                p: 1
+              }}
+            >
               <TextField
                 placeholder={fraseActual}
                 value={prompt}
@@ -327,13 +579,13 @@ const Chat = () => {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 4,
-                    backgroundColor: "transparent",
+                    backgroundColor: "transparent"
                   },
                   "& .MuiInputBase-input": {
                     color: "#ffffff",
-                    fontWeight: 500,
+                    fontWeight: 500
                   },
-                  "& fieldset": { border: "none" },
+                  "& fieldset": { border: "none" }
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
@@ -342,14 +594,7 @@ const Chat = () => {
                   }
                 }}
               />
-              <Box sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 1,
-                px: 1,
-                pb: 1,
-              }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 1, px: 1, pb: 1 }}>
                 <Box>
                   <IconButton
                     onClick={() => {
@@ -377,12 +622,15 @@ const Chat = () => {
                     sx={{ display: hayTexto ? "none" : "inline-flex" }}
                   />
                   {hayTexto && (
-                    <IconButton type='submit' sx={{
-                      backgroundColor: "#ffffff",
-                      color: "#303030",
-                      ml: 1,
-                      "&:hover": { backgroundColor: "#dad7d7", color: "#303030" }
-                    }}>
+                    <IconButton
+                      type="submit"
+                      sx={{
+                        backgroundColor: "#ffffff",
+                        color: "#303030",
+                        ml: 1,
+                        "&:hover": { backgroundColor: "#dad7d7", color: "#303030" }
+                      }}
+                    >
                       <ArrowUpwardRoundedIcon fontSize="medium" />
                     </IconButton>
                   )}
@@ -397,3 +645,4 @@ const Chat = () => {
 };
 
 export default Chat;
+

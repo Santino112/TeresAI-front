@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Typography, TextField, Box, CircularProgress } from "@mui/material";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import TeresaiLogo from '../../../../../assets/images/file.svg';
+import TeresaiLogo from '../../../../../assets/images/logo_teresAI.svg';
 
 const Inicio = () => {
     return (
