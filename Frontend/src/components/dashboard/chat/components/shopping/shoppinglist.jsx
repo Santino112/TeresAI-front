@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 import api from "../../../../../api/axios";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import { Box, Typography, Paper, List, ListItem, ListItemText, Checkbox, Button, Divider } from "@mui/material";
+import { Box, Typography, Paper, List, ListItem, ListItemText, Checkbox, Button, Divider, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack, Alert } from "@mui/material";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 export default function ShoppingList() {
 
   const [items, setItems] = useState([]);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [createError, setCreateError] = useState("");
+  const [createForm, setCreateForm] = useState({
+    text: "",
+    quantity: "",
+  });
 
   const fetchItems = async () => {
     try {
@@ -31,6 +39,44 @@ export default function ShoppingList() {
       fetchItems();
     } catch (err) {
       console.error("Error limpiando completados", err);
+    }
+  };
+
+  const handleOpenCreate = () => {
+    setCreateError("");
+    setCreateForm({ text: "", quantity: "" });
+    setCreateModalOpen(true);
+  };
+
+  const handleCloseCreate = () => {
+    if (createLoading) return;
+    setCreateModalOpen(false);
+  };
+
+  const handleCreateItem = async () => {
+    if (!createForm.text.trim()) {
+      setCreateError("Debes escribir el nombre del producto.");
+      return;
+    }
+
+    setCreateLoading(true);
+    setCreateError("");
+
+    try {
+      const quantity = createForm.quantity ? parseInt(createForm.quantity, 10) : 1;
+      
+      await api.post("/shopping-items", {
+        text: createForm.text.trim(),
+        quantity: isNaN(quantity) ? 1 : quantity,
+      });
+
+      setCreateModalOpen(false);
+      await fetchItems();
+      window.dispatchEvent(new Event("shoppingUpdated"));
+    } catch (error) {
+      setCreateError(error?.response?.data?.error || "No se pudo agregar el producto.");
+    } finally {
+      setCreateLoading(false);
     }
   };
 
@@ -79,19 +125,35 @@ export default function ShoppingList() {
           flexGrow: 0,
         }}
       >
-        <Typography variant="h3" sx={{
-          fontSize: {
-            xs: "1.5rem",
-            sm: "1.5rem",
-            md: "1.5rem",
-            lg: "1.7rem",
-            xl: "1.8rem"
-          },
-          textAlign: { xs: "center", sm: "center", md: "start" },
-          fontFamily: "'Lora', serif",
-        }}>
-          Lista de compras 🛒
-        </Typography>
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          alignItems="center"
+          justifyContent="space-between"
+          spacing={2}
+          sx={{ mb: 1 }}
+        >
+          <Typography variant="h3" sx={{
+            fontSize: {
+              xs: "1.5rem",
+              sm: "1.5rem",
+              md: "1.5rem",
+              lg: "1.7rem",
+              xl: "1.8rem"
+            },
+            textAlign: { xs: "center", sm: "center", md: "start" },
+            fontFamily: "'Lora', serif",
+          }}>
+            Lista de compras 🛒
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={handleOpenCreate}
+            startIcon={<AddRoundedIcon />}
+            sx={{ fontFamily: "'Lora', serif", fontWeight: 700 }}
+          >
+            Agregar producto
+          </Button>
+        </Stack>
         <Typography variant="body2" sx={{
           my: 1,
           fontSize: {
@@ -199,6 +261,40 @@ export default function ShoppingList() {
             </Button>
           </>
         )}
+
+        <Dialog open={createModalOpen} onClose={handleCloseCreate} fullWidth maxWidth="sm">
+          <DialogTitle sx={{ fontFamily: "'Lora', serif", fontWeight: 700 }}>Agregar producto nuevo</DialogTitle>
+          <DialogContent>
+            <Stack spacing={2} sx={{ mt: 1 }}>
+              {createError ? <Alert severity="error">{createError}</Alert> : null}
+              <TextField
+                label="Nombre del producto"
+                value={createForm.text}
+                onChange={(event) => setCreateForm((prev) => ({ ...prev, text: event.target.value }))}
+                fullWidth
+                required
+                placeholder="Ej: Leche, Pan, Frutas..."
+              />
+              <TextField
+                label="Cantidad (opcional)"
+                value={createForm.quantity}
+                onChange={(event) => setCreateForm((prev) => ({ ...prev, quantity: event.target.value }))}
+                fullWidth
+                type="number"
+                inputProps={{ min: "1" }}
+                placeholder="Ej: 2, 5, 10..."
+              />
+            </Stack>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseCreate} disabled={createLoading}>
+              Cancelar
+            </Button>
+            <Button variant="contained" onClick={handleCreateItem} disabled={createLoading}>
+              {createLoading ? "Agregando..." : "Agregar producto"}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Paper>
     </Box>
   );
