@@ -31,7 +31,7 @@ export default function News() {
     setLoading(true);
     setError(null);
 
-    const res = await getNews({ global: true, query: "general" });
+    const res = await getNews({ query: "general", country: "ar" });
 
     if (res.success) {
       setArticles((res.articles || []).slice(0, MAX_CARDS));
@@ -45,7 +45,6 @@ export default function News() {
 
   useEffect(() => {
     fetchNews();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -106,7 +105,7 @@ export default function News() {
                 textAlign: { xs: "center", sm: "center", md: "start" },
                 fontFamily: "'Lora', serif",
               }}>
-              Noticias del mundo 📰
+              Noticias de Argentina 📰
             </Typography>
             <Button
               variant="contained"
