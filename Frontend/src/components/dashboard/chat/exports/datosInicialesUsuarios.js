@@ -86,10 +86,7 @@ export const tomarDatosPerfiles = async (userId) => {
         .eq("id", userId)
         .single()
 
-    if (error) {
-        console.error("Error al obtener los datos del usuario", error);
-        return false;
-    }
+    if (error) throw error;
     return data;
 };
 

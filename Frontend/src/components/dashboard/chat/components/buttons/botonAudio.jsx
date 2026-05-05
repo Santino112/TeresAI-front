@@ -168,10 +168,10 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop, ...props }, r
         sx={{
           transform: recording ? "scale(1.2)" : "scale(1)",
           transition: "transform 0.2s ease-in-out ",
-          backgroundColor: recording ? "#ffffff" : "transparent",
-          color: recording ? "#303030" : "#FFFFFF",
+          backgroundColor: recording ? "#c0beb9" : "transparent",
+          color: recording ? "#000000" : "#000000",
           "&:hover": {
-            backgroundColor: recording ? "#dad7d7" : "rgba(255,255,255,0.1)",
+            backgroundColor: recording ? "#c0beb9" : "rgba(0, 0, 0, 0.1)",
           },
           mr: 1,
           ...props.sx

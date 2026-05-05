@@ -96,14 +96,14 @@ export default function NotesDashboard() {
 
   const notesCountChip = useMemo(() => {
     const label = loading ? "Cargando..." : `${notes.length} nota${notes.length === 1 ? "" : "s"}`;
-    return <Chip icon={<StickyNote2RoundedIcon />} label={label} />;
+    return <Chip icon={<StickyNote2RoundedIcon />} label={label} sx={{ backgroundColor: "#7d745c" }} />;
   }, [loading, notes.length]);
 
   return (
     <Box sx={{
       display: "flex",
       flexDirection: "column",
-      alignItems: "center",
+      alignItems: "stretch",
       flexGrow: 1,
       width: "100%",
       height: "100%",
@@ -119,10 +119,23 @@ export default function NotesDashboard() {
         flexDirection: "column",
         justifyContent: "flex-start",
         width: "100%",
-        p: { xs: 2, sm: 3, md: 3 },
+        p: { xs: 2, sm: 2, md: 2 },
         borderRadius: 4,
         background: "transparent",
+        
         flexGrow: 0,
+        boxShadow: 0,
+        animation: "slideDown 0.4s ease",
+        "@keyframes slideDown": {
+          from: {
+            opacity: 0,
+            transform: "translateY(-40px)"
+          },
+          to: {
+            opacity: 1,
+            transform: "translateY(0)"
+          }
+        }
       }}>
         <Stack
           direction={{ xs: "column", sm: "row" }}
@@ -132,6 +145,10 @@ export default function NotesDashboard() {
         >
           <Stack direction="row" alignItems="center" spacing={1}>
             <Typography variant="h3" sx={{
+              display: "flex",
+              justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+              alignItems: "center",
+              color: "#000000",
               fontSize: {
                 xs: "1.5rem",
                 sm: "1.5rem",
@@ -139,15 +156,14 @@ export default function NotesDashboard() {
                 lg: "1.7rem",
                 xl: "1.8rem"
               },
-              textAlign: { xs: "center", sm: "center", md: "start" },
-              fontFamily: "'Lora', serif",
             }}>
-              Notas 🗒️
+              Notas <StickyNote2RoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} />
             </Typography>
           </Stack>
           {notesCountChip}
         </Stack>
         <Typography variant="body2" sx={{
+          color: "#000000",
           my: 1,
           fontSize: {
             xs: "1rem",
@@ -157,21 +173,27 @@ export default function NotesDashboard() {
             xl: "1.3rem",
           },
           textAlign: { xs: "center", sm: "center", md: "start" },
-          fontFamily: "'Lora', serif",
           lineHeight: 1.8,
         }}>
           Guarda tus recordatorios, ideas o lo que quieras registrar con Teresa.
           Cada nota se muestra como una tarjeta interactiva; hacé click para verla en detalle.
         </Typography>
-        <Divider sx={{
+        <Divider sx={{ borderColor: "rgba(0,0,0,0.1)" }} />
+        <Grid container spacing={3} sx={{
+          flexGrow: 1, mt: 1, animation: "slideDown 0.4s ease",
+          mx: 0, 
           width: "100%",
-          "&::before, &::after": {
-            borderColor: "#ffffff",
+          "@keyframes slideDown": {
+            from: {
+              opacity: 0,
+              transform: "translateY(-40px)"
+            },
+            to: {
+              opacity: 1,
+              transform: "translateY(0)"
+            }
           }
         }}>
-          <Typography variant="body1" sx={{ color: "#ffffff" }}>~</Typography>
-        </Divider>
-        <Grid container spacing={3} sx={{ flexGrow: 1, mt: 1 }}>
           {loading
             ? Array.from({ length: 6 }).map((_, index) => (
               <Grid key={index} item xs={12} sm={6} md={4}>
@@ -184,19 +206,19 @@ export default function NotesDashboard() {
                   <Box
                     sx={{
                       borderRadius: 3,
-                      border: `1px solid ${theme.palette.divider}`,
+                      border: "2px dashed rgba(0,0,0,0.2)",
                       p: 3,
                       textAlign: "center",
                     }}
                   >
                     <Typography variant="h6" sx={{
+                      color: "#000000",
                       mb: 1,
-                      fontFamily: "'Lora', serif",
                     }}>
                       Todavía no hay notas guardadas
                     </Typography>
                     <Typography variant="body1" sx={{
-                      fontFamily: "'Lora', serif",
+                      color: "#000000",
                       lineHeight: 1.8,
                     }} >
                       Utilizá la herramienta para agregar nuevas notas y aparecerán aquí automáticamente.
@@ -211,30 +233,34 @@ export default function NotesDashboard() {
                     sx={{
                       borderRadius: 3,
                       height: "100%",
-                      background: theme.palette.mode === "dark" ? "#1e1f1d" : "#fff",
+                      background: theme.palette.mode === "dark" ? "#303030" : "#ffffff",
                     }}
                   >
                     <CardActionArea
                       sx={{
                         height: "100%",
                         p: 2,
+                        width: "100%",
+                       
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "flex-start",
                         justifyContent: "flex-start",
+                        color: "#000000",
+                        backgroundColor: "#d7d6d6"
                       }}
                       onClick={() => openNote(note)}
                     >
                       <Stack direction="row" justifyContent="space-between" width="100%">
-                        <Typography variant="subtitle1" noWrap sx={{ fontWeight: 600 }}>
+                        <Typography variant="subtitle1" noWrap sx={{ fontWeight: 600, color: "#000000" }}>
                           {note.text?.split("\n")[0] || "Nota sin título"}
                         </Typography>
-                        <Chip label="Ver" size="small" />
+                        <Chip label="Ver" size="small" sx={{ color: "#000000", backgroundColor: "#ffffff" }} />
                       </Stack>
-                      <Typography variant="caption" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 1, mb: 2, color: "#000000" }}>
                         {formatDate(note.created_at)}
                       </Typography>
-                      <Typography variant="body2" color="text.primary">
+                      <Typography variant="body2" sx={{ color: "#000000" }}>
                         {getSnippet(note.text)}
                       </Typography>
                     </CardActionArea>
@@ -242,7 +268,6 @@ export default function NotesDashboard() {
                 </Grid>
               ))}
         </Grid>
-
         <Modal
           open={modalOpen}
           onClose={closeModal}
@@ -261,30 +286,42 @@ export default function NotesDashboard() {
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
-                width: { xs: "90%", sm: 600 },
-                bgcolor: theme.palette.background.paper,
+                width: "90%",
+                maxWidth: 500,
+                bgcolor: "#d7d6d6",
+                color: "#000000",
                 borderRadius: 3,
                 boxShadow: 24,
-                p: { xs: 3, sm: 4 },
+                p: 3,
                 outline: "none",
                 maxHeight: "90vh",
                 overflowY: "auto",
+                border: '2px solid #000000',
               }}
             >
-              <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-                <Typography variant="h5" fontWeight={600}>
+              <Stack direction={{ xs: "column", sm: "column", md: "row" }} justifyContent="space-between" alignItems="center" spacing={1}>
+                <Typography variant="h5" fontWeight={600} sx={{ color: "#000000" }}>
                   {selectedNote?.text?.split("\n")[0] || "Nota"}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="body1" sx={{ color: "#000000" }}>
                   {formatDate(selectedNote?.created_at)}
                 </Typography>
               </Stack>
-              <Divider sx={{ mb: 2 }} />
-              <Typography variant="body1" sx={{ whiteSpace: "pre-line", lineHeight: 1.8, mb: 3 }}>
+              <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 2 }} />
+              <Typography variant="body1" sx={{ whiteSpace: "pre-line", lineHeight: 1.8, color: "#000000", my: 2 }}>
                 {selectedNote?.text}
               </Typography>
+              <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 2 }} />
               <Stack direction="row" spacing={2} justifyContent="flex-end">
-                <Button variant="outlined" onClick={closeModal}>
+                <Button variant="outlined" onClick={closeModal} sx={{
+                  border: "none",
+                  color: "#464545",
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  ml: 1,
+                  mt: 1,
+                  "&:hover": { backgroundColor: "#e0e0e0" },
+                }}>
                   Cerrar
                 </Button>
                 <Button
@@ -292,6 +329,15 @@ export default function NotesDashboard() {
                   color="error"
                   onClick={handleDeleteNote}
                   disabled={actionLoading}
+                  sx={{
+                    color: "#ffffff",
+                    textTransform: "none",
+                    "&:hover": {
+                      backgroundColor: "#aa0e0e"
+                    },
+                    mr: 1,
+                    mt: 1
+                  }}
                 >
                   Eliminar nota
                 </Button>

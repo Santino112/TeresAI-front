@@ -1,8 +1,18 @@
 import { useState, useEffect } from "react";
-import { Typography, Button, TextField, Box, Divider, Select, MenuItem, Alert, Grid, Paper, Skeleton } from "@mui/material";
-import { tomarDatosElder, actualizarDatosElders, actualizarDatosPerfiles } from "../../../exports/datosInicialesUsuarios";
+import { Typography, Button, TextField, Box, Divider, Select, MenuItem, Alert, Grid, Paper, Skeleton, InputAdornment, IconButton } from "@mui/material";
+import { tomarDatosElder, actualizarDatosElders, actualizarDatosPerfiles, updateEmail, updateContraseña } from "../../../exports/datosInicialesUsuarios";
 import { useAuth } from "../../../../../auth/useAuth.jsx";
 import CircularProgress from '@mui/material/CircularProgress';
+import InsertEmoticonRoundedIcon from '@mui/icons-material/InsertEmoticonRounded';
+import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
+import MarkEmailReadRoundedIcon from '@mui/icons-material/MarkEmailReadRounded';
+import PasswordRoundedIcon from '@mui/icons-material/PasswordRounded';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
+import Diversity1RoundedIcon from '@mui/icons-material/Diversity1Rounded';
+import FamilyRestroomRoundedIcon from '@mui/icons-material/FamilyRestroomRounded';
+import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
+import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
 
 const ProfileElder = ({ profile, setProfile }) => {
     const [usernameLocal, setUsernameLocal] = useState(profile?.username || "");
@@ -25,6 +35,15 @@ const ProfileElder = ({ profile, setProfile }) => {
     const [dataLoaded, setDataLoaded] = useState(false);
     const [originalData, setOriginalData] = useState(null);
     const [originalUsername, setOriginalUsername] = useState(null);
+    //para actualizar email
+    const [nuevoEmail, setNuevoEmail] = useState("");
+    const [loadingEmail, setLoadingEmail] = useState(false);
+    //para actualizar contraseña
+    const [nuevaContraseña, setNuevaContraseña] = useState("");
+    const [repetirContraseña, setRepetirContraseña] = useState("");
+    const [loadingContraseña, setLoadingContraseña] = useState(false);
+    //
+    const [showPassword, setShowPassword] = useState(false);
 
     const { user } = useAuth();
 
@@ -41,6 +60,10 @@ const ProfileElder = ({ profile, setProfile }) => {
         };
         const key = Object.keys(errores).find(k => mensaje?.includes(k));
         return key ? errores[key] : "Ocurrió un error, intentalo de nuevo.";
+    };
+
+    const handleShowPassword = () => {
+        setShowPassword((prev) => !prev);
     };
 
     useEffect(() => {
@@ -136,7 +159,92 @@ const ProfileElder = ({ profile, setProfile }) => {
         setHasChanges(changed);
     }, [usernameLocal, enfermedad, medicamentos, alergias, molestias, gustos, originalData, dataLoaded]);
 
-    const handleUpdateDatos = async (e) => {
+    //Actualizar email
+    const handleUpdateEmail = async (e) => {
+        e.preventDefault();
+        if (loadingEmail) return;
+        if (!nuevoEmail.trim()) {
+            setAlertMessage("Ingresá un email nuevo.");
+            setErrorAlert(true);
+            setSeverity("error");
+            setTimeout(() => setErrorAlert(false), 5000);
+            return;
+        };
+        if (nuevoEmail === user.email) {
+            setAlertMessage("El email nuevo debe ser distinto al actual.");
+            setErrorAlert(true);
+            setSeverity("error");
+            setTimeout(() => setErrorAlert(false), 5000);
+            return;
+        }
+        setLoadingEmail(true);
+
+        const successStore = await updateEmail(user.id, { nuevoEmail });
+
+        if (!successStore.success) {
+            setAlertMessage(traducirError(successStore.message));
+            setErrorAlert(true);
+            setSeverity("error");
+            setTimeout(() => {
+                setErrorAlert(false);
+            }, 5000);
+            setLoadingEmail(false);
+            return;
+        }
+        setAlertMessage(successStore.message);
+        setErrorAlert(true);
+        setSeverity("success");
+        setTimeout(() => {
+            setErrorAlert(false);
+        }, 5000);
+        setLoadingEmail(false);
+    };
+
+    //Actualizar contraseña
+    const hanbldeUpdateContraseña = async (e) => {
+        e.preventDefault();
+        if (loadingContraseña) return;
+        if (nuevaContraseña !== repetirContraseña) {
+            setAlertMessage("Las contraseñas no coinciden.");
+            setErrorAlert(true);
+            setSeverity("error");
+            setTimeout(() => setErrorAlert(false), 5000);
+            return;
+        }
+
+        if (nuevaContraseña.length < 6) {
+            setAlertMessage("La contraseña debe tener al menos 6 caracteres.");
+            setErrorAlert(true);
+            setSeverity("error");
+            setTimeout(() => setErrorAlert(false), 5000);
+            return;
+        }
+        setLoadingContraseña(true);
+
+        const successStore = await updateContraseña(user.id, { nuevaContraseña });
+
+        if (!successStore.success) {
+            setAlertMessage(traducirError(successStore.message));
+            setErrorAlert(true);
+            setSeverity("error");
+            setTimeout(() => {
+                setErrorAlert(false);
+            }, 5000);
+            setLoadingContraseña(false);
+            return;
+        }
+        setAlertMessage(successStore.message);
+        setErrorAlert(true);
+        setSeverity("success");
+        setTimeout(() => {
+            setErrorAlert(false);
+        }, 5000);
+        setLoadingContraseña(false);
+        setNuevaContraseña("");
+        setRepetirContraseña("");
+    };
+
+    const handleUpdateUser = async (e) => {
         e.preventDefault();
         if (loading || !hasChanges) return;
 
@@ -176,7 +284,7 @@ const ProfileElder = ({ profile, setProfile }) => {
             setErrorAlert(true);
             setSeverity("error");
             setTimeout(() => {
-                setErrorAlert(false)
+                setErrorAlert(false);
             }, 5000);
             setLoading(false);
             return;
@@ -210,7 +318,6 @@ const ProfileElder = ({ profile, setProfile }) => {
                     intereses: gustos,
                     molestias: molestias
                 })
-
                 setAlertMessage("El perfil se actualizó correctamente.");
                 setErrorAlert(true);
                 setSeverity("success");
@@ -228,6 +335,7 @@ const ProfileElder = ({ profile, setProfile }) => {
             {errorAlert ?
                 <Alert
                     severity={severity}
+                    variant="filled"
                     sx={{
                         position: "fixed",
                         width: {
@@ -252,20 +360,35 @@ const ProfileElder = ({ profile, setProfile }) => {
                 null
             }
             <Paper
-                component="form"
-                onSubmit={handleUpdateDatos}
                 sx={{
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-start",
-                    width: "%100",
-                    p: { xs: 2, sm: 3, md: 4 },
-                    borderRadius: 4,
+                    width: "100%",
+                    p: { xs: 2, sm: 2, md: 2 },
+                    boxShadow: 0,
+                    borderRadius: 3,
+                    boxShadow: 0,
                     background: "transparent",
                     flexGrow: 0,
+                    animation: "slideDown 0.4s ease",
+                    "@keyframes slideDown": {
+                        from: {
+                            opacity: 0,
+                            transform: "translateY(-40px)"
+                        },
+                        to: {
+                            opacity: 1,
+                            transform: "translateY(0)"
+                        }
+                    }
                 }}
             >
                 <Typography variant="h3" sx={{
+                    display: "flex",
+                    justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+                    alignItems: "center",
+                    color: "#000000",
                     fontSize: {
                         xs: "1.5rem",
                         sm: "1.5rem",
@@ -273,10 +396,9 @@ const ProfileElder = ({ profile, setProfile }) => {
                         lg: "1.7rem",
                         xl: "1.8rem"
                     },
-                    fontFamily: "'Lora', serif",
-                    textAlign: { xs: "center", sm: "center", md: "start" },
-                }}><strong>Perfil</strong> de usuario 🧓</Typography>
+                }}>Perfil <InsertEmoticonRoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} /></Typography>
                 <Typography variant="body2" sx={{
+                    color: "#000000",
                     my: 1,
                     fontSize: {
                         xs: "1rem",
@@ -285,479 +407,1026 @@ const ProfileElder = ({ profile, setProfile }) => {
                         lg: "1.3rem",
                         xl: "1.3rem",
                     },
-                    fontFamily: "'Lora', serif",
                     textAlign: { xs: "center", sm: "center", md: "start" },
                     lineHeight: 1.8,
                 }}>Aquí podrás actualizar toda la información de tu usuario elder. Puedes agregar datos sobre tu salud, tus gustos, tus intereses, o cualquier información que quieras compartir para que la inteligencia artificial pueda conocerte mejor y brindarte una mejor experiencia.
                 </Typography>
-                <Divider sx={{
-                    my: 1,
+                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 1, mb: 2 }} />
+                <Paper sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
                     width: "100%",
-                    "&::before, &::after": {
-                        borderColor: "#ffffff",
+                    borderRadius: 4,
+                    background: "transparent",
+                    boxShadow: 0,
+                    flexGrow: 0,
+                    animation: "slideDown 0.4s ease",
+                    "@keyframes slideDown": {
+                        from: {
+                            opacity: 0,
+                            transform: "translateY(-40px)"
+                        },
+                        to: {
+                            opacity: 1,
+                            transform: "translateY(0)"
+                        }
                     }
                 }}>
-                    <Typography variant="body1" sx={{ color: "#ffffff" }}>~</Typography>
-                </Divider>
-                <Grid container spacing={2}>
-                    <Grid size={12}>
-                        <Box sx={{ my: 0, width: "100%" }}>
-                            {loadingData ? (
-                                <>
-                                    <Skeleton animation="wave" variant="body1" sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                                    <Skeleton animation="wave" variant="rectangular" height={50} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                                </>
-                            ) : (
-                                <>
-                                    <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cómo te llamas?</Typography>
-                                    <TextField
-                                        value={usernameLocal}
-                                        onChange={(e) => {
-                                            setUsernameLocal(e.target.value);
-                                            setProfile({ ...profile, username: e.target.value });
-                                        }
-                                        }
-                                        placeholder="Nombre completo"
-                                        variant="outlined"
-                                        fullWidth
-                                        margin="dense"
-                                        sx={{
-                                            backgroundColor: "#303030",
-                                            borderRadius: 3,
-                                            boxShadow: 3,
-                                            input: { color: "white" },
-                                            "& .MuiOutlinedInput-root": {
-                                                borderRadius: 3,
-                                                pr: 1,
-                                            },
-                                            "& fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&:hover fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "gray"
-                                            }
-                                        }}
-                                    ></TextField>
-                                </>
-                            )}
-                        </Box>
-                    </Grid>
-                    <Grid size={{
-                        xs: 12,
-                        sm: 12,
-                        md: 12,
-                        lg: 6
-                    }}>
-                        <Box sx={{ mb: 1, width: "100%" }}>
-                            {loadingData ? (
-                                <>
-                                    <Skeleton animation="wave" variant="body1" sx={{ borderRadius: 2, mb: 1, mt: 1, bgcolor: "#4a4a4a" }} />
-                                    <Skeleton animation="wave" variant="rectangular" height={50} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                                </>
-                            ) : (
-                                <>
-                                    <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Sufris de alguna enfermedad?</Typography>
-                                    <Select
-                                        value={tieneEnfermedad}
-                                        onChange={(e) => {
-                                            setTieneEnfermedad(e.target.value)
-                                            e.target.value === "si" ? setEnfermedad("") : setEnfermedad("No")
-                                        }
-                                        }
-                                        labelId="demo-simple-select-helper-label"
-                                        id="demo-simple-select-helper"
-                                        fullWidth
-                                        MenuProps={{
-                                            PaperProps: {
-                                                sx: {
-                                                    borderRadius: 3,
-                                                    backgroundColor: "#303030",
-                                                    color: "#ffffff",
-                                                }
-                                            },
-                                            MenuListProps: { sx: { p: 0 } }
-                                        }} sx={{
-                                            backgroundColor: "#303030",
-                                            borderRadius: 3,
-                                            boxShadow: 3,
-                                            mt: 1,
-                                            input: { color: "white" },
-                                            "& .MuiOutlinedInput-root": {
-                                                borderRadius: 3,
-                                                pr: 1,
-                                            },
-                                            "& fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&:hover fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "gray"
-                                            },
-                                            mb: 1
-                                        }}
-                                    >
-                                        <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
-                                        <MenuItem value="si">Si</MenuItem>
-                                        <MenuItem value="no">No</MenuItem>
-                                    </Select>
-                                    {tieneEnfermedad === "si" && (
-                                        <Box sx={{ width: "100%" }}>
-                                            <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cúal/es? Escribilas</Typography>
-                                            <TextField
-                                                placeholder="Escribilas..."
-                                                value={enfermedad}
-                                                onChange={(e) => setEnfermedad(e.target.value)}
-                                                variant="outlined"
-                                                multiline
-                                                minRows={4}
-                                                maxRows={4}
-                                                fullWidth
-                                                margin="dense"
-                                                sx={{
-                                                    backgroundColor: "#303030",
-                                                    borderRadius: 3,
-                                                    boxShadow: 3,
-                                                    input: { color: "white" },
-                                                    "& .MuiOutlinedInput-root": {
-                                                        borderRadius: 3,
-                                                        pr: 1,
-                                                    },
-                                                    "& fieldset": {
-                                                        borderColor: "transparent"
-                                                    },
-                                                    "&:hover fieldset": {
-                                                        borderColor: "transparent"
-                                                    },
-                                                    "&.Mui-focused fieldset": {
-                                                        borderColor: "gray"
-                                                    }
-                                                }}
-                                            ></TextField>
+                    <Grid container spacing={3}>
+                        <Grid size={{
+                            xs: 12,
+                            sm: 12,
+                            md: 12,
+                            lg: 6
+                        }}>
+                            <Paper
+                                sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "flex-start",
+                                    width: "100%",
+                                    height: "100%",
+                                    p: { xs: 2, sm: 3, md: 4 },
+                                    borderRadius: 4,
+                                    boxShadow: 3,
+                                    background: "transparent",
+                                    flexGrow: 0,
+                                }}>
+                                <Typography variant="h3" sx={{
+                                    color: "#000000",
+                                    fontSize: {
+                                        xs: "1.4rem",
+                                        sm: "1.4rem",
+                                        md: "1.4rem",
+                                        lg: "1.5rem",
+                                        xl: "1.5rem"
+                                    },
+                                    textAlign: { xs: "center", sm: "center", md: "start" },
+                                }}>Actualizar datos de la cuenta</Typography>
+                                <Typography variant="body2" sx={{
+                                    color: "#000000",
+                                    fontSize: {
+                                        xs: "1.1rem",
+                                        sm: "1.1rem",
+                                        md: "1.2rem",
+                                        lg: "1.3rem",
+                                        xl: "1.3rem",
+                                    },
+                                    textAlign: { xs: "center", sm: "center", md: "start" },
+                                    lineHeight: 1.8,
+                                }}>Actualizar email con el que te registraste
+                                </Typography>
+                                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 1, mb: 2 }} />
+                                <Grid container spacing={2}>
+                                    <Grid size={12}>
+                                        <Paper
+                                            component="form"
+                                            onSubmit={handleUpdateEmail}
+                                            sx={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                boxShadow: 0,
+                                                justifyContent: "flex-start",
+                                                width: "100%",
+                                                height: "100%",
+                                                borderRadius: 4,
+                                                background: "transparent",
+                                                flexGrow: 0,
+                                            }}>
+                                            <Grid container spacing={2}>
+                                                <Grid size={{
+                                                    xs: 12,
+                                                    sm: 12,
+                                                    md: 12,
+                                                    lg: 12,
+                                                    xl: 6
+                                                }} >
+                                                    <Box sx={{ my: 0, width: "100%" }}>
+                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Email actual</Typography>
+                                                        <TextField
+                                                            type="email"
+                                                            disabled
+                                                            placeholder={profile?.email}
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="dense"
+                                                            sx={{
+                                                                backgroundColor: "#d7d6d6",
+                                                                borderRadius: 3,
+                                                                boxShadow: 3,
+                                                                // Estilo para el texto que YA está escrito
+                                                                "& .MuiInputBase-input.Mui-disabled": {
+                                                                    color: "#000000",
+                                                                    WebkitTextFillColor: "#000000", // Necesario para navegadores basados en Webkit
+                                                                },
+                                                                // Estilo específico para el PLACEHOLDER
+                                                                "& .MuiInputBase-input::placeholder": {
+                                                                    color: "#000000", // Gris oscuro
+                                                                    opacity: 1,
+                                                                },
+                                                                // Si el campo está disabled, MUI aplica otros estilos al placeholder que hay que pisar
+                                                                "& .MuiOutlinedInput-root.Mui-disabled .MuiInputBase-input::placeholder": {
+                                                                    color: "#444444",
+                                                                    opacity: 1,
+                                                                    WebkitTextFillColor: "#444444",
+                                                                },
+                                                            }}
+                                                            InputProps={{
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                                                                            <MarkEmailReadRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }}></MarkEmailReadRoundedIcon>
+                                                                        </Box>
+                                                                    </InputAdornment>
+                                                                ),
+                                                            }}
+                                                        ></TextField>
+                                                    </Box>
+                                                </Grid>
+                                                <Grid size={{
+                                                    xs: 12,
+                                                    sm: 12,
+                                                    md: 12,
+                                                    lg: 12,
+                                                    xl: 6
+                                                }}>
+                                                    <Box sx={{ my: 0, width: "100%" }}>
+                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Email nuevo</Typography>
+                                                        <TextField
+                                                            type="email"
+                                                            value={nuevoEmail}
+                                                            onChange={(e) => setNuevoEmail(e.target.value)}
+                                                            placeholder="Email nuevo"
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="dense"
+                                                            sx={{
+                                                                backgroundColor: "#d7d6d6",
+                                                                color: "#000000",
+                                                                borderRadius: 3,
+                                                                boxShadow: 3,
+                                                                input: { color: "#000000" },
+                                                                "& .MuiOutlinedInput-root": {
+                                                                    borderRadius: 3,
+                                                                    pr: 1,
+                                                                },
+                                                                "& fieldset": {
+                                                                    borderColor: "transparent"
+                                                                },
+                                                                "& .MuiInputBase-input::placeholder": {
+                                                                    color: "#000000",
+                                                                    opacity: 0.6,
+                                                                },
+                                                                "&:hover fieldset": {
+                                                                    borderColor: "transparent"
+                                                                },
+                                                                "&.Mui-focused fieldset": {
+                                                                    borderColor: "gray"
+                                                                },
+                                                            }}
+                                                            InputProps={{
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                                                                            <EmailRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }}></EmailRoundedIcon>
+                                                                        </Box>
+                                                                    </InputAdornment>
+                                                                ),
+                                                            }}
+                                                        ></TextField>
+                                                    </Box>
+                                                </Grid>
+                                            </Grid>
+                                            <Box sx={{ mt: 2 }}>
+                                                <Button variant="contained" type="submit" fullWidth disabled={loadingEmail}
+                                                    sx={{
+                                                        boxShadow: 3,
+                                                        borderRadius: 2,
+                                                        my: { xs: 1, sm: 1, md: 1, lg: 0 },
+                                                        backgroundColor: "#7d745c",
+                                                        width: { xs: "100%", sm: "100%", md: "fit-content" },
+                                                        minWidth: "auto",
+                                                        whiteSpace: "nowrap",
+                                                        px: 2,
+                                                        color: "#ffffff",
+                                                        textTransform: "none",
+                                                        fontSize: "1.1rem",
+                                                        "&:hover": {
+                                                            backgroundColor: "#67604d"
+                                                        },
+                                                        "&.Mui-disabled": {
+                                                            backgroundColor: "#5a5342",
+                                                            color: "#ffffff !important",
+                                                        }
+                                                    }}>{loadingEmail ? (
+                                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                            <CircularProgress
+                                                                size={20}
+                                                                sx={{
+                                                                    color: "#ffffff",
+                                                                    marginRight: "10px"
+                                                                }}
+                                                            />
+                                                            <span>Guardando...</span>
+                                                        </Box>
+                                                    ) : "Actualizar"}
+                                                </Button>
+                                            </Box>
+                                        </Paper>
+                                    </Grid>
+                                    <Grid size={12}>
+                                        <Paper
+                                            component="form"
+                                            onSubmit={hanbldeUpdateContraseña}
+                                            sx={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                justifyContent: "flex-start",
+                                                boxShadow: 0,
+                                                width: "100%",
+                                                height: "100%",
+                                                borderRadius: 4,
+                                                background: "transparent",
+                                                flexGrow: 0,
+                                            }}>
+                                            <Typography variant="body2" sx={{
+                                                color: "#000000",
+                                                my: 1,
+                                                fontSize: {
+                                                    xs: "1.1rem",
+                                                    sm: "1.1rem",
+                                                    md: "1.2rem",
+                                                    lg: "1.2rem",
+                                                    xl: "1.2rem",
+                                                },
+                                                textAlign: { xs: "center", sm: "center", md: "start" },
+                                                lineHeight: 1.8,
+                                            }}>Actualizar contraseña con la que te registraste.
+                                            </Typography>
+                                            <Grid container spacing={2}>
+                                                <Grid size={{
+                                                    xs: 12,
+                                                    sm: 12,
+                                                    md: 12,
+                                                    lg: 12,
+                                                    xl: 6
+                                                }} >
+                                                    <Box sx={{ my: 0, width: "100%" }}>
+                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Nueva contraseña</Typography>
+                                                        <TextField
+                                                            type={showPassword ? "text" : "password"}
+                                                            placeholder="Nueva Contraseña"
+                                                            value={nuevaContraseña}
+                                                            onChange={(e) => setNuevaContraseña(e.target.value)}
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="dense"
+                                                            sx={{
+                                                                backgroundColor: "#d7d6d6",
+                                                                color: "#000000",
+                                                                borderRadius: 3,
+                                                                boxShadow: 3,
+                                                                input: { color: "#000000" },
+                                                                "& .MuiOutlinedInput-root": {
+                                                                    borderRadius: 3,
+                                                                    pr: 1,
+                                                                },
+                                                                "& fieldset": {
+                                                                    borderColor: "transparent"
+                                                                },
+                                                                "& .MuiInputBase-input::placeholder": {
+                                                                    color: "#000000",
+                                                                    opacity: 0.6,
+                                                                },
+                                                                "&:hover fieldset": {
+                                                                    borderColor: "transparent"
+                                                                },
+                                                                "&.Mui-focused fieldset": {
+                                                                    borderColor: "gray"
+                                                                },
+                                                            }}
+                                                            InputProps={{
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#826464" }}>
+                                                                            <PasswordRoundedIcon fontSize="medium" sx={{ mr: 1, color: "#000000" }}></PasswordRoundedIcon>
+                                                                        </Box>
+                                                                    </InputAdornment>
+                                                                ),
+                                                                endAdornment: (
+                                                                    <InputAdornment position="end">
+                                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", color: "#000000" }}>
+                                                                            <IconButton onClick={handleShowPassword}>
+                                                                                {showPassword ? <VisibilityIcon sx={{ mr: 0, color: "#000000" }} /> : <VisibilityOffRoundedIcon sx={{ mr: 0, color: "#000000" }} />}
+                                                                            </IconButton>
+                                                                        </Box>
+                                                                    </InputAdornment>
+                                                                )
+                                                            }}
+                                                        ></TextField>
+                                                    </Box>
+                                                </Grid>
+                                                <Grid size={{
+                                                    xs: 12,
+                                                    sm: 12,
+                                                    md: 12,
+                                                    lg: 12,
+                                                    xl: 6
+                                                }}>
+                                                    <Box sx={{ my: 0, width: "100%" }}>
+                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Confirme contraseña</Typography>
+                                                        <TextField
+                                                            type={showPassword ? "text" : "password"}
+                                                            placeholder="Confirme contraseña"
+                                                            value={repetirContraseña}
+                                                            onChange={(e) => setRepetirContraseña(e.target.value)}
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="dense"
+                                                            sx={{
+                                                                backgroundColor: "#d7d6d6",
+                                                                color: "#000000",
+                                                                borderRadius: 3,
+                                                                boxShadow: 3,
+                                                                input: { color: "#000000" },
+                                                                "& .MuiOutlinedInput-root": {
+                                                                    borderRadius: 3,
+                                                                    pr: 1,
+                                                                },
+                                                                "& fieldset": {
+                                                                    borderColor: "transparent"
+                                                                },
+                                                                "& .MuiInputBase-input::placeholder": {
+                                                                    color: "#000000",
+                                                                    opacity: 0.6,
+                                                                },
+                                                                "&:hover fieldset": {
+                                                                    borderColor: "transparent"
+                                                                },
+                                                                "&.Mui-focused fieldset": {
+                                                                    borderColor: "gray"
+                                                                },
+                                                            }}
+                                                            InputProps={{
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#000000" }}>
+                                                                            <PasswordRoundedIcon fontSize="medium" sx={{ mr: 1, color: "#000000" }}></PasswordRoundedIcon>
+                                                                        </Box>
+                                                                    </InputAdornment>
+                                                                ),
+                                                                endAdornment: (
+                                                                    <InputAdornment position="end">
+                                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", color: "#000000" }}>
+                                                                            <IconButton onClick={handleShowPassword}>
+                                                                                {showPassword ? <VisibilityIcon sx={{ mr: 0, color: "#000000" }} /> : <VisibilityOffRoundedIcon sx={{ mr: 0, color: "#000000" }} />}
+                                                                            </IconButton>
+                                                                        </Box>
+                                                                    </InputAdornment>
+                                                                )
+                                                            }}
+                                                        ></TextField>
+                                                    </Box>
+                                                </Grid>
+                                            </Grid>
+                                            <Box sx={{ mt: 2 }}>
+                                                <Button variant="contained" type="submit" fullWidth disabled={loadingContraseña}
+                                                    sx={{
+                                                        boxShadow: 3,
+                                                        borderRadius: 2,
+                                                        width: { xs: "100%", sm: "100%", md: "fit-content" },
+                                                        minWidth: "auto",
+                                                        whiteSpace: "nowrap",
+                                                        px: 2,
+                                                        my: { xs: 1, sm: 1, md: 1, lg: 0 },
+                                                        backgroundColor: "#7d745c",
+                                                        textTransform: "none",
+                                                        fontSize: "1.1rem",
+                                                        color: "#ffffff",
+                                                        "&:hover": {
+                                                            backgroundColor: "#67604d"
+                                                        },
+                                                        "&.Mui-disabled": {
+                                                            backgroundColor: "#5a5342",
+                                                            color: "#ffffff !important",
+                                                        }
+                                                    }}>{loadingContraseña ? (
+                                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                            <CircularProgress
+                                                                size={20}
+                                                                sx={{
+                                                                    color: "#ffffff",
+                                                                    marginRight: "10px"
+                                                                }}
+                                                            />
+                                                            <span>Guardando...</span>
+                                                        </Box>
+                                                    ) : "Actualizar"}
+                                                </Button>
+                                            </Box>
+                                        </Paper>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+                        </Grid>
+                        <Grid size={{
+                            xs: 12,
+                            sm: 12,
+                            md: 12,
+                            lg: 6
+                        }}>
+                            <Paper
+                                component="form"
+                                onSubmit={handleUpdateUser}
+                                sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "flex-start",
+                                    width: "100%",
+                                    height: "100%",
+                                    boxShadow: 3,
+                                    p: { xs: 2, sm: 3, md: 3 },
+                                    borderRadius: 4,
+                                    background: "transparent",
+                                    flexGrow: 0,
+                                }}>
+                                <Typography variant="h2" sx={{
+                                    color: "#000000",
+                                    fontSize: {
+                                        xs: "1.4rem",
+                                        sm: "1.4rem",
+                                        md: "1.4rem",
+                                        lg: "1.5rem",
+                                        xl: "1.5rem"
+                                    },
+                                    textAlign: { xs: "center", sm: "center", md: "start" },
+                                }}>Actualizar datos de usuario</Typography>
+                                <Typography variant="body2" sx={{
+                                    color: "#000000",
+                                    fontSize: {
+                                        xs: "1.1rem",
+                                        sm: "1.1rem",
+                                        md: "1.2rem",
+                                        lg: "1.3rem",
+                                        xl: "1.3rem",
+                                    },
+                                    textAlign: { xs: "center", sm: "center", md: "start" },
+                                    lineHeight: 1.8,
+                                }}>Actualiza los datos que cargaste en el formulario de registro
+                                </Typography>
+                                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 1, mb: 2 }} />
+                                <Grid container spacing={2}>
+                                    <Grid size={12}>
+                                        <Box sx={{ my: 0, width: "100%" }}>
+                                            {loadingData ? (
+                                                <>
+                                                    <Skeleton animation="wave" variant="body1" sx={{ borderRadius: 2, mb: 1, bgcolor: "#000000" }} />
+                                                    <Skeleton animation="wave" variant="rectangular" height={50} sx={{ borderRadius: 2, mb: 1, bgcolor: "#000000" }} />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Typography variant="body1" sx={{ color: "#000000" }}>¿Cómo te llamas?</Typography>
+                                                    <TextField
+                                                        value={usernameLocal}
+                                                        onChange={(e) => {
+                                                            setUsernameLocal(e.target.value);
+                                                            setProfile({ ...profile, username: e.target.value });
+                                                        }
+                                                        }
+                                                        placeholder="Nombre completo"
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        margin="dense"
+                                                        sx={{
+                                                            backgroundColor: "#d7d6d6",
+                                                            color: "#000000",
+                                                            borderRadius: 3,
+                                                            boxShadow: 3,
+                                                            input: { color: "#000000" },
+                                                            "& .MuiOutlinedInput-root": {
+                                                                borderRadius: 3,
+                                                                pr: 1,
+                                                            },
+                                                            "& fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "& .MuiInputBase-input::placeholder": {
+                                                                color: "#000000",
+                                                                opacity: 0.6,
+                                                            },
+                                                            "&:hover fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "&.Mui-focused fieldset": {
+                                                                borderColor: "gray"
+                                                            },
+                                                        }}
+                                                    ></TextField>
+                                                </>
+                                            )}
                                         </Box>
-                                    )}
-                                </>
-                            )
-                            }
-                        </Box>
-                    </Grid>
-                    <Grid size={{
-                        xs: 12,
-                        sm: 12,
-                        md: 12,
-                        lg: 6
-                    }}>
-                        <Box sx={{ my: 0, width: "100%" }}>
-                            {loadingData ? (
-                                <>
-                                    <Skeleton animation="wave" variant="body1" sx={{ borderRadius: 2, mb: 1, mt: 1, bgcolor: "#4a4a4a" }} />
-                                    <Skeleton animation="wave" variant="rectangular" height={50} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                                </>
-                            ) : (
-                                <>
-                                    <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Tomas medicamentos?</Typography>
-                                    <Select
-                                        value={tomaMedicamentos}
-                                        onChange={(e) => {
-                                            setTomaMedicamentos(e.target.value);
-                                            e.target.value === "si" ? setMedicamentos("") : setMedicamentos("No")
-                                        }
-                                        }
-                                        labelId="demo-simple-select-helper-label"
-                                        id="demo-simple-select-helper"
-                                        fullWidth
-                                        MenuProps={{
-                                            PaperProps: {
-                                                sx: {
-                                                    borderRadius: 3,
-                                                    backgroundColor: "#303030",
-                                                    color: "#ffffff",
-                                                }
-                                            },
-                                            MenuListProps: { sx: { p: 0 } }
-                                        }} sx={{
-                                            backgroundColor: "#303030",
-                                            borderRadius: 3,
-                                            boxShadow: 3,
-                                            mt: 1,
-                                            input: { color: "white" },
-                                            "& .MuiOutlinedInput-root": {
-                                                borderRadius: 3,
-                                                pr: 1,
-                                            },
-                                            "& fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&:hover fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "gray"
-                                            },
-                                            mb: 1
-                                        }}
-                                    >
-                                        <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
-                                        <MenuItem value="si">Si</MenuItem>
-                                        <MenuItem value="no">No</MenuItem>
-                                    </Select>
-                                </>
-                            )}
-                            {tomaMedicamentos === "si" && (
-                                <Box sx={{ width: "100%" }}>
-                                    <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cúal/es? Escribilos</Typography>
-                                    <TextField
-                                        placeholder="Escribilos..."
-                                        value={medicamentos}
-                                        onChange={(e) => setMedicamentos(e.target.value)}
-                                        variant="outlined"
-                                        multiline
-                                        minRows={4}
-                                        maxRows={4}
-                                        fullWidth
-                                        margin="dense"
-                                        sx={{
-                                            backgroundColor: "#303030",
-                                            borderRadius: 3,
-                                            boxShadow: 3,
-                                            input: { color: "white" },
-                                            "& .MuiOutlinedInput-root": {
-                                                borderRadius: 3,
-                                                pr: 1,
-                                            },
-                                            "& fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&:hover fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "gray"
+                                    </Grid>
+                                    <Grid size={{
+                                        xs: 12,
+                                        sm: 12,
+                                        md: 12,
+                                        lg: 6
+                                    }}>
+                                        <Box sx={{ width: "100%" }}>
+                                            {loadingData ? (
+                                                <>
+                                                    <Skeleton animation="wave" variant="body1" sx={{ borderRadius: 2, mb: 1, mt: 1, bgcolor: "#4a4a4a" }} />
+                                                    <Skeleton animation="wave" variant="rectangular" height={50} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Typography variant="body1" sx={{ color: "#000000" }}>¿Sufris de alguna enfermedad?</Typography>
+                                                    <Select
+                                                        value={tieneEnfermedad}
+                                                        onChange={(e) => {
+                                                            setTieneEnfermedad(e.target.value)
+                                                            e.target.value === "si" ? setEnfermedad("") : setEnfermedad("No")
+                                                        }
+                                                        }
+                                                        labelId="demo-simple-select-helper-label"
+                                                        id="demo-simple-select-helper"
+                                                        fullWidth
+                                                        MenuProps={{
+                                                            PaperProps: {
+                                                                sx: {
+                                                                    borderRadius: 3,
+                                                                    backgroundColor: "#303030",
+                                                                    color: "#ffffff",
+                                                                }
+                                                            },
+                                                            MenuListProps: { sx: { p: 0 } }
+                                                        }} sx={{
+                                                            backgroundColor: "#d7d6d6",
+                                                            color: "#000000",
+                                                            borderRadius: 3,
+                                                            mt: 1,
+                                                            boxShadow: 3,
+                                                            input: { color: "#000000" },
+                                                            "& .MuiOutlinedInput-root": {
+                                                                borderRadius: 3,
+                                                                pr: 1,
+                                                            },
+                                                            "& fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "& .MuiInputBase-input::placeholder": {
+                                                                color: "#000000",
+                                                                opacity: 0.6,
+                                                            },
+                                                            "&:hover fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "&.Mui-focused fieldset": {
+                                                                borderColor: "gray"
+                                                            },
+                                                            mb: 1
+                                                        }}
+                                                    >
+                                                        <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
+                                                        <MenuItem value="si">Si</MenuItem>
+                                                        <MenuItem value="no">No</MenuItem>
+                                                    </Select>
+                                                    {tieneEnfermedad === "si" && (
+                                                        <Box sx={{ width: "100%" }}>
+                                                            <Typography variant="body1" sx={{ color: "#000000" }}>¿Cúal/es? Escribilas</Typography>
+                                                            <TextField
+                                                                placeholder="Escribilas..."
+                                                                value={enfermedad}
+                                                                onChange={(e) => setEnfermedad(e.target.value)}
+                                                                variant="outlined"
+                                                                multiline
+                                                                minRows={4}
+                                                                maxRows={4}
+                                                                fullWidth
+                                                                margin="dense"
+                                                                sx={{
+                                                                    backgroundColor: "#d7d6d6",
+                                                                    color: "#000000",
+                                                                    borderRadius: 3,
+                                                                    boxShadow: 3,
+                                                                    "& .MuiInputBase-input": {
+                                                                        color: "#000000",
+                                                                        WebkitTextFillColor: "#000000",
+                                                                    },
+                                                                    "& textarea": {
+                                                                        color: "#000000",
+                                                                    },
+                                                                    "& .MuiOutlinedInput-root": {
+                                                                        borderRadius: 3,
+                                                                        pr: 1,
+                                                                    },
+                                                                    "& fieldset": {
+                                                                        borderColor: "transparent"
+                                                                    },
+                                                                    "& .MuiInputBase-input::placeholder": {
+                                                                        color: "#000000",
+                                                                        opacity: 0.6,
+                                                                    },
+                                                                    "&:hover fieldset": {
+                                                                        borderColor: "transparent"
+                                                                    },
+                                                                    "&.Mui-focused fieldset": {
+                                                                        borderColor: "gray"
+                                                                    },
+                                                                }}
+                                                            ></TextField>
+                                                        </Box>
+                                                    )}
+                                                </>
+                                            )
                                             }
-                                        }}
-                                    ></TextField>
+                                        </Box>
+                                    </Grid>
+                                    <Grid size={{
+                                        xs: 12,
+                                        sm: 12,
+                                        md: 12,
+                                        lg: 6
+                                    }}>
+                                        <Box sx={{ width: "100%" }}>
+                                            {loadingData ? (
+                                                <>
+                                                    <Skeleton animation="wave" variant="body1" sx={{ borderRadius: 2, mb: 1, mt: 1, bgcolor: "#4a4a4a" }} />
+                                                    <Skeleton animation="wave" variant="rectangular" height={50} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Typography variant="body1" sx={{ color: "#000000" }}>¿Tomas medicamentos?</Typography>
+                                                    <Select
+                                                        value={tomaMedicamentos}
+                                                        onChange={(e) => {
+                                                            setTomaMedicamentos(e.target.value);
+                                                            e.target.value === "si" ? setMedicamentos("") : setMedicamentos("No")
+                                                        }
+                                                        }
+                                                        labelId="demo-simple-select-helper-label"
+                                                        id="demo-simple-select-helper"
+                                                        fullWidth
+                                                        MenuProps={{
+                                                            PaperProps: {
+                                                                sx: {
+                                                                    borderRadius: 3,
+                                                                    backgroundColor: "#303030",
+                                                                    color: "#ffffff",
+                                                                }
+                                                            },
+                                                            MenuListProps: { sx: { p: 0 } }
+                                                        }} sx={{
+                                                            backgroundColor: "#d7d6d6",
+                                                            color: "#000000",
+                                                            mt: 1,
+                                                            borderRadius: 3,
+                                                            boxShadow: 3,
+                                                            input: { color: "#000000" },
+                                                            "& .MuiOutlinedInput-root": {
+                                                                borderRadius: 3,
+                                                                pr: 1,
+                                                            },
+                                                            "& fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "& .MuiInputBase-input::placeholder": {
+                                                                color: "#000000",
+                                                                opacity: 0.6,
+                                                            },
+                                                            "&:hover fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "&.Mui-focused fieldset": {
+                                                                borderColor: "gray"
+                                                            },
+                                                            mb: 1
+                                                        }}
+                                                    >
+                                                        <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
+                                                        <MenuItem value="si">Si</MenuItem>
+                                                        <MenuItem value="no">No</MenuItem>
+                                                    </Select>
+                                                </>
+                                            )}
+                                            {tomaMedicamentos === "si" && (
+                                                <Box sx={{ width: "100%" }}>
+                                                    <Typography variant="body1" sx={{ color: "#000000" }}>¿Cúal/es? Escribilos</Typography>
+                                                    <TextField
+                                                        placeholder="Escribilos..."
+                                                        value={medicamentos}
+                                                        onChange={(e) => setMedicamentos(e.target.value)}
+                                                        variant="outlined"
+                                                        multiline
+                                                        minRows={4}
+                                                        maxRows={4}
+                                                        fullWidth
+                                                        margin="dense"
+                                                        sx={{
+                                                            backgroundColor: "#d7d6d6",
+                                                            color: "#000000",
+                                                            borderRadius: 3,
+                                                            boxShadow: 3,
+                                                            "& .MuiInputBase-input": {
+                                                                color: "#000000",
+                                                                WebkitTextFillColor: "#000000",
+                                                            },
+                                                            "& textarea": {
+                                                                color: "#000000",
+                                                            },
+                                                            "& .MuiOutlinedInput-root": {
+                                                                borderRadius: 3,
+                                                                pr: 1,
+                                                            },
+                                                            "& fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "& .MuiInputBase-input::placeholder": {
+                                                                color: "#000000",
+                                                                opacity: 0.6,
+                                                            },
+                                                            "&:hover fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "&.Mui-focused fieldset": {
+                                                                borderColor: "gray"
+                                                            },
+                                                        }}
+                                                    ></TextField>
+                                                </Box>
+                                            )}
+                                        </Box>
+                                    </Grid>
+                                    <Grid size={12}>
+                                        <Box sx={{ my: 0, width: "100%" }}>
+                                            {loadingData ? (
+                                                <>
+                                                    <Skeleton animation="wave" variant="body1" sx={{ borderRadius: 2, mb: 1, mt: 1, bgcolor: "#4a4a4a" }} />
+                                                    <Skeleton animation="wave" variant="rectangular" height={50} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Typography variant="body1" sx={{ color: "#000000" }}>¿Sufris de alergias?</Typography>
+                                                    <Select
+                                                        value={tieneAlergias}
+                                                        onChange={(e) => {
+                                                            setTieneAlergias(e.target.value)
+                                                            e.target.value === "si" ? setAlergias("") : setAlergias("No")
+                                                        }
+                                                        }
+                                                        labelId="demo-simple-select-helper-label"
+                                                        id="demo-simple-select-helper"
+                                                        fullWidth
+                                                        MenuProps={{
+                                                            PaperProps: {
+                                                                sx: {
+                                                                    borderRadius: 3,
+                                                                    backgroundColor: "#303030",
+                                                                    color: "#ffffff",
+                                                                }
+                                                            },
+                                                            MenuListProps: { sx: { p: 0 } }
+                                                        }} sx={{
+                                                            backgroundColor: "#d7d6d6",
+                                                            mt: 1,
+                                                            color: "#000000",
+                                                            borderRadius: 3,
+                                                            boxShadow: 3,
+                                                            input: { color: "#000000" },
+                                                            "& .MuiOutlinedInput-root": {
+                                                                borderRadius: 3,
+                                                                pr: 1,
+                                                            },
+                                                            "& fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "& .MuiInputBase-input::placeholder": {
+                                                                color: "#000000",
+                                                                opacity: 0.6,
+                                                            },
+                                                            "&:hover fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "&.Mui-focused fieldset": {
+                                                                borderColor: "gray"
+                                                            },
+                                                            mb: 1
+                                                        }}
+                                                    >
+                                                        <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
+                                                        <MenuItem value="si">Si</MenuItem>
+                                                        <MenuItem value="no">No</MenuItem>
+                                                    </Select>
+                                                </>
+                                            )}
+                                            {tieneAlergias === "si" && (
+                                                <Box sx={{ width: "100%" }}>
+                                                    <Typography variant="body1" sx={{ color: "#000000" }}>¿Cúal/es? Escribilas</Typography>
+                                                    <TextField
+                                                        placeholder="Escribilas..."
+                                                        value={alergias}
+                                                        onChange={(e) => setAlergias(e.target.value)}
+                                                        variant="outlined"
+                                                        multiline
+                                                        minRows={4}
+                                                        maxRows={4}
+                                                        fullWidth
+                                                        margin="dense"
+                                                        sx={{
+                                                            backgroundColor: "#d7d6d6",
+                                                            color: "#000000",
+                                                            borderRadius: 3,
+                                                            boxShadow: 3,
+                                                            "& .MuiInputBase-input": {
+                                                                color: "#000000",
+                                                                WebkitTextFillColor: "#000000",
+                                                            },
+                                                            "& textarea": {
+                                                                color: "#000000",
+                                                            },
+                                                            "& .MuiOutlinedInput-root": {
+                                                                borderRadius: 3,
+                                                                pr: 1,
+                                                            },
+                                                            "& fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "& .MuiInputBase-input::placeholder": {
+                                                                color: "#000000",
+                                                                opacity: 0.6,
+                                                            },
+                                                            "&:hover fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "&.Mui-focused fieldset": {
+                                                                borderColor: "gray"
+                                                            },
+                                                        }}
+                                                    ></TextField>
+                                                </Box>
+                                            )}
+                                        </Box>
+                                    </Grid>
+                                    <Grid size={{
+                                        xs: 12,
+                                        sm: 12,
+                                        md: 12,
+                                        lg: 6
+                                    }}>
+                                        <Box sx={{ my: 0, width: "100%" }}>
+                                            {loadingData ? (
+                                                <>
+                                                    <Skeleton animation="wave" variant="body1" sx={{ borderRadius: 2, mb: 1, mt: 1, bgcolor: "#4a4a4a" }} />
+                                                    <Skeleton animation="wave" variant="rectangular" height={120} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Typography variant="body1" sx={{ color: "#000000" }}>¿Hay algo que no te guste o te moleste?</Typography>
+                                                    <TextField
+                                                        placeholder="Escribilo..."
+                                                        value={molestias}
+                                                        onChange={(e) => setMolestias(e.target.value)}
+                                                        variant="outlined"
+                                                        multiline
+                                                        minRows={4}
+                                                        maxRows={4}
+                                                        fullWidth
+                                                        margin="dense"
+                                                        sx={{
+                                                            backgroundColor: "#d7d6d6",
+                                                            color: "#000000",
+                                                            borderRadius: 3,
+                                                            boxShadow: 3,
+                                                            "& .MuiInputBase-input": {
+                                                                color: "#000000",
+                                                                WebkitTextFillColor: "#000000",
+                                                            },
+                                                            "& textarea": {
+                                                                color: "#000000",
+                                                            },
+                                                            "& .MuiOutlinedInput-root": {
+                                                                borderRadius: 3,
+                                                                pr: 1,
+                                                            },
+                                                            "& fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "& .MuiInputBase-input::placeholder": {
+                                                                color: "#000000",
+                                                                opacity: 0.6,
+                                                            },
+                                                            "&:hover fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "&.Mui-focused fieldset": {
+                                                                borderColor: "gray"
+                                                            },
+                                                        }}
+                                                    ></TextField>
+                                                </>
+                                            )}
+                                        </Box>
+                                    </Grid>
+                                    <Grid size={{
+                                        xs: 12,
+                                        sm: 12,
+                                        md: 12,
+                                        lg: 6
+                                    }}>
+                                        <Box sx={{ my: 0, width: "100%" }}>
+                                            {loadingData ? (
+                                                <>
+                                                    <Skeleton animation="wave" variant="body1" sx={{ borderRadius: 2, mb: 1, mt: 1, bgcolor: "#4a4a4a" }} />
+                                                    <Skeleton animation="wave" variant="rectangular" height={120} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Typography variant="body1" sx={{ color: "#000000" }}>¿Qué cosas te gustan hacer?</Typography>
+                                                    <TextField
+                                                        placeholder="Escribilas..."
+                                                        value={gustos}
+                                                        onChange={(e) => setGustos(e.target.value)}
+                                                        variant="outlined"
+                                                        multiline
+                                                        fullWidth
+                                                        minRows={4}
+                                                        maxRows={4}
+                                                        margin="dense"
+                                                        sx={{
+                                                            backgroundColor: "#d7d6d6",
+                                                            color: "#000000",
+                                                            borderRadius: 3,
+                                                            boxShadow: 3,
+                                                            "& .MuiInputBase-input": {
+                                                                color: "#000000",
+                                                                WebkitTextFillColor: "#000000",
+                                                            },
+                                                            "& textarea": {
+                                                                color: "#000000",
+                                                            },
+                                                            "& .MuiOutlinedInput-root": {
+                                                                borderRadius: 3,
+                                                                pr: 1,
+                                                            },
+                                                            "& fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "& .MuiInputBase-input::placeholder": {
+                                                                color: "#000000",
+                                                                opacity: 0.6,
+                                                            },
+                                                            "&:hover fieldset": {
+                                                                borderColor: "transparent"
+                                                            },
+                                                            "&.Mui-focused fieldset": {
+                                                                borderColor: "gray"
+                                                            },
+                                                        }}
+                                                    ></TextField>
+                                                </>
+                                            )}
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                                <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "28%" }, mt: 2 }}>
+                                    <Button variant="contained" type="submit" fullWidth disabled={loading || !hasChanges}
+                                        sx={{
+                                            boxShadow: 3,
+                                            borderRadius: 2,
+                                            my: { xs: 1, sm: 1, md: 1, lg: 0 },
+                                            backgroundColor: "#7d745c",
+                                            width: { xs: "100%", sm: "100%", md: "fit-content" },
+                                            minWidth: "auto",
+                                            whiteSpace: "nowrap",
+                                            color: "#ffffff",
+                                            textTransform: "none",
+                                            fontSize: "1.1rem",
+                                            "&:hover": {
+                                                backgroundColor: "#67604d"
+                                            },
+                                            "&.Mui-disabled": {
+                                                backgroundColor: "#5a5342",
+                                                color: "#ffffff !important",
+                                            }
+                                        }}>{loading ? (
+                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <CircularProgress
+                                                    size={20}
+                                                    sx={{
+                                                        color: "#ffffff",
+                                                        marginRight: "10px"
+                                                    }}
+                                                />
+                                                <span>Guardando...</span>
+                                            </Box>
+                                        ) : "Actualizar"}
+                                    </Button>
                                 </Box>
-                            )}
-                        </Box>
+                            </Paper>
+                        </Grid>
                     </Grid>
-                    <Grid size={12}>
-                        <Box sx={{ my: 0, width: "100%" }}>
-                            {loadingData ? (
-                                <>
-                                    <Skeleton animation="wave" variant="body1" sx={{ borderRadius: 2, mb: 1, mt: 1, bgcolor: "#4a4a4a" }} />
-                                    <Skeleton animation="wave" variant="rectangular" height={50} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                                </>
-                            ) : (
-                                <>
-                                    <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Sufris de alergias?</Typography>
-                                    <Select
-                                        value={tieneAlergias}
-                                        onChange={(e) => {
-                                            setTieneAlergias(e.target.value)
-                                            e.target.value === "si" ? setAlergias("") : setAlergias("No")
-                                        }
-                                        }
-                                        labelId="demo-simple-select-helper-label"
-                                        id="demo-simple-select-helper"
-                                        fullWidth
-                                        MenuProps={{
-                                            PaperProps: {
-                                                sx: {
-                                                    borderRadius: 3,
-                                                    backgroundColor: "#303030",
-                                                    color: "#ffffff",
-                                                }
-                                            },
-                                            MenuListProps: { sx: { p: 0 } }
-                                        }} sx={{
-                                            backgroundColor: "#303030",
-                                            borderRadius: 3,
-                                            boxShadow: 3,
-                                            mt: 1,
-                                            input: { color: "white" },
-                                            "& .MuiOutlinedInput-root": {
-                                                borderRadius: 3,
-                                                pr: 1,
-                                            },
-                                            "& fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&:hover fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "gray"
-                                            },
-                                            mb: 1
-                                        }}
-                                    >
-                                        <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
-                                        <MenuItem value="si">Si</MenuItem>
-                                        <MenuItem value="no">No</MenuItem>
-                                    </Select>
-                                </>
-                            )}
-                            {tieneAlergias === "si" && (
-                                <Box sx={{ width: "100%" }}>
-                                    <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cúal/es? Escribilas</Typography>
-                                    <TextField
-                                        placeholder="Escribilas..."
-                                        value={alergias}
-                                        onChange={(e) => setAlergias(e.target.value)}
-                                        variant="outlined"
-                                        multiline
-                                        minRows={4}
-                                        maxRows={4}
-                                        fullWidth
-                                        margin="dense"
-                                        sx={{
-                                            backgroundColor: "#303030",
-                                            borderRadius: 3,
-                                            boxShadow: 3,
-                                            input: { color: "white" },
-                                            "& .MuiOutlinedInput-root": {
-                                                borderRadius: 3,
-                                                pr: 1,
-                                            },
-                                            "& fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&:hover fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "gray"
-                                            }
-                                        }}
-                                    ></TextField>
-                                </Box>
-                            )}
-                        </Box>
-                    </Grid>
-                    <Grid size={{
-                        xs: 12,
-                        sm: 12,
-                        md: 12,
-                        lg: 6
-                    }}>
-                        <Box sx={{ my: 0, width: "100%" }}>
-                            {loadingData ? (
-                                <>
-                                    <Skeleton animation="wave" variant="body1" sx={{ borderRadius: 2, mb: 1, mt: 1, bgcolor: "#4a4a4a" }} />
-                                    <Skeleton animation="wave" variant="rectangular" height={120} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                                </>
-                            ) : (
-                                <>
-                                    <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Hay algo que no te guste o te moleste?</Typography>
-                                    <TextField
-                                        placeholder="Escribilas..."
-                                        value={molestias}
-                                        onChange={(e) => setMolestias(e.target.value)}
-                                        variant="outlined"
-                                        multiline
-                                        minRows={4}
-                                        maxRows={4}
-                                        fullWidth
-                                        margin="dense"
-                                        sx={{
-                                            backgroundColor: "#303030",
-                                            borderRadius: 3,
-                                            boxShadow: 3,
-                                            input: { color: "white" },
-                                            "& .MuiOutlinedInput-root": {
-                                                borderRadius: 3,
-                                                pr: 1,
-                                            },
-                                            "& fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&:hover fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "gray"
-                                            }
-                                        }}
-                                    ></TextField>
-                                </>
-                            )}
-                        </Box>
-                    </Grid>
-                    <Grid size={{
-                        xs: 12,
-                        sm: 12,
-                        md: 12,
-                        lg: 6
-                    }}>
-                        <Box sx={{ my: 0, width: "100%" }}>
-                            {loadingData ? (
-                                <>
-                                    <Skeleton animation="wave" variant="body1" sx={{ borderRadius: 2, mb: 1, mt: 1, bgcolor: "#4a4a4a" }} />
-                                    <Skeleton animation="wave" variant="rectangular" height={120} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                                </>
-                            ) : (
-                                <>
-                                    <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Qué cosas te gustan hacer?</Typography>
-                                    <TextField
-                                        placeholder="Escribilas..."
-                                        value={gustos}
-                                        onChange={(e) => setGustos(e.target.value)}
-                                        variant="outlined"
-                                        multiline
-                                        fullWidth
-                                        minRows={4}
-                                        maxRows={4}
-                                        margin="dense"
-                                        sx={{
-                                            backgroundColor: "#303030",
-                                            borderRadius: 3,
-                                            boxShadow: 3,
-                                            input: { color: "white" },
-                                            "& .MuiOutlinedInput-root": {
-                                                borderRadius: 3,
-                                                pr: 1,
-                                            },
-                                            "& fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&:hover fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "gray"
-                                            }
-                                        }}
-                                    ></TextField>
-                                </>
-                            )}
-                        </Box>
-                    </Grid>
-                </Grid>
-                <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "20%" }, mt: 2 }}>
-                    <Button variant="contained" type="submit" fullWidth disabled={loading || !hasChanges}
-                        sx={{
-                            boxShadow: 3,
-                            my: 1,
-                            mb: 1,
-                            color: "#ffffff",
-                            backgroundColor: "#0978a0",
-                            fontFamily: "'Lora', serif",
-                            fontWeight: "bold",
-                            "&:hover": {
-                                backgroundColor: "#066688",
-                            }
-                        }}>{loading ? (
-                            <>
-                                <CircularProgress size={20} sx={{ color: "#ffffff", mr: 2 }} />
-                                Guardando...
-                            </>
-                        ) : "Actualizar"}
-                    </Button>
-                </Box>
+                </Paper>
             </Paper>
         </>
     );

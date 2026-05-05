@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient.js';
 import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert, Card, AppBar, Toolbar } from '@mui/material';
 import TeresaiLogo from '../../assets/images/file.svg';
-import fondoLogin from "../../assets/images/fondoLogin.png"
+import fondoChatAI from "../../assets/images/fondoChatAI.png"
 import imagenRegister from "../../assets/images/imagenRegister.jpg"
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import PasswordRoundedIcon from '@mui/icons-material/PasswordRounded';
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
+
 
 const Register = () => {
     const navigate = useNavigate();
@@ -120,7 +121,7 @@ const Register = () => {
             width: "100%",
             minWidth: 0,
             overflow: "hidden",
-            background: `url(${fondoLogin})`,
+            background: `url(${fondoChatAI})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
@@ -131,6 +132,7 @@ const Register = () => {
                 position: "relative",
                 display: "flex",
                 flexDirection: "column",
+                justifyContent: "center",
                 alignItems: "center",
                 minHeight: "100dvh",
                 width: { xs: "100%", md: "40%" },
@@ -154,7 +156,6 @@ const Register = () => {
                     }}>
                         <Box
                             component="img"
-                            src={TeresaiLogo}
                             alt="TERESAI Logo"
                             sx={{
                                 position: "relative",
@@ -176,7 +177,6 @@ const Register = () => {
                 </AppBar>
                 <Card
                     sx={{
-                        flex: 1,
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
@@ -184,9 +184,22 @@ const Register = () => {
                         p: { xs: 3 },
                         background: "transparent",
                         borderRadius: 3,
+                        boxShadow: 4,
+                        animation: "slideBounce 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                        "@keyframes slideBounce": {
+                            from: {
+                                opacity: 0,
+                                transform: "translateY(-100px)"
+                            },
+                            to: {
+                                opacity: 1,
+                                transform: "translateY(0)"
+                            }
+                        }
                     }}
                 >
                     <Typography variant="h4" component="h1" sx={{
+                        color: "#000000",
                         fontSize: {
                             xs: "1.7rem",
                             sm: "1.7rem",
@@ -199,6 +212,7 @@ const Register = () => {
                         Registrate
                     </Typography>
                     <Typography variant="body2" sx={{
+                        color: "#000000",
                         my: 1,
                         fontSize: {
                             xs: "1.2rem",
@@ -213,16 +227,16 @@ const Register = () => {
                     </Typography>
                     <Box component="form" onSubmit={handleRegister}>
                         <Divider sx={{
-                            my: 1,
-                            color: "#ffffff",
-                            "&:after": {
-                                borderColor: "#ffffff"
+                            my: 0,
+                            width: "100%",
+                            "&::before, &::after": {
+                                content: '""',
+                                borderColor: "#000000",
+                                borderTop: "1px solid #000000",
+                                opacity: 1
                             },
-                            "&:before": {
-                                borderColor: "#ffffff"
-                            }
                         }}>
-                            <Typography variant="body1">~</Typography>
+                            <Typography variant="body1" sx={{ color: "#000000", fontWeight: 'bold' }}>∼</Typography>
                         </Divider>
                         {errorAlert ?
                             <Alert severity="error" sx={{ my: 1, boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>
@@ -238,11 +252,12 @@ const Register = () => {
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             sx={{
-                                backgroundColor: "#303030",
+                                backgroundColor: "#d7d6d6",
+                                color: "#000000",
                                 borderRadius: 3,
                                 boxShadow: 3,
                                 my: 1,
-                                input: { color: "white" },
+                                input: { color: "black" },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
                                     pr: 1,
@@ -255,12 +270,16 @@ const Register = () => {
                                 },
                                 "&.Mui-focused fieldset": {
                                     borderColor: "gray"
-                                }
+                                },
+                                "& .MuiInputBase-input": {
+                                    color: "#000000",
+                                    fontWeight: 500,
+                                },
                             }}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#000000" }}>
                                             <PersonRoundedIcon fontSize='medium' sx={{ mr: 1 }}></PersonRoundedIcon>
                                         </Box>
                                     </InputAdornment>
@@ -277,11 +296,12 @@ const Register = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             sx={{
-                                backgroundColor: "#303030",
+                                backgroundColor: "#d7d6d6",
+                                color: "#000000",
                                 borderRadius: 3,
                                 boxShadow: 3,
                                 my: 1,
-                                input: { color: "white" },
+                                input: { color: "black" },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
                                     pr: 1,
@@ -294,12 +314,16 @@ const Register = () => {
                                 },
                                 "&.Mui-focused fieldset": {
                                     borderColor: "gray"
-                                }
+                                },
+                                "& .MuiInputBase-input": {
+                                    color: "#000000",
+                                    fontWeight: 500,
+                                },
                             }}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#000000" }}>
                                             <EmailRoundedIcon fontSize='medium' sx={{ mr: 1 }}></EmailRoundedIcon>
                                         </Box>
                                     </InputAdornment>
@@ -317,12 +341,13 @@ const Register = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             sx={{
-                                backgroundColor: "#303030",
+                                backgroundColor: "#d7d6d6",
+                                color: "#000000",
                                 borderRadius: 3,
                                 boxShadow: 3,
                                 my: 1,
                                 mb: 1,
-                                input: { color: "white" },
+                                input: { color: "black" },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
                                     pr: 1,
@@ -335,21 +360,25 @@ const Register = () => {
                                 },
                                 "&.Mui-focused fieldset": {
                                     borderColor: "gray"
-                                }
+                                },
+                                "& .MuiInputBase-input": {
+                                    color: "#000000",
+                                    fontWeight: 500,
+                                },
                             }}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#000000" }}>
                                             <PasswordRoundedIcon fontSize='medium' sx={{ mr: 1 }}></PasswordRoundedIcon>
                                         </Box>
                                     </InputAdornment>
                                 ),
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", color: "#ffffff" }}>
+                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", color: "#000000" }}>
                                             <IconButton onClick={handleShowPassword}>
-                                                {showPassword ? <VisibilityIcon /> : <VisibilityOffRoundedIcon />}
+                                                {showPassword ? <VisibilityIcon sx={{ color: "#000000" }} /> : <VisibilityOffRoundedIcon sx={{ color: "#000000" }} />}
                                             </IconButton>
                                         </Box>
                                     </InputAdornment>
@@ -360,13 +389,13 @@ const Register = () => {
                             mb: 1,
                             mt: 2,
                             boxShadow: 3,
+                            backgroundColor: "#7d745c",
                             color: "#ffffff",
-                            fontWeight: "bold",
-                            fontFamily: "Lora, serif",
-                            backgroundColor: "#7a7664",
+                            fontSize: "1rem",
+                            textTransform: "none",
                             "&:hover": {
-                                backgroundColor: "#676456",
-                            }
+                                backgroundColor: "#67604d"
+                            },
                         }}>Registrarse
                         </Button>
                     </Box>

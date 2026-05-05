@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert, Card, AppBar, Toolbar } from '@mui/material';
 import { supabase } from '../../supabaseClient.js';
-import fondoLogin from "../../assets/images/fondoLogin.png"
+import fondoChatAI from "../../assets/images/fondoChatAI.png"
 import TeresaiLogo from '../../assets/images/file.svg';
 import imagenLogin from "../../assets/images/imagenLogin.jpg"
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
@@ -73,17 +73,23 @@ const Login = () => {
             width: "100%",
             minWidth: 0,
             overflow: "hidden",
-            background: `url(${fondoLogin})`,
+            background: `url(${fondoChatAI})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             px: { xs: 2, sm: 0 },
             py: 0
         }}>
+            {errorAlert ?
+                <Alert variant='filled' severity="error" sx={{ position: "absolute", top: 16, left: 126, boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>
+                :
+                null
+            }
             <Box sx={{
                 position: "relative",
                 display: "flex",
                 flexDirection: "column",
+                justifyContent: "center",
                 alignItems: "center",
                 minHeight: "100dvh",
                 width: { xs: "100%", md: "40%" },
@@ -106,40 +112,36 @@ const Login = () => {
                         justifyContent: 'flex-start',
                     }}>
                         <Box
-                            component="img"
-                            src={TeresaiLogo}
-                            alt="TERESAI Logo"
-                            sx={{
-                                position: "relative",
-                                right: {
-                                    xs: 63,
-                                    sm: 63,
-                                    md: 45,
-                                    lg: 45,
-                                    xl: 45
-                                },
-                                height: "110px",
-                                width: "auto",
-                                imageRendering: "auto",
-                                cursor: "pointer",
-                            }}
-                            onClick={() => navigate('/')}
+
                         />
                     </Toolbar>
                 </AppBar>
                 <Card
                     sx={{
-                        flex: 1,
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
+                        height: "auto",
                         justifyContent: "center",
                         p: { xs: 3 },
                         background: "transparent",
                         borderRadius: 3,
+                        boxShadow: 4,
+                        animation: "slideBounce 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                        "@keyframes slideBounce": {
+                            from: {
+                                opacity: 0,
+                                transform: "translateY(-100px)"
+                            },
+                            to: {
+                                opacity: 1,
+                                transform: "translateY(0)"
+                            }
+                        }
                     }}
                 >
                     <Typography variant="h4" component="h1" sx={{
+                        color: "#000000",
                         fontSize: {
                             xs: "1.7rem",
                             sm: "1.7rem",
@@ -152,15 +154,19 @@ const Login = () => {
                         Bienvenido de vuelta
                     </Typography>
                     <Divider sx={{
-                        my: 1,
-                        width: "100%",
+                        my: 0,
+                        width: "100%", // Aseguramos que se estire horizontalmente
                         "&::before, &::after": {
-                            borderColor: "#ffffff",
-                        }
+                            content: '""', // Reforzamos que existan los pseudo-elementos
+                            borderColor: "#000000",
+                            borderTop: "1px solid #000000",
+                            opacity: 1
+                        },
                     }}>
-                        <Typography variant="body1" sx={{ color: "#ffffff" }}>~</Typography>
+                        <Typography variant="body1" sx={{ color: "#000000", fontWeight: 'bold' }}>∼</Typography>
                     </Divider>
                     <Typography variant='body1' sx={{
+                        color: "#000000",
                         mb: 1,
                         fontFamily: "'Lora', serif",
                     }}>Ingresa o registrate con Google</Typography>
@@ -183,21 +189,16 @@ const Login = () => {
                     <Box component="form" onSubmit={loginUser}>
                         <Divider sx={{
                             my: 1,
-                            color: "#ffffff",
+                            color: "#000000",
                             "&:after": {
-                                borderColor: "#ffffff"
+                                borderColor: "#000000"
                             },
                             "&:before": {
-                                borderColor: "#ffffff"
+                                borderColor: "#000000"
                             },
                         }}>
-                            <Typography variant="body2">O</Typography>
+                            <Typography variant="body1">O</Typography>
                         </Divider>
-                        {errorAlert ?
-                            <Alert severity="error" sx={{ boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>
-                            :
-                            null
-                        }
                         <TextField
                             error={errorLogueo}
                             placeholder="Correo electrónico"
@@ -207,11 +208,12 @@ const Login = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             sx={{
-                                backgroundColor: "#303030",
+                                backgroundColor: "#d7d6d6",
+                                color: "#000000",
                                 borderRadius: 3,
                                 boxShadow: 3,
                                 my: 1,
-                                input: { color: "white" },
+                                input: { color: "black" },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
                                     pr: 1,
@@ -224,12 +226,16 @@ const Login = () => {
                                 },
                                 "&.Mui-focused fieldset": {
                                     borderColor: "gray"
-                                }
+                                },
+                                "& .MuiInputBase-input": {
+                                    color: "#000000",
+                                    fontWeight: 500,
+                                },
                             }}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#000000" }}>
                                             <EmailRoundedIcon fontSize='medium' sx={{ mr: 1 }}></EmailRoundedIcon>
                                         </Box>
                                     </InputAdornment>
@@ -248,12 +254,13 @@ const Login = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             sx={{
-                                backgroundColor: "#303030",
+                                backgroundColor: "#d7d6d6",
+                                color: "#000000",
                                 borderRadius: 3,
                                 boxShadow: 3,
                                 my: 1,
                                 mb: 2,
-                                input: { color: "white" },
+                                input: { color: "black" },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
                                     pr: 1,
@@ -266,21 +273,25 @@ const Login = () => {
                                 },
                                 "&.Mui-focused fieldset": {
                                     borderColor: "gray"
-                                }
+                                },
+                                "& .MuiInputBase-input": {
+                                    color: "#000000",
+                                    fontWeight: 500,
+                                },
                             }}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#000000" }}>
                                             <PasswordRoundedIcon fontSize="medium" sx={{ mr: 1 }}></PasswordRoundedIcon>
                                         </Box>
                                     </InputAdornment>
                                 ),
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", color: "#ffffff" }}>
+                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", color: "#000000" }}>
                                             <IconButton onClick={handleShowPassword}>
-                                                {showPassword ? <VisibilityIcon /> : <VisibilityOffRoundedIcon />}
+                                                {showPassword ? <VisibilityIcon sx={{ color: "#000000" }} /> : <VisibilityOffRoundedIcon sx={{ color: "#000000" }} />}
                                             </IconButton>
                                         </Box>
                                     </InputAdornment>
@@ -292,17 +303,19 @@ const Login = () => {
                             sx={{
                                 mb: 2,
                                 boxShadow: 3,
+                                borderRadius: 3,
+                                backgroundColor: "#7d745c",
                                 color: "#ffffff",
-                                backgroundColor: "#918B76",
-                                fontFamily: "'Lora', serif",
-                                fontWeight: "bold",
+                                fontSize: "1rem",
+                                textTransform: "none",
                                 "&:hover": {
-                                    backgroundColor: "#7a7664",
-                                }
+                                    backgroundColor: "#67604d"
+                                },
                             }}>Ingresar
                         </Button>
                         <br />
                         <Typography variant='body1' sx={{
+                            color: "#000000",
                             my: 0,
                             fontFamily: "'Lora', serif",
                             textAlign: "center"
@@ -313,13 +326,14 @@ const Login = () => {
                                 mb: 1,
                                 mt: 1,
                                 border: "none",
+                                borderRadius: 3,
                                 boxShadow: 2,
-                                backgroundColor: "#7a7664",
-                                fontFamily: "'Lora', serif",
-                                fontWeight: "bold",
+                                backgroundColor: "#67604d",
+                                fontSize: "1rem",
+                                textTransform: "none",
                                 "&:hover": {
-                                    backgroundColor: "#676456",
-                                }
+                                    backgroundColor: "#514c3d"
+                                },
                             }}>Registrate
                         </Button>
                     </Box>
