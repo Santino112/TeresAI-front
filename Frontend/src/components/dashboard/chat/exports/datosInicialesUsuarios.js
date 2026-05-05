@@ -1,5 +1,10 @@
 import { supabase } from "../../../../supabaseClient";
 
+const isNetworkFetchError = (error) => {
+    const message = String(error?.message || "");
+    return message.includes("NetworkError") || message.includes("Failed to fetch");
+};
+
 //Almacenar la información en supabase
 ////////////////////////////////////////
 export const saveProfile = async (userId, { username, role, email }) => {
@@ -79,58 +84,78 @@ export const caregivePeople = async (userId, { geriatrico, adultosmayores, infoa
 //Tomar los datos de supabase
 ////////////////////////////////////////
 export const tomarDatosPerfiles = async (userId) => {
+    if (!userId) return null;
+
     const { data, error } = await supabase
         .schema("public")
         .from("profiles")
         .select("*")
         .eq("id", userId)
-        .single()
+        .maybeSingle()
 
     if (error) throw error;
     return data;
 };
 
 export const tomarDatosElder = async (userId) => {
+    if (!userId) return null;
+
     const { data, error } = await supabase
         .schema("public")
         .from("elder_profiles")
         .select("*")
         .eq("id", userId)
-        .single()
+        .maybeSingle()
 
     if (error) {
+        if (isNetworkFetchError(error)) {
+            console.warn("No se pudo conectar con Supabase al obtener el perfil del adulto mayor.");
+            return null;
+        }
         console.error("Error al obtener los datos del usuario", error);
-        return false;
+        return null;
     }
     return data;
 };
 
 export const tomarDatosFamiliares = async (userId) => {
+    if (!userId) return null;
+
     const { data, error } = await supabase
         .schema("public")
         .from("family_profiles")
         .select("*")
         .eq("id", userId)
-        .single()
+        .maybeSingle()
 
     if (error) {
+        if (isNetworkFetchError(error)) {
+            console.warn("No se pudo conectar con Supabase al obtener el perfil familiar.");
+            return null;
+        }
         console.error("Error al obtener los datos del usuario", error);
-        return false;
+        return null;
     }
     return data;
 };
 
 export const tomarDatosCuidadores = async (userId) => {
+    if (!userId) return null;
+
     const { data, error } = await supabase
         .schema("public")
         .from("caregiver_profiles")
         .select("*")
         .eq("id", userId)
-        .single()
+        .maybeSingle()
 
     if (error) {
+        if (isNetworkFetchError(error)) {
+            console.warn("No se pudo conectar con Supabase al obtener el perfil del cuidador.");
+            return null;
+        }
         console.error("Error al obtener los datos del usuario", error);
-        return false;
+        return null;
     }
     return data;
 };

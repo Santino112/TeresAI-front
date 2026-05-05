@@ -11,7 +11,16 @@ import esLocale from '@fullcalendar/core/locales/es';
 import { supabase } from "../../../../../supabaseClient.js";
 
 const Calendar = () => {
-    const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    start: toLocalInputDateTime(),
+    end: toLocalInputDateTime(new Date(Date.now() + 60 * 60 * 1000)),
+  });
 
     const fetchEvents = async () => {
         const { data } = await supabase.auth.getSession();

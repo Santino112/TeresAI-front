@@ -15,9 +15,20 @@ import {
   Button,
   Skeleton,
   useTheme,
-  Paper
+  Paper,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Alert,
 } from "@mui/material";
 import StickyNote2RoundedIcon from "@mui/icons-material/StickyNote2Rounded";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import api from "../../../../../api/axios";
 
 const formatDate = (value) => {
@@ -37,7 +48,18 @@ const getSnippet = (text) => {
   if (preview.length <= 180) {
     return preview;
   }
-  return `${preview.slice(0, 180).trim()}…`;
+  return `${preview.slice(0, 180).trim()}...`;
+};
+
+const getNoteTitle = (note) => note?.title || note?.text?.split("\n")[0] || "Nota sin titulo";
+const getNoteContent = (note) => note?.content || note?.text || "";
+const deriveTitleFromContent = (content = "") => {
+  const normalized = String(content || "").trim();
+  if (!normalized) return "Nota sin titulo";
+  const firstLine = normalized.split("\n").find((line) => line.trim());
+  const source = (firstLine || normalized).trim();
+  if (source.length <= 80) return source;
+  return `${source.slice(0, 80).trim()}...`;
 };
 
 export default function NotesDashboard() {
@@ -47,6 +69,21 @@ export default function NotesDashboard() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
+  const [editingNote, setEditingNote] = useState(false);
+
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [createError, setCreateError] = useState("");
+  const [createForm, setCreateForm] = useState({
+    title: "",
+    content: "",
+  });
+
+  const [editError, setEditError] = useState("");
+  const [editForm, setEditForm] = useState({
+    title: "",
+    content: "",
+  });
 
   const fetchNotes = useCallback(async () => {
     setLoading(true);
@@ -72,23 +109,107 @@ export default function NotesDashboard() {
 
   const openNote = (note) => {
     setSelectedNote(note);
+    setEditForm({
+      title: getNoteTitle(note),
+      content: getNoteContent(note),
+    });
+    setEditError("");
+    setEditingNote(false);
     setModalOpen(true);
   };
 
   const closeModal = () => {
+    if (actionLoading) return;
     setModalOpen(false);
     setSelectedNote(null);
+    setEditError("");
+    setEditingNote(false);
   };
 
-  const handleDeleteNote = async () => {
-    if (!selectedNote) return;
+  const handleDeleteNote = async (noteId) => {
+    if (!noteId) return;
+
     setActionLoading(true);
     try {
-      await api.delete(`/notes/${selectedNote.id}`);
-      closeModal();
-      fetchNotes();
+      await api.delete(`/notes/${noteId}`);
+      if (selectedNote?.id === noteId) {
+        closeModal();
+      }
+      await fetchNotes();
+      window.dispatchEvent(new Event("notesUpdated"));
     } catch (error) {
       console.error("Error eliminando nota:", error);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleOpenCreate = () => {
+    setCreateError("");
+    setCreateForm({ title: "", content: "" });
+    setCreateModalOpen(true);
+  };
+
+  const handleCloseCreate = () => {
+    if (createLoading) return;
+    setCreateModalOpen(false);
+  };
+
+  const handleCreateNote = async () => {
+    if (!createForm.content.trim()) {
+      setCreateError("Debes escribir el contenido de la nota.");
+      return;
+    }
+
+    setCreateLoading(true);
+    setCreateError("");
+
+    try {
+      await api.post("/notes", {
+        title: createForm.title.trim(),
+        content: createForm.content.trim(),
+      });
+
+      setCreateModalOpen(false);
+      await fetchNotes();
+      window.dispatchEvent(new Event("notesUpdated"));
+    } catch (error) {
+      setCreateError(error?.response?.data?.error || "No se pudo crear la nota.");
+    } finally {
+      setCreateLoading(false);
+    }
+  };
+
+  const handleEditNote = async () => {
+    if (!selectedNote?.id) return;
+
+    if (!editForm.content.trim()) {
+      setEditError("Debes escribir el contenido de la nota.");
+      return;
+    }
+
+    setActionLoading(true);
+    setEditError("");
+
+    try {
+      await api.put(`/notes/${selectedNote.id}`, {
+        title: editForm.title.trim(),
+        content: editForm.content.trim(),
+      });
+
+      const updatedSelected = {
+        ...selectedNote,
+        title: editForm.title.trim() || deriveTitleFromContent(editForm.content),
+        content: editForm.content.trim(),
+        text: `${editForm.title.trim() || deriveTitleFromContent(editForm.content)}\n\n${editForm.content.trim()}`,
+      };
+
+      setSelectedNote(updatedSelected);
+      setEditingNote(false);
+      await fetchNotes();
+      window.dispatchEvent(new Event("notesUpdated"));
+    } catch (error) {
+      setEditError(error?.response?.data?.error || "No se pudo editar la nota.");
     } finally {
       setActionLoading(false);
     }
@@ -160,7 +281,17 @@ export default function NotesDashboard() {
               Notas <StickyNote2RoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} />
             </Typography>
           </Stack>
-          {notesCountChip}
+          <Stack direction="row" spacing={1} alignItems="center">
+            {notesCountChip}
+            <Button
+              variant="contained"
+              onClick={handleOpenCreate}
+              startIcon={<AddRoundedIcon />}
+              sx={{ fontFamily: "'Lora', serif", fontWeight: 700 }}
+            >
+              Nueva nota
+            </Button>
+          </Stack>
         </Stack>
         <Typography variant="body2" sx={{
           color: "#000000",
@@ -345,6 +476,40 @@ export default function NotesDashboard() {
             </Box>
           </Fade>
         </Modal>
+
+        <Dialog open={createModalOpen} onClose={handleCloseCreate} fullWidth maxWidth="sm">
+          <DialogTitle sx={{ fontFamily: "'Lora', serif", fontWeight: 700 }}>Agregar nota nueva</DialogTitle>
+          <DialogContent>
+            <Stack spacing={2} sx={{ mt: 1 }}>
+              {createError ? <Alert severity="error">{createError}</Alert> : null}
+              <TextField
+                label="Titulo"
+                value={createForm.title}
+                onChange={(event) => setCreateForm((prev) => ({ ...prev, title: event.target.value }))}
+                fullWidth
+                helperText="Opcional: si lo dejas vacio se usa una version corta del contenido"
+              />
+              <TextField
+                label="Contenido"
+                value={createForm.content}
+                onChange={(event) => setCreateForm((prev) => ({ ...prev, content: event.target.value }))}
+                multiline
+                minRows={6}
+                fullWidth
+                required
+                helperText={`${createForm.content.length} caracteres`}
+              />
+            </Stack>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseCreate} disabled={createLoading}>
+              Cancelar
+            </Button>
+            <Button variant="contained" onClick={handleCreateNote} disabled={createLoading}>
+              {createLoading ? "Guardando..." : "Guardar nota"}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Paper>
     </Box>
   );

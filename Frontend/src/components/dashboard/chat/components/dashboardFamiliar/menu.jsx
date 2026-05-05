@@ -29,7 +29,7 @@ function IconMenu({ setPaginaActiva }) {
             if (data) setProfile(data);
         }
         fetchInfoUser();
-    }, [user, profile]);
+    }, [user?.id]);
 
     const handleLogOut = async () => {
         await supabase.auth.signOut();
