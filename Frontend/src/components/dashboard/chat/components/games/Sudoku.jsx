@@ -116,8 +116,7 @@ export default function Sudoku() {
         p: 2,
         gap: 2,
         borderRadius: 4,
-        boxShadow: 1,
-        backgroundColor: "transparent",
+        backgroundColor: "transparent", // Se integra al fondo del Paper padre
         mb: 2
       }}
     >
@@ -127,7 +126,7 @@ export default function Sudoku() {
           fontFamily: "'Lora', serif",
           fontSize: { xs: "1.8rem", md: "2.2rem" },
           fontWeight: 700,
-          color: "#E6E6E6",
+          color: "#2c3e50", // Azul grisáceo oscuro para mejor contraste
           letterSpacing: "0.05em",
         }}
       >
@@ -142,16 +141,19 @@ export default function Sudoku() {
             onClick={() => setDifficulty(d)}
             sx={{
               px: 2,
-              py: 0.5,
               borderRadius: 3,
               fontSize: "0.8rem",
               fontFamily: "'Lora', serif",
               textTransform: "capitalize",
-              color: difficulty === d ? "#1a1f1a" : "#aaa",
-              backgroundColor: difficulty === d ? "#918B76" : "transparent",
+              // Colores de modo claro
+              color: difficulty === d ? "#fff" : "#555",
+              backgroundColor: difficulty === d ? "#7d745c" : "#f0f0f0",
               border: "1px solid",
-              borderColor: difficulty === d ? "#918B76" : "#444",
-              "&:hover": { backgroundColor: "#7a7664", color: "#fff" },
+              borderColor: difficulty === d ? "#7d745c" : "#ccc",
+              "&:hover": {
+                backgroundColor: difficulty === d ? "#6a624d" : "#e0e0e0",
+                borderColor: "#bbb"
+              },
             }}
           >
             {d === "easy" ? "Fácil" : d === "medium" ? "Medio" : "Difícil"}
@@ -161,16 +163,22 @@ export default function Sudoku() {
 
       {/* Tablero */}
       {loading ? (
-        <CircularProgress sx={{ color: "#918B76" }} />
+        <CircularProgress sx={{ color: "#7d745c" }} />
       ) : won ? (
         <Box sx={{ textAlign: "center", py: 4 }}>
-          <EmojiEventsRoundedIcon sx={{ fontSize: "4rem", color: "#918B76" }} />
-          <Typography sx={{ fontFamily: "'Lora', serif", fontSize: "1.5rem", color: "#E6E6E6", mt: 1 }}>
+          <EmojiEventsRoundedIcon sx={{ fontSize: "4rem", color: "#7d745c" }} />
+          <Typography sx={{ fontFamily: "'Lora', serif", fontSize: "1.5rem", color: "#2c3e50", mt: 1 }}>
             ¡Felicitaciones, completaste el Sudoku!
           </Typography>
           <Button
             onClick={() => fetchBoard()}
-            sx={{ mt: 2, backgroundColor: "#918B76", color: "#fff", fontFamily: "'Lora', serif", "&:hover": { backgroundColor: "#7a7664" } }}
+            sx={{
+              mt: 2,
+              backgroundColor: "#7d745c",
+              color: "#fff",
+              fontFamily: "'Lora', serif",
+              "&:hover": { backgroundColor: "#6a624d" }
+            }}
           >
             Jugar de nuevo
           </Button>
@@ -178,10 +186,11 @@ export default function Sudoku() {
       ) : board ? (
         <Box
           sx={{
-            border: "3px solid #918B76",
+            border: "3px solid #7d745c",
             borderRadius: 2,
             overflow: "hidden",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.1)", // Sombra más suave para modo claro
+            backgroundColor: "#fff", // Fondo blanco para las celdas
           }}
         >
           {board.map((row, r) => (
@@ -191,8 +200,10 @@ export default function Sudoku() {
                 const isHighlighted = isSameGroup(r, c);
                 const isOriginal = original?.[r][c] !== 0;
                 const isError = errors[`${r}-${c}`];
-                const borderRight = (c + 1) % 3 === 0 && c !== 8 ? "2px solid #918B76" : "1px solid #3a3f3a";
-                const borderBottom = (r + 1) % 3 === 0 && r !== 8 ? "2px solid #918B76" : "1px solid #3a3f3a";
+
+                // Bordes internos ajustados
+                const borderRight = (c + 1) % 3 === 0 && c !== 8 ? "2px solid #7d745c" : "1px solid #e0e0e0";
+                const borderBottom = (r + 1) % 3 === 0 && r !== 8 ? "2px solid #7d745c" : "1px solid #e0e0e0";
 
                 return (
                   <Box
@@ -208,15 +219,15 @@ export default function Sudoku() {
                       borderRight,
                       borderBottom,
                       backgroundColor: isSelected
-                        ? "#918B76"
+                        ? "#d9d2c2" // Selección clara
                         : isError
-                        ? "rgba(180,60,60,0.35)"
-                        : isHighlighted
-                        ? "rgba(145,139,118,0.15)"
-                        : "transparent",
-                      transition: "background-color 0.15s ease",
+                          ? "#fee2e2" // Error suave (rojo pastel)
+                          : isHighlighted
+                            ? "#f9f7f2" // Resaltado de fila/columna muy tenue
+                            : "#fff",
+                      transition: "all 0.1s ease",
                       "&:hover": {
-                        backgroundColor: isOriginal ? undefined : isSelected ? "#918B76" : "rgba(145,139,118,0.25)",
+                        backgroundColor: isOriginal ? undefined : isSelected ? "#d9d2c2" : "#f0eee4",
                       },
                     }}
                   >
@@ -225,13 +236,11 @@ export default function Sudoku() {
                         fontFamily: "'Lora', serif",
                         fontSize: { xs: "1rem", sm: "1.2rem", md: "1.4rem" },
                         fontWeight: isOriginal ? 700 : 400,
-                        color: isSelected
-                          ? "#1a1f1a"
-                          : isError
-                          ? "#ff6b6b"
+                        color: isError
+                          ? "#dc2626" // Texto error
                           : isOriginal
-                          ? "#E6E6E6"
-                          : "#a8c5a0",
+                            ? "#1a1a1a" // Números fijos (negro fuerte)
+                            : "#6b7280", // Números del usuario (gris)
                       }}
                     >
                       {val !== 0 ? val : ""}
@@ -246,23 +255,23 @@ export default function Sudoku() {
 
       {/* Teclado numérico */}
       {!loading && !won && (
-        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "center" }}>
+        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "center", mt: 1 }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
             <Button
               key={n}
               onClick={() => handleNumberInput(n)}
               sx={{
-                minWidth: { xs: "36px", sm: "44px" },
-                height: { xs: "36px", sm: "44px" },
-                p: 0,
+                minWidth: { xs: "40px", sm: "48px" },
+                height: { xs: "40px", sm: "48px" },
                 borderRadius: 2,
-                fontSize: "1.1rem",
+                fontSize: "1.2rem",
                 fontFamily: "'Lora', serif",
                 fontWeight: 600,
-                color: "#E6E6E6",
-                backgroundColor: "#353A36",
-                border: "1px solid #444",
-                "&:hover": { backgroundColor: "#565E58" },
+                color: "#4b5563",
+                backgroundColor: "#fff",
+                border: "1px solid #d1d5db",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                "&:hover": { backgroundColor: "#f3f4f6", borderColor: "#9ca3af" },
               }}
             >
               {n}
@@ -271,16 +280,13 @@ export default function Sudoku() {
           <Button
             onClick={() => handleNumberInput(0)}
             sx={{
-              minWidth: { xs: "36px", sm: "44px" },
-              height: { xs: "36px", sm: "44px" },
-              p: 0,
+              minWidth: { xs: "40px", sm: "48px" },
+              height: { xs: "40px", sm: "48px" },
               borderRadius: 2,
-              fontSize: "0.75rem",
-              fontFamily: "'Lora', serif",
-              color: "#aaa",
-              backgroundColor: "#353A36",
-              border: "1px solid #444",
-              "&:hover": { backgroundColor: "#565E58" },
+              color: "#9ca3af",
+              backgroundColor: "#fff",
+              border: "1px solid #d1d5db",
+              "&:hover": { backgroundColor: "#fee2e2", color: "#dc2626" },
             }}
           >
             ✕
@@ -290,28 +296,30 @@ export default function Sudoku() {
 
       {/* Botones de acción */}
       {!loading && !won && (
-        <Box sx={{ display: "flex", gap: 2 }}>
+        <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
           <Button
             onClick={() => fetchBoard()}
             startIcon={<RefreshRoundedIcon />}
             sx={{
-              color: "#E6E6E6",
-              backgroundColor: "#353A36",
+              color: "#555",
               fontFamily: "'Lora', serif",
-              border: "1px solid #444",
-              "&:hover": { backgroundColor: "#565E58" },
+              textTransform: "none",
+              px: 3,
+              "&:hover": { backgroundColor: "#e0e0e0" },
             }}
           >
-            Nuevo
+            Nuevo juego
           </Button>
           <Button
             onClick={handleCheck}
             startIcon={<CheckRoundedIcon />}
             sx={{
-              color: "#1a1f1a",
-              backgroundColor: "#918B76",
+              color: "#fff",
+              backgroundColor: "#7d745c",
               fontFamily: "'Lora', serif",
-              "&:hover": { backgroundColor: "#7a7664" },
+              textTransform: "none",
+              px: 3,
+              "&:hover": { backgroundColor: "#6a624d" },
             }}
           >
             Verificar
@@ -320,7 +328,7 @@ export default function Sudoku() {
       )}
 
       {checked && !won && Object.keys(errors).length === 0 && (
-        <Typography sx={{ color: "#a8c5a0", fontFamily: "'Lora', serif" }}>
+        <Typography sx={{ color: "#16a34a", fontFamily: "'Lora', serif", fontWeight: 500 }}>
           ¡Todo bien hasta ahora, seguí así!
         </Typography>
       )}

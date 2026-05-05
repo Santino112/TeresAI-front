@@ -169,12 +169,24 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   }, [respuesta]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.id) return;
 
     const fetchInfoUser = async () => {
-      const data = await tomarDatosPerfiles(user.id);
-      if (data) setProfile(data);
-    }
+      try {
+        if (profile) return;
+
+        const data = await tomarDatosPerfiles(user.id);
+
+        if (data) {
+          setProfile(data);
+        } else {
+          console.warn("No se encontraron datos de perfil para este usuario.");
+        }
+      } catch (error) {
+        console.error("Error al obtener perfil del usuario:", error);
+      }
+    };
+
     fetchInfoUser();
   }, [user?.id]);
 
@@ -252,8 +264,8 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     >
       {loadingMessages ? (
         <Box sx={{ p: 5, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 2, flexGrow: 1 }}>
-          <Typography variant="h2" sx={{ fontSize: "1rem", fontFamily: "'Lora', serif" }}>Cargando mensajes...</Typography>
-          <CircularProgress sx={{ color: "#ffffff" }} />
+          <Typography variant="h2" sx={{ fontSize: "1rem", fontFamily: "'Lora', serif", color: "#000000" }}>Cargando mensajes...</Typography>
+          <CircularProgress sx={{ color: "#000000" }} />
         </Box>
       ) : esPantallaInicial ? (
         <Box
@@ -277,7 +289,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
               xl: "2.8rem"
             },
             fontFamily: "'Lora', serif",
-            color: "#f0750a",
+            color: "#000000",
             mb: 2,
 
             textAlign: "center"
@@ -310,7 +322,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
             }}
           >
             <Box sx={{
-              backgroundColor: "#303030",
+              backgroundColor: "#d7d6d6",
               borderRadius: 4,
               p: 1,
             }}>
@@ -333,7 +345,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                     backgroundColor: "transparent",
                   },
                   "& .MuiInputBase-input": {
-                    color: "#ffffff",
+                    color: "#000000",
                     fontWeight: 500,
                   },
                   "& fieldset": { border: "none" },
@@ -357,9 +369,9 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                       });
                     }}
                     sx={{
-                      backgroundColor: ttsEnabled ? "#ffffff" : "transparent",
-                      color: ttsEnabled ? "#303030" : "#ffffff",
-                      "&:hover": { backgroundColor: "#dad7d7", color: "#303030" },
+                      backgroundColor: ttsEnabled ? "#c0beb9" : "transparent",
+                      color: ttsEnabled ? "#000000" : "#000000",
+                      "&:hover": { backgroundColor: "#c0beb9", color: "#000000" },
                     }}
                   >
                     {ttsEnabled ? <VolumeUpRoundedIcon fontSize="medium" /> : <VolumeOffRoundedIcon fontSize="medium" />}
@@ -375,9 +387,9 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   />
                   {hayTexto && (
                     <IconButton type='submit' sx={{
-                      backgroundColor: "#ffffff",
-                      color: "#303030",
-                      "&:hover": { backgroundColor: "#dad7d7", color: "#303030" }
+                      backgroundColor: "transparent",
+                      color: "#000000",
+                      "&:hover": { backgroundColor: "#7d745c", color: "#ffffff" }
                     }}>
                       <ArrowUpwardRoundedIcon fontSize="medium" />
                     </IconButton>
@@ -428,8 +440,8 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                       p: 2,
                       borderRadius: "15px",
                       fontFamily: "Arial, sans-serif",
-                      color: "white",
-                      backgroundColor: msg.role === "user" ? "#303030" : "transparent",
+                      color: "#000000",
+                      backgroundColor: msg.role === "user" ? "#cfcdc7" : "transparent",
                       boxShadow: msg.role === "user" ? 3 : 0,
                       "&:after": {
                         content: '""',
@@ -441,7 +453,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                             right: "-7px",
                             left: "auto",
                             borderWidth: "10px 0 10px 10px",
-                            borderColor: "transparent transparent transparent #303030"
+                            borderColor: "transparent transparent transparent #cfcdc7"
                           }
                           : {
                             top: "6px",
@@ -460,7 +472,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                           <Typography sx={{
                             fontSize: "1.05rem",
                             lineHeight: 1.8,
-                            color: "#E6E6E6",
+                            color: "#000000",
                             m: 0,
                             textAlign: "left"
                           }}>
@@ -473,7 +485,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                             fontSize: "1.05rem",
                             lineHeight: 1.8,
                             mb: 1,
-                            color: "#E6E6E6",
+                            color: "#000000",
                             textAlign: "left"
                           }}>
                             {children}
@@ -483,7 +495,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                           <li style={{
                             fontSize: "1.05rem",
                             lineHeight: 1.8,
-                            color: "#E6E6E6",
+                            color: "#000000",
                             textAlign: "left"
                           }}>
                             {children}
@@ -502,7 +514,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                     maxWidth: "800px",
                     width: "100%",
                     mb: 3,
-                    color: "#ffffff",
+                    color: "#000000",
                     fontStyle: "italic",
                     fontSize: "1.05rem",
                     fontFamily: "'Lora', serif"
@@ -531,7 +543,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
             <Box sx={{
               width: "100%",
               maxWidth: "800px",
-              backgroundColor: "#303030",
+              backgroundColor: "#cfcdc7",
               borderRadius: {
                 xs: "16px 16px 0 0",
                 sm: "16px 16px 0 0",
@@ -555,7 +567,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                     backgroundColor: "transparent",
                   },
                   "& .MuiInputBase-input": {
-                    color: "#ffffff",
+                    color: "#000000",
                     fontWeight: 500,
                   },
                   "& fieldset": { border: "none" },
@@ -585,9 +597,9 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                       });
                     }}
                     sx={{
-                      backgroundColor: ttsEnabled ? "#ffffff" : "transparent",
-                      color: ttsEnabled ? "#303030" : "#ffffff",
-                      "&:hover": { backgroundColor: "#dad7d7", color: "#303030" }
+                      backgroundColor: ttsEnabled ? "#cfcdc7" : "transparent",
+                      color: ttsEnabled ? "#000000" : "#000000",
+                      "&:hover": { backgroundColor: "#dad7d7", color: "#000000" }
                     }}
                   >
                     {ttsEnabled ? <VolumeUpRoundedIcon fontSize="medium" /> : <VolumeOffRoundedIcon fontSize="medium" />}
@@ -603,10 +615,10 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   />
                   {hayTexto && (
                     <IconButton type='submit' sx={{
-                      backgroundColor: "#ffffff",
-                      color: "#303030",
-                      ml: 1,
-                      "&:hover": { backgroundColor: "#dad7d7", color: "#303030" }
+                      backgroundColor: ttsEnabled ? "#cfcdc7" : "transparent",
+                      color: ttsEnabled ? "#000000" : "#000000",
+                      "&:hover": { backgroundColor: "#7d745c", color: "#ffffff" },
+                      mr: 1,
                     }}>
                       <ArrowUpwardRoundedIcon fontSize="medium" />
                     </IconButton>

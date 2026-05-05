@@ -217,38 +217,47 @@ export default function NotesDashboard() {
 
   const notesCountChip = useMemo(() => {
     const label = loading ? "Cargando..." : `${notes.length} nota${notes.length === 1 ? "" : "s"}`;
-    return <Chip icon={<StickyNote2RoundedIcon />} label={label} />;
+    return <Chip icon={<StickyNote2RoundedIcon />} label={label} sx={{ backgroundColor: "#7d745c" }} />;
   }, [loading, notes.length]);
 
   return (
-    <Box
-      sx={{
+    <Box sx={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "stretch",
+      flexGrow: 1,
+      width: "100%",
+      height: "100%",
+      overflow: "auto",
+      background: `url(${fondoChatAI})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      p: 2
+    }}>
+      <Paper sx={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        flexGrow: 1,
+        justifyContent: "flex-start",
         width: "100%",
-        height: "100%",
-        overflow: "auto",
-        background: `url(${fondoChatAI})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        p: 2,
-      }}
-    >
-      <Paper
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          width: "100%",
-          p: { xs: 2, sm: 3, md: 3 },
-          borderRadius: 4,
-          background: "transparent",
-          flexGrow: 0,
-        }}
-      >
+        p: { xs: 2, sm: 2, md: 2 },
+        borderRadius: 4,
+        background: "transparent",
+        
+        flexGrow: 0,
+        boxShadow: 0,
+        animation: "slideDown 0.4s ease",
+        "@keyframes slideDown": {
+          from: {
+            opacity: 0,
+            transform: "translateY(-40px)"
+          },
+          to: {
+            opacity: 1,
+            transform: "translateY(0)"
+          }
+        }
+      }}>
         <Stack
           direction={{ xs: "column", sm: "row" }}
           alignItems="center"
@@ -256,21 +265,20 @@ export default function NotesDashboard() {
           spacing={2}
         >
           <Stack direction="row" alignItems="center" spacing={1}>
-            <Typography
-              variant="h3"
-              sx={{
-                fontSize: {
-                  xs: "1.5rem",
-                  sm: "1.5rem",
-                  md: "1.5rem",
-                  lg: "1.7rem",
-                  xl: "1.8rem",
-                },
-                textAlign: { xs: "center", sm: "center", md: "start" },
-                fontFamily: "'Lora', serif",
-              }}
-            >
-              Notas
+            <Typography variant="h3" sx={{
+              display: "flex",
+              justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+              alignItems: "center",
+              color: "#000000",
+              fontSize: {
+                xs: "1.5rem",
+                sm: "1.5rem",
+                md: "1.5rem",
+                lg: "1.7rem",
+                xl: "1.8rem"
+              },
+            }}>
+              Notas <StickyNote2RoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} />
             </Typography>
           </Stack>
           <Stack direction="row" spacing={1} alignItems="center">
@@ -285,40 +293,38 @@ export default function NotesDashboard() {
             </Button>
           </Stack>
         </Stack>
-
-        <Typography
-          variant="body2"
-          sx={{
-            my: 1,
-            fontSize: {
-              xs: "1rem",
-              sm: "1rem",
-              md: "1.2rem",
-              lg: "1.3rem",
-              xl: "1.3rem",
-            },
-            textAlign: { xs: "center", sm: "center", md: "start" },
-            fontFamily: "'Lora', serif",
-            lineHeight: 1.8,
-          }}
-        >
-          Guarda tus recordatorios e ideas. Puedes crear, editar y eliminar notas en cualquier momento.
+        <Typography variant="body2" sx={{
+          color: "#000000",
+          my: 1,
+          fontSize: {
+            xs: "1rem",
+            sm: "1rem",
+            md: "1.2rem",
+            lg: "1.3rem",
+            xl: "1.3rem",
+          },
+          textAlign: { xs: "center", sm: "center", md: "start" },
+          lineHeight: 1.8,
+        }}>
+          Guarda tus recordatorios, ideas o lo que quieras registrar con Teresa.
+          Cada nota se muestra como una tarjeta interactiva; hacé click para verla en detalle.
         </Typography>
-
-        <Divider
-          sx={{
-            width: "100%",
-            "&::before, &::after": {
-              borderColor: "#ffffff",
+        <Divider sx={{ borderColor: "rgba(0,0,0,0.1)" }} />
+        <Grid container spacing={3} sx={{
+          flexGrow: 1, mt: 1, animation: "slideDown 0.4s ease",
+          mx: 0, 
+          width: "100%",
+          "@keyframes slideDown": {
+            from: {
+              opacity: 0,
+              transform: "translateY(-40px)"
             },
-          }}
-        >
-          <Typography variant="body1" sx={{ color: "#ffffff" }}>
-            ~
-          </Typography>
-        </Divider>
-
-        <Grid container spacing={3} sx={{ flexGrow: 1, mt: 1 }}>
+            to: {
+              opacity: 1,
+              transform: "translateY(0)"
+            }
+          }
+        }}>
           {loading
             ? Array.from({ length: 6 }).map((_, index) => (
               <Grid key={index} item xs={12} sm={6} md={4}>
@@ -331,16 +337,22 @@ export default function NotesDashboard() {
                   <Box
                     sx={{
                       borderRadius: 3,
-                      border: `1px solid ${theme.palette.divider}`,
+                      border: "2px dashed rgba(0,0,0,0.2)",
                       p: 3,
                       textAlign: "center",
                     }}
                   >
-                    <Typography variant="h6" sx={{ mb: 1, fontFamily: "'Lora', serif" }}>
-                      Todavia no hay notas guardadas
+                    <Typography variant="h6" sx={{
+                      color: "#000000",
+                      mb: 1,
+                    }}>
+                      Todavía no hay notas guardadas
                     </Typography>
-                    <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", lineHeight: 1.8 }}>
-                      Pulsa el boton Nueva nota para crear la primera.
+                    <Typography variant="body1" sx={{
+                      color: "#000000",
+                      lineHeight: 1.8,
+                    }} >
+                      Utilizá la herramienta para agregar nuevas notas y aparecerán aquí automáticamente.
                     </Typography>
                   </Box>
                 </Grid>
@@ -352,47 +364,41 @@ export default function NotesDashboard() {
                     sx={{
                       borderRadius: 3,
                       height: "100%",
-                      background: theme.palette.mode === "dark" ? "#1e1f1d" : "#fff",
+                      background: theme.palette.mode === "dark" ? "#303030" : "#ffffff",
                     }}
                   >
                     <CardActionArea
                       sx={{
                         height: "100%",
                         p: 2,
+                        width: "100%",
+                       
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "flex-start",
                         justifyContent: "flex-start",
+                        color: "#000000",
+                        backgroundColor: "#d7d6d6"
                       }}
                       onClick={() => openNote(note)}
                     >
-                      <Stack direction="row" justifyContent="space-between" width="100%" alignItems="center">
-                        <Typography variant="subtitle1" noWrap sx={{ fontWeight: 700, maxWidth: "80%" }}>
-                          {getNoteTitle(note)}
+                      <Stack direction="row" justifyContent="space-between" width="100%">
+                        <Typography variant="subtitle1" noWrap sx={{ fontWeight: 600, color: "#000000" }}>
+                          {note.text?.split("\n")[0] || "Nota sin título"}
                         </Typography>
-                        <IconButton
-                          size="small"
-                          color="error"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleDeleteNote(note.id);
-                          }}
-                        >
-                          <DeleteOutlineRoundedIcon fontSize="small" />
-                        </IconButton>
+                        <Chip label="Ver" size="small" sx={{ color: "#000000", backgroundColor: "#ffffff" }} />
                       </Stack>
-                      <Typography variant="caption" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 1, mb: 2, color: "#000000" }}>
                         {formatDate(note.created_at)}
                       </Typography>
-                      <Typography variant="body2" color="text.primary">
-                        {getSnippet(getNoteContent(note))}
+                      <Typography variant="body2" sx={{ color: "#000000" }}>
+                        {getSnippet(note.text)}
                       </Typography>
                     </CardActionArea>
                   </Card>
                 </Grid>
               ))}
         </Grid>
-
         <Modal
           open={modalOpen}
           onClose={closeModal}
@@ -411,103 +417,61 @@ export default function NotesDashboard() {
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
-                width: { xs: "92%", sm: 700 },
-                bgcolor: theme.palette.background.paper,
+                width: "90%",
+                maxWidth: 500,
+                bgcolor: "#d7d6d6",
+                color: "#000000",
                 borderRadius: 3,
                 boxShadow: 24,
-                p: { xs: 3, sm: 4 },
+                p: 3,
                 outline: "none",
                 maxHeight: "90vh",
                 overflowY: "auto",
+                border: '2px solid #000000',
               }}
             >
-              <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-                <Typography variant="h5" fontWeight={700}>
-                  {editingNote ? "Editar nota" : getNoteTitle(selectedNote)}
+              <Stack direction={{ xs: "column", sm: "column", md: "row" }} justifyContent="space-between" alignItems="center" spacing={1}>
+                <Typography variant="h5" fontWeight={600} sx={{ color: "#000000" }}>
+                  {selectedNote?.text?.split("\n")[0] || "Nota"}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="body1" sx={{ color: "#000000" }}>
                   {formatDate(selectedNote?.created_at)}
                 </Typography>
               </Stack>
-              <Divider sx={{ mb: 2 }} />
-
-              {editingNote ? (
-                <Stack spacing={2}>
-                  {editError ? <Alert severity="error">{editError}</Alert> : null}
-                  <TextField
-                    label="Titulo"
-                    value={editForm.title}
-                    onChange={(event) => setEditForm((prev) => ({ ...prev, title: event.target.value }))}
-                    fullWidth
-                  />
-                  <TextField
-                    label="Contenido"
-                    value={editForm.content}
-                    onChange={(event) => setEditForm((prev) => ({ ...prev, content: event.target.value }))}
-                    multiline
-                    minRows={6}
-                    fullWidth
-                    required
-                    helperText={`${editForm.content.length} caracteres`}
-                  />
-                </Stack>
-              ) : (
-                <Typography variant="body1" sx={{ whiteSpace: "pre-line", lineHeight: 1.8, mb: 3 }}>
-                  {getNoteContent(selectedNote)}
-                </Typography>
-              )}
-
-              <Stack direction="row" spacing={1.5} justifyContent="flex-end" sx={{ mt: 3 }}>
-                <Button variant="outlined" onClick={closeModal} disabled={actionLoading}>
+              <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 2 }} />
+              <Typography variant="body1" sx={{ whiteSpace: "pre-line", lineHeight: 1.8, color: "#000000", my: 2 }}>
+                {selectedNote?.text}
+              </Typography>
+              <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 2 }} />
+              <Stack direction="row" spacing={2} justifyContent="flex-end">
+                <Button variant="outlined" onClick={closeModal} sx={{
+                  border: "none",
+                  color: "#464545",
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  ml: 1,
+                  mt: 1,
+                  "&:hover": { backgroundColor: "#e0e0e0" },
+                }}>
                   Cerrar
                 </Button>
-                {editingNote ? (
-                  <>
-                    <Button
-                      variant="outlined"
-                      onClick={() => {
-                        setEditingNote(false);
-                        setEditError("");
-                        setEditForm({
-                          title: getNoteTitle(selectedNote),
-                          content: getNoteContent(selectedNote),
-                        });
-                      }}
-                      disabled={actionLoading}
-                    >
-                      Cancelar edicion
-                    </Button>
-                    <Button
-                      variant="contained"
-                      startIcon={<SaveRoundedIcon />}
-                      onClick={handleEditNote}
-                      disabled={actionLoading}
-                    >
-                      Guardar cambios
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      variant="contained"
-                      color="info"
-                      startIcon={<EditRoundedIcon />}
-                      onClick={() => setEditingNote(true)}
-                      disabled={actionLoading}
-                    >
-                      Editar
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      startIcon={<DeleteOutlineRoundedIcon />}
-                      onClick={() => handleDeleteNote(selectedNote?.id)}
-                      disabled={actionLoading}
-                    >
-                      Eliminar
-                    </Button>
-                  </>
-                )}
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={handleDeleteNote}
+                  disabled={actionLoading}
+                  sx={{
+                    color: "#ffffff",
+                    textTransform: "none",
+                    "&:hover": {
+                      backgroundColor: "#aa0e0e"
+                    },
+                    mr: 1,
+                    mt: 1
+                  }}
+                >
+                  Eliminar nota
+                </Button>
               </Stack>
             </Box>
           </Fade>

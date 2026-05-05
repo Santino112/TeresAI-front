@@ -14,6 +14,7 @@ import Shopping from '../shopping/Shoppinglist.jsx';
 import Notes from '../notes/Notes.jsx';
 import MenuUsuario from './Menu.jsx';
 import Perfil from '../profile/Profile.jsx';
+import Manual from '../manual/Manual.jsx';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AppBar from '@mui/material/AppBar';
@@ -37,7 +38,7 @@ import Button from '@mui/material/Button';
 import SmartToyRoundedIcon from '@mui/icons-material/SmartToyRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import GamesRoundedIcon from '@mui/icons-material/GamesRounded';
+import ExtensionRoundedIcon from '@mui/icons-material/ExtensionRounded';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
 import StickyNote2RoundedIcon from '@mui/icons-material/StickyNote2Rounded';
@@ -59,10 +60,11 @@ const style = {
     transform: 'translate(-50%, -50%)',
     width: "90%",
     maxWidth: 500,
+    color: '#000000',
     overflowY: "auto",
     maxHeight: '90dvh',
-    bgcolor: '#030414',
-    border: '2px solid #f0750a',
+    bgcolor: "#eeeeee",
+    border: '2px solid #000000',
     borderRadius: 3,
     boxShadow: 24,
     p: { xs: 2, sm: 3, md: 4 },
@@ -293,35 +295,74 @@ function ResponsiveDrawer(props) {
                         slotProps={{
                             backdrop: {
                                 timeout: 500,
+                                sx: { backdropFilter: "blur(3px)" },
                             },
+                        }}
+                        sx={{
+                            animation: "slideDown 0.4s ease",
+                            "@keyframes slideDown": {
+                                from: {
+                                    opacity: 0,
+                                    transform: "translateY(-40px)"
+                                },
+                                to: {
+                                    opacity: 1,
+                                    transform: "translateY(0)"
+                                }
+                            }
                         }}
                     >
                         <Fade in={open}>
                             <Box sx={style}>
-                                <Typography variant='h6' sx={{ fontFamily: "'Lora', serif", mb: 1 }}>¿Cómo funciona la aplicación?</Typography>
-                                <Box sx={{ width: "100%" }}>
+                                <Typography variant='h6' sx={{ mb: 1 }}>¿Cómo funciona la aplicación?</Typography>
+                                <Box sx={{ width: "100%", color: "#000000" }}>
                                     <Stepper activeStep={activeStep} orientation="vertical">
                                         {steps.map((step, index) => (
                                             <Step key={step.label}>
-                                                <StepLabel>
+                                                <StepLabel sx={{
+                                                    "& .MuiStepLabel-label": {
+                                                        color: "#464545", 
+                                                        fontWeight: "medium",
+                                                    },
+                                                    "& .MuiStepLabel-label.Mui-active": {
+                                                        color: "#000000",
+                                                        fontWeight: "bold",
+                                                    },
+                                                    "& .MuiStepLabel-label.Mui-completed": {
+                                                        color: "#7d745c", 
+                                                    },
+                                                }}
+                                                    StepIconProps={{
+                                                        sx: {
+                                                            color: "#d7d6d6",
+                                                            "&.Mui-active": {
+                                                                color: "#7d745c", 
+                                                            },
+                                                            "&.Mui-completed": {
+                                                                color: "#67604d", 
+                                                            },
+                                                            "& .MuiStepIcon-text": {
+                                                                fill: "#ffffff", 
+                                                            },
+                                                        },
+                                                    }}>
                                                     {step.label}
                                                 </StepLabel>
                                                 <StepContent>
-                                                    <Typography>{step.description}</Typography>
+                                                    <Typography sx={{ color: "#000000" }}>{step.description}</Typography>
                                                     <Box sx={{ mb: 2 }}>
                                                         <Button
                                                             variant="contained"
                                                             onClick={handleNext}
                                                             sx={{
-                                                                backgroundColor: "#0978a0",
-                                                                fontFamily: "'Lora', serif",
-                                                                fontWeight: "bold",
+                                                                backgroundColor: "#7d745c",
                                                                 color: "#ffffff",
-                                                                mt: 1,
-                                                                mr: 1,
+                                                                textTransform: "none",
                                                                 "&:hover": {
-                                                                    backgroundColor: "#066688",
+                                                                    backgroundColor: "#67604d"
                                                                 },
+                                                                mr: 1,
+                                                                mt: 1
                                                             }}
                                                         >
                                                             {index === steps.length - 1 ? 'Terminar' : 'Continuar'}
@@ -330,10 +371,12 @@ function ResponsiveDrawer(props) {
                                                             disabled={index === 0}
                                                             onClick={handleBack}
                                                             sx={{
-                                                                fontFamily: "'Lora', serif",
+                                                                color: "#464545",
                                                                 fontWeight: "bold",
+                                                                textTransform: "none",
+                                                                mr: 1,
                                                                 mt: 1,
-                                                                mr: 1
+                                                                "&:hover": { backgroundColor: "#e0e0e0" },
                                                             }}
                                                         >
                                                             Atras
@@ -344,28 +387,29 @@ function ResponsiveDrawer(props) {
                                         ))}
                                     </Stepper>
                                     {activeStep === steps.length && (
-                                        <Paper square elevation={0} sx={{ p: 3, bgcolor: "transparent" }}>
-                                            <Typography variant='body1' sx={{ fontFamily: "'Lora', serif", mb: 1 }}>¿Quieres volver a repetir el paso a paso?</Typography>
+                                        <Paper square elevation={0} sx={{ mt: 2, bgcolor: "transparent", width: "100%", p: { xs: 0, sm: 0, md: 0 } }}>
+                                            <Typography variant='body1' sx={{ color: "#000000", mb: 1 }}>¿Quieres volver a repetir el paso a paso de las instrucciones?</Typography>
                                             <Button variant="contained" onClick={handleCloseModal} sx={{
-                                                backgroundColor: "#0978a0",
-                                                fontFamily: "'Lora', serif",
-                                                fontWeight: "bold",
+                                                backgroundColor: "#7d745c",
                                                 color: "#ffffff",
-                                                mt: 1,
-                                                mr: 1,
+                                                textTransform: "none",
                                                 "&:hover": {
-                                                    backgroundColor: "#066688",
+                                                    backgroundColor: "#67604d"
                                                 },
+                                                mr: 1,
+                                                mt: 1
                                             }}>
-                                                Empezar a usar TeresAI
+                                                Empezar
                                             </Button>
                                             <Button onClick={handleReset} sx={{
-                                                fontFamily: "'Lora', serif",
+                                                color: "#464545",
                                                 fontWeight: "bold",
+                                                textTransform: "none",
+                                                ml: 1,
                                                 mt: 1,
-                                                mr: 1
+                                                "&:hover": { backgroundColor: "#e0e0e0" },
                                             }}>
-                                                Reiniciar
+                                                Repetir
                                             </Button>
                                         </Paper>
                                     )}
@@ -379,10 +423,15 @@ function ResponsiveDrawer(props) {
                 display: 'flex',
                 justifyContent: 'flex-start',
                 flexShrink: 0,
-                backgroundColor: "#030414",
+                backgroundColor: "#eeeeee",
             }}>
-                <Typography variant="h6" noWrap component="div">
-                    <SmartToyRoundedIcon fontSize='large' sx={{ verticalAlign: "bottom", mr: 1 }} /> TeresAI
+                <Typography variant="h5" noWrap component="div" sx={{
+                    position: "relative",
+                    right: { xs: -5, sm: 3, md: 5, lg: 5, xl: 4 },
+                    mr: "auto",
+                    color: "#000000"
+                }}>
+                    TeresAI
                 </Typography>
             </Toolbar>
             <Box sx={{
@@ -392,9 +441,9 @@ function ResponsiveDrawer(props) {
                 overflowY: "auto",
                 maxHeight: "500px",
                 width: "100%",
-                minHeight: "280px",
+                minHeight: "336px",
                 p: 1,
-                backgroundColor: "#030414",
+                backgroundColor: "#eeeeee",
             }}>
                 <Button fullWidth onClick={() => {
                     setActiveConversationId(null);
@@ -405,11 +454,11 @@ function ResponsiveDrawer(props) {
                         backgroundColor: "transparent",
                         mt: 1,
                         mb: 1,
-                        color: "#ffffff",
+                        color: "#000000",
                         "&:hover": {
-                            backgroundColor: "#2b2b2b"
+                            backgroundColor: "#e1e1e1",
                         }
-                    }}><AddRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
+                    }}><AddRoundedIcon sx={{ mr: 1 }} />Nueva conversación</Button>
                 <Button fullWidth onClick={() => {
                     setPaginaActiva("buscador");
                 }}
@@ -417,20 +466,20 @@ function ResponsiveDrawer(props) {
                         justifyContent: "flex-start",
                         mb: 1,
                         backgroundColor: "transparent",
-                        color: "#ffffff",
+                        color: "#000000",
                         "&:hover": {
-                            backgroundColor: "#2b2b2b"
+                            backgroundColor: "#e1e1e1",
                         }
-                    }}><SearchRoundedIcon sx={{ mr: 1 }} />Buscar chats</Button>
+                    }}><SearchRoundedIcon sx={{ mr: 1 }} />Buscar conversaciones</Button>
                 <Button fullWidth onClick={() => {
                     setPaginaActiva("calendario");
                 }} sx={{
                     justifyContent: "flex-start",
                     mb: 1,
                     backgroundColor: "transparent",
-                    color: "#ffffff",
+                    color: "#000000",
                     "&:hover": {
-                        backgroundColor: "#2b2b2b"
+                        backgroundColor: "#e1e1e1",
                     }
                 }}><CalendarMonthRoundedIcon sx={{ mr: 1 }} />Calendario</Button>
                 <Button fullWidth onClick={() => {
@@ -439,20 +488,20 @@ function ResponsiveDrawer(props) {
                     justifyContent: "flex-start",
                     mb: 1,
                     backgroundColor: "transparent",
-                    color: "#ffffff",
+                    color: "#000000",
                     "&:hover": {
-                        backgroundColor: "#2b2b2b"
+                        backgroundColor: "#e1e1e1",
                     }
-                }}><GamesRoundedIcon sx={{ mr: 1 }} />Juegos</Button>
+                }}><ExtensionRoundedIcon sx={{ mr: 1 }} />Juegos</Button>
                 <Button fullWidth onClick={() => {
                     setPaginaActiva("Noticias");
                 }} sx={{
                     justifyContent: "flex-start",
                     mb: 1,
                     backgroundColor: "transparent",
-                    color: "#ffffff",
+                    color: "#000000",
                     "&:hover": {
-                        backgroundColor: "#2b2b2b"
+                        backgroundColor: "#e1e1e1",
                     }
                 }}><NewspaperIcon sx={{ mr: 1 }} />Noticias</Button>
                 <Button fullWidth onClick={() => {
@@ -461,9 +510,9 @@ function ResponsiveDrawer(props) {
                     justifyContent: "flex-start",
                     mb: 1,
                     backgroundColor: "transparent",
-                    color: "#ffffff",
+                    color: "#000000",
                     "&:hover": {
-                        backgroundColor: "#2b2b2b"
+                        backgroundColor: "#e1e1e1",
                     }
                 }}><ShoppingCartIcon sx={{ mr: 1 }} />Lista de compras</Button>
                 <Button fullWidth onClick={() => {
@@ -472,19 +521,19 @@ function ResponsiveDrawer(props) {
                     justifyContent: "flex-start",
                     mb: 1,
                     backgroundColor: "transparent",
-                    color: "#ffffff",
+                    color: "#000000",
                     "&:hover": {
-                        backgroundColor: "#2b2b2b"
+                        backgroundColor: "#e1e1e1",
                     }
                 }}><StickyNote2RoundedIcon sx={{ mr: 1 }} />Notas</Button>
             </Box>
-            <Divider />
             <Box sx={{
-                backgroundColor: "#030414",
+                backgroundColor: "#eeeeee",
                 p: 1
             }}>
                 <Typography variant="body1" sx={{
-                    backgroundColor: "#030414",
+                    backgroundColor: "#eeeeee",
+                    color: "#000000",
                     pl: 1
                 }}>Conversaciones</Typography>
             </Box>
@@ -495,10 +544,10 @@ function ResponsiveDrawer(props) {
                 minHeight: 0,
                 p: 1,
                 width: '100%',
-                backgroundColor: "#030414",
+                backgroundColor: "#d7d6d6",
                 /* Firefox */
                 scrollbarWidth: 'thin',
-                scrollbarColor: '#323232 transparent',
+                scrollbarColor: '#8f8e8e transparent',
 
                 /* Chrome / Edge / Safari */
                 '&::-webkit-scrollbar': {
@@ -517,25 +566,22 @@ function ResponsiveDrawer(props) {
             }}>
                 {isLoading ? (
                     <>
-                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
-                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#c1c1c1" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#c1c1c1" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#c1c1c1" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#c1c1c1" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#c1c1c1" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#c1c1c1" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#c1c1c1" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#c1c1c1" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#c1c1c1" }} />
+                        <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#c1c1c1" }} />
                     </>
                 ) : (
                     Array.isArray(conversations) && conversations.map(conv => {
                         const isActive = conv.id === activeConversationId;
                         return (
-                            <>
+                            <Box>
                                 <Button
                                     key={conv.id}
                                     fullWidth
@@ -544,14 +590,14 @@ function ResponsiveDrawer(props) {
                                         setPaginaActiva("chat");
                                     }}
                                     sx={{
-                                        backgroundColor: isActive ? "#444444" : "transparent",
-                                        color: "#ffffff",
+                                        backgroundColor: isActive ? "#c1c1c1" : "transparent",
+                                        color: "#000000",
                                         mb: 1,
                                         borderRadius: 2,
                                         textTransform: 'none',
                                         fontWeight: isActive ? 600 : 400,
                                         "&:hover": {
-                                            backgroundColor: "#2b2b2b",
+                                            backgroundColor: "#c1c1c1"
                                         }
                                     }}
                                 >
@@ -562,9 +608,9 @@ function ResponsiveDrawer(props) {
                                             handleMenuOpen(e, conv.id);
                                             e.stopPropagation();
                                         }}
-                                        sx={{ ml: "auto", color: "#ffffff", "&:hover": { color: "#ffffff" } }}
+                                        sx={{ ml: "auto", color: "#000000", "&:hover": { color: "999688" } }}
                                     >
-                                        <MoreHorizRoundedIcon fontSize="small" />
+                                        <MoreHorizRoundedIcon fontSize="small" sx={{ color: "#000000" }} />
                                     </IconButton>
                                 </Button>
                                 <Menu
@@ -575,35 +621,36 @@ function ResponsiveDrawer(props) {
                                         sx: {
                                             p: 1,
                                             fontSize: "21px",
-                                            backgroundColor: "#303030",
-                                            color: "#ffffff",
+                                            backgroundColor: "#eeeeee",
+                                            color: "#000000",
                                             borderRadius: 3
                                         }
                                     }}
                                     PaperProps={{
-                                        sx: { backgroundColor: "#303030", color: "#ffffff", minWidth: "160px", p: 0, borderRadius: 3 }
+                                        sx: { backgroundColor: "#000000", color: "#ffffff", minWidth: "160px", p: 0, borderRadius: 3 }
                                     }}
                                 >
-                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3 }}>
+                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3, color: "#000000", "&:hover": { backgroundColor: "#e1e1e1" } }}>
                                         <StarRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Favorito
                                     </MenuItem>
-                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3 }}>
+                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3, color: "#000000", "&:hover": { backgroundColor: "#e1e1e1" } }}>
                                         <EditRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Renombrar
                                     </MenuItem>
                                     <Divider sx={{
                                         width: "100%",
+                                        color: "#000000",
+                                        backgroundColor: "#9f9e9e",
                                         "&::before, &::after": {
-                                            borderColor: "#ffffff",
+                                            borderColor: "#000000",
                                         },
                                         m: 0,
                                         p: 0
                                     }}></Divider>
                                     <MenuItem onClick={(e) => { e.stopPropagation(); handleDelete(); handleMenuClose(); }}
                                         sx={{
-                                            color: "#ff6b6b",
+                                            color: "#000000",
                                             borderRadius: 3,
                                             "&:hover": {
-                                                backgroundColor: "#6b2a2a",
                                                 color: "#ff6b6b",
                                             }
                                         }}
@@ -611,18 +658,16 @@ function ResponsiveDrawer(props) {
                                         <DeleteRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Eliminar
                                     </MenuItem>
                                 </Menu>
-                            </>
+                            </Box>
                         );
                     })
                 )}
             </Box>
-            <Divider />
             <Box>
                 <MenuUsuario setPaginaActiva={setPaginaActiva} />
             </Box>
         </Box >
     );
-
     return (
         <Box sx={{ display: 'flex', width: "100%" }}>
             <AppBar
@@ -630,13 +675,8 @@ function ResponsiveDrawer(props) {
                 sx={{
                     width: { sm: `calc(100% - ${drawerWidth}px)` },
                     ml: { sm: `${drawerWidth}px` },
-                    display: {
-                        xs: "block",
-                        sm: "block",
-                        md: "none",
-                        lg: "none",
-                        xl: "none"
-                    },
+                    backgroundColor: "#eeeeee",
+                    color: "#000000",
                 }}
             >
                 <Toolbar sx={{
@@ -653,7 +693,7 @@ function ResponsiveDrawer(props) {
                         <MenuIcon />
                     </IconButton>
                     {activeConversationId && paginaActiva === "chat" && (
-                        <Typography noWrap sx={{ fontFamily: "'Lora', serif", fontSize: "1rem" }}>
+                        <Typography noWrap sx={{ fontSize: "1.1rem" }}>
                             {conversations.find(c => c.id === activeConversationId)?.title || "Chat sin título"}
                         </Typography>
                     )}
@@ -685,7 +725,13 @@ function ResponsiveDrawer(props) {
                     variant="permanent"
                     sx={{
                         display: { xs: 'none', sm: 'block' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                        '& .MuiDrawer-paper': {
+                            boxSizing: 'border-box',
+                            width: drawerWidth,
+                            borderRight: 'none',
+                            boxShadow: "6px 0px 10px -2px rgba(0, 0, 0, 0.1)",
+                            backgroundColor: '#f0eee6',
+                        },
                     }}
                     open
                 >
@@ -708,7 +754,8 @@ function ResponsiveDrawer(props) {
                     flexGrow: 1,
                     overflowY: 'hidden',
                     scrollbarWidth: 'thin',
-                    scrollbarColor: '#666 transparent',
+                    scrollbarColor: '#8f8e8e transparent',
+
                     /* Chrome / Edge / Safari */
                     '&::-webkit-scrollbar': {
                         width: '6px',
@@ -727,23 +774,20 @@ function ResponsiveDrawer(props) {
             >
                 <Box sx={{
                     height: "60px",
-                    backgroundColor: "#010215",
+                    backgroundColor: "#f0eee6",
                     flexShrink: 0,
-                    display: { xs: "block", sm: "block", md: "none", lg: "none", xl: "none" },
                 }} />
-                {activeConversationId && paginaActiva === "chat" && <Toolbar
+                <Toolbar
                     sx={{
-                        display: { xs: "none", sm: "none", md: "flex", lg: "flex", xl: "flex" },
+                        height: "60px",
                         position: "fixed",
-                        boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.2)",
-                        backgroundColor: "#010215",
+                        backgroundColor: "#f0eee6",
                         backdropFilter: "blur(30px)",
                         zIndex: 1,
                         fontWeight: 600
                     }} >
                     {conversations.find(c => c.id === activeConversationId)?.title || "Chat sin título"}
                 </Toolbar>
-                }
                 <Box sx={{
                     flexGrow: 1,
                     height: 0,
@@ -754,23 +798,24 @@ function ResponsiveDrawer(props) {
                     {paginaActiva === "juegos" ? <Games />
                         : paginaActiva === "calendario" ? <Calendar />
                             : paginaActiva === "perfil" ? <Perfil />
-                                : paginaActiva === "buscador" ? <Buscador
-                                    activeConversationId={activeConversationId}
-                                    setActiveConversationId={setActiveConversationId}
-                                    setPaginaActiva={setPaginaActiva}
-                                    conversations={conversations}
-                                    setConversations={setConversations}
-                                    isLoading={isLoading}
-                                    setLoading={setLoading}
-                                />
-                                    : paginaActiva === "Noticias" ? <News />
-                                        : paginaActiva === "Lista de compras" ? <Shopping />
-                                            : paginaActiva === "notas" ? <Notes />
-                                                : <Chat
-                                                    activeConversationId={activeConversationId}
-                                                    setActiveConversationId={setActiveConversationId}
-                                                    addConversation={addConversation}
-                                                />
+                                : paginaActiva === "manual" ? <Manual />
+                                    : paginaActiva === "buscador" ? <Buscador
+                                        activeConversationId={activeConversationId}
+                                        setActiveConversationId={setActiveConversationId}
+                                        setPaginaActiva={setPaginaActiva}
+                                        conversations={conversations}
+                                        setConversations={setConversations}
+                                        isLoading={isLoading}
+                                        setLoading={setLoading}
+                                    />
+                                        : paginaActiva === "Noticias" ? <News />
+                                            : paginaActiva === "Lista de compras" ? <Shopping />
+                                                : paginaActiva === "notas" ? <Notes />
+                                                    : <Chat
+                                                        activeConversationId={activeConversationId}
+                                                        setActiveConversationId={setActiveConversationId}
+                                                        addConversation={addConversation}
+                                                    />
                     }
                 </Box>
             </Box>

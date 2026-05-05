@@ -1,7 +1,7 @@
 import Button from '@mui/material/Button';
-import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import axios from 'axios';
-import { supabase } from "../../../../../supabaseClient.js"
+import { supabase } from "../../../../../supabaseClient.js";
+import EventAvailableRoundedIcon from '@mui/icons-material/EventAvailableRounded';
 
 const BotonCalendar = () => {
 
@@ -25,18 +25,23 @@ const BotonCalendar = () => {
 
   return (
     <Button variant="contained" onClick={connectCalendar} sx={{
-      my: 1,
-      mb: 1,
+      borderRadius: 3,
+      mb: 3,
+      mr: { xs: 0, sm: 1 },
       boxShadow: 3,
+      width: { xs: "100%", sm: "100%", md: "fit-content" },
+      minWidth: "auto",
+      whiteSpace: "nowrap",
+      px: 2,
+      backgroundColor: "#7d745c",
       color: "#ffffff",
-      backgroundColor: "#0978a0",
-      fontFamily: "'Lora', serif",
-      fontWeight: "bold",
+      textTransform: "none",
+      fontSize: "1.1rem",
       "&:hover": {
-        backgroundColor: "#066688",
-      }
+        backgroundColor: "#67604d"
+      },
     }}>
-      <CalendarMonthRoundedIcon sx={{ mr: 1 }} />Google Calendar
+      <EventAvailableRoundedIcon sx={{ mr: 1 }} />Conectase a Google Calendar
     </Button>
   );
 };

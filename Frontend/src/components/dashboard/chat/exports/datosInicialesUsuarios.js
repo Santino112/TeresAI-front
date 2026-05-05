@@ -93,14 +93,7 @@ export const tomarDatosPerfiles = async (userId) => {
         .eq("id", userId)
         .maybeSingle()
 
-    if (error) {
-        if (isNetworkFetchError(error)) {
-            console.warn("No se pudo conectar con Supabase al obtener el perfil.");
-            return null;
-        }
-        console.error("Error al obtener los datos del usuario", error);
-        return null;
-    }
+    if (error) throw error;
     return data;
 };
 
