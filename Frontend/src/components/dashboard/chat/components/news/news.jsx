@@ -11,6 +11,7 @@ import Paper from "@mui/material/Paper";
 import Divider from "@mui/material/Divider";
 import CircularProgress from "@mui/material/CircularProgress";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
+import NewspaperRoundedIcon from '@mui/icons-material/NewspaperRounded';
 import { getNews } from "../../exports/getNews";
 
 const MAX_CARDS = 5;
@@ -71,42 +72,95 @@ export default function News() {
           flexDirection: "column",
           justifyContent: "flex-start",
           width: "100%",
-          p: { xs: 2, sm: 3, md: 3 },
+          p: { xs: 2, sm: 2, md: 2 },
           borderRadius: 4,
           background: "transparent",
           flexGrow: 0,
+          boxShadow: 0,
+          animation: "slideDown 0.4s ease",
+          "@keyframes slideDown": {
+            from: {
+              opacity: 0,
+              transform: "translateY(-40px)"
+            },
+            to: {
+              opacity: 1,
+              transform: "translateY(0)"
+            }
+          }
         }}
       >
-        <Box>
-          <Box sx={{
+        <Typography variant="h3"
+          sx={{
             display: "flex",
-            flexDirection: {
-              xs: "column",
-              sm: "column",
-              md: "row",
-              lg: "row",
-              xl: "row"
+            justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+            alignItems: "center",
+            color: "#000000",
+            fontSize: {
+              xs: "1.5rem",
+              sm: "1.5rem",
+              md: "1.5rem",
+              lg: "1.7rem",
+              xl: "1.8rem"
             },
-            justifyContent: "space-between",
-            alignItems: "stretch",
-            gap: 2,
-            width: "100%",
-            borderRadius: 4,
           }}>
-            <Typography variant="h3"
-              sx={{
-                fontSize: {
-                  xs: "1.5rem",
-                  sm: "1.5rem",
-                  md: "1.5rem",
-                  lg: "1.7rem",
-                  xl: "1.8rem"
-                },
-                textAlign: { xs: "center", sm: "center", md: "start" },
-                fontFamily: "'Lora', serif",
-              }}>
-              Noticias de Argentina 📰
-            </Typography>
+          Noticias del mundo <NewspaperRoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} />
+        </Typography>
+        <Typography sx={{
+          color: "#000000",
+          my: 1,
+          fontSize: {
+            xs: "1rem",
+            sm: "1rem",
+            md: "1.2rem",
+            lg: "1.3rem",
+            xl: "1.3rem",
+          },
+          textAlign: { xs: "center", sm: "center", md: "start" },
+          lineHeight: 1.8,
+        }}>
+          Cinco titulares actuales con resumen y enlace directo para que te mantengas informado apenas entres.
+        </Typography>
+        <Divider sx={{ borderColor: "rgba(0,0,0,0.1)" }} />
+        {loading && (
+          <Typography variant="body2" sx={{ color: "#000000" }}>
+            Cargando noticias...
+          </Typography>
+        )}
+
+        {error && !loading && (
+          <Typography variant="body2" color="error" sx={{
+            animation: "slideDown 0.4s ease",
+            "@keyframes slideDown": {
+              from: {
+                opacity: 0,
+                transform: "translateY(-40px)"
+              },
+              to: {
+                opacity: 1,
+                transform: "translateY(0)"
+              }
+            }
+          }}>
+            {error}
+          </Typography>
+        )}
+
+        {!loading && !error && (
+          <Grid container spacing={2} sx={{
+            flexGrow: 1,
+            animation: "slideDown 0.4s ease",
+            "@keyframes slideDown": {
+              from: {
+                opacity: 0,
+                transform: "translateY(-40px)"
+              },
+              to: {
+                opacity: 1,
+                transform: "translateY(0)"
+              }
+            }
+          }}>
             <Button
               variant="contained"
               color="primary"
@@ -132,46 +186,6 @@ export default function News() {
                 )
                 : "Actualizar"}
             </Button>
-          </Box>
-          <Typography sx={{
-            my: 1,
-            fontSize: {
-              xs: "1rem",
-              sm: "1rem",
-              md: "1.2rem",
-              lg: "1.3rem",
-              xl: "1.3rem",
-            },
-            textAlign: { xs: "center", sm: "center", md: "start" },
-            fontFamily: "'Lora', serif",
-            lineHeight: 1.8,
-          }}>
-            Cinco titulares actuales con resumen y enlace directo para que te mantengas informado apenas entres.
-          </Typography>
-          <Divider sx={{
-            width: "100%",
-            "&::before, &::after": {
-              borderColor: "#ffffff",
-            }
-          }}>
-            <Typography variant="body1" sx={{ color: "#ffffff" }}>~</Typography>
-          </Divider>
-        </Box>
-
-        {loading && (
-          <Typography variant="body2" color="text.secondary">
-            Cargando noticias...
-          </Typography>
-        )}
-
-        {error && !loading && (
-          <Typography variant="body2" color="error">
-            {error}
-          </Typography>
-        )}
-
-        {!loading && !error && (
-          <Grid container spacing={2} sx={{ flexGrow: 1 }}>
             {articles.map((article, index) => (
               <Grid item xs={12} sm={6} key={`${article.url || index}-${index}`}>
                 <Card

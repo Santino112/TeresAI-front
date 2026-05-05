@@ -2,7 +2,8 @@ import Sudoku from "./Sudoku.jsx";
 import Trivia from "./Trivia.jsx";
 import Crossword from "./Crossword.jsx";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import { Typography, Box, Paper, Divider } from "@mui/material";
+import { Typography, Box, Paper, Divider, Grid } from "@mui/material";
+import ExtensionRoundedIcon from '@mui/icons-material/ExtensionRounded';
 
 const Games = () => {
     return (
@@ -29,14 +30,29 @@ const Games = () => {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-start",
-                    width: "100%",
-                    p: { xs: 2, sm: 3, md: 3 },
+                    width: "%100",
+                    p: { xs: 2, sm: 2, md: 2 },
                     borderRadius: 4,
                     background: "transparent",
-
+                    boxShadow: 0,
+                    animation: "slideDown 0.4s ease",
+                    "@keyframes slideDown": {
+                        from: {
+                            opacity: 0,
+                            transform: "translateY(-40px)"
+                        },
+                        to: {
+                            opacity: 1,
+                            transform: "translateY(0)"
+                        }
+                    }
                 }}
             >
-                <Typography variant="h2" sx={{
+                <Typography variant="h3" sx={{
+                    display: "flex",
+                    justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+                    alignItems: "center",
+                    color: "#000000",
                     fontSize: {
                         xs: "1.5rem",
                         sm: "1.5rem",
@@ -45,9 +61,10 @@ const Games = () => {
                         xl: "1.8rem"
                     },
                     textAlign: { xs: "center", sm: "center", md: "start" },
-                    fontFamily: "'Lora', serif",
-                }}>Juegos mentales 🎲</Typography>
+                }}>Juegos mentales <ExtensionRoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} />
+                </Typography>
                 <Typography variant="body2" sx={{
+                    color: "#000000",
                     my: 1,
                     fontSize: {
                         xs: "1rem",
@@ -56,45 +73,47 @@ const Games = () => {
                         lg: "1.3rem",
                         xl: "1.3rem",
                     },
-                    textAlign: { xs: "center", sm: "center", md: "start" },
-                    fontFamily: "'Lora', serif",
                     lineHeight: 1.8,
                 }}>En esta sección podras encontrar una serie de juegos que te ayudaran a pasar el rato. Juegos divertidos y de memoria
                     para ejercitar la mente y mejorar el bienestar propio.
                 </Typography>
-                <Divider sx={{
-                    width: "100%",
-                    "&::before, &::after": {
-                        borderColor: "#ffffff",
+                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)" }} />
+                <Grid container spacing={2} sx={{
+                    animation: "slideDown 0.4s ease",
+                    "@keyframes slideDown": {
+                        from: {
+                            opacity: 0,
+                            transform: "translateY(-40px)"
+                        },
+                        to: {
+                            opacity: 1,
+                            transform: "translateY(0)"
+                        }
                     }
                 }}>
-                    <Typography variant="body1" sx={{ color: "#ffffff" }}>~</Typography>
-                </Divider>
-                <Box sx={{ width: "100%", overflow: "hidden", margin: "0 auto" }}>
-                    <Sudoku />
-                </Box>
-                <Divider sx={{
-                    width: "100%",
-                    "&::before, &::after": {
-                        borderColor: "#ffffff",
-                    }
-                }}>
-                    <Typography variant="body1" sx={{ color: "#ffffff" }}></Typography>
-                </Divider>
-                <Box sx={{ width: "100%", overflowX: "auto", margin: "0 auto" }}>
-                    <Crossword />
-                </Box>
-                <Divider sx={{
-                    width: "100%",
-                    "&::before, &::after": {
-                        borderColor: "#ffffff",
-                    }
-                }}>
-                    <Typography variant="body1" sx={{ color: "#ffffff" }}></Typography>
-                </Divider>
-                <Box sx={{ width: "100%", overflowX: "auto", margin: "0 auto" }}>
-                    <Trivia />
-                </Box>
+                    <Grid item size={{
+                        xs: 12,
+                        sm: 12,
+                        md: 12,
+                        lg: 12,
+                        xl: 6
+                    }}>
+                        <Box sx={{ width: "100%", overflow: "hidden", margin: "0 auto" }}>
+                            <Sudoku />
+                        </Box>
+                    </Grid>
+                    <Grid item size={{
+                        xs: 12,
+                        sm: 12,
+                        md: 12,
+                        lg: 12,
+                        xl: 6
+                    }}>
+                        <Box sx={{ width: "100%", overflowX: "auto", margin: "0 auto" }}>
+                            <Crossword />
+                        </Box>
+                    </Grid>
+                </Grid>
             </Paper>
         </Box>
     )

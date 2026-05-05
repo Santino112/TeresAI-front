@@ -1,7 +1,7 @@
 import { useState, useEffect, useEffectEvent, useRef } from "react";
 import { Typography, Button, TextField, Box, Divider, Select, MenuItem, Alert, Grid, Paper, InputAdornment, IconButton } from "@mui/material";
 import { tomarDatosFamiliares, actualizarDatosFamiliares, actualizarDatosPerfiles, updateEmail, updateContraseña, linkearUsuarios } from "../../../exports/datosInicialesUsuarios";
-import { useAuth } from "../../../../../auth/useAuth.jsx";
+import { useAuth } from "../../../../../auth/useAuth";
 import CircularProgress from '@mui/material/CircularProgress';
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import MarkEmailReadRoundedIcon from '@mui/icons-material/MarkEmailReadRounded';
@@ -343,7 +343,8 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                     justifyContent: "flex-start",
                     width: "100%",
                     p: { xs: 2, sm: 3, md: 3 },
-                    borderRadius: 4,
+                    borderRadius: 3,
+                    boxShadow: 0,
                     background: "transparent",
                     flexGrow: 0,
                 }}
@@ -587,6 +588,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                             flexGrow: 0,
                                         }}>
                                         <Typography variant="body2" sx={{
+                                            color: "#000000",
                                             my: 1,
                                             fontSize: {
                                                 xs: "1.1rem",
@@ -595,7 +597,6 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                 lg: "1.2rem",
                                                 xl: "1.2rem",
                                             },
-                                            fontFamily: "'Lora', serif",
                                             textAlign: { xs: "center", sm: "center", md: "start" },
                                             lineHeight: 1.8,
                                         }}>Actualizar contraseña con la que te registraste.
@@ -609,7 +610,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                 xl: 6
                                             }} >
                                                 <Box sx={{ my: 0, width: "100%" }}>
-                                                    <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>Nueva contraseña</Typography>
+                                                    <Typography variant="body1" sx={{ color: "#000000" }}>Nueva contraseña</Typography>
                                                     <TextField
                                                         type={showPassword ? "text" : "password"}
                                                         placeholder="Nueva Contraseña"
@@ -666,7 +667,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                 xl: 6
                                             }}>
                                                 <Box sx={{ my: 0, width: "100%" }}>
-                                                    <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>Confirme contraseña</Typography>
+                                                    <Typography variant="body1" sx={{ color: "#000000" }}>Confirme contraseña</Typography>
                                                     <TextField
                                                         type={showPassword ? "text" : "password"}
                                                         placeholder="Confirme contraseña"
@@ -757,7 +758,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                 width: "100%",
                                 height: "100%",
                                 boxShadow: 6,
-                                p: { xs: 2, sm: 3, md: 4 },
+                                p: { xs: 2, sm: 3, md: 3 },
                                 borderRadius: 4,
                                 background: "transparent",
                                 flexGrow: 0,

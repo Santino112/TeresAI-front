@@ -1,35 +1,14 @@
 import { useEffect, useState } from "react";
-import {
-  Typography,
-  TextField,
-  Box,
-  Paper,
-  Divider,
-  Button,
-  Stack,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Alert
-} from "@mui/material";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import { Typography, Button, TextField, Box, Stack, Paper, Divider, Grid } from "@mui/material";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import BotonCalendar from "../buttons/BotonCalendar.jsx";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
+import BotonCalendar from '../buttons/BotonCalendar.jsx';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import api from "../../../../../api/axios.js";
-
-const toLocalInputDateTime = (date = new Date()) => {
-  const pad = (n) => String(n).padStart(2, "0");
-  const year = date.getFullYear();
-  const month = pad(date.getMonth() + 1);
-  const day = pad(date.getDate());
-  const hours = pad(date.getHours());
-  const minutes = pad(date.getMinutes());
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-};
+import esLocale from '@fullcalendar/core/locales/es';
+import { supabase } from "../../../../../supabaseClient.js";
 
 const Calendar = () => {
   const [events, setEvents] = useState([]);
@@ -43,279 +22,215 @@ const Calendar = () => {
     end: toLocalInputDateTime(new Date(Date.now() + 60 * 60 * 1000)),
   });
 
-  const fetchEvents = async () => {
-    const res = await api.get("/calendar/events");
-    setEvents(res.data || []);
-  };
+    const fetchEvents = async () => {
+        const { data } = await supabase.auth.getSession();
+        const session = data.session;
 
-  useEffect(() => {
-    fetchEvents();
-    const handleCalendarUpdated = () => {
-      fetchEvents();
+        if (!session) return;
+
+        const res = await api.get('/calendar/events', {
+            headers: {
+                Authorization: `Bearer ${session.access_token}`,
+            },
+        });
+
+        setEvents(res.data);
     };
 
-    window.addEventListener("calendarUpdated", handleCalendarUpdated);
-    return () => {
-      window.removeEventListener("calendarUpdated", handleCalendarUpdated);
-    };
-  }, []);
+    useEffect(() => {
+        fetchEvents();
+        const handleCalendarUpdated = () => {
+            console.log("Actualizando calendario...")
+            fetchEvents();
+        };
+        window.addEventListener("calendarUpdated", handleCalendarUpdated);
+        return () => {
+            window.removeEventListener("calendarUpdated", handleCalendarUpdated);
+        };
+    }, []);
 
-  const handleOpenCreateModal = () => {
-    setErrorMessage("");
-    setOpenCreateModal(true);
-  };
-
-  const handleCloseCreateModal = () => {
-    if (submitting) return;
-    setOpenCreateModal(false);
-  };
-
-  const handleChange = (field) => (event) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: event.target.value,
-    }));
-  };
-
-  const handleCreateEvent = async () => {
-    const { title, description, start, end } = formData;
-
-    if (!title.trim() || !start || !end) {
-      setErrorMessage("Debes completar titulo, inicio y fin.");
-      return;
-    }
-
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-
-    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
-      setErrorMessage("Las fechas ingresadas no son validas.");
-      return;
-    }
-
-    if (endDate <= startDate) {
-      setErrorMessage("La fecha de fin debe ser posterior al inicio.");
-      return;
-    }
-
-    setSubmitting(true);
-    setErrorMessage("");
-
-    try {
-      await api.post("/calendar/events", {
-        title: title.trim(),
-        description: description.trim(),
-        start: startDate.toISOString(),
-        end: endDate.toISOString(),
-      });
-
-      setOpenCreateModal(false);
-      setFormData({
-        title: "",
-        description: "",
-        start: toLocalInputDateTime(),
-        end: toLocalInputDateTime(new Date(Date.now() + 60 * 60 * 1000)),
-      });
-
-      await fetchEvents();
-      window.dispatchEvent(new Event("calendarUpdated"));
-    } catch (error) {
-      setErrorMessage(error?.response?.data?.error || "No se pudo crear el evento.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        flexGrow: 1,
-        width: "100%",
-        height: "100%",
-        overflow: "auto",
-        background: `url(${fondoChatAI})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        p: 2,
-      }}
-    >
-      <Paper
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          width: "100%",
-          p: { xs: 2, sm: 3, md: 3 },
-          borderRadius: 4,
-          background: "transparent",
-          flexGrow: 0,
-        }}
-      >
-        <Typography
-          variant="h3"
-          sx={{
-            fontSize: {
-              xs: "1.5rem",
-              sm: "1.5rem",
-              md: "1.5rem",
-              lg: "1.7rem",
-              xl: "1.8rem",
-            },
-            textAlign: { xs: "center", sm: "center", md: "start" },
-            fontFamily: "'Lora', serif",
-          }}
-        >
-          Calendario
-        </Typography>
-        <Typography
-          variant="body2"
-          sx={{
-            my: 1,
-            fontSize: {
-              xs: "1rem",
-              sm: "1rem",
-              md: "1.2rem",
-              lg: "1.2rem",
-              xl: "1.2rem",
-            },
-            textAlign: { xs: "center", sm: "center", md: "start" },
-            fontFamily: "'Lora', serif",
-            lineHeight: 1.8,
-          }}
-        >
-          Puedes visualizar, crear y gestionar eventos desde aqui.
-        </Typography>
-        <Divider
-          sx={{
-            width: "100%",
-            "&::before, &::after": {
-              borderColor: "#ffffff",
-            },
-          }}
-        >
-          <Typography variant="body1" sx={{ color: "#ffffff" }}>
-            ~
-          </Typography>
-        </Divider>
-
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} sx={{ mt: 2, mb: 2 }}>
-          <BotonCalendar />
-          <Button
-            variant="contained"
-            onClick={handleOpenCreateModal}
-            startIcon={<AddRoundedIcon />}
-            sx={{
-              boxShadow: 3,
-              color: "#ffffff",
-              backgroundColor: "#0978a0",
-              fontFamily: "'Lora', serif",
-              fontWeight: "bold",
-              "&:hover": {
-                backgroundColor: "#066688",
-              },
-            }}
-          >
-            Nuevo evento
-          </Button>
-        </Stack>
-
+    return (
         <Box
-          sx={{
-            width: "100%",
-            overflowX: "auto",
-            margin: "0 auto",
-            "& .fc-button": {
-              fontSize: "0.8rem !important",
-              padding: "4px 8px !important",
-              backgroundColor: "#444444 !important",
-              border: "none !important",
-              color: "#ffffff !important",
-              "&:hover": {
-                backgroundColor: "#303030 !important",
-              },
-            },
-            "& .fc-toolbar-title": {
-              fontSize: "1rem !important",
-            },
-            "& .fc-col-header-cell": {
-              fontSize: "0.85rem !important",
-            },
-            "& .fc-daygrid-day-number": {
-              fontSize: "0.85rem !important",
-            },
-          }}
-        >
-          <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin]}
-            initialView="dayGridMonth"
-            locale="es"
-            headerToolbar={{
-              left: "prev,next today",
-              center: "title",
-              right: "dayGridMonth,timeGridWeek",
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                flexGrow: 1,
+                width: "100%",
+                height: "100%",
+                overflow: "hidden",
+                background: `url(${fondoChatAI})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                p: { xs: 1, sm: 2, md: 2 }
             }}
-            events={events}
-          />
-        </Box>
-      </Paper>
+        >
+            <Paper
+                elevation={0}
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "auto",
+                    width: "100%",
+                    borderRadius: { xs: 4, md: 6 },
+                    p: { xs: 2, md: 2 },
+                    background: "transparent",
+                    backdropFilter: "blur(12px)",
+                    WebkitBackdropFilter: "blur(12px)",
+                    border: "1px solid rgba(255, 255, 255, 0.3)",
+                    boxShadow: 0,
+                    overflow: "hidden",
+                    animation: "slideDown 0.4s ease",
+                    "@keyframes slideDown": {
+                        from: {
+                            opacity: 0,
+                            transform: "translateY(-40px)"
+                        },
+                        to: {
+                            opacity: 1,
+                            transform: "translateY(0)"
+                        }
+                    }
+                }}
+            >
+                <Box sx={{ pb: 2 }}>
+                    <Grid container spacing={2} alignItems="center">
+                        <Grid item xs={12} md={8}>
+                            <Typography
+                                variant="h3"
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+                                    alignItems: "center",
+                                    color: "#000000",
+                                    fontSize: {
+                                        xs: "1.5rem",
+                                        sm: "1.5rem",
+                                        md: "1.5rem",
+                                        lg: "1.7rem",
+                                        xl: "1.8rem"
+                                    },
+                                    mb: 1
+                                }}
+                            >
+                                Calendario <CalendarMonthRoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} />
+                            </Typography>
+                            <Typography
+                                variant="body1"
+                                sx={{
+                                    color: "#000000",
+                                    fontSize: {
+                                        xs: "1rem",
+                                        sm: "1rem",
+                                        md: "1.2rem",
+                                        lg: "1.3rem",
+                                        xl: "1.3rem",
+                                    },
 
-      <Dialog open={openCreateModal} onClose={handleCloseCreateModal} fullWidth maxWidth="sm">
-        <DialogTitle sx={{ fontFamily: "'Lora', serif", fontWeight: 700 }}>
-          Crear evento nuevo
-        </DialogTitle>
-        <DialogContent>
-          <Stack spacing={2} sx={{ mt: 1 }}>
-            {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
-            <TextField
-              label="Titulo"
-              value={formData.title}
-              onChange={handleChange("title")}
-              fullWidth
-              required
-            />
-            <TextField
-              label="Descripcion"
-              value={formData.description}
-              onChange={handleChange("description")}
-              multiline
-              minRows={3}
-              fullWidth
-            />
-            <TextField
-              label="Inicio"
-              type="datetime-local"
-              value={formData.start}
-              onChange={handleChange("start")}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-              required
-            />
-            <TextField
-              label="Fin"
-              type="datetime-local"
-              value={formData.end}
-              onChange={handleChange("end")}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-              required
-            />
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseCreateModal} disabled={submitting}>
-            Cancelar
-          </Button>
-          <Button variant="contained" onClick={handleCreateEvent} disabled={submitting}>
-            {submitting ? "Guardando..." : "Guardar evento"}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
-  );
+                                    lineHeight: 1.6,
+                                    textAlign: { xs: "center", sm: "center", md: "start" },
+                                }}
+                            >
+                                Gestiona y visualiza tus eventos agendados con Teresa.
+                                Revisa tu disponibilidad por semana o mes de forma rápida.
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </Box>
+                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", mb: 2 }} />
+                <Box
+                    sx={{
+                        flexGrow: 1,
+                        overflowY: "auto",
+                        "& .fc": {
+                            '--fc-border-color': 'rgba(0, 0, 0, 0.08)',
+                            '--fc-button-bg-color': '#000000',
+                            '--fc-button-border-color': '#000000',
+                            '--fc-button-hover-bg-color': '#333333',
+                            '--fc-button-active-bg-color': '#555555',
+                            '--fc-today-bg-color': 'rgba(0, 0, 0, 0.04)',
+                            fontFamily: "'Lora', serif",
+                            height: "100%",
+                        },
+                        "& .fc-toolbar-title": {
+                            color: "#000000 !important",
+                            fontFamily: "'Lora', serif",
+                            fontWeight: "700 !important",
+                            fontSize: { xs: "1.2rem !important", md: "1.6rem !important" }
+                        },
+                        "& .fc-button": {
+                            textTransform: 'capitalize',
+                            borderRadius: '8px !important',
+                            fontSize: '0.85rem !important'
+                        },
+                        // Custom Scrollbar
+                        "&::-webkit-scrollbar": { width: "6px" },
+                        "&::-webkit-scrollbar-thumb": {
+                            backgroundColor: "rgba(255, 255, 255, 0.2)",
+                            borderRadius: "10px"
+                        },
+                        "& .fc-event": {
+                            backgroundColor: "#4c9eaa !important",
+                            borderColor: "#000000 !important",
+                            color: "#ffffff !important",
+                            borderRadius: '4px',
+                            padding: '2px 4px',
+                            fontSize: '0.8rem'
+                        },
+                        "& .fc-event-dot": {
+                            backgroundColor: "#000000 !important" // Para la vista de lista/puntos
+                        },
+                        // Agrega esto dentro del objeto sx del Box contenedor del calendario
+                        "& .fc-col-header-cell-cushion": {
+                            color: "#000000 !important", // Lunes, Martes, etc.
+                            textDecoration: "none !important" // Quita el subrayado si existe
+                        },
+                        "& .fc-daygrid-day-number": {
+                            color: "#000000 !important", // Números 1, 2, 3...
+                            textDecoration: "none !important",
+                            fontWeight: "bold"
+                        },
+                        "& .fc-daygrid-day-top": {
+                            justifyContent: "center", // Opcional: centra los números
+                        },
+                        // Si usas la vista de semana (timeGrid), esto cambia la hora del lateral
+                        "& .fc-timegrid-slot-label-cushion": {
+                            color: "#000000 !important"
+                        },
+                        animation: "slideDown 0.4s ease",
+                        "@keyframes slideDown": {
+                            from: {
+                                opacity: 0,
+                                transform: "translateY(-40px)"
+                            },
+                            to: {
+                                opacity: 1,
+                                transform: "translateY(0)"
+                            }
+                        }
+                    }}
+                >
+                    <BotonCalendar />
+                    <FullCalendar
+                        plugins={[dayGridPlugin, timeGridPlugin]}
+                        initialView="dayGridMonth"
+                        locale={esLocale}
+                        eventColor="#000000"
+                        eventTextColor="#000000"
+                        headerToolbar={{
+                            left: 'prev,next today',
+
+                            center: 'title',
+                            right: 'dayGridMonth,timeGridWeek'
+                        }}
+                        events={events}
+                        height="auto"
+                        contentHeight="auto"
+                    />
+                </Box>
+            </Paper>
+        </Box>
+    )
 };
 
 export default Calendar;

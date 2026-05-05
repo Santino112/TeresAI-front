@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../../../../../api/axios";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import { Box, Typography, Paper, List, ListItem, ListItemText, Checkbox, Button, Divider, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Stack, Alert } from "@mui/material";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import { Box, Typography, Paper, List, ListItem, ListItemText, Checkbox, Button, Divider, useTheme } from "@mui/material";
+import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 
 export default function ShoppingList() {
-
+  const theme = useTheme();
   const [items, setItems] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
@@ -111,7 +111,6 @@ export default function ShoppingList() {
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
       p: 2
-
     }}>
       <Paper
         sx={{
@@ -119,42 +118,41 @@ export default function ShoppingList() {
           flexDirection: "column",
           justifyContent: "flex-start",
           width: "100%",
-          p: { xs: 2, sm: 3, md: 3 },
+          p: { xs: 2, sm: 2, md: 2 },
           borderRadius: 4,
           background: "transparent",
-          flexGrow: 0,
+          flexGrow: 1,
+          boxShadow: 0,
+          animation: "slideDown 0.4s ease",
+          "@keyframes slideDown": {
+            from: {
+              opacity: 0,
+              transform: "translateY(-40px)"
+            },
+            to: {
+              opacity: 1,
+              transform: "translateY(0)"
+            }
+          }
         }}
       >
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          alignItems="center"
-          justifyContent="space-between"
-          spacing={2}
-          sx={{ mb: 1 }}
-        >
-          <Typography variant="h3" sx={{
-            fontSize: {
-              xs: "1.5rem",
-              sm: "1.5rem",
-              md: "1.5rem",
-              lg: "1.7rem",
-              xl: "1.8rem"
-            },
-            textAlign: { xs: "center", sm: "center", md: "start" },
-            fontFamily: "'Lora', serif",
-          }}>
-            Lista de compras 🛒
-          </Typography>
-          <Button
-            variant="contained"
-            onClick={handleOpenCreate}
-            startIcon={<AddRoundedIcon />}
-            sx={{ fontFamily: "'Lora', serif", fontWeight: 700 }}
-          >
-            Agregar producto
-          </Button>
-        </Stack>
+        <Typography variant="h3" sx={{
+          display: "flex",
+          justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+          alignItems: "center",
+          color: "#000000",
+          fontSize: {
+            xs: "1.5rem",
+            sm: "1.5rem",
+            md: "1.5rem",
+            lg: "1.7rem",
+            xl: "1.8rem"
+          },
+        }}>
+          Lista de compras <ShoppingCartRoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} />
+        </Typography>
         <Typography variant="body2" sx={{
+          color: "#000000",
           my: 1,
           fontSize: {
             xs: "1rem",
@@ -164,101 +162,231 @@ export default function ShoppingList() {
             xl: "1.3rem",
           },
           textAlign: { xs: "center", sm: "center", md: "start" },
-          fontFamily: "'Lora', serif",
           lineHeight: 1.8,
         }}>
           Tu lista personal para que nunca olvides lo que necesitas. Planifica tus compras del día a día de forma sencilla.
         </Typography>
-        <Divider sx={{
-          width: "100%",
-          "&::before, &::after": {
-            borderColor: "#ffffff",
-          }
-        }}>
-          <Typography variant="body1" sx={{ color: "#ffffff" }}>~</Typography>
-        </Divider>
-        <Typography variant="h7" sx={{
-          textAlign: { xs: "center", sm: "center", md: "start" },
-          fontFamily: "'Lora', serif",
-        }}>
-          Pendientes
-        </Typography>
+        <Divider sx={{ borderColor: "rgba(0,0,0,0.1)" }} />
         <Box
           sx={{
+            my: 2,
             flex: 1,
-            overflowY: "auto",
-
+            width: "100%",
+            height: "100%",
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            borderRadius: 3,
+            textAlign: "center",
+            border: `1px solid ${theme.palette.divider}`,
+            backgroundColor: "#d7d6d6",
+            maxHeight: "500px",
             minHeight: 0,
-            pr: 1
+            p: { xs: 2, sm: 3, md: 3 },
+            animation: "slideDown 0.4s ease",
+            "@keyframes slideDown": {
+              from: {
+                opacity: 0,
+                transform: "translateY(-40px)"
+              },
+              to: {
+                opacity: 1,
+                transform: "translateY(0)"
+              }
+            }
           }}
         >
-          <List>
-            {pendingItems.map((item) => (
-              <ListItem key={item.id} divider>
-                <Checkbox
-                  checked={item.completed}
-                  onChange={() => toggleItem(item.id)}
-                />
-                <ListItemText
-                  primary={`${item.text} ${item.quantity ? `(x${item.quantity})` : ""
-                    }`}
-                />
-              </ListItem>
-            ))}
-          </List>
-          {pendingItems.length === 0 && (
+          <Box sx={{
+            borderRadius: 3,
+            border: `1px solid ${theme.palette.divider}`,
+            p: 3,
+            textAlign: "center",
+            color: theme.palette.text.primary,
+            mb: 2,
+            boxShadow: 3
+          }}>
             <Typography variant="h7" sx={{
-              textAlign: { xs: "center", sm: "center", md: "start" },
-              fontFamily: "'Lora', serif",
-              lineHeight: 1.8,
+              color: "#000000",
+              fontSize: {
+                xs: "1.1rem",
+                sm: "1.1rem",
+                md: "1.2rem",
+                lg: "1.3rem",
+                xl: "1.3rem",
+              },
             }}>
-              No hay artículos pendientes.
+              Articulos pendientes de compra
             </Typography>
-          )}
+          </Box>
+          <Box sx={{
+            overflowY: "auto",
+            flexGrow: 1,
+            minHeight: 0,
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#8f8e8e transparent',
+
+            /* Chrome / Edge / Safari */
+            '&::-webkit-scrollbar': {
+              width: '6px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: 'transparent',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#2f2f2f',
+              borderRadius: '8px',
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+              backgroundColor: '#444',
+            },
+            maxHeight: "400px",
+            width: "100%",
+          }}>
+            <List sx>
+              {pendingItems.map((item) => (
+                <ListItem key={item.id} divider sx={{ backgroundColor: "#c1c1c1", borderRadius: 3, color: "#000000" }}>
+                  <Checkbox
+                    checked={item.completed}
+                    onChange={() => toggleItem(item.id)}
+                    sx={{ color: "#000000" }}
+                  />
+                  <ListItemText
+                    primary={`${item.text} ${item.quantity ? `(x${item.quantity})` : ""
+                      }`}
+                  />
+                </ListItem>
+              ))}
+            </List>
+            {pendingItems.length === 0 && (
+              <Typography variant="h7" sx={{
+                color: "#000000",
+                fontSize: {
+                  xs: "1.1rem",
+                  sm: "1.1rem",
+                  md: "1.2rem",
+                  lg: "1.3rem",
+                  xl: "1.3rem",
+                },
+                lineHeight: 1.8,
+              }}>
+                No hay artículos pendientes.
+              </Typography>
+            )}
+          </Box>
         </Box>
         {completedItems.length > 0 && (
           <>
-            <Divider sx={{ my: 2 }} />
-
-            <Typography variant="h6" sx={{ mb: 1 }}>
-              Comprados
-            </Typography>
-
             <Box
               sx={{
-                maxHeight: "30%",
-                overflowY: "auto",
+                my: 2,
+                flex: 1,
+                width: "100%",
+                height: "100%",
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
+                borderRadius: 3,
+                textAlign: "center",
+                border: `1px solid ${theme.palette.divider}`,
+                backgroundColor: "#d7d6d6",
+                maxHeight: "500px",
                 minHeight: 0,
-                pr: 1
+                p: { xs: 2, sm: 3, md: 3 },
+                animation: "slideDown 0.4s ease",
+                "@keyframes slideDown": {
+                  from: {
+                    opacity: 0,
+                    transform: "translateY(-40px)"
+                  },
+                  to: {
+                    opacity: 1,
+                    transform: "translateY(0)"
+                  }
+                }
               }}
             >
-              <List>
-                {completedItems.map((item) => (
-                  <ListItem key={item.id} divider>
-                    <Checkbox
-                      checked={item.completed}
-                      onChange={() => toggleItem(item.id)}
-                    />
-                    <ListItemText
-                      primary={`${item.text} ${item.quantity ? `(x${item.quantity})` : ""
-                        }`}
-                      sx={{
-                        textDecoration: "line-through",
-                        color: "text.secondary"
-                      }}
-                    />
-                  </ListItem>
-                ))}
-              </List>
+              <Box sx={{
+                borderRadius: 3,
+                border: `1px solid ${theme.palette.divider}`,
+                p: 3,
+                textAlign: "center",
+                boxShadow: 3,
+                mb: 2
+              }}>
+                <Typography variant="h6" sx={{
+                  color: "#000000",
+                  fontSize: {
+                    xs: "1.1rem",
+                    sm: "1.1rem",
+                    md: "1.2rem",
+                    lg: "1.3rem",
+                    xl: "1.3rem",
+                  },
+                }}>
+                  Articulos comprados
+                </Typography>
+              </Box>
+              <Box sx={{
+                overflowY: "auto",
+                flexGrow: 1,
+                minHeight: 0,
+                scrollbarWidth: 'thin',
+                scrollbarColor: '#8f8e8e transparent',
+                '&::-webkit-scrollbar': {
+                  width: '6px',
+                },
+                '&::-webkit-scrollbar-track': {
+                  background: 'transparent',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  backgroundColor: '#2f2f2f',
+                  borderRadius: '8px',
+                },
+                '&::-webkit-scrollbar-thumb:hover': {
+                  backgroundColor: '#444',
+                },
+                maxHeight: "400px",
+                width: "100%",
+              }}>
+                <List>
+                  {completedItems.map((item) => (
+                    <ListItem key={item.id} divider sx={{ backgroundColor: "#c1c1c1", borderRadius: 3, color: "#000000" }}>
+                      <Checkbox
+                        checked={item.completed}
+                        onChange={() => toggleItem(item.id)}
+                        sx={{
+                          color: "#000000",
+                          '&.Mui-checked': {
+                            color: "#4c9eaa "
+                          },
+                        }}
+                      />
+                      <ListItemText
+                        primary={`${item.text} ${item.quantity ? `(x${item.quantity})` : ""
+                          }`}
+                        sx={{
+                          textDecoration: "line-through",
+                          color: "#000000",
+                          opacity: 0.6,
+                          fontFamily: "'Lora', serif",
+                          fontSize: "1rem"
+                        }}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+              <Box>
+                <Button
+                  variant="contained"
+                  color="error"
+                  sx={{ my: 2, borderRadius: 2, ml: "auto", display: "block", width: { xs: "100%", sm: "auto" }, boxShadow: 3 }}
+                  onClick={clearCompleted}
+                >
+                  Eliminar artículos
+                </Button>
+              </Box>
             </Box>
-            <Button
-              variant="outlined"
-              color="error"
-              sx={{ mt: 2 }}
-              onClick={clearCompleted}
-            >
-              Eliminar artículos comprados
-            </Button>
           </>
         )}
 

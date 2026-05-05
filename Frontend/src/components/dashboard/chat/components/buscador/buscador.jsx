@@ -4,11 +4,11 @@ import { deleteConversation } from '../../exports/eliminarConversacion.js';
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import IconButton from '@mui/material/IconButton';
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
 const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActiva, conversations, setConversations, isLoading }) => {
     const [menuAnchor, setMenuAnchor] = useState(null);
@@ -71,14 +71,14 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "flex-start",
-                        width: "%100",
-                        p: { xs: 2, sm: 3, md: 3 },
-                        borderRadius: 4,
+                        width: "100%",
+                        p: { xs: 2, sm: 2, md: 2 },
+                        borderRadius: 3,
+                        boxShadow: 0,
                         background: "transparent",
                         flexGrow: 0,
                         scrollbarWidth: 'thin',
-                        scrollbarColor: '#404040 transparent',
-
+                        scrollbarColor: '#8f8e8e transparent',
                         /* Chrome / Edge / Safari */
                         '&::-webkit-scrollbar': {
                             width: '6px',
@@ -87,15 +87,30 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                             background: 'transparent',
                         },
                         '&::-webkit-scrollbar-thumb': {
-                            backgroundColor: '#2f2f2f',
+                            backgroundColor: '#8f8e8e',
                             borderRadius: '8px',
                         },
                         '&::-webkit-scrollbar-thumb:hover': {
                             backgroundColor: '#444',
                         },
+                        animation: "slideDown 0.4s ease",
+                        "@keyframes slideDown": {
+                            from: {
+                                opacity: 0,
+                                transform: "translateY(-40px)"
+                            },
+                            to: {
+                                opacity: 1,
+                                transform: "translateY(0)"
+                            }
+                        }
                     }}
                 >
-                    <Typography variant="h2" sx={{
+                    <Typography variant="h3" sx={{
+                        display: "flex",
+                        justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+                        alignItems: "center",
+                        color: "#000000",
                         fontSize: {
                             xs: "1.5rem",
                             sm: "1.5rem",
@@ -104,10 +119,10 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                             xl: "1.8rem"
                         },
                         textAlign: { xs: "center", sm: "center", md: "start" },
-                        fontFamily: "'Lora', serif",
-                    }}>Buscador de chats 🔎</Typography>
+                    }}>Buscador de chats <SearchRoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} /></Typography>
                     <Typography variant="body2" sx={{
                         my: 1,
+                        color: "#000000",
                         fontSize: {
                             xs: "1rem",
                             sm: "1rem",
@@ -116,25 +131,17 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                             xl: "1.3rem",
                         },
                         textAlign: { xs: "center", sm: "center", md: "start" },
-                        fontFamily: "'Lora', serif",
                         lineHeight: 1.8,
                     }}>Aquí podrás buscar entre tus conversaciones anteriores para encontrar información relevante,
                         continuar una conversación previa o simplemente inciar una nueva conversacioón.
                     </Typography>
-                    <Divider sx={{
-                        width: "100%",
-                        "&::before, &::after": {
-                            borderColor: "#ffffff",
-                        }
-                    }}>
-                        <Typography variant="body1" sx={{ color: "#ffffff" }}>~</Typography>
-                    </Divider>
+                    <Divider sx={{ borderColor: "rgba(0,0,0,0.1)" }} />
                     <Box sx={{
                         display: "flex",
                         flexDirection: {
                             xs: "column",
                             sm: "column",
-                            md: "column",
+                            md: "row",
                             lg: "row",
                             xl: "row"
                         },
@@ -152,22 +159,19 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                             sx={{
                                 borderRadius: 3,
                                 boxShadow: 3,
-                                backgroundColor: "#0978a0",
-                                fontFamily: "'Lora', serif",
-                                fontWeight: "bold",
-                                "&:hover": {
-                                    backgroundColor: "#066688",
-                                },
-                                fontSize: "0.9rem",
-                                width: {
-                                    xs: "100%",
-                                    sm: "100%",
-                                    md: "100%",
-                                    lg: "24%",
-                                    xl: "16%"
-                                },
+                                backgroundColor: "#7d745c",
                                 color: "#ffffff",
-                            }}><AddRoundedIcon sx={{ mr: 1 }} />Nuevo chat</Button>
+                                textTransform: "none",
+                                "&:hover": {
+                                    backgroundColor: "#67604d"
+                                },
+                                fontSize: "1.1rem",
+                                width: { xs: "100%", sm: "100%", md: "fit-content" },
+                                minWidth: "auto",
+                                whiteSpace: "nowrap",
+                                px: 2,
+                                color: "#ffffff",
+                            }}><AddRoundedIcon sx={{ mr: 1 }} />Nueva conversación</Button>
                         <TextField
                             value={busqueda}
                             onChange={(e) => setBusqueda(e.target.value)}
@@ -178,7 +182,7 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                                 input: {
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            <SearchRoundedIcon />
+                                            <SearchRoundedIcon sx={{ color: "#000000" }} />
                                         </InputAdornment>
                                     ),
                                 },
@@ -186,20 +190,32 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                             sx={{
                                 flexGrow: 1,
                                 borderRadius: 3,
-                                backgroundColor: "#303030",
+                                backgroundColor: "#d7d6d6",
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 4,
                                     backgroundColor: "transparent",
                                 },
                                 "& .MuiInputBase-input": {
-                                    color: "#ffffff",
+                                    color: "#000000",
                                     fontWeight: 500,
                                 },
                                 "& fieldset": { border: "none" },
                             }}
                         />
                     </Box>
-                    <Box sx={{ maxHeight: "500px", minHeight: "500px", backgroundColor: "#303030", p: 1, overflowY: "auto", borderRadius: 3 }}>
+                    <Box sx={{
+                        maxHeight: "500px", minHeight: "500px", backgroundColor: "#d7d6d6", p: 1, overflowY: "auto", borderRadius: 3, animation: "slideDown 0.4s ease",
+                        "@keyframes slideDown": {
+                            from: {
+                                opacity: 0,
+                                transform: "translateY(-40px)"
+                            },
+                            to: {
+                                opacity: 1,
+                                transform: "translateY(0)"
+                            }
+                        }
+                    }}>
                         {isLoading ? (
                             <>
                                 <Skeleton animation="wave" variant="rectangular" height={40} sx={{ borderRadius: 2, mb: 1, bgcolor: "#4a4a4a" }} />
@@ -216,7 +232,7 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                         ) : conversacionesFiltradas.length === 0 ? (
                             <Typography sx={{
                                 textAlign: "center",
-                                color: "#ffffff",
+                                color: "#000000",
                                 mt: 4,
                                 fontFamily: "'Lora', serif"
                             }}>
@@ -235,15 +251,16 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                                                 setPaginaActiva("chat");
                                             }}
                                             sx={{
-                                                backgroundColor: isActive ? "#444444" : "transparent",
-                                                color: "#E6E6E6",
+                                                backgroundColor: isActive ? "#c1c1c1" : "transparent",
+                                                color: "#000000",
                                                 mb: 1,
                                                 borderRadius: 3,
                                                 fontSize: "1rem",
                                                 textTransform: 'none',
                                                 fontWeight: isActive ? 600 : 400,
                                                 "&:hover": {
-                                                    backgroundColor: "#2b2b2b",
+                                                    backgroundColor: "#c1c1c1",
+                                                    color: "#000000"
                                                 }
                                             }}
                                         >
@@ -254,7 +271,7 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                                                     handleMenuOpen(e, conv.id);
                                                     e.stopPropagation();
                                                 }}
-                                                sx={{ ml: "auto", color: "#ffffff", "&:hover": { color: "#fff" } }}
+                                                sx={{ ml: "auto", color: "#000000", "&:hover": { color: "#fff" } }}
                                             >
                                                 <MoreHorizRoundedIcon fontSize="small" />
                                             </IconButton>
@@ -262,28 +279,52 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                                         <Menu
                                             anchorEl={menuAnchor}
                                             open={Boolean(menuAnchor) && menuConvId === conv.id}
+                                            anchorOrigin={{
+                                                vertical: 'bottom',
+                                                horizontal: 'right',
+                                            }}
+                                            transformOrigin={{
+                                                vertical: 'top',
+                                                horizontal: 'right',
+                                            }}
                                             onClose={handleMenuClose}
                                             MenuListProps={{
                                                 sx: {
                                                     p: 0,
                                                     fontSize: "21px",
-                                                    backgroundColor: "#303030",
-                                                    color: "#ffffff",
+                                                    backgroundColor: "#eeeeee",
+                                                    color: "#000000",
                                                     borderRadius: 3
                                                 }
                                             }}
                                             PaperProps={{
-                                                sx: { backgroundColor: "#303030", color: "#E6E6E6", minWidth: "160px", p: 0, borderRadius: 3 }
+                                                sx: { backgroundColor: "#000000", color: "#ffffff", minWidth: "160px", p: 0, borderRadius: 3 }
                                             }}
                                         >
-                                            <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }}>
+                                            <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3, color: "#000000", "&:hover": { backgroundColor: "#e1e1e1" } }}>
                                                 <StarRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Favorito
                                             </MenuItem>
-                                            <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }}>
+                                            <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3, color: "#000000", "&:hover": { backgroundColor: "#e1e1e1" } }}>
                                                 <EditRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Renombrar
                                             </MenuItem>
+                                            <Divider sx={{
+                                                width: "100%",
+                                                color: "#000000",
+                                                backgroundColor: "#9f9e9e",
+                                                "&::before, &::after": {
+                                                    borderColor: "#000000",
+                                                },
+                                                m: 0,
+                                                p: 0
+                                            }}></Divider>
                                             <MenuItem onClick={(e) => { e.stopPropagation(); handleDelete(); handleMenuClose(); }}
-                                                sx={{ color: "#ff6b6b" }}
+                                                sx={{
+                                                    color: "#000000",
+                                                    borderRadius: 3,
+                                                    "&:hover": {
+                                                        color: "#ff6b6b",
+                                                    }
+                                                }}
                                             >
                                                 <DeleteRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Eliminar
                                             </MenuItem>

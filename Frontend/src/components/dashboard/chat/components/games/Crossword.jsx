@@ -7,7 +7,7 @@ import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import { getCrossword } from "../../exports/crossword.js";
 
-const DIFFICULTIES = ["easy", "medium", "hard"];
+const DIFFICULTIES = ["Fácil", "Medio", "Difícil"];
 
 const cloneGrid = (grid) => grid.map(row => [...row]);
 
@@ -15,7 +15,7 @@ export default function Crossword() {
   const [grid, setGrid] = useState(null);
   const [solution, setSolution] = useState(null);
   const [selected, setSelected] = useState(null);
-  const [difficulty, setDifficulty] = useState("easy");
+  const [difficulty, setDifficulty] = useState("Fácil");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [won, setWon] = useState(false);
@@ -40,7 +40,7 @@ export default function Crossword() {
           row.map(cell => (cell !== null ? "" : null))
         )
       );
-      
+
       setClues(data.clues || []);
       setNumbers(data.numbers || []);
 
@@ -110,28 +110,38 @@ export default function Crossword() {
       alignItems: "center",
       height: "100%",
       p: 2,
-      gap: 2,
+      gap: 3, // Un poco más de aire
       overflowY: "auto",
       background: "transparent"
     }}>
 
       <Typography sx={{
         fontFamily: "'Lora', serif",
-        fontSize: "2rem",
-        color: "#E6E6E6"
+        fontSize: "2.2rem",
+        fontWeight: 700,
+        color: "#2c3e50"
       }}>
         Crucigrama
       </Typography>
 
-      {/* Dificultad */}
+      {/* Selectores de Dificultad */}
       <Box sx={{ display: "flex", gap: 1 }}>
         {DIFFICULTIES.map(d => (
           <Button
             key={d}
             onClick={() => setDifficulty(d)}
             sx={{
-              color: difficulty === d ? "#1a1f1a" : "#aaa",
-              backgroundColor: difficulty === d ? "#918B76" : "transparent"
+              borderRadius: 3,
+              textTransform: "capitalize",
+              fontFamily: "'Lora', serif",
+              px: 2,
+              color: difficulty === d ? "#fff" : "#555",
+              backgroundColor: difficulty === d ? "#7d745c" : "#f0f0f0",
+              border: "1px solid",
+              borderColor: difficulty === d ? "#7d745c" : "#ccc",
+              "&:hover": {
+                backgroundColor: difficulty === d ? "#6a624d" : "#e0e0e0"
+              }
             }}
           >
             {d}
@@ -139,11 +149,20 @@ export default function Crossword() {
         ))}
       </Box>
 
-      {/* GRID */}
+      {/* GRID DEL CRUCIGRAMA */}
       {loading ? (
-        <CircularProgress />
+        <CircularProgress sx={{ color: "#7d745c" }} />
       ) : grid && (
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            border: "2px solid #7d745c", // Marco exterior
+            borderRadius: 1,
+            overflow: "hidden",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.08)"
+          }}
+        >
           {grid.map((row, r) => (
             <Box key={r} sx={{ display: "flex" }}>
               {row.map((cell, c) => {
@@ -163,35 +182,42 @@ export default function Crossword() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      border: "1px solid #444",
+                      border: "0.5px solid #d1d5db", // Bordes de celda más finos
                       backgroundColor: isBlocked
-                        ? "#111"
+                        ? "#2c3e50" // Bloques oscuros (azul grisáceo)
                         : isSelected
-                        ? "#918B76"
-                        : isSameRowCol(r, c)
-                        ? "rgba(145,139,118,0.2)"
-                        : isError
-                        ? "rgba(180,60,60,0.5)"
-                        : "#262a25",
-                      cursor: isBlocked ? "default" : "pointer"
+                          ? "#d9d2c2" // Color de selección (Sage claro)
+                          : isSameRowCol(r, c)
+                            ? "#f9f7f2" // Resaltado de línea
+                            : isError
+                              ? "#fee2e2" // Error suave
+                              : "#fff",
+                      cursor: isBlocked ? "default" : "pointer",
+                      transition: "background-color 0.1s"
                     }}
                   >
-                    {/* 🔢 número */}
+                    {/* 🔢 Número de pista */}
                     {number && (
                       <Typography
                         sx={{
                           position: "absolute",
-                          top: 2,
-                          left: 3,
-                          fontSize: "0.6rem",
-                          color: "#aaa"
+                          top: 1,
+                          left: 2,
+                          fontSize: "0.65rem",
+                          fontWeight: 700,
+                          color: isBlocked ? "#fff" : "#7d745c"
                         }}
                       >
                         {number}
                       </Typography>
                     )}
 
-                    <Typography sx={{ color: "#fff", fontSize: "1rem" }}>
+                    <Typography sx={{
+                      color: isError ? "#dc2626" : "#1a1a1a",
+                      fontSize: "1.1rem",
+                      fontWeight: 600,
+                      textTransform: "uppercase"
+                    }}>
                       {cell}
                     </Typography>
                   </Box>
@@ -202,62 +228,127 @@ export default function Crossword() {
         </Box>
       )}
 
-      {/* INPUT LETRAS */}
+      {/* TECLADO DE LETRAS */}
       {!loading && !won && (
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, maxWidth: 400 }}>
+        <Box sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 0.5,
+          maxWidth: 450,
+          justifyContent: "center",
+          mt: 1
+        }}>
           {"ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split("").map(l => (
             <Button
               key={l}
               onClick={() => handleInput(l)}
               sx={{
-                minWidth: 32,
-                color: "#E6E6E6",
-                backgroundColor: "#353A36"
+                minWidth: { xs: 32, sm: 38 },
+                height: 38,
+                p: 0,
+                fontSize: "0.9rem",
+                fontWeight: 600,
+                color: "#4b5563",
+                backgroundColor: "#fff",
+                border: "1px solid #d1d5db",
+                "&:hover": {
+                  backgroundColor: "#f3f4f6",
+                  borderColor: "#9ca3af"
+                }
               }}
             >
               {l}
             </Button>
           ))}
+          <Button
+            onClick={() => handleInput("")}
+            sx={{
+              minWidth: { xs: 32, sm: 38 },
+              height: 38,
+              backgroundColor: "#fff",
+              border: "1px solid #d1d5db",
+              color: "#9ca3af",
+              "&:hover": { backgroundColor: "#fee2e2", color: "#dc2626" }
+            }}
+          >
+            ✕
+          </Button>
         </Box>
       )}
 
-      {/* ACCIONES */}
-      <Box sx={{ display: "flex", gap: 2 }}>
-        <Button onClick={fetchCrossword} startIcon={<RefreshRoundedIcon />}>
-          Nuevo
+      {/* BOTONES DE ACCIÓN */}
+      <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
+        <Button
+          onClick={fetchCrossword}
+          startIcon={<RefreshRoundedIcon />}
+          sx={{
+            color: "#555",
+            fontFamily: "'Lora', serif",
+            textTransform: "none",
+            px: 3,
+             "&:hover": { backgroundColor: "#e0e0e0" },
+          }}
+        >
+          Nuevo juego
         </Button>
 
-        <Button onClick={handleCheck} startIcon={<CheckRoundedIcon />}>
+        <Button
+          onClick={handleCheck}
+          variant="contained"
+          startIcon={<CheckRoundedIcon />}
+          sx={{
+            color: "#fff",
+            backgroundColor: "#7d745c",
+            fontFamily: "'Lora', serif",
+            textTransform: "none",
+            px: 3,
+            "&:hover": { backgroundColor: "#6a624d" }
+          }}
+        >
           Verificar
         </Button>
       </Box>
 
       {/* PISTAS ORGANIZADAS */}
-      <Box sx={{ width: "100%", maxWidth: 600, mt: 2, maxHeight: 200, overflowY: "auto" }}>
-        <Typography sx={{ color: "#aaa", mb: 1 }}>
+      <Box sx={{
+        width: "100%",
+        maxWidth: 600,
+        mt: 2,
+        p: 2,
+        borderRadius: 2,
+        backgroundColor: "rgba(255,255,255,0.5)", // Fondo sutil para las pistas
+        maxHeight: 250,
+        overflowY: "auto",
+        border: "1px solid #e5e7eb"
+      }}>
+        <Typography variant="subtitle2" sx={{ color: "#7d745c", fontWeight: 800, mb: 1, textTransform: "uppercase" }}>
           Horizontales
         </Typography>
-
         {acrossClues.map((c) => (
-          <Typography key={c.number} sx={{ color: "#E6E6E6" }}>
-            {c.number}. {c.clue}
+          <Typography key={c.number} sx={{ color: "#374151", mb: 0.5, fontSize: "0.95rem" }}>
+            <strong>{c.number}.</strong> {c.clue}
           </Typography>
         ))}
 
-        <Typography sx={{ color: "#aaa", mt: 2, mb: 1 }}>
+        <Typography variant="subtitle2" sx={{ color: "#7d745c", fontWeight: 800, mt: 3, mb: 1, textTransform: "uppercase" }}>
           Verticales
         </Typography>
-
         {downClues.map((c) => (
-          <Typography key={c.number} sx={{ color: "#E6E6E6" }}>
-            {c.number}. {c.clue}
+          <Typography key={c.number} sx={{ color: "#374151", mb: 0.5, fontSize: "0.95rem" }}>
+            <strong>{c.number}.</strong> {c.clue}
           </Typography>
         ))}
       </Box>
 
       {won && (
-        <Typography sx={{ color: "#a8c5a0" }}>
-          ¡Crucigrama completado!
+        <Typography sx={{
+          color: "#16a34a",
+          fontFamily: "'Lora', serif",
+          fontWeight: 700,
+          fontSize: "1.2rem",
+          mt: 2
+        }}>
+          ¡Excelente! Crucigrama completado ✨
         </Typography>
       )}
     </Box>

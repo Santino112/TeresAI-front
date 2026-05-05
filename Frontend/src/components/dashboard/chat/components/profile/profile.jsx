@@ -12,14 +12,26 @@ const Profile = () => {
     const { user } = useAuth();
 
     useEffect(() => {
-        if (!user) return;
+        if (!user?.id) return;
 
         const fetchInfoUser = async () => {
-            const data = await tomarDatosPerfiles(user.id);
-            if (data) setProfile(data);
-        }
+            try {
+                if (profile) return;
+
+                const data = await tomarDatosPerfiles(user.id);
+
+                if (data) {
+                    setProfile(data);
+                } else {
+                    console.warn("No se encontraron datos de perfil para este usuario.");
+                }
+            } catch (error) {
+                console.error("Error al obtener perfil del usuario:", error);
+            }
+        };
+
         fetchInfoUser();
-    }, [user]);
+    }, [user?.id]);
 
     return (
 
@@ -41,8 +53,8 @@ const Profile = () => {
         >
             {!profile ? (
                 <Box sx={{ p: 5, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 2, flexGrow: 1 }}>
-                    <Typography variant="h2" sx={{ fontSize: "1rem", fontFamily: "'Lora', serif" }}>Cargando perfil...</Typography>
-                    <CircularProgress sx={{ color: "#ffffff" }} />
+                    <Typography variant="h2" sx={{ fontSize: "1rem", fontFamily: "'Lora', serif", color: "#000000" }}>Cargando perfil...</Typography>
+                    <CircularProgress sx={{ color: "#000000" }} />
                 </Box>
             ) : profile?.role === "elder" ? <ProfileElder profile={profile} setProfile={setProfile} />
                 : profile?.role === "familiar" ? <ProfileFamiliar profile={profile} setProfile={setProfile} />
