@@ -12,6 +12,7 @@ import Diversity1RoundedIcon from '@mui/icons-material/Diversity1Rounded';
 import FamilyRestroomRoundedIcon from '@mui/icons-material/FamilyRestroomRounded';
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
+import InsertEmoticonRoundedIcon from '@mui/icons-material/InsertEmoticonRounded';
 import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
 
 const ProfileFamiliar = ({ profile, setProfile }) => {
@@ -350,14 +351,30 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                     flexDirection: "column",
                     justifyContent: "flex-start",
                     width: "100%",
-                    p: { xs: 2, sm: 3, md: 3 },
+                    p: { xs: 2, sm: 2, md: 2 },
+                    boxShadow: 0,
                     borderRadius: 3,
                     boxShadow: 0,
                     background: "transparent",
                     flexGrow: 0,
+                    animation: "slideDown 0.4s ease",
+                    "@keyframes slideDown": {
+                        from: {
+                            opacity: 0,
+                            transform: "translateY(-40px)"
+                        },
+                        to: {
+                            opacity: 1,
+                            transform: "translateY(0)"
+                        }
+                    }
                 }}
             >
                 <Typography variant="h2" sx={{
+                    display: "flex",
+                    justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+                    alignItems: "center",
+                    color: "#000000",
                     fontSize: {
                         xs: "1.5rem",
                         sm: "1.5rem",
@@ -365,743 +382,773 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                         lg: "1.7rem",
                         xl: "1.8rem"
                     },
-                    fontFamily: "'Lora', serif",
-                    textAlign: { xs: "center", sm: "center", md: "start" },
-                }}>Perfil 🧑</Typography>
+                }}>Perfil <InsertEmoticonRoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} /></Typography>
                 <Typography variant="body2" sx={{
+                    color: "#000000",
                     my: 1,
                     fontSize: {
                         xs: "1rem",
                         sm: "1rem",
                         md: "1.2rem",
-                        lg: "1.2rem",
-                        xl: "1.2rem",
+                        lg: "1.3rem",
+                        xl: "1.3rem",
                     },
-                    fontFamily: "'Lora', serif",
                     textAlign: { xs: "center", sm: "center", md: "start" },
                     lineHeight: 1.8,
                 }}>Aquí podrás actualizar toda la información de tu usuario familiar. Puedes agregar datos sobre tu salud, tus gustos, tus intereses, o cualquier información que quieras compartir para que la inteligencia artificial pueda conocerte mejor y brindarte una mejor experiencia.
                 </Typography>
-                <Divider sx={{
-                    width: "100%",
-                    "&::before, &::after": {
-                        borderColor: "#ffffff",
-                    }
-                }}>
-                    <Typography variant="body1" sx={{ color: "#ffffff" }}>~</Typography>
-                </Divider>
-            </Paper>
-            <Paper sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-                width: "100%",
-                borderRadius: 4,
-                background: "transparent",
-                flexGrow: 0,
-            }}>
-                <Grid container spacing={3}>
-                    <Grid size={{
-                        xs: 12,
-                        sm: 12,
-                        md: 12,
-                        lg: 6
-                    }}>
-                        <Paper
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "flex-start",
-                                width: "100%",
-                                height: "100%",
-                                p: { xs: 2, sm: 3, md: 4 },
-                                borderRadius: 4,
-                                boxShadow: 6,
-                                background: "transparent",
-                                flexGrow: 0,
-                            }}>
-                            <Typography variant="h2" sx={{
-                                fontSize: {
-                                    xs: "1.4rem",
-                                    sm: "1.4rem",
-                                    md: "1.4rem",
-                                    lg: "1.5rem",
-                                    xl: "1.5rem"
-                                },
-                                fontFamily: "'Lora', serif",
-                                textAlign: { xs: "center", sm: "center", md: "start" },
-                            }}>Actualizar datos de la cuenta</Typography>
-                            <Typography variant="body2" sx={{
-                                my: 1,
-                                fontSize: {
-                                    xs: "1.1rem",
-                                    sm: "1.1rem",
-                                    md: "1.2rem",
-                                    lg: "1.2rem",
-                                    xl: "1.2rem",
-                                },
-                                fontFamily: "'Lora', serif",
-                                textAlign: { xs: "center", sm: "center", md: "start" },
-                                lineHeight: 1.8,
-                            }}>Actualizar email con el que te registraste.
-                            </Typography>
-                            <Grid container spacing={2}>
-                                <Grid size={12}>
-                                    <Paper
-                                        component="form"
-                                        onSubmit={handleUpdateEmail}
-                                        sx={{
-                                            display: "flex",
-                                            flexDirection: "column",
-                                            boxShadow: 0,
-                                            justifyContent: "flex-start",
-                                            width: "100%",
-                                            height: "100%",
-                                            borderRadius: 4,
-                                            background: "transparent",
-                                            flexGrow: 0,
-                                        }}>
-                                        <Grid container spacing={2}>
-                                            <Grid size={{
-                                                xs: 12,
-                                                sm: 12,
-                                                md: 12,
-                                                lg: 12,
-                                                xl: 6
-                                            }} >
-                                                <Box sx={{ my: 0, width: "100%" }}>
-                                                    <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>Email actual</Typography>
-                                                    <TextField
-                                                        type="email"
-                                                        disabled
-                                                        placeholder={profile?.email}
-                                                        variant="outlined"
-                                                        fullWidth
-                                                        margin="dense"
-                                                        sx={{
-                                                            backgroundColor: "#303030",
-                                                            borderRadius: 3,
-                                                            boxShadow: 3,
-                                                            input: { color: "white" },
-                                                            "& .MuiOutlinedInput-root": {
-                                                                borderRadius: 3,
-                                                                pr: 1,
-                                                            },
-                                                            "& fieldset": {
-                                                                borderColor: "transparent"
-                                                            },
-                                                            "&:hover fieldset": {
-                                                                borderColor: "transparent"
-                                                            },
-                                                            "&.Mui-focused fieldset": {
-                                                                borderColor: "gray"
-                                                            }
-                                                        }}
-                                                        InputProps={{
-                                                            startAdornment: (
-                                                                <InputAdornment position="start">
-                                                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
-                                                                        <MarkEmailReadRoundedIcon fontSize='medium' sx={{ mr: 1 }}></MarkEmailReadRoundedIcon>
-                                                                    </Box>
-                                                                </InputAdornment>
-                                                            ),
-                                                        }}
-                                                    ></TextField>
-                                                </Box>
-                                            </Grid>
-                                            <Grid size={{
-                                                xs: 12,
-                                                sm: 12,
-                                                md: 12,
-                                                lg: 12,
-                                                xl: 6
-                                            }}>
-                                                <Box sx={{ my: 0, width: "100%" }}>
-                                                    <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>Email nuevo</Typography>
-                                                    <TextField
-                                                        type="email"
-                                                        value={nuevoEmail}
-                                                        onChange={(e) => setNuevoEmail(e.target.value)}
-                                                        placeholder="Email nuevo"
-                                                        variant="outlined"
-                                                        fullWidth
-                                                        margin="dense"
-                                                        sx={{
-                                                            backgroundColor: "#303030",
-                                                            borderRadius: 3,
-                                                            boxShadow: 3,
-                                                            input: { color: "white" },
-                                                            "& .MuiOutlinedInput-root": {
-                                                                borderRadius: 3,
-                                                                pr: 1,
-                                                            },
-                                                            "& fieldset": {
-                                                                borderColor: "transparent"
-                                                            },
-                                                            "&:hover fieldset": {
-                                                                borderColor: "transparent"
-                                                            },
-                                                            "&.Mui-focused fieldset": {
-                                                                borderColor: "gray"
-                                                            }
-                                                        }}
-                                                        InputProps={{
-                                                            startAdornment: (
-                                                                <InputAdornment position="start">
-                                                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
-                                                                        <EmailRoundedIcon fontSize='medium' sx={{ mr: 1 }}></EmailRoundedIcon>
-                                                                    </Box>
-                                                                </InputAdornment>
-                                                            ),
-                                                        }}
-                                                    ></TextField>
-                                                </Box>
-                                            </Grid>
-                                        </Grid>
-                                        <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "30%" }, mt: 2 }}>
-                                            <Button variant="contained" type="submit" fullWidth disabled={loadingEmail}
-                                                sx={{
-                                                    boxShadow: 3,
-                                                    my: { xs: 1, sm: 1, md: 1, lg: 0 },
-                                                    color: "#ffffff",
-                                                    backgroundColor: "#0978a0",
-                                                    fontFamily: "'Lora', serif",
-                                                    fontWeight: "bold",
-                                                    "&:hover": {
-                                                        backgroundColor: "#066688",
-                                                    }
-                                                }}>{loadingEmail ? (
-                                                    <>
-                                                        <CircularProgress size={20} sx={{ color: "#ffffff", mr: 2 }} />
-                                                        Guardando...
-                                                    </>
-                                                ) : "Actualizar"}
-                                            </Button>
-                                        </Box>
-                                    </Paper>
-                                </Grid>
-                                <Grid size={12}>
-                                    <Paper
-                                        component="form"
-                                        onSubmit={hanbldeUpdateContraseña}
-                                        sx={{
-                                            display: "flex",
-                                            flexDirection: "column",
-                                            justifyContent: "flex-start",
-                                            boxShadow: 0,
-                                            width: "100%",
-                                            height: "100%",
-                                            borderRadius: 4,
-                                            background: "transparent",
-                                            flexGrow: 0,
-                                        }}>
-                                        <Typography variant="body2" sx={{
-                                            color: "#000000",
-                                            my: 1,
-                                            fontSize: {
-                                                xs: "1.1rem",
-                                                sm: "1.1rem",
-                                                md: "1.2rem",
-                                                lg: "1.2rem",
-                                                xl: "1.2rem",
-                                            },
-                                            textAlign: { xs: "center", sm: "center", md: "start" },
-                                            lineHeight: 1.8,
-                                        }}>Actualizar contraseña con la que te registraste.
-                                        </Typography>
-                                        <Grid container spacing={2}>
-                                            <Grid size={{
-                                                xs: 12,
-                                                sm: 12,
-                                                md: 12,
-                                                lg: 12,
-                                                xl: 6
-                                            }} >
-                                                <Box sx={{ my: 0, width: "100%" }}>
-                                                    <Typography variant="body1" sx={{ color: "#000000" }}>Nueva contraseña</Typography>
-                                                    <TextField
-                                                        type={showPassword ? "text" : "password"}
-                                                        placeholder="Nueva Contraseña"
-                                                        value={nuevaContraseña}
-                                                        onChange={(e) => setNuevaContraseña(e.target.value)}
-                                                        variant="outlined"
-                                                        fullWidth
-                                                        margin="dense"
-                                                        sx={{
-                                                            backgroundColor: "#303030",
-                                                            borderRadius: 3,
-                                                            boxShadow: 3,
-                                                            input: { color: "white" },
-                                                            "& .MuiOutlinedInput-root": {
-                                                                borderRadius: 3,
-                                                                pr: 1,
-                                                            },
-                                                            "& fieldset": {
-                                                                borderColor: "transparent"
-                                                            },
-                                                            "&:hover fieldset": {
-                                                                borderColor: "transparent"
-                                                            },
-                                                            "&.Mui-focused fieldset": {
-                                                                borderColor: "gray"
-                                                            }
-                                                        }}
-                                                        InputProps={{
-                                                            startAdornment: (
-                                                                <InputAdornment position="start">
-                                                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
-                                                                        <PasswordRoundedIcon fontSize="medium" sx={{ mr: 1 }}></PasswordRoundedIcon>
-                                                                    </Box>
-                                                                </InputAdornment>
-                                                            ),
-                                                            endAdornment: (
-                                                                <InputAdornment position="end">
-                                                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", color: "#ffffff" }}>
-                                                                        <IconButton onClick={handleShowPassword}>
-                                                                            {showPassword ? <VisibilityIcon /> : <VisibilityOffRoundedIcon />}
-                                                                        </IconButton>
-                                                                    </Box>
-                                                                </InputAdornment>
-                                                            )
-                                                        }}
-                                                    ></TextField>
-                                                </Box>
-                                            </Grid>
-                                            <Grid size={{
-                                                xs: 12,
-                                                sm: 12,
-                                                md: 12,
-                                                lg: 12,
-                                                xl: 6
-                                            }}>
-                                                <Box sx={{ my: 0, width: "100%" }}>
-                                                    <Typography variant="body1" sx={{ color: "#000000" }}>Confirme contraseña</Typography>
-                                                    <TextField
-                                                        type={showPassword ? "text" : "password"}
-                                                        placeholder="Confirme contraseña"
-                                                        value={repetirContraseña}
-                                                        onChange={(e) => setRepetirContraseña(e.target.value)}
-                                                        variant="outlined"
-                                                        fullWidth
-                                                        margin="dense"
-                                                        sx={{
-                                                            backgroundColor: "#303030",
-                                                            borderRadius: 3,
-                                                            boxShadow: 3,
-                                                            input: { color: "white" },
-                                                            "& .MuiOutlinedInput-root": {
-                                                                borderRadius: 3,
-                                                                pr: 1,
-                                                            },
-                                                            "& fieldset": {
-                                                                borderColor: "transparent"
-                                                            },
-                                                            "&:hover fieldset": {
-                                                                borderColor: "transparent"
-                                                            },
-                                                            "&.Mui-focused fieldset": {
-                                                                borderColor: "gray"
-                                                            }
-                                                        }}
-                                                        InputProps={{
-                                                            startAdornment: (
-                                                                <InputAdornment position="start">
-                                                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
-                                                                        <PasswordRoundedIcon fontSize="medium" sx={{ mr: 1 }}></PasswordRoundedIcon>
-                                                                    </Box>
-                                                                </InputAdornment>
-                                                            ),
-                                                            endAdornment: (
-                                                                <InputAdornment position="end">
-                                                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", color: "#ffffff" }}>
-                                                                        <IconButton onClick={handleShowPassword}>
-                                                                            {showPassword ? <VisibilityIcon /> : <VisibilityOffRoundedIcon />}
-                                                                        </IconButton>
-                                                                    </Box>
-                                                                </InputAdornment>
-                                                            )
-                                                        }}
-                                                    ></TextField>
-                                                </Box>
-                                            </Grid>
-                                        </Grid>
-                                        <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "30%" }, mt: 2 }}>
-                                            <Button variant="contained" type="submit" fullWidth disabled={loadingContraseña}
-                                                sx={{
-                                                    boxShadow: 3,
-                                                    my: { xs: 1, sm: 1, md: 1, lg: 0 },
-                                                    color: "#ffffff",
-                                                    backgroundColor: "#0978a0",
-                                                    fontFamily: "'Lora', serif",
-                                                    fontWeight: "bold",
-                                                    "&:hover": {
-                                                        backgroundColor: "#066688",
-                                                    }
-                                                }}>{loadingContraseña ? (
-                                                    <>
-                                                        <CircularProgress size={20} sx={{ color: "#ffffff", mr: 2 }} />
-                                                        Guardando...
-                                                    </>
-                                                ) : "Actualizar"}
-                                            </Button>
-                                        </Box>
-                                    </Paper>
-                                </Grid>
-                            </Grid>
-                        </Paper>
-                    </Grid >
-                    <Grid size={{
-                        xs: 12,
-                        sm: 12,
-                        md: 12,
-                        lg: 6
-                    }}>
-                        <Paper
-                            component="form"
-                            onSubmit={handleUpdateUser}
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "flex-start",
-                                width: "100%",
-                                height: "100%",
-                                boxShadow: 6,
-                                p: { xs: 2, sm: 3, md: 3 },
-                                borderRadius: 4,
-                                background: "transparent",
-                                flexGrow: 0,
-                            }}>
-                            <Typography variant="h2" sx={{
-                                fontSize: {
-                                    xs: "1.4rem",
-                                    sm: "1.4rem",
-                                    md: "1.4rem",
-                                    lg: "1.5rem",
-                                    xl: "1.5rem"
-                                },
-                                fontFamily: "'Lora', serif",
-                                textAlign: { xs: "center", sm: "center", md: "start" },
-
-                            }}>Actualizar datos de usuario</Typography>
-                            <Typography variant="body2" sx={{
-                                my: 1,
-                                fontSize: {
-                                    xs: "1.1rem",
-                                    sm: "1.1rem",
-                                    md: "1.2rem",
-                                    lg: "1.2rem",
-                                    xl: "1.2rem",
-                                },
-                                fontFamily: "'Lora', serif",
-                                textAlign: { xs: "center", sm: "center", md: "start" },
-                                lineHeight: 1.8,
-                            }}>Actualiza los datos que cargaste en el formulario de registro.
-                            </Typography>
-                            <Grid container spacing={2}>
-                                <Grid size={12}>
-                                    <Box sx={{ my: 0, width: "100%" }}>
-                                        <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cómo te llamas?</Typography>
-                                        <TextField
-                                            value={usernameLocal}
-                                            onChange={(e) => {
-                                                setUsernameLocal(e.target.value);
-                                                setProfile({ ...profile, username: e.target.value })
-                                            }
-                                            }
-                                            placeholder="Nombre completo"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="dense"
-                                            sx={{
-                                                backgroundColor: "#303030",
-                                                borderRadius: 3,
-                                                boxShadow: 3,
-                                                input: { color: "white" },
-                                                "& .MuiOutlinedInput-root": {
-                                                    borderRadius: 3,
-                                                    pr: 1,
-                                                },
-                                                "& fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&:hover fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&.Mui-focused fieldset": {
-                                                    borderColor: "gray"
-                                                }
-                                            }}
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
-                                                            <BadgeRoundedIcon fontSize="medium" sx={{ mr: 1 }}></BadgeRoundedIcon>
-                                                        </Box>
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        ></TextField>
-                                    </Box>
-                                </Grid>
-                                <Grid size={12}>
-                                    <Box sx={{ my: 0, width: "100%" }}>
-                                        <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cuál es el nombre del familiar que cuidas?</Typography>
-                                        <TextField
-                                            value={nombreFamiliar}
-                                            onChange={(e) => setNombreFamiliar(e.target.value)}
-                                            placeholder="Nombre del familiar"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="dense"
-                                            sx={{
-                                                backgroundColor: "#303030",
-                                                borderRadius: 3,
-                                                boxShadow: 3,
-                                                input: { color: "white" },
-                                                "& .MuiOutlinedInput-root": {
-                                                    borderRadius: 3,
-                                                    pr: 1,
-                                                },
-                                                "& fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&:hover fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&.Mui-focused fieldset": {
-                                                    borderColor: "gray"
-                                                }
-                                            }}
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
-                                                            <Diversity1RoundedIcon fontSize="medium" sx={{ mr: 1 }}></Diversity1RoundedIcon>
-                                                        </Box>
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        ></TextField>
-                                    </Box>
-                                </Grid>
-                                <Grid size={12}>
-                                    <Box sx={{ my: 0, width: "100%" }}>
-                                        <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>Número de teléfono</Typography>
-                                        <TextField
-                                            value={telefonoFamiliar}
-                                            onChange={(e) => setTelefonoFamiliar(e.target.value)}
-                                            placeholder="Número de teléfono"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="dense"
-                                            sx={{
-                                                backgroundColor: "#303030",
-                                                borderRadius: 3,
-                                                boxShadow: 3,
-                                                input: { color: "white" },
-                                                "& .MuiOutlinedInput-root": {
-                                                    borderRadius: 3,
-                                                    pr: 1,
-                                                },
-                                                "& fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&:hover fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&.Mui-focused fieldset": {
-                                                    borderColor: "gray"
-                                                }
-                                            }}
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
-                                                            <PhoneRoundedIcon fontSize="medium" sx={{ mr: 1 }}></PhoneRoundedIcon>
-                                                        </Box>
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        ></TextField>
-                                    </Box>
-                                </Grid>
-                                <Grid size={12}>
-                                    <Box sx={{ my: 0, width: "100%" }}>
-                                        <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cuál es tu relación con esa persona?</Typography>
-                                        <Select
-                                            value={tipoFamiliar}
-                                            onChange={(e) => setTipoFamiliar(e.target.value)}
-                                            labelId="demo-simple-select-helper-label"
-                                            id="demo-simple-select-helper"
-                                            fullWidth
-                                            renderValue={(selected) => (
-                                                <Box sx={{ display: "flex", alignItems: "center", color: "#ffffff" }}>
-                                                    <FamilyRestroomRoundedIcon fontSize="small" sx={{ mr: 2 }} />
-                                                    {selected.charAt(0).toUpperCase() + selected.slice(1)}
-                                                </Box>
-                                            )}
-                                            MenuProps={{
-                                                PaperProps: {
-                                                    sx: {
-                                                        borderRadius: 3,
-                                                        fontSize: "21px",
-                                                        color: "#ffffff",
-                                                    }
-                                                },
-                                                MenuListProps: { sx: { p: 0 } }
-                                            }}
-                                            sx={{
-                                                backgroundColor: "#303030",
-                                                color: "#ffffff",
-                                                borderRadius: 3,
-                                                boxShadow: 3,
-                                                mt: 1,
-                                                input: { color: "white" },
-                                                "& .MuiSelect-select": {
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    pl: 2
-                                                },
-                                                "& .MuiOutlinedInput-root": {
-                                                    borderRadius: 3,
-                                                    pr: 1,
-                                                },
-                                                "& fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&:hover fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&.Mui-focused fieldset": {
-                                                    borderColor: "gray"
-                                                },
-                                            }}
-                                        >
-                                            <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
-                                            <MenuItem value="hijo">Hijo</MenuItem>
-                                            <MenuItem value="nieto">Nieto</MenuItem>
-                                            <MenuItem value="sobrino">Sobrino</MenuItem>
-                                            <MenuItem value="otro">Ninguno de los anteriores</MenuItem>
-                                        </Select>
-                                    </Box>
-                                </Grid>
-                            </Grid>
-                            <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "30%" }, mt: 2 }}>
-                                <Button variant="contained" type="submit" fullWidth disabled={loading || !hasChanges}
-                                    sx={{
-                                        boxShadow: 3,
-                                        my: { xs: 1, sm: 1, md: 1, lg: 0 },
-                                        color: "#ffffff",
-                                        backgroundColor: "#0978a0",
-                                        fontFamily: "'Lora', serif",
-                                        fontWeight: "bold",
-                                        "&:hover": {
-                                            backgroundColor: "#066688",
-                                        }
-                                    }}>{loading ? (
-                                        <>
-                                            <CircularProgress size={20} sx={{ color: "#ffffff", mr: 2 }} />
-                                            Guardando...
-                                        </>
-                                    ) : "Actualizar"}
-                                </Button>
-                            </Box>
-                        </Paper>
-                    </Grid>
-                </Grid >
-            </Paper >
-            <Paper
-                component="form"
-                onSubmit={handleAgregarElder}
-                sx={{
+                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 1, mb: 2 }} />
+                <Paper sx={{
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-start",
                     width: "100%",
-                    p: { xs: 2, sm: 3, md: 4 },
                     borderRadius: 4,
                     background: "transparent",
-                    boxShadow: 6,
+                    boxShadow: 0,
                     flexGrow: 0,
-                    my: 4
-                }}
-            >
-                <Typography variant="h2" sx={{
-                    fontSize: {
-                        xs: "1.4rem",
-                        sm: "1.4rem",
-                        md: "1.5rem",
-                        lg: "1.5rem",
-                        xl: "1.5rem"
-                    },
-                    fontFamily: "'Lora', serif",
-                    textAlign: { xs: "center", sm: "center", md: "start" },
-                }}>Agregar nuevo familiar</Typography>
-                <Typography variant="body2" sx={{
-                    my: 1,
-                    fontSize: {
-                        xs: "1.1rem",
-                        sm: "1.1rem",
-                        md: "1.2rem",
-                        lg: "1.2rem",
-                        xl: "1.2rem",
-                    },
-                    fontFamily: "'Lora', serif",
-                    textAlign: { xs: "center", sm: "center", md: "start" },
-                    lineHeight: 1.8,
-                }}>Aquí puedes agregar a otro familiar al que quieras cuidar usando su email
-                </Typography>
-                <TextField
-                    placeholder="Email del familiar"
-                    value={emailElder}
-                    onChange={(e) => setEmailElder(e.target.value)}
-                    variant="outlined"
-                    fullWidth
-                    margin="dense"
-                    sx={{
-                        backgroundColor: "#303030",
-                        borderRadius: 3,
-                        boxShadow: 3,
-                        input: { color: "white" },
-                        "& .MuiOutlinedInput-root": {
-                            borderRadius: 3,
-                            pr: 1,
+                    animation: "slideDown 0.4s ease",
+                    "@keyframes slideDown": {
+                        from: {
+                            opacity: 0,
+                            transform: "translateY(-40px)"
                         },
-                        "& fieldset": {
-                            borderColor: "transparent"
-                        },
-                        "&:hover fieldset": {
-                            borderColor: "transparent"
-                        },
-                        "&.Mui-focused fieldset": {
-                            borderColor: "gray"
+                        to: {
+                            opacity: 1,
+                            transform: "translateY(0)"
                         }
-                    }}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
-                                    <PersonAddAlt1RoundedIcon fontSize="medium" sx={{ mr: 1 }}></PersonAddAlt1RoundedIcon>
+                    }
+                }}>
+                    <Grid container spacing={3}>
+                        <Grid size={{
+                            xs: 12,
+                            sm: 12,
+                            md: 12,
+                            lg: 6
+                        }}>
+                            <Paper
+                                sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "flex-start",
+                                    width: "100%",
+                                    height: "100%",
+                                    p: { xs: 2, sm: 3, md: 3 },
+                                    borderRadius: 4,
+                                    boxShadow: 3,
+                                    background: "transparent",
+                                    flexGrow: 0,
+                                }}>
+                                <Typography variant="h3" sx={{
+                                    color: "#000000",
+                                    fontSize: {
+                                        xs: "1.4rem",
+                                        sm: "1.4rem",
+                                        md: "1.4rem",
+                                        lg: "1.5rem",
+                                        xl: "1.5rem"
+                                    },
+                                    textAlign: { xs: "center", sm: "center", md: "start" },
+                                }}>Actualizar datos de la cuenta</Typography>
+                                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 1, mb: 2 }} />
+                                <Typography variant="body2" sx={{
+                                    my: 1,
+                                    color: "#000000",
+                                    fontSize: {
+                                        xs: "1.1rem",
+                                        sm: "1.1rem",
+                                        md: "1.2rem",
+                                        lg: "1.3rem",
+                                        xl: "1.3rem",
+                                    },
+                                    textAlign: { xs: "center", sm: "center", md: "start" },
+                                    lineHeight: 1.8,
+                                }}>Actualizar email con el que te registraste.
+                                </Typography>
+
+                                <Grid container spacing={2}>
+                                    <Grid size={12}>
+                                        <Paper
+                                            component="form"
+                                            onSubmit={handleUpdateEmail}
+                                            sx={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                boxShadow: 0,
+                                                justifyContent: "flex-start",
+                                                width: "100%",
+                                                height: "100%",
+                                                borderRadius: 4,
+                                                background: "transparent",
+                                                flexGrow: 0,
+                                            }}>
+                                            <Grid container spacing={2}>
+                                                <Grid size={{
+                                                    xs: 12,
+                                                    sm: 12,
+                                                    md: 12,
+                                                    lg: 12,
+                                                    xl: 6
+                                                }} >
+                                                    <Box sx={{ my: 0, width: "100%" }}>
+                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Email actual</Typography>
+                                                        <TextField
+                                                            type="email"
+                                                            disabled
+                                                            placeholder={profile?.email}
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="dense"
+                                                            sx={{
+                                                                backgroundColor: "#d7d6d6",
+                                                                borderRadius: 3,
+                                                                boxShadow: 3,
+                                                                "& .MuiInputBase-input.Mui-disabled": {
+                                                                    color: "#000000",
+                                                                    WebkitTextFillColor: "#000000",
+                                                                },
+                                                                "& .MuiInputBase-input::placeholder": {
+                                                                    color: "#000000",
+                                                                    opacity: 1,
+                                                                },
+                                                                "& .MuiOutlinedInput-root.Mui-disabled .MuiInputBase-input::placeholder": {
+                                                                    color: "#444444",
+                                                                    opacity: 1,
+                                                                    WebkitTextFillColor: "#444444",
+                                                                },
+                                                            }}
+                                                            InputProps={{
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                                                                            <MarkEmailReadRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }}></MarkEmailReadRoundedIcon>
+                                                                        </Box>
+                                                                    </InputAdornment>
+                                                                ),
+                                                            }}
+                                                        ></TextField>
+                                                    </Box>
+                                                </Grid>
+                                                <Grid size={{
+                                                    xs: 12,
+                                                    sm: 12,
+                                                    md: 12,
+                                                    lg: 12,
+                                                    xl: 6
+                                                }}>
+                                                    <Box sx={{ my: 0, width: "100%" }}>
+                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Email nuevo</Typography>
+                                                        <TextField
+                                                            type="email"
+                                                            value={nuevoEmail}
+                                                            onChange={(e) => setNuevoEmail(e.target.value)}
+                                                            placeholder="Email nuevo"
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="dense"
+                                                            sx={{
+                                                                backgroundColor: "#d7d6d6",
+                                                                color: "#000000",
+                                                                borderRadius: 3,
+                                                                boxShadow: 3,
+                                                                input: { color: "#000000" },
+                                                                "& .MuiOutlinedInput-root": {
+                                                                    borderRadius: 3,
+                                                                    pr: 1,
+                                                                },
+                                                                "& fieldset": {
+                                                                    borderColor: "transparent"
+                                                                },
+                                                                "& .MuiInputBase-input::placeholder": {
+                                                                    color: "#000000",
+                                                                    opacity: 0.6,
+                                                                },
+                                                                "&:hover fieldset": {
+                                                                    borderColor: "transparent"
+                                                                },
+                                                                "&.Mui-focused fieldset": {
+                                                                    borderColor: "gray"
+                                                                },
+                                                            }}
+                                                            InputProps={{
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                                                                            <EmailRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }}></EmailRoundedIcon>
+                                                                        </Box>
+                                                                    </InputAdornment>
+                                                                ),
+                                                            }}
+                                                        ></TextField>
+                                                    </Box>
+                                                </Grid>
+                                            </Grid>
+                                            <Box sx={{ mt: 2 }}>
+                                                <Button variant="contained" type="submit" fullWidth disabled={loadingEmail}
+                                                    sx={{
+                                                        boxShadow: 3,
+                                                        borderRadius: 2,
+                                                        my: { xs: 1, sm: 1, md: 1, lg: 0 },
+                                                        backgroundColor: "#7d745c",
+                                                        width: { xs: "100%", sm: "100%", md: "fit-content" },
+                                                        minWidth: "auto",
+                                                        whiteSpace: "nowrap",
+                                                        px: 2,
+                                                        color: "#ffffff",
+                                                        textTransform: "none",
+                                                        fontSize: "1.1rem",
+                                                        "&:hover": {
+                                                            backgroundColor: "#67604d"
+                                                        },
+                                                        "&.Mui-disabled": {
+                                                            backgroundColor: "#5a5342",
+                                                            color: "#ffffff !important",
+                                                        }
+                                                    }}>{loadingEmail ? (
+                                                        <>
+                                                            <CircularProgress size={20} sx={{ color: "#ffffff", mr: 2 }} />
+                                                            Guardando...
+                                                        </>
+                                                    ) : "Actualizar"}
+                                                </Button>
+                                            </Box>
+                                        </Paper>
+                                    </Grid>
+                                    <Grid size={12}>
+                                        <Paper
+                                            component="form"
+                                            onSubmit={hanbldeUpdateContraseña}
+                                            sx={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                justifyContent: "flex-start",
+                                                boxShadow: 0,
+                                                width: "100%",
+                                                height: "100%",
+                                                borderRadius: 4,
+                                                background: "transparent",
+                                                flexGrow: 0,
+                                            }}>
+                                            <Typography variant="body2" sx={{
+                                                color: "#000000",
+                                                my: 1,
+                                                fontSize: {
+                                                    xs: "1.1rem",
+                                                    sm: "1.1rem",
+                                                    md: "1.2rem",
+                                                    lg: "1.3rem",
+                                                    xl: "1.3rem",
+                                                },
+                                                textAlign: { xs: "center", sm: "center", md: "start" },
+                                                lineHeight: 1.8,
+                                            }}>Actualizar contraseña con la que te registraste.
+                                            </Typography>
+                                            <Grid container spacing={2}>
+                                                <Grid size={{
+                                                    xs: 12,
+                                                    sm: 12,
+                                                    md: 12,
+                                                    lg: 12,
+                                                    xl: 6
+                                                }} >
+                                                    <Box sx={{ my: 0, width: "100%" }}>
+                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Nueva contraseña</Typography>
+                                                        <TextField
+                                                            type={showPassword ? "text" : "password"}
+                                                            placeholder="Nueva Contraseña"
+                                                            value={nuevaContraseña}
+                                                            onChange={(e) => setNuevaContraseña(e.target.value)}
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="dense"
+                                                            sx={{
+                                                                backgroundColor: "#d7d6d6",
+                                                                color: "#000000",
+                                                                borderRadius: 3,
+                                                                boxShadow: 3,
+                                                                input: { color: "#000000" },
+                                                                "& .MuiOutlinedInput-root": {
+                                                                    borderRadius: 3,
+                                                                    pr: 1,
+                                                                },
+                                                                "& fieldset": {
+                                                                    borderColor: "transparent"
+                                                                },
+                                                                "& .MuiInputBase-input::placeholder": {
+                                                                    color: "#000000",
+                                                                    opacity: 0.6,
+                                                                },
+                                                                "&:hover fieldset": {
+                                                                    borderColor: "transparent"
+                                                                },
+                                                                "&.Mui-focused fieldset": {
+                                                                    borderColor: "gray"
+                                                                },
+                                                            }}
+                                                            InputProps={{
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#000000" }}>
+                                                                            <PasswordRoundedIcon fontSize="medium" sx={{ mr: 1, color: "#000000" }}></PasswordRoundedIcon>
+                                                                        </Box>
+                                                                    </InputAdornment>
+                                                                ),
+                                                                endAdornment: (
+                                                                    <InputAdornment position="end">
+                                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", color: "#000000" }}>
+                                                                            <IconButton onClick={handleShowPassword}>
+                                                                                {showPassword ? <VisibilityIcon sx={{ color: "#000000" }} /> : <VisibilityOffRoundedIcon sx={{ color: "#000000" }} />}
+                                                                            </IconButton>
+                                                                        </Box>
+                                                                    </InputAdornment>
+                                                                )
+                                                            }}
+                                                        ></TextField>
+                                                    </Box>
+                                                </Grid>
+                                                <Grid size={{
+                                                    xs: 12,
+                                                    sm: 12,
+                                                    md: 12,
+                                                    lg: 12,
+                                                    xl: 6
+                                                }}>
+                                                    <Box sx={{ my: 0, width: "100%" }}>
+                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Confirme contraseña</Typography>
+                                                        <TextField
+                                                            type={showPassword ? "text" : "password"}
+                                                            placeholder="Confirme contraseña"
+                                                            value={repetirContraseña}
+                                                            onChange={(e) => setRepetirContraseña(e.target.value)}
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="dense"
+                                                            sx={{
+                                                                backgroundColor: "#d7d6d6",
+                                                                color: "#000000",
+                                                                borderRadius: 3,
+                                                                boxShadow: 3,
+                                                                input: { color: "#000000" },
+                                                                "& .MuiOutlinedInput-root": {
+                                                                    borderRadius: 3,
+                                                                    pr: 1,
+                                                                },
+                                                                "& fieldset": {
+                                                                    borderColor: "transparent"
+                                                                },
+                                                                "& .MuiInputBase-input::placeholder": {
+                                                                    color: "#000000",
+                                                                    opacity: 0.6,
+                                                                },
+                                                                "&:hover fieldset": {
+                                                                    borderColor: "transparent"
+                                                                },
+                                                                "&.Mui-focused fieldset": {
+                                                                    borderColor: "gray"
+                                                                },
+                                                            }}
+                                                            InputProps={{
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#000000" }}>
+                                                                            <PasswordRoundedIcon fontSize="medium" sx={{ mr: 1 }}></PasswordRoundedIcon>
+                                                                        </Box>
+                                                                    </InputAdornment>
+                                                                ),
+                                                                endAdornment: (
+                                                                    <InputAdornment position="end">
+                                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", color: "#000000" }}>
+                                                                            <IconButton onClick={handleShowPassword}>
+                                                                                {showPassword ? <VisibilityIcon sx={{ color: "#000000" }} /> : <VisibilityOffRoundedIcon sx={{ color: "#000000" }} />}
+                                                                            </IconButton>
+                                                                        </Box>
+                                                                    </InputAdornment>
+                                                                )
+                                                            }}
+                                                        ></TextField>
+                                                    </Box>
+                                                </Grid>
+                                            </Grid>
+                                            <Box sx={{ mt: 2 }}>
+                                                <Button variant="contained" type="submit" fullWidth disabled={loadingContraseña}
+                                                    sx={{
+                                                        boxShadow: 3,
+                                                        borderRadius: 2,
+                                                        width: { xs: "100%", sm: "100%", md: "fit-content" },
+                                                        minWidth: "auto",
+                                                        whiteSpace: "nowrap",
+                                                        px: 2,
+                                                        my: { xs: 1, sm: 1, md: 1, lg: 0 },
+                                                        backgroundColor: "#7d745c",
+                                                        textTransform: "none",
+                                                        fontSize: "1.1rem",
+                                                        color: "#ffffff",
+                                                        "&:hover": {
+                                                            backgroundColor: "#67604d"
+                                                        },
+                                                        "&.Mui-disabled": {
+                                                            backgroundColor: "#5a5342",
+                                                            color: "#ffffff !important",
+                                                        }
+                                                    }}>{loadingContraseña ? (
+                                                        <>
+                                                            <CircularProgress size={20} sx={{ color: "#ffffff", mr: 2 }} />
+                                                            Guardando...
+                                                        </>
+                                                    ) : "Actualizar"}
+                                                </Button>
+                                            </Box>
+                                        </Paper>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+                        </Grid >
+                        <Grid size={{
+                            xs: 12,
+                            sm: 12,
+                            md: 12,
+                            lg: 6
+                        }}>
+                            <Paper
+                                component="form"
+                                onSubmit={handleUpdateUser}
+                                sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "flex-start",
+                                    width: "100%",
+                                    height: "100%",
+                                    boxShadow: 3,
+                                    p: { xs: 2, sm: 3, md: 3 },
+                                    borderRadius: 4,
+                                    background: "transparent",
+                                    flexGrow: 0,
+                                }}>
+                                <Typography variant="h2" sx={{
+                                    color: "#000000",
+                                    fontSize: {
+                                        xs: "1.4rem",
+                                        sm: "1.4rem",
+                                        md: "1.4rem",
+                                        lg: "1.5rem",
+                                        xl: "1.5rem"
+                                    },
+                                    textAlign: { xs: "center", sm: "center", md: "start" },
+                                }}>Actualizar datos de usuario</Typography>
+                                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 1, mb: 2 }} />
+                                <Typography variant="body2" sx={{
+                                    my: 1,
+                                    color: "#000000",
+                                    fontSize: {
+                                        xs: "1.1rem",
+                                        sm: "1.1rem",
+                                        md: "1.2rem",
+                                        lg: "1.3rem",
+                                        xl: "1.3rem",
+                                    },
+                                    textAlign: { xs: "center", sm: "center", md: "start" },
+                                    lineHeight: 1.8,
+                                }}>Actualiza los datos que cargaste en el formulario de registro.
+                                </Typography>
+                                <Grid container spacing={2}>
+                                    <Grid size={12}>
+                                        <Box sx={{ my: 0, width: "100%" }}>
+                                            <Typography variant="body1" sx={{ color: "#000000" }}>¿Cómo te llamas?</Typography>
+                                            <TextField
+                                                value={usernameLocal}
+                                                onChange={(e) => {
+                                                    setUsernameLocal(e.target.value);
+                                                    setProfile({ ...profile, username: e.target.value })
+                                                }
+                                                }
+                                                placeholder="Nombre completo"
+                                                variant="outlined"
+                                                fullWidth
+                                                margin="dense"
+                                                sx={{
+                                                    backgroundColor: "#d7d6d6",
+                                                    color: "#000000",
+                                                    borderRadius: 3,
+                                                    boxShadow: 3,
+                                                    input: { color: "#000000" },
+                                                    "& .MuiOutlinedInput-root": {
+                                                        borderRadius: 3,
+                                                        pr: 1,
+                                                    },
+                                                    "& fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "& .MuiInputBase-input::placeholder": {
+                                                        color: "#000000",
+                                                        opacity: 0.6,
+                                                    },
+                                                    "&:hover fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "gray"
+                                                    },
+                                                }}
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#000000" }}>
+                                                                <BadgeRoundedIcon fontSize="medium" sx={{ mr: 1, color: "#000000" }}></BadgeRoundedIcon>
+                                                            </Box>
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            ></TextField>
+                                        </Box>
+                                    </Grid>
+                                    <Grid size={12}>
+                                        <Box sx={{ my: 0, width: "100%" }}>
+                                            <Typography variant="body1" sx={{ color: "#000000" }}>¿Cuál es el nombre del familiar que cuidas?</Typography>
+                                            <TextField
+                                                value={nombreFamiliar}
+                                                onChange={(e) => setNombreFamiliar(e.target.value)}
+                                                placeholder="Nombre del familiar"
+                                                variant="outlined"
+                                                fullWidth
+                                                margin="dense"
+                                                sx={{
+                                                    backgroundColor: "#d7d6d6",
+                                                    color: "#000000",
+                                                    borderRadius: 3,
+                                                    boxShadow: 3,
+                                                    input: { color: "#000000" },
+                                                    "& .MuiOutlinedInput-root": {
+                                                        borderRadius: 3,
+                                                        pr: 1,
+                                                    },
+                                                    "& fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "& .MuiInputBase-input::placeholder": {
+                                                        color: "#000000",
+                                                        opacity: 0.6,
+                                                    },
+                                                    "&:hover fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "gray"
+                                                    },
+                                                }}
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#000000" }}>
+                                                                <Diversity1RoundedIcon fontSize="medium" sx={{ mr: 1, color: "#000000" }}></Diversity1RoundedIcon>
+                                                            </Box>
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            ></TextField>
+                                        </Box>
+                                    </Grid>
+                                    <Grid size={12}>
+                                        <Box sx={{ my: 0, width: "100%" }}>
+                                            <Typography variant="body1" sx={{ color: "#000000" }}>¿Cuál es tu relación con esa persona?</Typography>
+                                            <Select
+                                                value={tipoFamiliar}
+                                                onChange={(e) => setTipoFamiliar(e.target.value)}
+                                                labelId="demo-simple-select-helper-label"
+                                                id="demo-simple-select-helper"
+                                                fullWidth
+                                                renderValue={(selected) => (
+                                                    <Box sx={{ display: "flex", alignItems: "center", color: "#000000" }}>
+                                                        <FamilyRestroomRoundedIcon fontSize="small" sx={{ mr: 2 }} />
+                                                        {selected.charAt(0).toUpperCase() + selected.slice(1)}
+                                                    </Box>
+                                                )}
+                                                MenuProps={{
+                                                    PaperProps: {
+                                                        sx: {
+                                                            borderRadius: 3,
+                                                            backgroundColor: "#303030",
+                                                            color: "#ffffff",
+                                                        }
+                                                    },
+                                                    MenuListProps: { sx: { p: 0 } }
+                                                }}
+                                                sx={{
+                                                    backgroundColor: "#d7d6d6",
+                                                    color: "#000000",
+                                                    borderRadius: 3,
+                                                    mt: 1,
+                                                    boxShadow: 3,
+                                                    input: { color: "#000000" },
+                                                    "& .MuiOutlinedInput-root": {
+                                                        borderRadius: 3,
+                                                        pr: 1,
+                                                    },
+                                                    "& fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "& .MuiInputBase-input::placeholder": {
+                                                        color: "#000000",
+                                                        opacity: 0.6,
+                                                    },
+                                                    "&:hover fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "gray"
+                                                    },
+                                                    "& .MuiSelect-icon": {
+                                                        color: "#000000",
+                                                    },
+                                                    mb: 1
+                                                }}
+                                            >
+                                                <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
+                                                <MenuItem value="hijo">Hijo</MenuItem>
+                                                <MenuItem value="nieto">Nieto</MenuItem>
+                                                <MenuItem value="sobrino">Sobrino</MenuItem>
+                                                <MenuItem value="otro">Ninguno de los anteriores</MenuItem>
+                                            </Select>
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                                <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "30%" }, mt: 2 }}>
+                                    <Button variant="contained" type="submit" fullWidth disabled={loading || !hasChanges}
+                                        sx={{
+                                            boxShadow: 3,
+                                            borderRadius: 2,
+                                            my: { xs: 1, sm: 1, md: 1, lg: 0 },
+                                            backgroundColor: "#7d745c",
+                                            width: { xs: "100%", sm: "100%", md: "fit-content" },
+                                            minWidth: "auto",
+                                            whiteSpace: "nowrap",
+                                            color: "#ffffff",
+                                            textTransform: "none",
+                                            fontSize: "1.1rem",
+                                            "&:hover": {
+                                                backgroundColor: "#67604d"
+                                            },
+                                            "&.Mui-disabled": {
+                                                backgroundColor: "#5a5342",
+                                                color: "#ffffff !important",
+                                            }
+                                        }}>{loading ? (
+                                            <>
+                                                <CircularProgress size={20} sx={{ color: "#ffffff", mr: 2 }} />
+                                                Guardando...
+                                            </>
+                                        ) : "Actualizar"}
+                                    </Button>
                                 </Box>
-                            </InputAdornment>
-                        )
+                            </Paper>
+                        </Grid>
+                    </Grid >
+                </Paper >
+                <Paper
+                    component="form"
+                    onSubmit={handleAgregarElder}
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "flex-start",
+                        width: "100%",
+                        p: { xs: 2, sm: 3, md: 3 },
+                        borderRadius: 4,
+                        background: "transparent",
+                        boxShadow: 3,
+                        flexGrow: 0,
+                        my: 4
                     }}
-                ></TextField>
-                <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "14.2%" }, mt: 2 }}>
-                    <Button variant="contained" type="submit" fullWidth disabled={loadingNuevoElder}
+                >
+                    <Typography variant="h3" sx={{
+                        color: "#000000",
+                        fontSize: {
+                            xs: "1.4rem",
+                            sm: "1.4rem",
+                            md: "1.4rem",
+                            lg: "1.5rem",
+                            xl: "1.5rem"
+                        },
+                        textAlign: { xs: "center", sm: "center", md: "start" },
+                    }}>Agregar nuevo familiar</Typography>
+                    <Typography variant="body2" sx={{
+                        mt: { xs: 1, sm: 1, md: 1, lg: 0, xl: 0 },
+                        color: "#000000",
+                        fontSize: {
+                            xs: "1.1rem",
+                            sm: "1.1rem",
+                            md: "1.2rem",
+                            lg: "1.3rem",
+                            xl: "1.3rem",
+                        },
+                        textAlign: { xs: "center", sm: "center", md: "start" },
+                        lineHeight: 1.8,
+                    }}>Aquí puedes agregar a otro familiar al que quieras cuidar usando su email
+                    </Typography>
+                    <TextField
+                        placeholder="Email del familiar"
+                        value={emailElder}
+                        onChange={(e) => setEmailElder(e.target.value)}
+                        variant="outlined"
+                        fullWidth
+                        margin="dense"
                         sx={{
+                            backgroundColor: "#d7d6d6",
+                            color: "#000000",
+                            borderRadius: 3,
                             boxShadow: 3,
-                            my: { xs: 1, sm: 1, md: 1, lg: 0 },
-                            color: "#ffffff",
-                            backgroundColor: "#0978a0",
-                            fontFamily: "'Lora', serif",
-                            fontWeight: "bold",
-                            "&:hover": {
-                                backgroundColor: "#066688",
-                            }
-                        }}>Agregar
-                    </Button>
-                </Box>
+                            input: { color: "#000000" },
+                            "& .MuiOutlinedInput-root": {
+                                borderRadius: 3,
+                                pr: 1,
+                            },
+                            "& fieldset": {
+                                borderColor: "transparent"
+                            },
+                            "& .MuiInputBase-input::placeholder": {
+                                color: "#000000",
+                                opacity: 0.6,
+                            },
+                            "&:hover fieldset": {
+                                borderColor: "transparent"
+                            },
+                            "&.Mui-focused fieldset": {
+                                borderColor: "gray"
+                            },
+                        }}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#000000" }}>
+                                        <PersonAddAlt1RoundedIcon fontSize="medium" sx={{ mr: 1, color: "#000000" }}></PersonAddAlt1RoundedIcon>
+                                    </Box>
+                                </InputAdornment>
+                            )
+                        }}
+                    ></TextField>
+                    <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "14.2%" }, mt: 2 }}>
+                        <Button variant="contained" type="submit" fullWidth disabled={loadingNuevoElder}
+                            sx={{
+                                boxShadow: 3,
+                                borderRadius: 2,
+                                my: { xs: 1, sm: 1, md: 1, lg: 0 },
+                                backgroundColor: "#7d745c",
+                                width: { xs: "100%", sm: "100%", md: "fit-content" },
+                                minWidth: "auto",
+                                whiteSpace: "nowrap",
+                                color: "#ffffff",
+                                textTransform: "none",
+                                fontSize: "1.1rem",
+                                "&:hover": {
+                                    backgroundColor: "#67604d"
+                                },
+                                "&.Mui-disabled": {
+                                    backgroundColor: "#5a5342",
+                                    color: "#ffffff !important",
+                                }
+                            }}>Agregar
+                        </Button>
+                    </Box>
+                </Paper>
             </Paper>
         </>
     )

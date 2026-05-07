@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from 'react';
 import { Typography, Button, TextField, Box, Paper, Divider, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -140,6 +141,11 @@ const steps = [
 ];
 
 const Manual = () => {
+    const [expanded, setExpanded] = useState(false);
+
+    const handleChange = (panel) => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : false);
+    };
 
     return (
         <Box
@@ -217,6 +223,8 @@ const Manual = () => {
                     {steps.map((step) => (
                         <Accordion
                             key={step.id}
+                            expanded={expanded === step.id}
+                            onChange={handleChange(step.id)}
                             sx={{
                                 mb: 1.5,
                                 borderRadius: '12px !important',

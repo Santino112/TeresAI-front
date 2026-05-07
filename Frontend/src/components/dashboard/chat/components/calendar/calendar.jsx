@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { Typography, Button, TextField, Box, Stack, Paper, Divider, Grid } from "@mui/material";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import BotonCalendar from "../buttons/BotonCalendar.jsx";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
+import BotonCalendar from '../buttons/botonCalendar.jsx';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import api from "../../../../../api/axios.js";
 import esLocale from "@fullcalendar/core/locales/es";
 import { supabase } from "../../../../../supabaseClient.js";
@@ -23,16 +23,16 @@ const toLocalInputDateTime = (date = new Date()) => {
 };
 
 const Calendar = () => {
-  const [events, setEvents] = useState([]);
-  const [openCreateModal, setOpenCreateModal] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    start: toLocalInputDateTime(),
-    end: toLocalInputDateTime(new Date(Date.now() + 60 * 60 * 1000)),
-  });
+    const [events, setEvents] = useState([]);
+    const [openCreateModal, setOpenCreateModal] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [formData, setFormData] = useState({
+        title: "",
+        description: "",
+        start: toLocalInputDateTime(),
+        end: toLocalInputDateTime(new Date(Date.now() + 60 * 60 * 1000)),
+    });
 
   const fetchEvents = useCallback(async () => {
     try {

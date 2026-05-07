@@ -5,16 +5,16 @@ import { getConversations } from '../../exports/conversaciones.js';
 import { deleteConversation } from '../../exports/eliminarConversacion.js';
 import { useAuth } from '../../../../auth/useAuth.jsx';
 import { supabase } from "../../../../../supabaseClient.js";
-import Chat from './Chat.jsx';
-import Games from '../games/Games.jsx';
-import Buscador from '../buscador/Buscador.jsx';
-import Calendar from '../calendar/Calendar.jsx';
-import News from '../news/News.jsx';
-import Shopping from '../shopping/Shoppinglist.jsx';
-import Notes from '../notes/Notes.jsx';
-import MenuUsuario from './Menu.jsx';
-import Perfil from '../profile/Profile.jsx';
-import Manual from '../manual/Manual.jsx';
+import Chat from './chat.jsx';
+import Games from '../games/games.jsx';
+import Buscador from '../buscador/buscador.jsx';
+import Calendar from '../calendar/calendar.jsx';
+import News from '../news/news.jsx';
+import Shopping from '../shopping/shoppinglist.jsx';
+import Notes from '../notes/notes.jsx';
+import MenuUsuario from './menu.jsx';
+import Perfil from '../profile/profile.jsx';
+import Manual from '../manual/manualElder.jsx';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AppBar from '@mui/material/AppBar';
@@ -321,7 +321,7 @@ function ResponsiveDrawer(props) {
                                             <Step key={step.label}>
                                                 <StepLabel sx={{
                                                     "& .MuiStepLabel-label": {
-                                                        color: "#464545", 
+                                                        color: "#464545",
                                                         fontWeight: "medium",
                                                     },
                                                     "& .MuiStepLabel-label.Mui-active": {
@@ -329,20 +329,20 @@ function ResponsiveDrawer(props) {
                                                         fontWeight: "bold",
                                                     },
                                                     "& .MuiStepLabel-label.Mui-completed": {
-                                                        color: "#7d745c", 
+                                                        color: "#7d745c",
                                                     },
                                                 }}
                                                     StepIconProps={{
                                                         sx: {
                                                             color: "#d7d6d6",
                                                             "&.Mui-active": {
-                                                                color: "#7d745c", 
+                                                                color: "#7d745c",
                                                             },
                                                             "&.Mui-completed": {
-                                                                color: "#67604d", 
+                                                                color: "#67604d",
                                                             },
                                                             "& .MuiStepIcon-text": {
-                                                                fill: "#ffffff", 
+                                                                fill: "#ffffff",
                                                             },
                                                         },
                                                     }}>
@@ -545,11 +545,8 @@ function ResponsiveDrawer(props) {
                 p: 1,
                 width: '100%',
                 backgroundColor: "#d7d6d6",
-                /* Firefox */
                 scrollbarWidth: 'thin',
                 scrollbarColor: '#8f8e8e transparent',
-
-                /* Chrome / Edge / Safari */
                 '&::-webkit-scrollbar': {
                     width: '6px',
                 },
@@ -608,7 +605,7 @@ function ResponsiveDrawer(props) {
                                             handleMenuOpen(e, conv.id);
                                             e.stopPropagation();
                                         }}
-                                        sx={{ ml: "auto", color: "#000000", "&:hover": { color: "999688" } }}
+                                        sx={{ ml: "auto", color: "#000000", "&:hover": { color: "#999688" } }}
                                     >
                                         <MoreHorizRoundedIcon fontSize="small" sx={{ color: "#000000" }} />
                                     </IconButton>
@@ -627,7 +624,13 @@ function ResponsiveDrawer(props) {
                                         }
                                     }}
                                     PaperProps={{
-                                        sx: { backgroundColor: "#000000", color: "#ffffff", minWidth: "160px", p: 0, borderRadius: 3 }
+                                        sx: {
+                                            backgroundColor: "#303030",
+                                            color: "#ffffff",
+                                            minWidth: "160px",
+                                            p: 0,
+                                            borderRadius: 3
+                                        }
                                     }}
                                 >
                                     <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3, color: "#000000", "&:hover": { backgroundColor: "#e1e1e1" } }}>

@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Typography, TextField, Box, CircularProgress } from "@mui/material";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import TeresaiLogo from '../../../../../assets/images/logo_teresAI.svg';
+import TeresaiLogo from '../../../../../assets/images/logo_teresAI.png';
 
 const Inicio = () => {
     return (
@@ -47,27 +47,10 @@ const Inicio = () => {
                     src={TeresaiLogo}
                     alt="TERESAI Logo"
                     sx={{
-                        height: "300px",
+                        height: "400px",
                         width: "auto",
-                        cursor: "pointer",
                     }}
                 />
-                <Typography variant="h1" sx={{
-                    fontSize: {
-                        xs: "1.5rem",
-                        sm: "2rem",
-                        md: "2rem",
-                        lg: "2.5rem",
-                        xl: "2.8rem"
-                    },
-                    fontFamily: "'Lora', serif",
-                    color: "#f0750a",
-                    mb: 2,
-
-                    textAlign: "center"
-                }}>
-                    TeresAI, tu compañera
-                </Typography>
             </Box>
         </Box>
     )

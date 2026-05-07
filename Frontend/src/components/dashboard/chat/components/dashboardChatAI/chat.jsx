@@ -10,7 +10,7 @@ import { tomarDatosPerfiles } from '../../exports/datosInicialesUsuarios.js';
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 import axios from "axios";
 import ReactMarkDown from 'react-markdown';
-import BotonAudio from "../buttons/BotonAudio.jsx";
+import BotonAudio from "../buttons/botonAudio.jsx";
 import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
@@ -313,7 +313,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
             fontFamily: "'Lora', serif",
             color: "#000000",
             mb: 2,
-
             textAlign: "center"
           }}>
             {saludo}, {profile?.username}
@@ -450,7 +449,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                 flexDirection: "column",
                 alignItems: "center",
                 width: "100%",
-                gap: 5,
+                gap: 4,
                 p: { xs: 2, sm: 2, md: 3, lg: 3, xl: 3 },
                 scrollbarWidth: 'thin'
               }}
@@ -633,7 +632,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                       });
                     }}
                     sx={{
-                      backgroundColor: ttsEnabled ? "#cfcdc7" : "transparent",
+                      backgroundColor: ttsEnabled ? "#bbbab5" : "transparent",
                       color: ttsEnabled ? "#000000" : "#000000",
                       "&:hover": { backgroundColor: "#dad7d7", color: "#000000" },
                       "&:disabled": { opacity: 0.5, cursor: "not-allowed" }

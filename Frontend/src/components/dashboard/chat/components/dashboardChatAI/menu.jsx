@@ -84,7 +84,7 @@ function IconMenu({ setPaginaActiva }) {
                 sx={{ color: "#000000", justifyContent: "flex-start", p: 2 }}
             >
                 <Avatar sx={{ mr: 2, color: "#ffffff" }}>{stringAvatar(profile?.username)}</Avatar>
-                {profile?.username || "Usuario"}
+                {profile?.username.slice(0, 15) || "Usuario"}
                 <ExpandLessRoundedIcon fontSize="small" sx={{ ml: "auto" }} />
             </Button>
             <Menu

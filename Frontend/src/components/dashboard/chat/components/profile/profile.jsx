@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../../auth/useAuth.jsx";
-import { tomarDatosPerfiles } from "../../exports/datosInicialesUsuarios";
+import { tomarDatosPerfiles } from "../../exports/datosInicialesUsuarios.js";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import ProfileElder from "./tiposProfile/ProfileElder";
-import ProfileFamiliar from "./tiposProfile/ProfileFamiliar";
-import ProfileCuidador from "./tiposProfile/ProfileCuidador";
+import ProfileElder from "./tiposProfile/profileElder.jsx";
+import ProfileFamiliar from "./tiposProfile/profileFamiliar.jsx";
+import ProfileCuidador from "./tiposProfile/profileCuidador.jsx";
 import { Typography, Box, CircularProgress } from "@mui/material";
 
 const Profile = () => {
