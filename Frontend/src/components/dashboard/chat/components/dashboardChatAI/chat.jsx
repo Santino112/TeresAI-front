@@ -68,13 +68,14 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   const [respuesta, setRespuesta] = useState("");
   const [ttsEnabled, setTtsEnabled] = useState(false);
   const [profile, setProfile] = useState(null);
-  const [pensandoIA, setPensandoIA] = useState(null);
+  const [pensandoIA, setPensandoIA] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const esPantallaInicial = mensajes.length === 0 && !loadingMessages && !activeConversationId;
   const { user } = useAuth();
   const activeConversationIdRef = useRef(activeConversationId);
   const scrollRef = useRef(null);
   const abortRef = useRef(null);
+  const requestIdRef = useRef(0);
 
   let saludo = "";
   const time = new Date().getHours();
@@ -91,7 +92,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     "¿Querés charlar un rato?",
     "¿Necesitás algo?",
   ];
-  const [fraseActual, setFraseActual] = useState(frases[0]);
+  const [fraseActual] = useState(frases[0]);
 
   const frasesParaIA = [
     "Pensando...",
@@ -131,7 +132,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   useEffect(() => {
     let intervalo;
 
-    if (pensandoIA === activeConversationId) {
+    if (pensandoIA) {
       intervalo = setInterval(() => {
         setFraseParaChat((prevFrase) => {
           const indiceActual = frasesParaIA.indexOf(prevFrase);
@@ -192,27 +193,48 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
 
   const enviarTexto = async (texto) => {
     if (!texto.trim()) return;
+    const requestId = ++requestIdRef.current;
     let location = null;
 
     const conversationIdAlEnviar = activeConversationId;
-    setPensandoIA(conversationIdAlEnviar);
+    setPensandoIA(true);
 
     if (abortRef.current) abortRef.current.abort();
     abortRef.current = new AbortController();
 
     setMensajes(prev => [...prev, { id: crypto.randomUUID(), role: 'user', content: texto }]);
-    setPensandoIA(conversationIdAlEnviar);
+
+    // Crear ID para el mensaje del asistente
+    const assistantMessageId = crypto.randomUUID();
 
     try {
       location = await getCurrentLocation();
       if (location) {
         console.log("Ubicacion obtenida:", location);
       }
-      const res = await enviarPrompt(texto, conversationIdAlEnviar, location, abortRef.current.signal);
+
+      // Agregar mensaje del asistente vacío
+      setMensajes(prev => [...prev, { id: assistantMessageId, role: "assistant", content: '' }]);
+
+      const res = await enviarPrompt(
+        texto, 
+        conversationIdAlEnviar, 
+        location, 
+        abortRef.current.signal,
+        (chunk, fullText) => {
+          if (activeConversationIdRef.current === conversationIdAlEnviar) {
+            setMensajes(prev => 
+              prev.map(msg => 
+                msg.id === assistantMessageId 
+                  ? { ...msg, content: fullText }
+                  : msg
+              )
+            );
+          }
+        }
+      );
 
       if (activeConversationIdRef.current === conversationIdAlEnviar) {
-        setPensandoIA(null);
-        setMensajes(prev => [...prev, { id: crypto.randomUUID(), role: "assistant", content: res.text }]);
         setRespuesta(res);
       }
 
@@ -223,9 +245,14 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
         }
       }
     } catch (error) {
-      if (error.name === "AbortError" || error.name === "CanceledError" || axios.isCancel(error)) return;
+      if (error.name === "AbortError" || error.name === "CanceledError" || axios.isCancel(error)) {
+        return;
+      }
       console.error("ERROR FATAL EN enviarTexto:", error);
-      setPensandoIA(false);
+    } finally {
+      if (requestIdRef.current === requestId) {
+        setPensandoIA(false);
+      }
     }
   };
 
@@ -241,11 +268,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   };
 
   const hayTexto = prompt.trim().length > 0;
-  const botonActivo = hayTexto ? 'enviar' : 'audio'
-
-  const botones = [
-    { tipo: botonActivo }
-  ];
 
   return (
     <Box
@@ -329,12 +351,15 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                 placeholder={fraseActual}
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
+                disabled={pensandoIA}
                 fullWidth
                 multiline
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
-                    mandarPrompt();
+                    if (!pensandoIA) {
+                      mandarPrompt();
+                    }
                   }
                 }}
                 maxRows={6}
@@ -367,10 +392,12 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                         return nuevoEstado;
                       });
                     }}
+                    disabled={pensandoIA}
                     sx={{
                       backgroundColor: ttsEnabled ? "#c0beb9" : "transparent",
                       color: ttsEnabled ? "#000000" : "#000000",
-                      "&:hover": { backgroundColor: "#c0beb9", color: "#000000" },
+                      "&:hover": { backgroundColor: "#c0beb9", color: "#ffffff" },
+                      "&:disabled": { opacity: 0.5, cursor: "not-allowed" }
                     }}
                   >
                     {ttsEnabled ? <VolumeUpRoundedIcon fontSize="medium" /> : <VolumeOffRoundedIcon fontSize="medium" />}
@@ -382,14 +409,19 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                     onTranscription={recibirTextoDeAudio}
                     onStart={stopWake}
                     onStop={startWake}
-                    sx={{ display: hayTexto ? "none" : "inline-flex" }}
+                    sx={{ display: hayTexto || pensandoIA ? "none" : "inline-flex" }}
                   />
                   {hayTexto && (
-                    <IconButton type='submit' sx={{
-                      backgroundColor: "transparent",
-                      color: "#000000",
-                      "&:hover": { backgroundColor: "#7d745c", color: "#ffffff" }
-                    }}>
+                    <IconButton 
+                      type='submit' 
+                      disabled={pensandoIA}
+                      sx={{
+                        backgroundColor: "transparent",
+                        color: "#000000",
+                        "&:hover": { backgroundColor: "#7d745c", color: "#ffffff" },
+                        "&:disabled": { opacity: 0.5, cursor: "not-allowed" }
+                      }}
+                    >
                       <ArrowUpwardRoundedIcon fontSize="medium" />
                     </IconButton>
                   )}
@@ -507,7 +539,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   </Box>
                 </Box>
               ))}
-              {pensandoIA === activeConversationId && (
+              {pensandoIA && (
                 <Box sx={{ display: "flex", justifyContent: "flex-start", width: "100%", maxWidth: "800px", pl: 2 }}>
                   <Box sx={{
                     maxWidth: "800px",
@@ -558,6 +590,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 multiline
+                disabled={pensandoIA}
                 fullWidth
                 maxRows={6}
                 sx={{
@@ -574,7 +607,9 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
-                    mandarPrompt();
+                    if (!pensandoIA) {
+                      mandarPrompt();
+                    }
                   }
                 }}
               />
@@ -588,6 +623,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
               }}>
                 <Box>
                   <IconButton
+                    disabled={pensandoIA}
                     onClick={() => {
                       setTtsEnabled((prev) => {
                         const nuevoEstado = !prev;
@@ -598,7 +634,8 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                     sx={{
                       backgroundColor: ttsEnabled ? "#bbbab5" : "transparent",
                       color: ttsEnabled ? "#000000" : "#000000",
-                      "&:hover": { backgroundColor: "#dad7d7", color: "#000000" }
+                      "&:hover": { backgroundColor: "#dad7d7", color: "#000000" },
+                      "&:disabled": { opacity: 0.5, cursor: "not-allowed" }
                     }}
                   >
                     {ttsEnabled ? <VolumeUpRoundedIcon fontSize="medium" /> : <VolumeOffRoundedIcon fontSize="medium" />}
@@ -610,13 +647,14 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                     onTranscription={recibirTextoDeAudio}
                     onStart={stopWake}
                     onStop={startWake}
-                    sx={{ display: hayTexto ? "none" : "inline-flex" }}
+                    sx={{ display: hayTexto || pensandoIA ? "none" : "inline-flex" }}
                   />
                   {hayTexto && (
-                    <IconButton type='submit' sx={{
+                    <IconButton type='submit' disabled={pensandoIA} sx={{
                       backgroundColor: ttsEnabled ? "#cfcdc7" : "transparent",
                       color: ttsEnabled ? "#000000" : "#000000",
                       "&:hover": { backgroundColor: "#7d745c", color: "#ffffff" },
+                      "&:disabled": { opacity: 0.5, cursor: "not-allowed" },
                       mr: 1,
                     }}>
                       <ArrowUpwardRoundedIcon fontSize="medium" />

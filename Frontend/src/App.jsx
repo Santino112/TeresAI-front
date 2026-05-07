@@ -10,6 +10,7 @@ import Register from './components/auth/Register.jsx';
 import ChatAI from './components/dashboard/chat/paginaChatAI.jsx';
 import PanelFamiliar from './components/dashboard/chat/paginaFamiliar.jsx';
 import PanelCuidador from './components/dashboard/chat/paginaCuidador.jsx';
+import EmergencyFab from './components/common/EmergencyFab.jsx';
 import './App.css'
 
 const PrivateRoute = ({ children }) => {
@@ -32,6 +33,7 @@ function App() {
     <AuthProvider>
       <ThemeProvider theme={Theme}>
         <CssBaseline />
+        <EmergencyFab />
         <Routes>
             <Route path='/' element={
               <PublicRoute>

@@ -14,11 +14,13 @@ import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import InsertEmoticonRoundedIcon from '@mui/icons-material/InsertEmoticonRounded';
+import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
 
 const ProfileFamiliar = ({ profile, setProfile }) => {
     const [usernameLocal, setUsernameLocal] = useState(profile?.username || "");
     const [nombreFamiliar, setNombreFamiliar] = useState("");
     const [tipoFamiliar, setTipoFamiliar] = useState("");
+    const [telefonoFamiliar, setTelefonoFamiliar] = useState("");
     //Toma datos
     const [profileFamiliar, setProfileFamiliar] = useState(null);
     const [errorAlert, setErrorAlert] = useState(false);
@@ -101,9 +103,10 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
         localStorage.setItem(`draft_familiar_${user?.id}`, JSON.stringify({
             username: usernameLocal,
             nombreFamiliar,
-            tipoFamiliar
+            tipoFamiliar,
+            telefonoFamiliar
         }));
-    }, [usernameLocal, nombreFamiliar, tipoFamiliar, dataLoaded]);
+    }, [usernameLocal, nombreFamiliar, tipoFamiliar, telefonoFamiliar, dataLoaded]);
 
     useEffect(() => {
         if (!profileFamiliar || !profile || originalUsername !== null) return;
@@ -115,11 +118,13 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
             setProfile({ ...profile, username: parsed.username });
             setNombreFamiliar(parsed.nombreFamiliar || "");
             setTipoFamiliar(parsed.tipoFamiliar || "seleccione");
+            setTelefonoFamiliar(parsed.telefonoFamiliar || "");
             setOriginalUsername(profile?.username);
             setDataLoaded(true);
         } else {
             setNombreFamiliar(profileFamiliar.nombreElder || "");
             setTipoFamiliar(profileFamiliar.relacion || "seleccione");
+            setTelefonoFamiliar(profileFamiliar.telefonoFamiliar || "");
         }
         setOriginalUsername(profile?.username);
         setDataLoaded(true);
@@ -130,10 +135,11 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
 
         const changed = usernameLocal !== originalUsername ||
             nombreFamiliar !== originalData.nombreElder ||
-            tipoFamiliar !== originalData.relacion;
+            tipoFamiliar !== originalData.relacion ||
+            telefonoFamiliar !== (originalData.telefonoFamiliar || "");
 
         setHasChanges(changed);
-    }, [usernameLocal, nombreFamiliar, tipoFamiliar, originalData, dataLoaded]);
+    }, [usernameLocal, nombreFamiliar, tipoFamiliar, telefonoFamiliar, originalData, dataLoaded]);
 
     //Actualizar email
     const handleUpdateEmail = async (e) => {
@@ -244,6 +250,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
             const updateFamiliar = await actualizarDatosFamiliares(user.id, {
                 relacion: tipoFamiliar,
                 nombreElder: nombreFamiliar,
+                telefonoFamiliar: telefonoFamiliar,
             });
             if (!updateFamiliar.success) {
                 setAlertMessage(traducirError(updateFamiliar.error));
@@ -260,7 +267,8 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                 setOriginalData({
                     ...originalData,
                     nombreElder: nombreFamiliar,
-                    relacion: tipoFamiliar
+                    relacion: tipoFamiliar,
+                    telefonoFamiliar: telefonoFamiliar
                 })
 
                 setAlertMessage("El perfil se actualizó correctamente.");

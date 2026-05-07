@@ -90,7 +90,7 @@ const Games = () => {
                         }
                     }
                 }}>
-                    <Grid item size={{
+                    <Grid size={{
                         xs: 12,
                         sm: 12,
                         md: 12,
@@ -101,7 +101,7 @@ const Games = () => {
                             <Sudoku />
                         </Box>
                     </Grid>
-                    <Grid item size={{
+                    <Grid size={{
                         xs: 12,
                         sm: 12,
                         md: 12,

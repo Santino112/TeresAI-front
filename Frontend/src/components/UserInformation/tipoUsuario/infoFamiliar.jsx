@@ -1,21 +1,21 @@
-import { Typography, Button, TextField, Box, Select, MenuItem, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel } from "@mui/material";
+import { Typography, TextField, Box, Select, MenuItem, FormHelperText } from "@mui/material";
 
-const InfoFamiliar = (
-    {
-        nombreFamiliar,
-        setNombreFamiliar,
-        emailFamiliar,
-        setEmailFamiliar,
-        tipoFamiliar,
-        setTipoFamiliar,
-        errorTextFields
-    }
-) => {
+const InfoFamiliar = ({
+    nombreFamiliar,
+    setNombreFamiliar,
+    emailFamiliar,
+    setEmailFamiliar,
+    numeroTelefono,
+    setNumeroTelefono,
+    tipoFamiliar,
+    setTipoFamiliar,
+    errorTextFields
+}) => {
 
     return (
         <>
             <Box sx={{ my: 0, width: "100%" }}>
-                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cúal es el nombre de esa persona?</Typography>
+                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>Cual es el nombre de esa persona?</Typography>
                 <TextField
                     error={errorTextFields}
                     placeholder="Nombre"
@@ -45,8 +45,8 @@ const InfoFamiliar = (
                     }}
                 ></TextField>
             </Box>
-             <Box sx={{ my: 0, width: "100%" }}>
-                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cúal es el email de esa persona?</Typography>
+            <Box sx={{ my: 0, width: "100%" }}>
+                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>Cual es el email de esa persona?</Typography>
                 <TextField
                     error={errorTextFields}
                     value={emailFamiliar}
@@ -75,10 +75,42 @@ const InfoFamiliar = (
                         }
                     }}
                 ></TextField>
-                <FormHelperText>Usa el email con el que él se registró. De esta manera podremos conectarlos.</FormHelperText>
+                <FormHelperText>Usa el email con el que el se registro. De esta manera podremos conectarlos.</FormHelperText>
             </Box>
             <Box sx={{ my: 0, width: "100%" }}>
-                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cual es tu relación con esa persona?</Typography>
+                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>Cual es tu numero de telefono?</Typography>
+                <TextField
+                    error={errorTextFields}
+                    value={numeroTelefono}
+                    onChange={(e) => setNumeroTelefono(e.target.value)}
+                    placeholder="Ej: +5491122334455"
+                    variant="outlined"
+                    fullWidth
+                    margin="dense"
+                    sx={{
+                        backgroundColor: "#303030",
+                        borderRadius: 3,
+                        boxShadow: 3,
+                        input: { color: "white" },
+                        "& .MuiOutlinedInput-root": {
+                            borderRadius: 3,
+                            pr: 1,
+                        },
+                        "& fieldset": {
+                            borderColor: "transparent"
+                        },
+                        "&:hover fieldset": {
+                            borderColor: "transparent"
+                        },
+                        "&.Mui-focused fieldset": {
+                            borderColor: "gray"
+                        }
+                    }}
+                ></TextField>
+                <FormHelperText>Este numero se usara para contactarte en emergencias.</FormHelperText>
+            </Box>
+            <Box sx={{ my: 0, width: "100%" }}>
+                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>Cual es tu relacion con esa persona?</Typography>
                 <Select
                     error={errorTextFields}
                     labelId="demo-simple-select-helper-label"

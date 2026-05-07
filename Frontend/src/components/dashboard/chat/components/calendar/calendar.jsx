@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Typography, Button, TextField, Box, Stack, Paper, Divider, Grid, Modal } from "@mui/material";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 import BotonCalendar from '../buttons/botonCalendar.jsx';
@@ -7,7 +7,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import api from "../../../../../api/axios.js";
-import esLocale from '@fullcalendar/core/locales/es';
+import esLocale from "@fullcalendar/core/locales/es";
 import { supabase } from "../../../../../supabaseClient.js";
 
 const styleModal = {
@@ -28,13 +28,15 @@ const styleModal = {
 };
 
 const toLocalInputDateTime = (date = new Date()) => {
-    const pad = (n) => String(n).padStart(2, "0");
-    const year = date.getFullYear();
-    const month = pad(date.getMonth() + 1);
-    const day = pad(date.getDate());
-    const hours = pad(date.getHours());
-    const minutes = pad(date.getMinutes());
-    return ` ${year} -${month} -${day}T${hours}:${minutes}`;
+  const currentDate = new Date(date);
+
+  if (Number.isNaN(currentDate.getTime())) {
+    return "";
+  }
+
+  const pad = (value) => String(value).padStart(2, "0");
+
+  return `${currentDate.getFullYear()}-${pad(currentDate.getMonth() + 1)}-${pad(currentDate.getDate())}T${pad(currentDate.getHours())}:${pad(currentDate.getMinutes())}`;
 };
 
 const Calendar = () => {
@@ -51,20 +53,106 @@ const Calendar = () => {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [openModal, setOpenModal] = useState(false);
 
-    const fetchEvents = async () => {
-        const { data } = await supabase.auth.getSession();
-        const session = data.session;
+  const fetchEvents = useCallback(async () => {
+    try {
+      const { data } = await supabase.auth.getSession();
+      const session = data.session;
 
-        if (!session) return;
+      if (!session) return;
 
-        const res = await api.get('/calendar/events', {
-            headers: {
-                Authorization: `Bearer ${session.access_token}`,
-            },
-        });
+      const res = await api.get("/calendar/events", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
 
-        setEvents(res.data);
-    };
+      setEvents(Array.isArray(res.data) ? res.data : []);
+    } catch (error) {
+      setErrorMessage(error?.response?.data?.error || "No se pudieron cargar los eventos del calendario.");
+    }
+  }, []);
+
+  const handleOpenCreate = () => {
+    setErrorMessage("");
+    setFormData({
+      title: "",
+      description: "",
+      start: toLocalInputDateTime(),
+      end: toLocalInputDateTime(new Date(Date.now() + 60 * 60 * 1000)),
+    });
+    setOpenCreateModal(true);
+  };
+
+  const handleCloseCreate = () => {
+    if (submitting) return;
+    setOpenCreateModal(false);
+    setErrorMessage("");
+  };
+
+  const handleFormChange = (field) => (event) => {
+    const { value } = event.target;
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleCreateEvent = async () => {
+    if (submitting) return;
+
+    const title = formData.title.trim();
+    const description = formData.description.trim();
+    const startDate = new Date(formData.start);
+    const endDate = new Date(formData.end);
+
+    if (!title) {
+      setErrorMessage("El titulo del evento es obligatorio.");
+      return;
+    }
+
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+      setErrorMessage("Las fechas ingresadas no son validas.");
+      return;
+    }
+
+    if (endDate <= startDate) {
+      setErrorMessage("La fecha de fin debe ser posterior a la fecha de inicio.");
+      return;
+    }
+
+    setSubmitting(true);
+    setErrorMessage("");
+
+    try {
+      const { data } = await supabase.auth.getSession();
+      const session = data.session;
+
+      if (!session) {
+        setErrorMessage("Usuario no autenticado.");
+        return;
+      }
+
+      await api.post(
+        "/calendar/events",
+        {
+          title,
+          description,
+          start: startDate.toISOString(),
+          end: endDate.toISOString(),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+
+      setOpenCreateModal(false);
+      await fetchEvents();
+      window.dispatchEvent(new Event("calendarUpdated"));
+    } catch (error) {
+      setErrorMessage(error?.response?.data?.error || "No se pudo crear el evento.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
     const handleEventClick = (info) => {
         setSelectedEvent({
@@ -76,17 +164,18 @@ const Calendar = () => {
         setOpenModal(true);
     };
 
-    useEffect(() => {
-        fetchEvents();
-        const handleCalendarUpdated = () => {
-            console.log("Actualizando calendario...")
-            fetchEvents();
-        };
-        window.addEventListener("calendarUpdated", handleCalendarUpdated);
-        return () => {
-            window.removeEventListener("calendarUpdated", handleCalendarUpdated);
-        };
-    }, []);
+  useEffect(() => {
+    fetchEvents();
+
+    const handleCalendarUpdated = () => {
+      fetchEvents();
+    };
+
+    window.addEventListener("calendarUpdated", handleCalendarUpdated);
+    return () => {
+      window.removeEventListener("calendarUpdated", handleCalendarUpdated);
+    };
+  }, [fetchEvents]);
 
     return (
         <Box
