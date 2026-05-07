@@ -4,9 +4,9 @@ import { Typography, Button, TextField, Box, Select, MenuItem, FormHelperText, D
 import { useAuth } from "../auth/useAuth.jsx";
 import { supabase } from "../../supabaseClient.js";
 import { saveProfile, elderPeople, familyPeople, caregivePeople, linkearUsuarios } from "../dashboard/chat/exports/datosInicialesUsuarios.js";
-import InfoElder from "./tipoUsuario/InfoElder.jsx";
-import InfoFamiliar from "./tipoUsuario/InfoFamiliar.jsx";
-import InfoCuidador from "./tipoUsuario/InfoCuidador.jsx";
+import InfoElder from "./tipoUsuario/infoElder.jsx";
+import InfoFamiliar from "./tipoUsuario/infoFamiliar.jsx";
+import InfoCuidador from "./tipoUsuario/infoCuidador.jsx";
 import fondoInfoUser from "../../assets/images/fondoInfoUser.png";
 
 const InformacionUsuarios = () => {

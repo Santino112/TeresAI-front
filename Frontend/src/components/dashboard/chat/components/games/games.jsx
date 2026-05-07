@@ -1,6 +1,5 @@
-import Sudoku from "./Sudoku.jsx";
-import Trivia from "./Trivia.jsx";
-import Crossword from "./Crossword.jsx";
+import Sudoku from "./sudoku.jsx";
+import Crossword from "./crossword.jsx";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 import { Typography, Box, Paper, Divider, Grid } from "@mui/material";
 import ExtensionRoundedIcon from '@mui/icons-material/ExtensionRounded';
