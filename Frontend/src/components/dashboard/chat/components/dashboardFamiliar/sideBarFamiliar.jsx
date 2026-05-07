@@ -104,7 +104,7 @@ function ResponsiveDrawer() {
     }
 
     fetchData();
-  }, [user, authLoading]);
+  }, [user, authLoading, navigate]);
 
   const handleMenuOpen = (e, convId) => {
     e.stopPropagation();
@@ -304,23 +304,41 @@ function ResponsiveDrawer() {
                     setPaginaActiva("chat");
                   }}
                   sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    gap: 1,
                     backgroundColor: isActive ? "#c1c1c1" : "transparent",
                     color: "#000000",
                     mb: 1,
                     borderRadius: 2,
                     textTransform: 'none',
                     fontWeight: isActive ? 600 : 400,
+                    overflow: "hidden",
+                    minWidth: 0,
                     "&:hover": { backgroundColor: "#c1c1c1" }
                   }}
                 >
-                  {conv.title}
+                  <Typography
+                    noWrap
+                    sx={{
+                      flexGrow: 1,
+                      minWidth: 0,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      textAlign: "left"
+                    }}
+                  >
+                    {conv.title}
+                  </Typography>
                   <IconButton
                     size="small"
                     onClick={(e) => {
                       handleMenuOpen(e, conv.id);
                       e.stopPropagation();
                     }}
-                    sx={{ ml: "auto", color: "#000000", "&:hover": { color: "#999688" } }}
+                    sx={{ flexShrink: 0, ml: "auto", color: "#000000", "&:hover": { color: "#999688" } }}
                   >
                     <MoreHorizRoundedIcon fontSize="small" sx={{ color: "#000000" }} />
                   </IconButton>

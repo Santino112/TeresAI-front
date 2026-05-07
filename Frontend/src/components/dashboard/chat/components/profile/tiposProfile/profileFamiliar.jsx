@@ -1,5 +1,5 @@
-import { useState, useEffect, useEffectEvent, useRef } from "react";
-import { Typography, Button, TextField, Box, Divider, Select, MenuItem, Alert, Grid, Paper, InputAdornment, IconButton } from "@mui/material";
+import { useState, useEffect } from "react";
+import { Typography, Button, TextField, Box, Divider, Select, MenuItem, Alert, Grid, Paper, InputAdornment, IconButton, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { tomarDatosFamiliares, actualizarDatosFamiliares, actualizarDatosPerfiles, updateEmail, updateContraseña, linkearUsuarios } from "../../../exports/datosInicialesUsuarios";
 import { useAuth } from "../../../../../auth/useAuth";
 import CircularProgress from '@mui/material/CircularProgress';
@@ -40,6 +40,9 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
     //Para agregar un nuevo elder
     const [emailElder, setEmailElder] = useState("");
     const [loadingNuevoElder, setLoadingNuevoElder] = useState(false);
+    const [openTelefonoModal, setOpenTelefonoModal] = useState(false);
+    const [telefonoNuevo, setTelefonoNuevo] = useState("");
+    const [loadingTelefono, setLoadingTelefono] = useState(false);
     //
     const [showPassword, setShowPassword] = useState(false);
     const { user } = useAuth();
@@ -112,13 +115,13 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
             setProfile({ ...profile, username: parsed.username });
             setNombreFamiliar(parsed.nombreFamiliar || "");
             setTipoFamiliar(parsed.tipoFamiliar || "seleccione");
-            setTelefonoFamiliar(parsed.telefonoFamiliar || "");
+            setTelefonoFamiliar(parsed.numeroTelefono || parsed.telefonoFamiliar || "");
             setOriginalUsername(profile?.username);
             setDataLoaded(true);
         } else {
             setNombreFamiliar(profileFamiliar.nombreElder || "");
             setTipoFamiliar(profileFamiliar.relacion || "seleccione");
-            setTelefonoFamiliar(profileFamiliar.telefonoFamiliar || "");
+            setTelefonoFamiliar(profileFamiliar.numeroTelefono || profileFamiliar.telefonoFamiliar || "");
         }
         setOriginalUsername(profile?.username);
         setDataLoaded(true);
@@ -130,7 +133,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
         const changed = usernameLocal !== originalUsername ||
             nombreFamiliar !== originalData.nombreElder ||
             tipoFamiliar !== originalData.relacion ||
-            telefonoFamiliar !== (originalData.telefonoFamiliar || "");
+            telefonoFamiliar !== (originalData.numeroTelefono || originalData.telefonoFamiliar || "");
 
         setHasChanges(changed);
     }, [usernameLocal, nombreFamiliar, tipoFamiliar, telefonoFamiliar, originalData, dataLoaded]);
@@ -244,7 +247,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
             const updateFamiliar = await actualizarDatosFamiliares(user.id, {
                 relacion: tipoFamiliar,
                 nombreElder: nombreFamiliar,
-                telefonoFamiliar: telefonoFamiliar,
+                numeroTelefono: telefonoFamiliar,
             });
             if (!updateFamiliar.success) {
                 setAlertMessage(traducirError(updateFamiliar.error));
@@ -262,7 +265,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                     ...originalData,
                     nombreElder: nombreFamiliar,
                     relacion: tipoFamiliar,
-                    telefonoFamiliar: telefonoFamiliar
+                    numeroTelefono: telefonoFamiliar
                 })
 
                 setAlertMessage("El perfil se actualizó correctamente.");
@@ -275,6 +278,57 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                 return;
             }
         }
+    };
+
+    const handleOpenTelefonoModal = () => {
+        setTelefonoNuevo(telefonoFamiliar || "");
+        setOpenTelefonoModal(true);
+    };
+
+    const handleCloseTelefonoModal = () => {
+        if (loadingTelefono) return;
+        setOpenTelefonoModal(false);
+    };
+
+    const handleUpdateTelefono = async () => {
+        const numeroTelefono = telefonoNuevo.trim();
+
+        if (!numeroTelefono) {
+            setAlertMessage("Ingresá un número de teléfono.");
+            setErrorAlert(true);
+            setSeverity("error");
+            setTimeout(() => setErrorAlert(false), 5000);
+            return;
+        }
+
+        setLoadingTelefono(true);
+
+        const updateFamiliar = await actualizarDatosFamiliares(user.id, {
+            relacion: tipoFamiliar,
+            nombreElder: nombreFamiliar,
+            numeroTelefono,
+        });
+
+        if (!updateFamiliar.success) {
+            setAlertMessage(traducirError(updateFamiliar.error));
+            setErrorAlert(true);
+            setSeverity("error");
+            setTimeout(() => setErrorAlert(false), 5000);
+            setLoadingTelefono(false);
+            return;
+        }
+
+        setTelefonoFamiliar(numeroTelefono);
+        setOriginalData((prev) => ({
+            ...(prev || {}),
+            numeroTelefono,
+        }));
+        setAlertMessage("El número de teléfono se actualizó correctamente.");
+        setErrorAlert(true);
+        setSeverity("success");
+        setOpenTelefonoModal(false);
+        setTimeout(() => setErrorAlert(false), 5000);
+        setLoadingTelefono(false);
     };
 
     //Agregar un nuevo anciano a controlar
@@ -354,7 +408,6 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                     p: { xs: 2, sm: 2, md: 2 },
                     boxShadow: 0,
                     borderRadius: 3,
-                    boxShadow: 0,
                     background: "transparent",
                     flexGrow: 0,
                     animation: "slideDown 0.4s ease",
@@ -1010,10 +1063,52 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                             </Select>
                                         </Box>
                                     </Grid>
+                                    <Grid size={12}>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                flexDirection: { xs: "column", sm: "row" },
+                                                alignItems: { xs: "stretch", sm: "center" },
+                                                justifyContent: "space-between",
+                                                gap: 2,
+                                                mt: 1,
+                                                p: 2,
+                                                borderRadius: 3,
+                                                backgroundColor: "#d7d6d6",
+                                                boxShadow: 3,
+                                            }}
+                                        >
+                                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                                                <Typography variant="body1" sx={{ color: "#000000", fontWeight: 600 }}>
+                                                    Teléfono del familiar
+                                                </Typography>
+                                                <Typography variant="body2" sx={{ color: "#000000", mt: 0.5 }}>
+                                                    {telefonoFamiliar || "No hay un número registrado"}
+                                                </Typography>
+                                            </Box>
+                                            <Button
+                                                variant="outlined"
+                                                startIcon={<PhoneRoundedIcon />}
+                                                onClick={handleOpenTelefonoModal}
+                                                sx={{
+                                                    borderRadius: 2,
+                                                    borderColor: "#7d745c",
+                                                    color: "#7d745c",
+                                                    whiteSpace: "nowrap",
+                                                    "&:hover": {
+                                                        borderColor: "#67604d",
+                                                        backgroundColor: "rgba(125, 116, 92, 0.08)",
+                                                    }
+                                                }}
+                                            >
+                                                Cambiar teléfono
+                                            </Button>
+                                        </Box>
+                                    </Grid>
                                 </Grid>
-                                <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "30%" }, mt: 2 }}>
-                                    <Button variant="contained" type="submit" fullWidth disabled={loading || !hasChanges}
-                                        sx={{
+                <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "30%" }, mt: 2 }}>
+                    <Button variant="contained" type="submit" fullWidth disabled={loading || !hasChanges}
+                        sx={{
                                             boxShadow: 3,
                                             borderRadius: 2,
                                             my: { xs: 1, sm: 1, md: 1, lg: 0 },
@@ -1043,6 +1138,61 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                         </Grid>
                     </Grid >
                 </Paper >
+                <Dialog open={openTelefonoModal} onClose={handleCloseTelefonoModal} fullWidth maxWidth="sm">
+                    <DialogTitle sx={{ bgcolor: "#d7d6d6", color: "#000000", fontFamily: "'Lora', serif", fontWeight: 700 }}>
+                        Cambiar teléfono
+                    </DialogTitle>
+                    <DialogContent sx={{ bgcolor: "#d7d6d6" }}>
+                        <Typography variant="body2" sx={{ color: "#000000", mt: 1, mb: 2, lineHeight: 1.8 }}>
+                            Escribí el nuevo número de teléfono del familiar. Se va a usar para emergencias y contacto.
+                        </Typography>
+                        <TextField
+                            value={telefonoNuevo}
+                            onChange={(e) => setTelefonoNuevo(e.target.value)}
+                            fullWidth
+                            margin="dense"
+                            placeholder="Ej: 099123456"
+                            //font color to black
+                            sx={{
+                                backgroundColor: "#ffffff",
+                                borderRadius: 3,
+                                boxShadow: 3,
+                                input: { color: "#000000" },
+                            }}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <PhoneRoundedIcon sx={{ color: "#000000" }} />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    </DialogContent>
+                    <DialogActions sx={{ bgcolor: "#d7d6d6", px: 3, pb: 3 }}>
+                        <Button onClick={handleCloseTelefonoModal} disabled={loadingTelefono}
+                            sx={{
+                                backgroundColor: "#d7d6d6",
+                                color: "#000000",
+                                "&:hover": { backgroundColor: "#c1c1c1" },
+                                borderRadius: 3,
+                            }}
+                        >
+                            Cancelar
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={handleUpdateTelefono}
+                            disabled={loadingTelefono}
+                            sx={{
+                                backgroundColor: "#7d745c",
+                                "&:hover": { backgroundColor: "#67604d" },
+                                color: "#ffffff",
+                            }}
+                        >
+                            {loadingTelefono ? "Guardando..." : "Guardar teléfono"}
+                        </Button>
+                    </DialogActions>
+                </Dialog>
                 <Paper
                     component="form"
                     onSubmit={handleAgregarElder}

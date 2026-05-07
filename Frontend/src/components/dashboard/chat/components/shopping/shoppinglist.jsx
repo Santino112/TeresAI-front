@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import api from "../../../../../api/axios";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import { Box, Typography, TextField, Paper, List, ListItem, ListItemText, Checkbox, Button, Divider, useTheme, Dialog, DialogTitle, DialogContent, DialogActions, Stack, Alert } from "@mui/material";
+import { Box, Typography, TextField, Paper, List, ListItem, ListItemText, Checkbox, Button, Divider, useTheme, Dialog, DialogTitle, DialogContent, DialogActions, Stack, Alert, CircularProgress } from "@mui/material";
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
 
 export default function ShoppingList() {
   const theme = useTheme();
   const [items, setItems] = useState([]);
+  const [loadingItems, setLoadingItems] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
   const [createError, setCreateError] = useState("");
@@ -16,29 +20,51 @@ export default function ShoppingList() {
   });
 
   const fetchItems = async () => {
+    setLoadingItems(true);
     try {
       const res = await api.get("/shopping-items");
       setItems(res.data.items || []);
     } catch (err) {
       console.error("Error cargando lista de compras", err);
+    } finally {
+      setLoadingItems(false);
     }
   };
 
   const toggleItem = async (itemId) => {
     try {
+      setActionLoading(true);
       await api.post("/shopping-items/toggle", { itemId });
-      fetchItems();
+      await fetchItems();
     } catch (err) {
       console.error("Error actualizando item", err);
+    } finally {
+      setActionLoading(false);
     }
   };
 
   const clearCompleted = async () => {
     try {
+      setActionLoading(true);
       await api.post("/shopping-items/clear-completed");
-      fetchItems();
+      await fetchItems();
     } catch (err) {
       console.error("Error limpiando completados", err);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const markAllCompleted = async () => {
+    try {
+      setActionLoading(true);
+      await api.post("/shopping-items/mark-all-completed");
+      await fetchItems();
+      window.dispatchEvent(new Event("shoppingUpdated"));
+    } catch (err) {
+      console.error("Error marcando todo como completado", err);
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -167,6 +193,50 @@ export default function ShoppingList() {
           Tu lista personal para que nunca olvides lo que necesitas. Planifica tus compras del día a día de forma sencilla.
         </Typography>
         <Divider sx={{ borderColor: "rgba(0,0,0,0.1)" }} />
+                <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={1}
+          justifyContent="space-between"
+          alignItems={{ xs: "stretch", sm: "center" }}
+          sx={{ mt: 2, mb: 1 }}
+        >
+          <Button
+            variant="contained"
+            onClick={handleOpenCreate}
+            startIcon={<AddRoundedIcon />}
+            sx={{
+              borderRadius: 2,
+              backgroundColor: "#7d745c",
+              color: "#ffffff",
+              fontFamily: "'Lora', serif",
+              fontWeight: 700,
+              "&:hover": { backgroundColor: "#6a5f49" }
+            }}
+          >
+            Agregar producto
+          </Button>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+            <Button
+              variant="outlined"
+              onClick={markAllCompleted}
+              disabled={actionLoading || pendingItems.length === 0}
+              startIcon={<DoneAllRoundedIcon />}
+              sx={{
+                borderRadius: 2,
+                borderColor: "#7d745c",
+                color: "#7d745c",
+                fontFamily: "'Lora', serif",
+                fontWeight: 700,
+                "&:hover": {
+                  borderColor: "#6a5f49",
+                  backgroundColor: "rgba(125, 116, 92, 0.08)"
+                }
+              }}
+            >
+              Marcar todo completado
+            </Button>
+          </Stack>
+        </Stack>
         <Box
           sx={{
             my: 2,
@@ -242,12 +312,17 @@ export default function ShoppingList() {
             maxHeight: "400px",
             width: "100%",
           }}>
-            <List sx>
-              {pendingItems.map((item) => (
+            <List sx={{ py: 0 }}>
+              {loadingItems ? (
+                <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                  <CircularProgress sx={{ color: "#000000" }} />
+                </Box>
+              ) : pendingItems.map((item) => (
                 <ListItem key={item.id} divider sx={{ backgroundColor: "#c1c1c1", borderRadius: 3, color: "#000000" }}>
                   <Checkbox
                     checked={item.completed}
                     onChange={() => toggleItem(item.id)}
+                    disabled={actionLoading}
                     sx={{ color: "#000000" }}
                   />
                   <ListItemText
@@ -257,7 +332,7 @@ export default function ShoppingList() {
                 </ListItem>
               ))}
             </List>
-            {pendingItems.length === 0 && (
+            {!loadingItems && pendingItems.length === 0 && (
               <Typography variant="h7" sx={{
                 color: "#000000",
                 fontSize: {
@@ -354,6 +429,7 @@ export default function ShoppingList() {
                       <Checkbox
                         checked={item.completed}
                         onChange={() => toggleItem(item.id)}
+                        disabled={actionLoading}
                         sx={{
                           color: "#000000",
                           '&.Mui-checked': {
@@ -382,6 +458,7 @@ export default function ShoppingList() {
                   color="error"
                   sx={{ my: 2, borderRadius: 2, ml: "auto", display: "block", width: { xs: "100%", sm: "auto" }, boxShadow: 3 }}
                   onClick={clearCompleted}
+                  disabled={actionLoading}
                 >
                   Eliminar artículos
                 </Button>
@@ -391,8 +468,8 @@ export default function ShoppingList() {
         )}
 
         <Dialog open={createModalOpen} onClose={handleCloseCreate} fullWidth maxWidth="sm">
-          <DialogTitle sx={{ fontFamily: "'Lora', serif", fontWeight: 700 }}>Agregar producto nuevo</DialogTitle>
-          <DialogContent>
+          <DialogTitle sx={{ fontFamily: "'Lora', serif", fontWeight: 700, bgcolor: "#d7d6d6", color: "#000000" }}>Agregar producto nuevo</DialogTitle>
+          <DialogContent sx={{ bgcolor: "#d7d6d6" }}>
             <Stack spacing={2} sx={{ mt: 1 }}>
               {createError ? <Alert severity="error">{createError}</Alert> : null}
               <TextField
@@ -415,10 +492,10 @@ export default function ShoppingList() {
             </Stack>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseCreate} disabled={createLoading}>
+            <Button onClick={handleCloseCreate} disabled={createLoading || actionLoading}>
               Cancelar
             </Button>
-            <Button variant="contained" onClick={handleCreateItem} disabled={createLoading}>
+            <Button variant="contained" onClick={handleCreateItem} disabled={createLoading || actionLoading}>
               {createLoading ? "Agregando..." : "Agregar producto"}
             </Button>
           </DialogActions>

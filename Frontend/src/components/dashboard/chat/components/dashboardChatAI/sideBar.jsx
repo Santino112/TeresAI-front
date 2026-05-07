@@ -126,9 +126,8 @@ const steps = [
     }
 ];
 
-function ResponsiveDrawer(props) {
+function ResponsiveDrawer() {
     const navigate = useNavigate();
-    const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
     const [conversations, setConversations] = useState([]);
@@ -140,7 +139,6 @@ function ResponsiveDrawer(props) {
     const { user, loading: authLoading } = useAuth();
     //Modal
     const [open, setOpen] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
     const handleCloseModal = async () => {
 
         const { error } = await supabase
@@ -222,7 +220,7 @@ function ResponsiveDrawer(props) {
         };
 
         fetchData();
-    }, [user, authLoading]);
+    }, [user, authLoading, navigate]);
 
     useEffect(() => {
         const fetchUserStatus = async () => {
@@ -274,7 +272,6 @@ function ResponsiveDrawer(props) {
             if (activeConversationId === idABorrar) {
                 setActiveConversationId(null);
             }
-            setAnchorEl(null);
         }
     };
 
@@ -587,25 +584,43 @@ function ResponsiveDrawer(props) {
                                         setPaginaActiva("chat");
                                     }}
                                     sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "flex-start",
+                                        gap: 1,
                                         backgroundColor: isActive ? "#c1c1c1" : "transparent",
                                         color: "#000000",
                                         mb: 1,
                                         borderRadius: 2,
                                         textTransform: 'none',
                                         fontWeight: isActive ? 600 : 400,
+                                        overflow: "hidden",
+                                        minWidth: 0,
                                         "&:hover": {
                                             backgroundColor: "#c1c1c1"
                                         }
                                     }}
                                 >
-                                    {conv.title}
+                                    <Typography
+                                        noWrap
+                                        sx={{
+                                            flexGrow: 1,
+                                            minWidth: 0,
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap",
+                                            textAlign: "left"
+                                        }}
+                                    >
+                                        {conv.title}
+                                    </Typography>
                                     <IconButton
                                         size="small"
                                         onClick={(e) => {
                                             handleMenuOpen(e, conv.id);
                                             e.stopPropagation();
                                         }}
-                                        sx={{ ml: "auto", color: "#000000", "&:hover": { color: "#999688" } }}
+                                        sx={{ flexShrink: 0, ml: "auto", color: "#000000", "&:hover": { color: "#999688" } }}
                                     >
                                         <MoreHorizRoundedIcon fontSize="small" sx={{ color: "#000000" }} />
                                     </IconButton>

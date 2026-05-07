@@ -121,6 +121,21 @@ export default function News() {
         }}>
           Cinco titulares actuales con resumen y enlace directo para que te mantengas informado apenas entres.
         </Typography>
+        <Box sx={{ display: "flex", justifyContent: { xs: "center", md: "flex-start" }, mt: 1.5, mb: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={fetchNews}
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <CircularProgress size={20} sx={{ color: "#ffffff", mr: 2 }} />
+                Actualizando...
+              </>
+            ) : "Actualizar"}
+          </Button>
+        </Box>
         <Divider sx={{ borderColor: "rgba(0,0,0,0.1)" }} />
         {loading && (
           <Typography variant="body2" sx={{ color: "#000000" }}>
@@ -161,31 +176,6 @@ export default function News() {
               }
             }
           }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={fetchNews}
-              disabled={loading}
-              sx={{
-                boxShadow: 3,
-                color: "#ffffff",
-                backgroundColor: "#0978a0",
-                fontFamily: "'Lora', serif",
-                fontWeight: "bold",
-                "&:hover": {
-                  backgroundColor: "#066688",
-                }
-              }}
-            >
-              {loading ?
-                (
-                  <>
-                    <CircularProgress size={20} sx={{ color: "#ffffff", mr: 2 }} />
-                    Guardando...
-                  </>
-                )
-                : "Actualizar"}
-            </Button>
             {articles.map((article, index) => (
             <Grid size={{ xs: 12, sm: 6 }} key={`${article.url || index}-${index}`}>
                 <Card
