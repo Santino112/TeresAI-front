@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../../../../api/axios";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import { Box, Typography, Paper, List, ListItem, ListItemText, Checkbox, Button, Divider, useTheme } from "@mui/material";
+import { Box, Typography, Paper, List, ListItem, ListItemText, TextField, Checkbox, Button, Divider, useTheme, Dialog, DialogTitle, DialogContent, DialogActions, Stack } from "@mui/material";
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 
 export default function ShoppingList() {

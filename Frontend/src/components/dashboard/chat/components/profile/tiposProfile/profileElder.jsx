@@ -447,7 +447,7 @@ const ProfileElder = ({ profile, setProfile }) => {
                                     justifyContent: "flex-start",
                                     width: "100%",
                                     height: "100%",
-                                    p: { xs: 2, sm: 3, md: 4 },
+                                    p: { xs: 2, sm: 3, md: 3 },
                                     borderRadius: 4,
                                     boxShadow: 3,
                                     background: "transparent",
@@ -464,7 +464,9 @@ const ProfileElder = ({ profile, setProfile }) => {
                                     },
                                     textAlign: { xs: "center", sm: "center", md: "start" },
                                 }}>Actualizar datos de la cuenta</Typography>
+                                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 1, mb: 2 }} />
                                 <Typography variant="body2" sx={{
+                                    my: 1,
                                     color: "#000000",
                                     fontSize: {
                                         xs: "1.1rem",
@@ -477,7 +479,6 @@ const ProfileElder = ({ profile, setProfile }) => {
                                     lineHeight: 1.8,
                                 }}>Actualizar email con el que te registraste
                                 </Typography>
-                                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 1, mb: 2 }} />
                                 <Grid container spacing={2}>
                                     <Grid size={12}>
                                         <Paper
@@ -515,17 +516,14 @@ const ProfileElder = ({ profile, setProfile }) => {
                                                                 backgroundColor: "#d7d6d6",
                                                                 borderRadius: 3,
                                                                 boxShadow: 3,
-                                                                // Estilo para el texto que YA está escrito
                                                                 "& .MuiInputBase-input.Mui-disabled": {
                                                                     color: "#000000",
-                                                                    WebkitTextFillColor: "#000000", // Necesario para navegadores basados en Webkit
+                                                                    WebkitTextFillColor: "#000000",
                                                                 },
-                                                                // Estilo específico para el PLACEHOLDER
                                                                 "& .MuiInputBase-input::placeholder": {
-                                                                    color: "#000000", // Gris oscuro
+                                                                    color: "#000000",
                                                                     opacity: 1,
                                                                 },
-                                                                // Si el campo está disabled, MUI aplica otros estilos al placeholder que hay que pisar
                                                                 "& .MuiOutlinedInput-root.Mui-disabled .MuiInputBase-input::placeholder": {
                                                                     color: "#444444",
                                                                     opacity: 1,
@@ -657,8 +655,8 @@ const ProfileElder = ({ profile, setProfile }) => {
                                                     xs: "1.1rem",
                                                     sm: "1.1rem",
                                                     md: "1.2rem",
-                                                    lg: "1.2rem",
-                                                    xl: "1.2rem",
+                                                    lg: "1.3rem",
+                                                    xl: "1.3rem",
                                                 },
                                                 textAlign: { xs: "center", sm: "center", md: "start" },
                                                 lineHeight: 1.8,
@@ -709,7 +707,7 @@ const ProfileElder = ({ profile, setProfile }) => {
                                                             InputProps={{
                                                                 startAdornment: (
                                                                     <InputAdornment position="start">
-                                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#826464" }}>
+                                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#000000" }}>
                                                                             <PasswordRoundedIcon fontSize="medium" sx={{ mr: 1, color: "#000000" }}></PasswordRoundedIcon>
                                                                         </Box>
                                                                     </InputAdornment>
@@ -718,7 +716,7 @@ const ProfileElder = ({ profile, setProfile }) => {
                                                                     <InputAdornment position="end">
                                                                         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", color: "#000000" }}>
                                                                             <IconButton onClick={handleShowPassword}>
-                                                                                {showPassword ? <VisibilityIcon sx={{ mr: 0, color: "#000000" }} /> : <VisibilityOffRoundedIcon sx={{ mr: 0, color: "#000000" }} />}
+                                                                                {showPassword ? <VisibilityIcon sx={{ color: "#000000" }} /> : <VisibilityOffRoundedIcon sx={{ color: "#000000" }} />}
                                                                             </IconButton>
                                                                         </Box>
                                                                     </InputAdornment>
@@ -862,7 +860,9 @@ const ProfileElder = ({ profile, setProfile }) => {
                                     },
                                     textAlign: { xs: "center", sm: "center", md: "start" },
                                 }}>Actualizar datos de usuario</Typography>
+                                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 1, mb: 2 }} />
                                 <Typography variant="body2" sx={{
+                                    my: 1,
                                     color: "#000000",
                                     fontSize: {
                                         xs: "1.1rem",
@@ -875,7 +875,6 @@ const ProfileElder = ({ profile, setProfile }) => {
                                     lineHeight: 1.8,
                                 }}>Actualiza los datos que cargaste en el formulario de registro
                                 </Typography>
-                                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 1, mb: 2 }} />
                                 <Grid container spacing={2}>
                                     <Grid size={12}>
                                         <Box sx={{ my: 0, width: "100%" }}>

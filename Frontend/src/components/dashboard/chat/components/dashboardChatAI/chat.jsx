@@ -291,7 +291,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
             fontFamily: "'Lora', serif",
             color: "#000000",
             mb: 2,
-
             textAlign: "center"
           }}>
             {saludo}, {profile?.username}
@@ -418,7 +417,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                 flexDirection: "column",
                 alignItems: "center",
                 width: "100%",
-                gap: 5,
+                gap: 4,
                 p: { xs: 2, sm: 2, md: 3, lg: 3, xl: 3 },
                 scrollbarWidth: 'thin'
               }}
@@ -597,7 +596,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                       });
                     }}
                     sx={{
-                      backgroundColor: ttsEnabled ? "#cfcdc7" : "transparent",
+                      backgroundColor: ttsEnabled ? "#bbbab5" : "transparent",
                       color: ttsEnabled ? "#000000" : "#000000",
                       "&:hover": { backgroundColor: "#dad7d7", color: "#000000" }
                     }}

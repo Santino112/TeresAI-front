@@ -477,9 +477,9 @@ export default function NotesDashboard() {
           </Fade>
         </Modal>
 
-        <Dialog open={createModalOpen} onClose={handleCloseCreate} fullWidth maxWidth="sm">
-          <DialogTitle sx={{ fontFamily: "'Lora', serif", fontWeight: 700 }}>Agregar nota nueva</DialogTitle>
-          <DialogContent>
+        <Dialog open={createModalOpen} onClose={handleCloseCreate} fullWidth maxWidth="sm" sx={{borderRadius: 3}}>
+          <DialogTitle sx={{ color: "#000000", fontWeight: 600,  bgcolor: "#d7d6d6" }}>Agregar nota nueva</DialogTitle>
+          <DialogContent sx={{ bgcolor: "#d7d6d6",}}>
             <Stack spacing={2} sx={{ mt: 1 }}>
               {createError ? <Alert severity="error">{createError}</Alert> : null}
               <TextField

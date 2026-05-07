@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from "../../../../../supabaseClient.js"
 import { useAuth } from "../../../../auth/useAuth.jsx";
-import { useAuth } from "../../../../auth/useAuth.jsx";
 import { tomarDatosPerfiles } from "../../exports/datosInicialesUsuarios.js";
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
@@ -85,7 +84,7 @@ function IconMenu({ setPaginaActiva }) {
                 sx={{ color: "#000000", justifyContent: "flex-start", p: 2 }}
             >
                 <Avatar sx={{ mr: 2, color: "#ffffff" }}>{stringAvatar(profile?.username)}</Avatar>
-                {profile?.username || "Usuario"}
+                {profile?.username.slice(0, 15) || "Usuario"}
                 <ExpandLessRoundedIcon fontSize="small" sx={{ ml: "auto" }} />
             </Button>
             <Menu

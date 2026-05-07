@@ -10,17 +10,27 @@ import api from "../../../../../api/axios.js";
 import esLocale from '@fullcalendar/core/locales/es';
 import { supabase } from "../../../../../supabaseClient.js";
 
+const toLocalInputDateTime = (date = new Date()) => {
+    const pad = (n) => String(n).padStart(2, "0");
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    return ` ${ year } -${ month } -${ day }T${ hours }:${ minutes }`;
+};
+
 const Calendar = () => {
-  const [events, setEvents] = useState([]);
-  const [openCreateModal, setOpenCreateModal] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    start: toLocalInputDateTime(),
-    end: toLocalInputDateTime(new Date(Date.now() + 60 * 60 * 1000)),
-  });
+    const [events, setEvents] = useState([]);
+    const [openCreateModal, setOpenCreateModal] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [formData, setFormData] = useState({
+        title: "",
+        description: "",
+        start: toLocalInputDateTime(),
+        end: toLocalInputDateTime(new Date(Date.now() + 60 * 60 * 1000)),
+    });
 
     const fetchEvents = async () => {
         const { data } = await supabase.auth.getSession();
