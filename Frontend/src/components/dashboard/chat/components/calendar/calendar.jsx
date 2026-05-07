@@ -8,6 +8,8 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import api from "../../../../../api/axios.js";
 import esLocale from "@fullcalendar/core/locales/es";
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import EditCalendarRoundedIcon from '@mui/icons-material/EditCalendarRounded';
 import { supabase } from "../../../../../supabaseClient.js";
 
 const styleModal = {
@@ -23,20 +25,20 @@ const styleModal = {
     border: '2px solid #000000',
     borderRadius: 3,
     boxShadow: 24,
-    p: { xs: 2, sm: 3, md: 3 },
+    p: { xs: 3, sm: 3, md: 4 },
     outline: 'none'
 };
 
 const toLocalInputDateTime = (date = new Date()) => {
-  const currentDate = new Date(date);
+    const currentDate = new Date(date);
 
-  if (Number.isNaN(currentDate.getTime())) {
-    return "";
-  }
+    if (Number.isNaN(currentDate.getTime())) {
+        return "";
+    }
 
-  const pad = (value) => String(value).padStart(2, "0");
+    const pad = (value) => String(value).padStart(2, "0");
 
-  return `${currentDate.getFullYear()}-${pad(currentDate.getMonth() + 1)}-${pad(currentDate.getDate())}T${pad(currentDate.getHours())}:${pad(currentDate.getMinutes())}`;
+    return `${currentDate.getFullYear()}-${pad(currentDate.getMonth() + 1)}-${pad(currentDate.getDate())}T${pad(currentDate.getHours())}:${pad(currentDate.getMinutes())}`;
 };
 
 const Calendar = () => {
@@ -52,107 +54,111 @@ const Calendar = () => {
     });
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [openModal, setOpenModal] = useState(false);
-
-  const fetchEvents = useCallback(async () => {
-    try {
-      const { data } = await supabase.auth.getSession();
-      const session = data.session;
-
-      if (!session) return;
-
-      const res = await api.get("/calendar/events", {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-
-      setEvents(Array.isArray(res.data) ? res.data : []);
-    } catch (error) {
-      setErrorMessage(error?.response?.data?.error || "No se pudieron cargar los eventos del calendario.");
-    }
-  }, []);
-
-  const handleOpenCreate = () => {
-    setErrorMessage("");
-    setFormData({
-      title: "",
-      description: "",
-      start: toLocalInputDateTime(),
-      end: toLocalInputDateTime(new Date(Date.now() + 60 * 60 * 1000)),
+    const [createForm, setCreateForm] = useState({
+        title: "",
+        content: "",
     });
-    setOpenCreateModal(true);
-  };
 
-  const handleCloseCreate = () => {
-    if (submitting) return;
-    setOpenCreateModal(false);
-    setErrorMessage("");
-  };
+    const fetchEvents = useCallback(async () => {
+        try {
+            const { data } = await supabase.auth.getSession();
+            const session = data.session;
 
-  const handleFormChange = (field) => (event) => {
-    const { value } = event.target;
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+            if (!session) return;
 
-  const handleCreateEvent = async () => {
-    if (submitting) return;
+            const res = await api.get("/calendar/events", {
+                headers: {
+                    Authorization: `Bearer ${session.access_token}`,
+                },
+            });
 
-    const title = formData.title.trim();
-    const description = formData.description.trim();
-    const startDate = new Date(formData.start);
-    const endDate = new Date(formData.end);
-
-    if (!title) {
-      setErrorMessage("El titulo del evento es obligatorio.");
-      return;
-    }
-
-    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
-      setErrorMessage("Las fechas ingresadas no son validas.");
-      return;
-    }
-
-    if (endDate <= startDate) {
-      setErrorMessage("La fecha de fin debe ser posterior a la fecha de inicio.");
-      return;
-    }
-
-    setSubmitting(true);
-    setErrorMessage("");
-
-    try {
-      const { data } = await supabase.auth.getSession();
-      const session = data.session;
-
-      if (!session) {
-        setErrorMessage("Usuario no autenticado.");
-        return;
-      }
-
-      await api.post(
-        "/calendar/events",
-        {
-          title,
-          description,
-          start: startDate.toISOString(),
-          end: endDate.toISOString(),
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
+            setEvents(Array.isArray(res.data) ? res.data : []);
+        } catch (error) {
+            setErrorMessage(error?.response?.data?.error || "No se pudieron cargar los eventos del calendario.");
         }
-      );
+    }, []);
 
-      setOpenCreateModal(false);
-      await fetchEvents();
-      window.dispatchEvent(new Event("calendarUpdated"));
-    } catch (error) {
-      setErrorMessage(error?.response?.data?.error || "No se pudo crear el evento.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+    const handleOpenCreate = () => {
+        setErrorMessage("");
+        setFormData({
+            title: "",
+            description: "",
+            start: toLocalInputDateTime(),
+            end: toLocalInputDateTime(new Date(Date.now() + 60 * 60 * 1000)),
+        });
+        setOpenCreateModal(true);
+    };
+
+    const handleCloseCreate = () => {
+        if (submitting) return;
+        setOpenCreateModal(false);
+        setErrorMessage("");
+    };
+
+    const handleFormChange = (field) => (event) => {
+        const { value } = event.target;
+        setFormData((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const handleCreateEvent = async () => {
+        if (submitting) return;
+
+        const title = formData.title.trim();
+        const description = formData.description.trim();
+        const startDate = new Date(formData.start);
+        const endDate = new Date(formData.end);
+
+        if (!title) {
+            setErrorMessage("El titulo del evento es obligatorio.");
+            return;
+        }
+
+        if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+            setErrorMessage("Las fechas ingresadas no son validas.");
+            return;
+        }
+
+        if (endDate <= startDate) {
+            setErrorMessage("La fecha de fin debe ser posterior a la fecha de inicio.");
+            return;
+        }
+
+        setSubmitting(true);
+        setErrorMessage("");
+
+        try {
+            const { data } = await supabase.auth.getSession();
+            const session = data.session;
+
+            if (!session) {
+                setErrorMessage("Usuario no autenticado.");
+                return;
+            }
+
+            await api.post(
+                "/calendar/events",
+                {
+                    title,
+                    description,
+                    start: startDate.toISOString(),
+                    end: endDate.toISOString(),
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${session.access_token}`,
+                    },
+                }
+            );
+
+            setOpenCreateModal(false);
+            await fetchEvents();
+            window.dispatchEvent(new Event("calendarUpdated"));
+        } catch (error) {
+            setErrorMessage(error?.response?.data?.error || "No se pudo crear el evento.");
+        } finally {
+            setSubmitting(false);
+        }
+    };
 
     const handleEventClick = (info) => {
         setSelectedEvent({
@@ -164,18 +170,18 @@ const Calendar = () => {
         setOpenModal(true);
     };
 
-  useEffect(() => {
-    fetchEvents();
+    useEffect(() => {
+        fetchEvents();
 
-    const handleCalendarUpdated = () => {
-      fetchEvents();
-    };
+        const handleCalendarUpdated = () => {
+            fetchEvents();
+        };
 
-    window.addEventListener("calendarUpdated", handleCalendarUpdated);
-    return () => {
-      window.removeEventListener("calendarUpdated", handleCalendarUpdated);
-    };
-  }, [fetchEvents]);
+        window.addEventListener("calendarUpdated", handleCalendarUpdated);
+        return () => {
+            window.removeEventListener("calendarUpdated", handleCalendarUpdated);
+        };
+    }, [fetchEvents]);
 
     return (
         <Box
@@ -190,7 +196,7 @@ const Calendar = () => {
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
-                p: { xs: 1, sm: 2, md: 2 }
+                p: { xs: 2, sm: 2, md: 2 }
             }}
         >
             <Paper
@@ -365,7 +371,267 @@ const Calendar = () => {
                         cursor: "pointer"
                     }}
                 >
-                    <BotonCalendar />
+                    <Stack
+                        direction={{ xs: "column", md: "row" }}
+                        spacing={1}
+                        alignItems={{ xs: "stretch", md: "center" }}
+                        sx={{ mb: 2 }}
+                    >
+                        <BotonCalendar />
+                        <Button
+                            variant="contained"
+                            onClick={handleOpenCreate}
+                            sx={{
+                                borderRadius: 3,
+                                mb: 3,
+                                mr: { xs: 0, sm: 1 },
+                                boxShadow: 3,
+                                width: { xs: "100%", sm: "100%", md: "fit-content" },
+                                minWidth: "auto",
+                                whiteSpace: "nowrap",
+                                px: 2,
+                                backgroundColor: "#7d745c",
+                                color: "#ffffff",
+                                textTransform: "none",
+                                fontSize: "1.1rem",
+                                "&:hover": {
+                                    backgroundColor: "#67604d"
+                                },
+                            }}
+                        >
+                            <AddRoundedIcon sx={{ mr: 1 }} /> Agregar evento
+                        </Button>
+                    </Stack>
+
+                    {openCreateModal && (
+                        <Modal
+                            open={openCreateModal}
+                            onClose={handleCloseCreate}
+                            aria-labelledby="modal-create-title"
+                        >
+                            <Box sx={styleModal}>
+                                <Typography id="modal-create-title" variant="h5" sx={{
+                                    display: "flex",
+                                    justifyContent: "flex-start",
+                                    alignItems: "center",
+                                    fontWeight: 700,
+                                    mb: 1
+
+                                }}>
+                                    Nuevo Evento <EditCalendarRoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} />
+                                </Typography>
+                                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", mb: 3 }} />
+                                <Stack spacing={3}>
+                                    <TextField
+                                        placeholder="Título del evento"
+                                        value={formData.title}
+                                        onChange={handleFormChange("title")}
+                                        fullWidth
+                                        required
+                                        sx={{
+                                            backgroundColor: "#d7d6d6",
+                                            color: "#000000",
+                                            borderRadius: 3,
+                                            boxShadow: 3,
+                                            input: { color: "#000000" },
+                                            "& .MuiOutlinedInput-root": {
+                                                borderRadius: 3,
+                                                pr: 1,
+                                            },
+                                            "& fieldset": {
+                                                borderColor: "transparent"
+                                            },
+                                            "& .MuiInputBase-input::placeholder": {
+                                                color: "#000000",
+                                                opacity: 0.6,
+                                            },
+                                            "&:hover fieldset": {
+                                                borderColor: "transparent"
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "gray"
+                                            },
+                                            "& .MuiFormHelperText-root": {
+                                                color: "#000000 !important",
+                                                opacity: 0.8,
+                                                fontWeight: 500,
+                                            },
+                                        }}
+                                    />
+                                    <TextField
+                                        placeholder="Descripción"
+                                        value={formData.description}
+                                        onChange={handleFormChange("description")}
+                                        fullWidth
+                                        inputProps={{ maxLength: 500 }}
+                                        minRows={5}
+                                        maxRows={5}
+                                        multiline
+                                        helperText={
+                                            <span>500 caracteres</span>
+                                        }
+                                        sx={{
+                                            backgroundColor: "#d7d6d6",
+                                            color: "#000000",
+                                            borderRadius: 3,
+                                            boxShadow: 3,
+                                            "& .MuiInputBase-input": {
+                                                color: "#000000",
+                                                WebkitTextFillColor: "#000000",
+                                            },
+                                            "& textarea": {
+                                                color: "#000000",
+                                            },
+                                            "& .MuiOutlinedInput-root": {
+                                                borderRadius: 3,
+                                                pr: 1,
+                                            },
+                                            "& fieldset": {
+                                                borderColor: "transparent"
+                                            },
+                                            "& .MuiInputBase-input::placeholder": {
+                                                color: "#000000",
+                                                opacity: 0.6,
+                                            },
+                                            "&:hover fieldset": {
+                                                borderColor: "transparent"
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "gray"
+                                            },
+                                            "& .MuiFormHelperText-root": {
+                                                color: "#000000",
+                                                opacity: 0.8,
+                                                fontWeight: 500,
+                                            },
+                                        }}
+                                    />
+                                    <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                                        <TextField
+                                            label="Inicio"
+                                            type="datetime-local"
+                                            value={formData.start}
+                                            onChange={handleFormChange("start")}
+                                            InputLabelProps={{ shrink: true }}
+                                            fullWidth
+                                            required
+                                            sx={{
+                                                backgroundColor: "#d7d6d6",
+                                                color: "#000000",
+                                                borderRadius: 3,
+                                                boxShadow: 3,
+                                                input: { color: "#000000" },
+                                                "& .MuiOutlinedInput-root": {
+                                                    borderRadius: 3,
+                                                    pr: 1,
+                                                },
+                                                "& fieldset": {
+                                                    borderColor: "transparent"
+                                                },
+                                                "& .MuiInputBase-input::placeholder": {
+                                                    color: "#000000",
+                                                    opacity: 0.6,
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: "transparent"
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: "gray"
+                                                },
+                                                "& .MuiFormHelperText-root": {
+                                                    color: "#000000 !important",
+                                                    opacity: 0.8,
+                                                    fontWeight: 500,
+                                                },
+                                            }}
+                                        />
+                                        <TextField
+                                            label="Fin"
+                                            type="datetime-local"
+                                            value={formData.end}
+                                            onChange={handleFormChange("end")}
+                                            InputLabelProps={{ shrink: true }}
+                                            fullWidth
+                                            required
+                                            sx={{
+                                                backgroundColor: "#d7d6d6",
+                                                color: "#000000",
+                                                borderRadius: 3,
+                                                boxShadow: 3,
+                                                input: { color: "#000000" },
+                                                "& .MuiOutlinedInput-root": {
+                                                    borderRadius: 3,
+                                                    pr: 1,
+                                                },
+                                                "& fieldset": {
+                                                    borderColor: "transparent"
+                                                },
+                                                "& .MuiInputBase-input::placeholder": {
+                                                    color: "#000000",
+                                                    opacity: 0.6,
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: "transparent"
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: "gray"
+                                                },
+                                                "& .MuiFormHelperText-root": {
+                                                    color: "#000000 !important",
+                                                    opacity: 0.8,
+                                                    fontWeight: 500,
+                                                },
+                                            }}
+                                        />
+                                    </Stack>
+                                    {errorMessage && (
+                                        <Typography variant="body2" color="error">
+                                            {errorMessage}
+                                        </Typography>
+                                    )}
+                                    <Divider sx={{ borderColor: "rgba(0,0,0,0.1)" }} />
+                                    <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+                                        <Button
+                                            onClick={handleCloseCreate}
+                                            sx={{
+                                                color: "#464545",
+                                                fontWeight: "bold",
+                                                borderRadius: 2,
+                                                textTransform: "none",
+                                                mr: 1,
+                                                mt: 1,
+                                                "&:hover": { backgroundColor: "#e0e0e0" },
+                                            }}
+                                        >
+                                            Cancelar
+                                        </Button>
+                                        <Button
+                                            onClick={handleCreateEvent}
+                                            variant="contained"
+                                            disabled={submitting}
+                                            sx={{
+                                                backgroundColor: "#7d745c",
+                                                color: "#ffffff",
+                                                borderRadius: 2,
+                                                textTransform: "none",
+                                                "&:hover": { backgroundColor: "#67604d" },
+                                                mr: 1,
+                                                mt: 1
+                                            }}
+                                        >
+                                            {submitting ? "Guardando..." : "Guardar evento"}
+                                        </Button>
+                                    </Box>
+                                </Stack>
+                            </Box>
+                        </Modal>
+                    )}
+
+                    {!openCreateModal && errorMessage ? (
+                        <Typography variant="body2" color="error" sx={{ mb: 2 }}>
+                            {errorMessage}
+                        </Typography>
+                    ) : null}
                     <FullCalendar
                         plugins={[dayGridPlugin, timeGridPlugin]}
                         initialView="dayGridMonth"

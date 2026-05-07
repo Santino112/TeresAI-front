@@ -47,7 +47,7 @@ const Inicio = () => {
                     src={TeresaiLogo}
                     alt="TERESAI Logo"
                     sx={{
-                        height: "400px",
+                        height: "300px",
                         width: "auto",
                     }}
                 />
