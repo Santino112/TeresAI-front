@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Typography, Button, TextField, Box, Stack, Paper, Divider, Grid } from "@mui/material";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import BotonCalendar from '../buttons/BotonCalendar.jsx';
+import BotonCalendar from '../buttons/botonCalendar.jsx';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
