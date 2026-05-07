@@ -12,11 +12,13 @@ import Diversity1RoundedIcon from '@mui/icons-material/Diversity1Rounded';
 import FamilyRestroomRoundedIcon from '@mui/icons-material/FamilyRestroomRounded';
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
+import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
 
 const ProfileFamiliar = ({ profile, setProfile }) => {
     const [usernameLocal, setUsernameLocal] = useState(profile?.username || "");
     const [nombreFamiliar, setNombreFamiliar] = useState("");
     const [tipoFamiliar, setTipoFamiliar] = useState("");
+    const [telefonoFamiliar, setTelefonoFamiliar] = useState("");
     //Toma datos
     const [profileFamiliar, setProfileFamiliar] = useState(null);
     const [errorAlert, setErrorAlert] = useState(false);
@@ -93,9 +95,10 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
         localStorage.setItem(`draft_familiar_${user?.id}`, JSON.stringify({
             username: usernameLocal,
             nombreFamiliar,
-            tipoFamiliar
+            tipoFamiliar,
+            telefonoFamiliar
         }));
-    }, [usernameLocal, nombreFamiliar, tipoFamiliar, dataLoaded]);
+    }, [usernameLocal, nombreFamiliar, tipoFamiliar, telefonoFamiliar, dataLoaded]);
 
 
     useEffect(() => {
@@ -108,11 +111,13 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
             setProfile({ ...profile, username: parsed.username });
             setNombreFamiliar(parsed.nombreFamiliar || "");
             setTipoFamiliar(parsed.tipoFamiliar || "seleccione");
+            setTelefonoFamiliar(parsed.telefonoFamiliar || "");
             setOriginalUsername(profile?.username);
             setDataLoaded(true);
         } else {
             setNombreFamiliar(profileFamiliar.nombreElder || "");
             setTipoFamiliar(profileFamiliar.relacion || "seleccione");
+            setTelefonoFamiliar(profileFamiliar.telefonoFamiliar || "");
         }
         setOriginalUsername(profile?.username);
         setDataLoaded(true);
@@ -123,10 +128,11 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
 
         const changed = usernameLocal !== originalUsername ||
             nombreFamiliar !== originalData.nombreElder ||
-            tipoFamiliar !== originalData.relacion;
+            tipoFamiliar !== originalData.relacion ||
+            telefonoFamiliar !== (originalData.telefonoFamiliar || "");
 
         setHasChanges(changed);
-    }, [usernameLocal, nombreFamiliar, tipoFamiliar, originalData, dataLoaded]);
+    }, [usernameLocal, nombreFamiliar, tipoFamiliar, telefonoFamiliar, originalData, dataLoaded]);
 
     //Actualizar email
     const handleUpdateEmail = async (e) => {
@@ -237,6 +243,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
             const updateFamiliar = await actualizarDatosFamiliares(user.id, {
                 relacion: tipoFamiliar,
                 nombreElder: nombreFamiliar,
+                telefonoFamiliar: telefonoFamiliar,
             });
             if (!updateFamiliar.success) {
                 setAlertMessage(traducirError(updateFamiliar.error));
@@ -253,7 +260,8 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                 setOriginalData({
                     ...originalData,
                     nombreElder: nombreFamiliar,
-                    relacion: tipoFamiliar
+                    relacion: tipoFamiliar,
+                    telefonoFamiliar: telefonoFamiliar
                 })
 
                 setAlertMessage("El perfil se actualizó correctamente.");
@@ -869,6 +877,47 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                     <InputAdornment position="start">
                                                         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
                                                             <Diversity1RoundedIcon fontSize="medium" sx={{ mr: 1 }}></Diversity1RoundedIcon>
+                                                        </Box>
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                        ></TextField>
+                                    </Box>
+                                </Grid>
+                                <Grid size={12}>
+                                    <Box sx={{ my: 0, width: "100%" }}>
+                                        <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>Número de teléfono</Typography>
+                                        <TextField
+                                            value={telefonoFamiliar}
+                                            onChange={(e) => setTelefonoFamiliar(e.target.value)}
+                                            placeholder="Número de teléfono"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="dense"
+                                            sx={{
+                                                backgroundColor: "#303030",
+                                                borderRadius: 3,
+                                                boxShadow: 3,
+                                                input: { color: "white" },
+                                                "& .MuiOutlinedInput-root": {
+                                                    borderRadius: 3,
+                                                    pr: 1,
+                                                },
+                                                "& fieldset": {
+                                                    borderColor: "transparent"
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: "transparent"
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: "gray"
+                                                }
+                                            }}
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                                                            <PhoneRoundedIcon fontSize="medium" sx={{ mr: 1 }}></PhoneRoundedIcon>
                                                         </Box>
                                                     </InputAdornment>
                                                 ),

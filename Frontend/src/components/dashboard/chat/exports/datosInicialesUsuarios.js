@@ -45,14 +45,15 @@ export const elderPeople = async (userId, { enfermedades, medicamentos, alergias
     return { success: true };
 }
 
-export const familyPeople = async (userId, { nombreElder, relacion }) => {
+export const familyPeople = async (userId, { nombreElder, relacion, numeroTelefono }) => {
     const { error } = await supabase
         .schema("public")
         .from("family_profiles")
         .insert({
             id: userId,
             nombreElder,
-            relacion
+            relacion,
+            numeroTelefono
         });
 
     if (error) {
@@ -198,13 +199,14 @@ export const actualizarDatosElders = async (userId, { enfermedades, medicamentos
     return { success: true };
 };
 
-export const actualizarDatosFamiliares = async (userId, { relacion, nombreElder }) => {
+export const actualizarDatosFamiliares = async (userId, { relacion, nombreElder, numeroTelefono }) => {
     const { error } = await supabase
         .schema("public")
         .from("family_profiles")
         .update({
             relacion,
-            nombreElder
+            nombreElder,
+            numeroTelefono
         })
         .eq("id", userId)
 

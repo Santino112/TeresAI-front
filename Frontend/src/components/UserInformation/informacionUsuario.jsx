@@ -24,6 +24,7 @@ const InformacionUsuarios = () => {
     //Datos familiar
     const [nombreFamiliar, setNombreFamiliar] = useState("");
     const [emailFamiliar, setEmailFamiliar] = useState("");
+    const [numeroTelefono, setNumeroTelefono] = useState("");
     const [tipoFamiliar, setTipoFamiliar] = useState("seleccione");
     //Datos elder
     const [tieneEnfermedad, setTieneEnfermedad] = useState("seleccione");
@@ -92,7 +93,8 @@ const InformacionUsuarios = () => {
             const incompleto = [tipoFamiliar].some((s) => s === "seleccione");
             const detallesFaltantes =
                 !nombreFamiliar.trim() ||
-                !emailFamiliar.trim();
+                !emailFamiliar.trim() ||
+                !numeroTelefono.trim();
 
             if (incompleto || detallesFaltantes) {
                 setAlertMessage("Debe completar todos los campos del familiar.");
@@ -205,7 +207,8 @@ const InformacionUsuarios = () => {
 
                 const resultFamiliar = await familyPeople(user.id, {
                     relacion: tipoFamiliar,
-                    nombreElder: nombreFamiliar
+                    nombreElder: nombreFamiliar,
+                    numeroTelefono: numeroTelefono
                 });
 
                 if (!resultFamiliar.success) {
@@ -505,6 +508,8 @@ const InformacionUsuarios = () => {
                                 setNombreFamiliar={setNombreFamiliar}
                                 emailFamiliar={emailFamiliar}
                                 setEmailFamiliar={setEmailFamiliar}
+                                numeroTelefono={numeroTelefono}
+                                setNumeroTelefono={setNumeroTelefono}
                                 tipoFamiliar={tipoFamiliar}
                                 setTipoFamiliar={setTipoFamiliar}
                                 errorTextFields={errorTextFields}
