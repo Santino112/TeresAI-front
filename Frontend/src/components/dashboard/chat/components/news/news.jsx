@@ -187,7 +187,7 @@ export default function News() {
                 : "Actualizar"}
             </Button>
             {articles.map((article, index) => (
-              <Grid item xs={12} sm={6} key={`${article.url || index}-${index}`}>
+            <Grid size={{ xs: 12, sm: 6 }} key={`${article.url || index}-${index}`}>
                 <Card
                   sx={{
                     height: "100%",

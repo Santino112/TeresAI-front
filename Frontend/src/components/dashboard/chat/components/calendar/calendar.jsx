@@ -194,7 +194,7 @@ const Calendar = () => {
       >
         <Box sx={{ pb: 2 }}>
           <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={8}>
+            <Grid size={{ xs: 12, md: 8 }}>
               <Typography
                 variant="h3"
                 sx={{

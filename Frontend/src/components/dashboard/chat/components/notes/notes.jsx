@@ -51,15 +51,19 @@ const getSnippet = (text) => {
   return `${preview.slice(0, 180).trim()}...`;
 };
 
-const getNoteTitle = (note) => note?.title || note?.text?.split("\n")[0] || "Nota sin titulo";
-const getNoteContent = (note) => note?.content || note?.text || "";
-const deriveTitleFromContent = (content = "") => {
-  const normalized = String(content || "").trim();
-  if (!normalized) return "Nota sin titulo";
-  const firstLine = normalized.split("\n").find((line) => line.trim());
-  const source = (firstLine || normalized).trim();
-  if (source.length <= 80) return source;
-  return `${source.slice(0, 80).trim()}...`;
+const getEditDraftFromNote = (note) => {
+  const rawText = String(note?.text || "");
+  const fallbackTitle = rawText.split("\n").find((line) => line.trim()) || "Nota sin titulo";
+  const fallbackContent = rawText
+    .split("\n")
+    .slice(1)
+    .join("\n")
+    .trim();
+
+  return {
+    title: note?.title || fallbackTitle,
+    content: note?.content || fallbackContent || rawText,
+  };
 };
 
 export default function NotesDashboard() {
@@ -70,17 +74,16 @@ export default function NotesDashboard() {
   const [selectedNote, setSelectedNote] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [editingNote, setEditingNote] = useState(false);
+  const [editError, setEditError] = useState("");
+  const [editForm, setEditForm] = useState({
+    title: "",
+    content: "",
+  });
 
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
   const [createError, setCreateError] = useState("");
   const [createForm, setCreateForm] = useState({
-    title: "",
-    content: "",
-  });
-
-  const [editError, setEditError] = useState("");
-  const [editForm, setEditForm] = useState({
     title: "",
     content: "",
   });
@@ -109,10 +112,7 @@ export default function NotesDashboard() {
 
   const openNote = (note) => {
     setSelectedNote(note);
-    setEditForm({
-      title: getNoteTitle(note),
-      content: getNoteContent(note),
-    });
+    setEditForm(getEditDraftFromNote(note));
     setEditError("");
     setEditingNote(false);
     setModalOpen(true);
@@ -122,17 +122,20 @@ export default function NotesDashboard() {
     if (actionLoading) return;
     setModalOpen(false);
     setSelectedNote(null);
-    setEditError("");
     setEditingNote(false);
+    setEditError("");
   };
 
   const handleDeleteNote = async (noteId) => {
-    if (!noteId) return;
+    const normalizedNoteId =
+      typeof noteId === "object" && noteId !== null ? noteId.id : noteId;
+
+    if (!normalizedNoteId) return;
 
     setActionLoading(true);
     try {
-      await api.delete(`/notes/${noteId}`);
-      if (selectedNote?.id === noteId) {
+      await api.delete(`/notes/${normalizedNoteId}`);
+      if (selectedNote?.id === normalizedNoteId) {
         closeModal();
       }
       await fetchNotes();
@@ -153,6 +156,60 @@ export default function NotesDashboard() {
   const handleCloseCreate = () => {
     if (createLoading) return;
     setCreateModalOpen(false);
+  };
+
+  const handleStartEdit = () => {
+    if (!selectedNote) return;
+
+    setEditError("");
+    setEditForm(getEditDraftFromNote(selectedNote));
+    setEditingNote(true);
+  };
+
+  const handleCancelEdit = () => {
+    if (actionLoading) return;
+
+    setEditError("");
+    setEditForm(getEditDraftFromNote(selectedNote));
+    setEditingNote(false);
+  };
+
+  const handleEditNote = async () => {
+    if (!selectedNote?.id) return;
+
+    if (!editForm.content.trim()) {
+      setEditError("Debes escribir el contenido de la nota.");
+      return;
+    }
+
+    setActionLoading(true);
+    setEditError("");
+
+    try {
+      const title = editForm.title.trim();
+      const content = editForm.content.trim();
+
+      await api.put(`/notes/${selectedNote.id}`, {
+        title,
+        content,
+      });
+
+      const updatedSelectedNote = {
+        ...selectedNote,
+        title: title || getEditDraftFromNote(selectedNote).title,
+        content,
+        text: title ? `${title}\n\n${content}` : content,
+      };
+
+      setSelectedNote(updatedSelectedNote);
+      setEditingNote(false);
+      await fetchNotes();
+      window.dispatchEvent(new Event("notesUpdated"));
+    } catch (error) {
+      setEditError(error?.response?.data?.error || "No se pudo editar la nota.");
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   const handleCreateNote = async () => {
@@ -177,41 +234,6 @@ export default function NotesDashboard() {
       setCreateError(error?.response?.data?.error || "No se pudo crear la nota.");
     } finally {
       setCreateLoading(false);
-    }
-  };
-
-  const handleEditNote = async () => {
-    if (!selectedNote?.id) return;
-
-    if (!editForm.content.trim()) {
-      setEditError("Debes escribir el contenido de la nota.");
-      return;
-    }
-
-    setActionLoading(true);
-    setEditError("");
-
-    try {
-      await api.put(`/notes/${selectedNote.id}`, {
-        title: editForm.title.trim(),
-        content: editForm.content.trim(),
-      });
-
-      const updatedSelected = {
-        ...selectedNote,
-        title: editForm.title.trim() || deriveTitleFromContent(editForm.content),
-        content: editForm.content.trim(),
-        text: `${editForm.title.trim() || deriveTitleFromContent(editForm.content)}\n\n${editForm.content.trim()}`,
-      };
-
-      setSelectedNote(updatedSelected);
-      setEditingNote(false);
-      await fetchNotes();
-      window.dispatchEvent(new Event("notesUpdated"));
-    } catch (error) {
-      setEditError(error?.response?.data?.error || "No se pudo editar la nota.");
-    } finally {
-      setActionLoading(false);
     }
   };
 
@@ -327,13 +349,13 @@ export default function NotesDashboard() {
         }}>
           {loading
             ? Array.from({ length: 6 }).map((_, index) => (
-              <Grid key={index} item xs={12} sm={6} md={4}>
+              <Grid key={index} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Skeleton variant="rounded" height={200} />
               </Grid>
             ))
-            : notes.length === 0
+              : notes.length === 0
               ? (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Box
                     sx={{
                       borderRadius: 3,
@@ -358,7 +380,7 @@ export default function NotesDashboard() {
                 </Grid>
               )
               : notes.map((note) => (
-                <Grid key={note.id} item xs={12} sm={6} md={4}>
+                <Grid key={note.id} size={{ xs: 12, sm: 6, md: 4 }}>
                   <Card
                     elevation={2}
                     sx={{
@@ -432,46 +454,131 @@ export default function NotesDashboard() {
             >
               <Stack direction={{ xs: "column", sm: "column", md: "row" }} justifyContent="space-between" alignItems="center" spacing={1}>
                 <Typography variant="h5" fontWeight={600} sx={{ color: "#000000" }}>
-                  {selectedNote?.text?.split("\n")[0] || "Nota"}
+                  {selectedNote?.title || selectedNote?.text?.split("\n")[0] || "Nota"}
                 </Typography>
                 <Typography variant="body1" sx={{ color: "#000000" }}>
                   {formatDate(selectedNote?.created_at)}
                 </Typography>
               </Stack>
               <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 2 }} />
-              <Typography variant="body1" sx={{ whiteSpace: "pre-line", lineHeight: 1.8, color: "#000000", my: 2 }}>
-                {selectedNote?.text}
-              </Typography>
+              {editingNote ? (
+                <Stack spacing={2}>
+                  {editError ? <Alert severity="error">{editError}</Alert> : null}
+                  <TextField
+                    label="Titulo"
+                    value={editForm.title}
+                    onChange={(event) => setEditForm((prev) => ({ ...prev, title: event.target.value }))}
+                    fullWidth
+                  />
+                  <TextField
+                    label="Contenido"
+                    value={editForm.content}
+                    onChange={(event) => setEditForm((prev) => ({ ...prev, content: event.target.value }))}
+                    multiline
+                    minRows={6}
+                    fullWidth
+                    required
+                  />
+                </Stack>
+              ) : (
+                <Typography variant="body1" sx={{ whiteSpace: "pre-line", lineHeight: 1.8, color: "#000000", my: 2 }}>
+                  {selectedNote?.text}
+                </Typography>
+              )}
               <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 2 }} />
               <Stack direction="row" spacing={2} justifyContent="flex-end">
-                <Button variant="outlined" onClick={closeModal} sx={{
-                  border: "none",
-                  color: "#464545",
-                  fontWeight: "bold",
-                  textTransform: "none",
-                  ml: 1,
-                  mt: 1,
-                  "&:hover": { backgroundColor: "#e0e0e0" },
-                }}>
-                  Cerrar
-                </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={handleDeleteNote}
-                  disabled={actionLoading}
-                  sx={{
-                    color: "#ffffff",
-                    textTransform: "none",
-                    "&:hover": {
-                      backgroundColor: "#aa0e0e"
-                    },
-                    mr: 1,
-                    mt: 1
-                  }}
-                >
-                  Eliminar nota
-                </Button>
+                {editingNote ? (
+                  <>
+                    <Button
+                      variant="outlined"
+                      onClick={handleCancelEdit}
+                      disabled={actionLoading}
+                      sx={{
+                        border: "none",
+                        color: "#464545",
+                        fontWeight: "bold",
+                        textTransform: "none",
+                        ml: 1,
+                        mt: 1,
+                        "&:hover": { backgroundColor: "#e0e0e0" },
+                      }}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={handleEditNote}
+                      disabled={actionLoading}
+                      startIcon={<SaveRoundedIcon />}
+                      sx={{
+                        color: "#ffffff",
+                        textTransform: "none",
+                        backgroundColor: "#7d745c",
+                        "&:hover": {
+                          backgroundColor: "#6a5f49"
+                        },
+                        mr: 1,
+                        mt: 1
+                      }}
+                    >
+                      {actionLoading ? "Guardando..." : "Guardar cambios"}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="outlined"
+                      onClick={closeModal}
+                      sx={{
+                        border: "none",
+                        color: "#464545",
+                        fontWeight: "bold",
+                        textTransform: "none",
+                        ml: 1,
+                        mt: 1,
+                        "&:hover": { backgroundColor: "#e0e0e0" },
+                      }}
+                    >
+                      Cerrar
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      onClick={handleStartEdit}
+                      disabled={actionLoading}
+                      startIcon={<EditRoundedIcon />}
+                      sx={{
+                        borderColor: "#7d745c",
+                        color: "#7d745c",
+                        textTransform: "none",
+                        mt: 1,
+                        "&:hover": {
+                          borderColor: "#6a5f49",
+                          backgroundColor: "rgba(125, 116, 92, 0.08)"
+                        }
+                      }}
+                    >
+                      Editar
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => handleDeleteNote(selectedNote?.id)}
+                      disabled={actionLoading || !selectedNote?.id}
+                      startIcon={<DeleteOutlineRoundedIcon />}
+                      sx={{
+                        color: "#ffffff",
+                        textTransform: "none",
+                        "&:hover": {
+                          backgroundColor: "#aa0e0e"
+                        },
+                        mr: 1,
+                        mt: 1
+                      }}
+                    >
+                      Eliminar nota
+                    </Button>
+                  </>
+                )}
               </Stack>
             </Box>
           </Fade>

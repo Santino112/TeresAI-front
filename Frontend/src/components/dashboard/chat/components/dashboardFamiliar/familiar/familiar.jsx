@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Box,
   Paper,
@@ -23,11 +23,10 @@ import {
 import { useAuth } from "../../../../../auth/useAuth.jsx";
 
 const Familiar = () => {
-  const { user } = useAuth();
+  const { user, accessToken, loading: authLoading } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isTablet = useMediaQuery(theme.breakpoints.down("md"));
-  const isLarge = useMediaQuery(theme.breakpoints.up("lg"));
 
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -53,23 +52,12 @@ const Familiar = () => {
     }
   };
 
-  useEffect(() => {
-    fetchElders();
-  }, [user]);
-
-  useEffect(() => {
-    if (selectedElder) {
-      fetchAnalytics(selectedElder);
-    }
-  }, [selectedElder]);
-
-  const fetchElders = async () => {
+  const fetchElders = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/api/family/dashboard/elders`, {
         method: "GET",
-        credentials: "include",
         headers: {
-          "Authorization": `Bearer ${user?.access_token}`,
+          "Authorization": `Bearer ${accessToken}`,
         },
       });
 
@@ -84,9 +72,9 @@ const Familiar = () => {
       console.error("Error:", err);
       setError("No se pudieron cargar los adultos mayores vinculados");
     }
-  };
+  }, [API_URL, accessToken]);
 
-  const fetchAnalytics = async (elderId) => {
+  const fetchAnalytics = useCallback(async (elderId) => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -96,9 +84,8 @@ const Familiar = () => {
 
       const response = await fetch(`${API_URL}/api/family/dashboard/analytics?${params}`, {
         method: "GET",
-        credentials: "include",
         headers: {
-          "Authorization": `Bearer ${user?.access_token}`,
+          "Authorization": `Bearer ${accessToken}`,
         },
       });
 
@@ -113,9 +100,24 @@ const Familiar = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_URL, accessToken]);
 
-  if (!user) return null;
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user || !accessToken) return;
+    fetchElders();
+  }, [authLoading, user, accessToken, fetchElders]);
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user || !accessToken) return;
+    if (selectedElder) {
+      fetchAnalytics(selectedElder);
+    }
+  }, [authLoading, user, accessToken, fetchAnalytics, selectedElder]);
+
+  if (authLoading) return null;
+  if (!user || !accessToken) return null;
 
   return (
     <Box
@@ -204,7 +206,7 @@ const Familiar = () => {
       ) : analytics ? (
         <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }}>
           {/* Tiempo de Uso por Día de Semana */}
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
             <Card
               sx={{
                 height: "100%",
@@ -250,7 +252,7 @@ const Familiar = () => {
           </Grid>
 
           {/* Distribución de Estados Emocionales */}
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
             <Card
               sx={{
                 height: "100%",
@@ -313,7 +315,7 @@ const Familiar = () => {
           </Grid>
 
           {/* Alertas Importantes */}
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
             <Card
               sx={{
                 height: "100%",
@@ -442,7 +444,7 @@ const Familiar = () => {
           </Grid>
 
           {/* Detección de Soledad */}
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
             <Card
               sx={{
                 height: "100%",
@@ -504,7 +506,7 @@ const Familiar = () => {
           </Grid>
 
           {/* Resumen General */}
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Card
               sx={{
                 background: "rgba(255, 255, 255, 0.05)",
@@ -525,7 +527,7 @@ const Familiar = () => {
                   📊 Resumen de Análisis
                 </Typography>
                 <Grid container spacing={{ xs: 1, sm: 1.5, md: 2 }}>
-                  <Grid item xs={12} sm={6} md={3}>
+                  <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Paper sx={{ p: { xs: 1.5, sm: 2 }, background: "rgba(76, 175, 80, 0.1)", border: "1px solid rgba(76, 175, 80, 0.3)", borderRadius: 2 }}>
                       <Typography
                         variant="body2"
@@ -541,7 +543,7 @@ const Familiar = () => {
                       </Typography>
                     </Paper>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
+                  <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Paper sx={{ p: { xs: 1.5, sm: 2 }, background: "rgba(156, 39, 176, 0.1)", border: "1px solid rgba(156, 39, 176, 0.3)", borderRadius: 2 }}>
                       <Typography
                         variant="body2"
@@ -557,7 +559,7 @@ const Familiar = () => {
                       </Typography>
                     </Paper>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
+                  <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Paper sx={{ p: { xs: 1.5, sm: 2 }, background: "rgba(244, 67, 54, 0.1)", border: "1px solid rgba(244, 67, 54, 0.3)", borderRadius: 2 }}>
                       <Typography
                         variant="body2"
@@ -573,7 +575,7 @@ const Familiar = () => {
                       </Typography>
                     </Paper>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
+                  <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Paper sx={{ p: { xs: 1.5, sm: 2 }, background: "rgba(255, 152, 0, 0.1)", border: "1px solid rgba(255, 152, 0, 0.3)", borderRadius: 2 }}>
                       <Typography
                         variant="body2"
