@@ -353,7 +353,6 @@ const ProfileElder = ({ profile, setProfile }) => {
                         boxShadow: 4,
                         borderRadius: 3,
                         fontSize: "1rem",
-                        fontFamily: "'Lora', serif",
                     }}
                 >{alertMessage}</Alert>
                 :
@@ -960,7 +959,8 @@ const ProfileElder = ({ profile, setProfile }) => {
                                                                 }
                                                             },
                                                             MenuListProps: { sx: { p: 0 } }
-                                                        }} sx={{
+                                                        }} 
+                                                        sx={{
                                                             backgroundColor: "#d7d6d6",
                                                             color: "#000000",
                                                             borderRadius: 3,

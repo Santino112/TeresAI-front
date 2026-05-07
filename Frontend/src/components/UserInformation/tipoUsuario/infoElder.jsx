@@ -45,12 +45,14 @@ const InfoElder = (
                             }
                         },
                         MenuListProps: { sx: { p: 0 } }
-                    }} sx={{
-                        backgroundColor: "#303030",
+                    }}
+                    sx={{
+                        backgroundColor: "#d7d6d6",
+                        color: "#000000",
                         borderRadius: 3,
-                        boxShadow: 3,
                         mt: 1,
-                        input: { color: "white" },
+                        boxShadow: 3,
+                        input: { color: "#000000" },
                         "& .MuiOutlinedInput-root": {
                             borderRadius: 3,
                             pr: 1,
@@ -58,11 +60,18 @@ const InfoElder = (
                         "& fieldset": {
                             borderColor: "transparent"
                         },
+                        "& .MuiInputBase-input::placeholder": {
+                            color: "#000000",
+                            opacity: 0.6,
+                        },
                         "&:hover fieldset": {
                             borderColor: "transparent"
                         },
                         "&.Mui-focused fieldset": {
                             borderColor: "gray"
+                        },
+                        "& .MuiSelect-icon": {
+                            color: "#000000",
                         },
                         mb: 1
                     }}
@@ -86,10 +95,17 @@ const InfoElder = (
                             fullWidth
                             margin="dense"
                             sx={{
-                                backgroundColor: "#303030",
+                                backgroundColor: "#d7d6d6",
+                                color: "#000000",
                                 borderRadius: 3,
                                 boxShadow: 3,
-                                input: { color: "white" },
+                                "& .MuiInputBase-input": {
+                                    color: "#000000",
+                                    WebkitTextFillColor: "#000000",
+                                },
+                                "& textarea": {
+                                    color: "#000000",
+                                },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
                                     pr: 1,
@@ -97,12 +113,21 @@ const InfoElder = (
                                 "& fieldset": {
                                     borderColor: "transparent"
                                 },
+                                "& .MuiInputBase-input::placeholder": {
+                                    color: "#000000",
+                                    opacity: 0.6,
+                                },
                                 "&:hover fieldset": {
                                     borderColor: "transparent"
                                 },
                                 "&.Mui-focused fieldset": {
                                     borderColor: "gray"
-                                }
+                                },
+                                "& .MuiFormHelperText-root": {
+                                    color: "#000000",
+                                    opacity: 0.8,
+                                    fontWeight: 500,
+                                },
                             }}
                         ></TextField>
                     </Box>
@@ -130,12 +155,14 @@ const InfoElder = (
                             }
                         },
                         MenuListProps: { sx: { p: 0 } }
-                    }} sx={{
-                        backgroundColor: "#303030",
+                    }}
+                    sx={{
+                        backgroundColor: "#d7d6d6",
+                        color: "#000000",
                         borderRadius: 3,
-                        boxShadow: 3,
                         mt: 1,
-                        input: { color: "white" },
+                        boxShadow: 3,
+                        input: { color: "#000000" },
                         "& .MuiOutlinedInput-root": {
                             borderRadius: 3,
                             pr: 1,
@@ -143,11 +170,18 @@ const InfoElder = (
                         "& fieldset": {
                             borderColor: "transparent"
                         },
+                        "& .MuiInputBase-input::placeholder": {
+                            color: "#000000",
+                            opacity: 0.6,
+                        },
                         "&:hover fieldset": {
                             borderColor: "transparent"
                         },
                         "&.Mui-focused fieldset": {
                             borderColor: "gray"
+                        },
+                        "& .MuiSelect-icon": {
+                            color: "#000000",
                         },
                         mb: 1
                     }}
@@ -171,10 +205,17 @@ const InfoElder = (
                             fullWidth
                             margin="dense"
                             sx={{
-                                backgroundColor: "#303030",
+                                backgroundColor: "#d7d6d6",
+                                color: "#000000",
                                 borderRadius: 3,
                                 boxShadow: 3,
-                                input: { color: "white" },
+                                "& .MuiInputBase-input": {
+                                    color: "#000000",
+                                    WebkitTextFillColor: "#000000",
+                                },
+                                "& textarea": {
+                                    color: "#000000",
+                                },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
                                     pr: 1,
@@ -182,12 +223,21 @@ const InfoElder = (
                                 "& fieldset": {
                                     borderColor: "transparent"
                                 },
+                                "& .MuiInputBase-input::placeholder": {
+                                    color: "#000000",
+                                    opacity: 0.6,
+                                },
                                 "&:hover fieldset": {
                                     borderColor: "transparent"
                                 },
                                 "&.Mui-focused fieldset": {
                                     borderColor: "gray"
-                                }
+                                },
+                                "& .MuiFormHelperText-root": {
+                                    color: "#000000",
+                                    opacity: 0.8,
+                                    fontWeight: 500,
+                                },
                             }}
                         ></TextField>
                     </Box>
@@ -215,12 +265,14 @@ const InfoElder = (
                             }
                         },
                         MenuListProps: { sx: { p: 0 } }
-                    }} sx={{
-                        backgroundColor: "#303030",
+                    }}
+                    sx={{
+                        backgroundColor: "#d7d6d6",
+                        color: "#000000",
                         borderRadius: 3,
-                        boxShadow: 3,
                         mt: 1,
-                        input: { color: "white" },
+                        boxShadow: 3,
+                        input: { color: "#000000" },
                         "& .MuiOutlinedInput-root": {
                             borderRadius: 3,
                             pr: 1,
@@ -228,11 +280,18 @@ const InfoElder = (
                         "& fieldset": {
                             borderColor: "transparent"
                         },
+                        "& .MuiInputBase-input::placeholder": {
+                            color: "#000000",
+                            opacity: 0.6,
+                        },
                         "&:hover fieldset": {
                             borderColor: "transparent"
                         },
                         "&.Mui-focused fieldset": {
                             borderColor: "gray"
+                        },
+                        "& .MuiSelect-icon": {
+                            color: "#000000",
                         },
                         mb: 1
                     }}
@@ -256,10 +315,17 @@ const InfoElder = (
                             fullWidth
                             margin="dense"
                             sx={{
-                                backgroundColor: "#303030",
+                                backgroundColor: "#d7d6d6",
+                                color: "#000000",
                                 borderRadius: 3,
                                 boxShadow: 3,
-                                input: { color: "white" },
+                                "& .MuiInputBase-input": {
+                                    color: "#000000",
+                                    WebkitTextFillColor: "#000000",
+                                },
+                                "& textarea": {
+                                    color: "#000000",
+                                },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
                                     pr: 1,
@@ -267,12 +333,21 @@ const InfoElder = (
                                 "& fieldset": {
                                     borderColor: "transparent"
                                 },
+                                "& .MuiInputBase-input::placeholder": {
+                                    color: "#000000",
+                                    opacity: 0.6,
+                                },
                                 "&:hover fieldset": {
                                     borderColor: "transparent"
                                 },
                                 "&.Mui-focused fieldset": {
                                     borderColor: "gray"
-                                }
+                                },
+                                "& .MuiFormHelperText-root": {
+                                    color: "#000000",
+                                    opacity: 0.8,
+                                    fontWeight: 500,
+                                },
                             }}
                         ></TextField>
                     </Box>
@@ -291,10 +366,17 @@ const InfoElder = (
                     maxRows={4}
                     margin="dense"
                     sx={{
-                        backgroundColor: "#303030",
+                        backgroundColor: "#d7d6d6",
+                        color: "#000000",
                         borderRadius: 3,
                         boxShadow: 3,
-                        input: { color: "white" },
+                        "& .MuiInputBase-input": {
+                            color: "#000000",
+                            WebkitTextFillColor: "#000000",
+                        },
+                        "& textarea": {
+                            color: "#000000",
+                        },
                         "& .MuiOutlinedInput-root": {
                             borderRadius: 3,
                             pr: 1,
@@ -302,12 +384,21 @@ const InfoElder = (
                         "& fieldset": {
                             borderColor: "transparent"
                         },
+                        "& .MuiInputBase-input::placeholder": {
+                            color: "#000000",
+                            opacity: 0.6,
+                        },
                         "&:hover fieldset": {
                             borderColor: "transparent"
                         },
                         "&.Mui-focused fieldset": {
                             borderColor: "gray"
-                        }
+                        },
+                        "& .MuiFormHelperText-root": {
+                            color: "#000000",
+                            opacity: 0.8,
+                            fontWeight: 500,
+                        },
                     }}
                 ></TextField>
             </Box>
@@ -324,10 +415,17 @@ const InfoElder = (
                     fullWidth
                     margin="dense"
                     sx={{
-                        backgroundColor: "#303030",
+                        backgroundColor: "#d7d6d6",
+                        color: "#000000",
                         borderRadius: 3,
                         boxShadow: 3,
-                        input: { color: "white" },
+                        "& .MuiInputBase-input": {
+                            color: "#000000",
+                            WebkitTextFillColor: "#000000",
+                        },
+                        "& textarea": {
+                            color: "#000000",
+                        },
                         "& .MuiOutlinedInput-root": {
                             borderRadius: 3,
                             pr: 1,
@@ -335,12 +433,21 @@ const InfoElder = (
                         "& fieldset": {
                             borderColor: "transparent"
                         },
+                        "& .MuiInputBase-input::placeholder": {
+                            color: "#000000",
+                            opacity: 0.6,
+                        },
                         "&:hover fieldset": {
                             borderColor: "transparent"
                         },
                         "&.Mui-focused fieldset": {
                             borderColor: "gray"
-                        }
+                        },
+                        "& .MuiFormHelperText-root": {
+                            color: "#000000",
+                            opacity: 0.8,
+                            fontWeight: 500,
+                        },
                     }}
                 ></TextField>
             </Box>

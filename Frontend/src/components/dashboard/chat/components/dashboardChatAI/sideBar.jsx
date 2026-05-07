@@ -353,6 +353,7 @@ function ResponsiveDrawer() {
                                                             onClick={handleNext}
                                                             sx={{
                                                                 backgroundColor: "#7d745c",
+                                                                borderRadius: 2,
                                                                 color: "#ffffff",
                                                                 textTransform: "none",
                                                                 "&:hover": {
@@ -370,6 +371,7 @@ function ResponsiveDrawer() {
                                                             sx={{
                                                                 color: "#464545",
                                                                 fontWeight: "bold",
+                                                                borderRadius: 2,
                                                                 textTransform: "none",
                                                                 mr: 1,
                                                                 mt: 1,
@@ -389,6 +391,7 @@ function ResponsiveDrawer() {
                                             <Button variant="contained" onClick={handleCloseModal} sx={{
                                                 backgroundColor: "#7d745c",
                                                 color: "#ffffff",
+                                                borderRadius: 2,
                                                 textTransform: "none",
                                                 "&:hover": {
                                                     backgroundColor: "#67604d"
@@ -401,6 +404,7 @@ function ResponsiveDrawer() {
                                             <Button onClick={handleReset} sx={{
                                                 color: "#464545",
                                                 fontWeight: "bold",
+                                                borderRadius: 2,
                                                 textTransform: "none",
                                                 ml: 1,
                                                 mt: 1,

@@ -80,11 +80,6 @@ const Login = () => {
             px: { xs: 2, sm: 0 },
             py: 0
         }}>
-            {errorAlert ?
-                <Alert variant='filled' severity="error" sx={{ position: "absolute", top: 16, left: 126, boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>
-                :
-                null
-            }
             <Box sx={{
                 position: "relative",
                 display: "flex",
@@ -199,6 +194,11 @@ const Login = () => {
                         }}>
                             <Typography variant="body1">O</Typography>
                         </Divider>
+                        {errorAlert ?
+                            <Alert variant="filled" severity="error" sx={{ my: 1, boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>
+                            :
+                            null
+                        }
                         <TextField
                             error={errorLogueo}
                             placeholder="Correo electrónico"
@@ -303,7 +303,7 @@ const Login = () => {
                             sx={{
                                 mb: 2,
                                 boxShadow: 3,
-                                borderRadius: 3,
+                                borderRadius: 2,
                                 backgroundColor: "#7d745c",
                                 color: "#ffffff",
                                 fontSize: "1rem",
@@ -326,7 +326,7 @@ const Login = () => {
                                 mb: 1,
                                 mt: 1,
                                 border: "none",
-                                borderRadius: 3,
+                                borderRadius: 2,
                                 boxShadow: 2,
                                 backgroundColor: "#67604d",
                                 fontSize: "1rem",

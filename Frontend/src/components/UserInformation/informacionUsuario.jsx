@@ -7,7 +7,7 @@ import { saveProfile, elderPeople, familyPeople, caregivePeople, linkearUsuarios
 import InfoElder from "./tipoUsuario/infoElder.jsx";
 import InfoFamiliar from "./tipoUsuario/infoFamiliar.jsx";
 import InfoCuidador from "./tipoUsuario/infoCuidador.jsx";
-import fondoInfoUser from "../../assets/images/fondoInfoUser.png";
+import fondoChatAI from "../../assets/images/fondoChatAI.png";
 
 const InformacionUsuarios = () => {
     const [isSaving, setIsSaving] = useState(false);
@@ -260,7 +260,7 @@ const InformacionUsuarios = () => {
                         setErrorTextFields(false);
                         setHasError(false);
                     }, 5000);
-                    setTimeout(() => setIsSaving(false), 500); 
+                    setTimeout(() => setIsSaving(false), 500);
                     return;
                 } else {
                     navigate("/paginaCuidador");
@@ -285,7 +285,7 @@ const InformacionUsuarios = () => {
                 setErrorTextFields(false);
                 setHasError(false);
             }, 5000);
-            setTimeout(() => setIsSaving(false), 500); 
+            setTimeout(() => setIsSaving(false), 500);
             return;
         };
     };
@@ -322,7 +322,7 @@ const InformacionUsuarios = () => {
                     position: "fixed",
                     inset: 0,
                     zIndex: 0,
-                    background: `url(${fondoInfoUser})`,
+                    background: `url(${fondoChatAI})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
@@ -343,6 +343,7 @@ const InformacionUsuarios = () => {
                 }}>
                 {errorAlert ?
                     <Alert
+                        variant="filled"
                         severity="error"
                         sx={{
                             position: "fixed",
@@ -383,27 +384,30 @@ const InformacionUsuarios = () => {
                         },
                         p: { xs: 2, sm: 3, md: 3 },
                         borderRadius: 4,
+                        boxShadow: 3,
                         background: "transparent",
                         gap: 1,
-                        color: "#ffffff",
+                        color: "#000000",
                     }}
                 >
                     <Typography variant="h5"
                         sx={{
-
-                            fontFamily: "'Lora', serif",
                             textAlign: "center",
-                            color: "white",
+                            color: "black",
                         }}
-                    >Antes de comenzar</Typography>
+                    >Antes de comenzar
+                    </Typography>
                     <Divider sx={{
-
+                        my: 0,
                         width: "100%",
                         "&::before, &::after": {
-                            borderColor: "#ffffff",
-                        }
+                            content: '""',
+                            borderColor: "#000000",
+                            borderTop: "1px solid #000000",
+                            opacity: 1
+                        },
                     }}>
-                        <Typography variant="body1" sx={{ color: "#ffffff" }}>~</Typography>
+                        <Typography variant="body1" sx={{ color: "#000000", fontWeight: 'bold' }}>∼</Typography>
                     </Divider>
                     <Box sx={{ my: 0, width: "100%" }}>
                         <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cómo te llamas?</Typography>
@@ -416,10 +420,11 @@ const InformacionUsuarios = () => {
                             fullWidth
                             margin="dense"
                             sx={{
-                                backgroundColor: "#303030",
+                                backgroundColor: "#d7d6d6",
+                                color: "#000000",
                                 borderRadius: 3,
                                 boxShadow: 3,
-                                input: { color: "white" },
+                                input: { color: "#000000" },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
                                     pr: 1,
@@ -427,12 +432,21 @@ const InformacionUsuarios = () => {
                                 "& fieldset": {
                                     borderColor: "transparent"
                                 },
+                                "& .MuiInputBase-input::placeholder": {
+                                    color: "#000000",
+                                    opacity: 0.6,
+                                },
                                 "&:hover fieldset": {
                                     borderColor: "transparent"
                                 },
                                 "&.Mui-focused fieldset": {
                                     borderColor: "gray"
-                                }
+                                },
+                                "& .MuiFormHelperText-root": {
+                                    color: "#000000 !important",
+                                    opacity: 0.8,
+                                    fontWeight: 500,
+                                },
                             }}
                         ></TextField>
                     </Box>
@@ -454,12 +468,14 @@ const InformacionUsuarios = () => {
                                     }
                                 },
                                 MenuListProps: { sx: { p: 0 } }
-                            }} sx={{
-                                backgroundColor: "#303030",
+                            }}
+                            sx={{
+                                backgroundColor: "#d7d6d6",
+                                color: "#000000",
                                 borderRadius: 3,
-                                boxShadow: 3,
                                 mt: 1,
-                                input: { color: "white" },
+                                boxShadow: 3,
+                                input: { color: "#000000" },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
                                     pr: 1,
@@ -467,19 +483,27 @@ const InformacionUsuarios = () => {
                                 "& fieldset": {
                                     borderColor: "transparent"
                                 },
+                                "& .MuiInputBase-input::placeholder": {
+                                    color: "#000000",
+                                    opacity: 0.6,
+                                },
                                 "&:hover fieldset": {
                                     borderColor: "transparent"
                                 },
                                 "&.Mui-focused fieldset": {
                                     borderColor: "gray"
-                                }
+                                },
+                                "& .MuiSelect-icon": {
+                                    color: "#000000",
+                                },
+                                mb: 1
                             }}
                         >
                             <MenuItem value="elder">🧓 Adulto mayor</MenuItem>
                             <MenuItem value="familiar">🧑 Familiar</MenuItem>
-                            <MenuItem value="cuidador">👩‍⚕️ Cuidador</MenuItem>
+                            <MenuItem value="cuidador" disabled>👩‍⚕️ Cuidador</MenuItem>
                         </Select>
-                        <FormHelperText>Si sos adulto mayor no cambies de opción</FormHelperText>
+                        <FormHelperText sx={{ color: "#000000" }}>Si sos adulto mayor no cambies de opción</FormHelperText>
                     </Box>
                     {rol === "elder" ?
                         <InfoElder
@@ -529,24 +553,30 @@ const InformacionUsuarios = () => {
                             />
                     }
                     <Divider sx={{
+                        my: 0,
                         width: "100%",
                         "&::before, &::after": {
-                            borderColor: "#ffffff",
-                        }
+                            content: '""',
+                            borderColor: "#000000",
+                            borderTop: "1px solid #000000",
+                            opacity: 1
+                        },
                     }}>
-                        <Typography variant="body1" sx={{ color: "#ffffff" }}>~</Typography>
+                        <Typography variant="body1" sx={{ color: "#000000", fontWeight: 'bold' }}>∼</Typography>
                     </Divider>
                     <Box sx={{ width: "100%" }}>
                         <Button variant="contained" type="submit" fullWidth
                             sx={{
+                                backgroundColor: "#7d745c",
+                                borderRadius: 2,
                                 boxShadow: 3,
                                 color: "#ffffff",
-                                backgroundColor: "#7a7664",
-                                fontFamily: "'Lora', serif",
-                                fontWeight: "bold",
+                                textTransform: "none",
                                 "&:hover": {
-                                    backgroundColor: "#676456",
-                                }
+                                    backgroundColor: "#67604d"
+                                },
+                                mr: 1,
+                                mt: 1
                             }}>Guardar
                         </Button>
                     </Box>
