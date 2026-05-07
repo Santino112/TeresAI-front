@@ -309,7 +309,6 @@ function ResponsiveDrawer() {
                     mb: 1,
                     borderRadius: 2,
                     textTransform: 'none',
-                    fontWeight: isActive ? 600 : 400,
                     "&:hover": { backgroundColor: "#c1c1c1" }
                   }}
                 >

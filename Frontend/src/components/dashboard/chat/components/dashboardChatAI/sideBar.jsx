@@ -356,6 +356,7 @@ function ResponsiveDrawer(props) {
                                                             onClick={handleNext}
                                                             sx={{
                                                                 backgroundColor: "#7d745c",
+                                                                borderRadius: 2,
                                                                 color: "#ffffff",
                                                                 textTransform: "none",
                                                                 "&:hover": {
@@ -373,6 +374,7 @@ function ResponsiveDrawer(props) {
                                                             sx={{
                                                                 color: "#464545",
                                                                 fontWeight: "bold",
+                                                                borderRadius: 2,
                                                                 textTransform: "none",
                                                                 mr: 1,
                                                                 mt: 1,
@@ -392,6 +394,7 @@ function ResponsiveDrawer(props) {
                                             <Button variant="contained" onClick={handleCloseModal} sx={{
                                                 backgroundColor: "#7d745c",
                                                 color: "#ffffff",
+                                                borderRadius: 2,
                                                 textTransform: "none",
                                                 "&:hover": {
                                                     backgroundColor: "#67604d"
@@ -404,6 +407,7 @@ function ResponsiveDrawer(props) {
                                             <Button onClick={handleReset} sx={{
                                                 color: "#464545",
                                                 fontWeight: "bold",
+                                                borderRadius: 2,
                                                 textTransform: "none",
                                                 ml: 1,
                                                 mt: 1,
@@ -592,7 +596,6 @@ function ResponsiveDrawer(props) {
                                         mb: 1,
                                         borderRadius: 2,
                                         textTransform: 'none',
-                                        fontWeight: isActive ? 600 : 400,
                                         "&:hover": {
                                             backgroundColor: "#c1c1c1"
                                         }

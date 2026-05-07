@@ -232,7 +232,6 @@ export const actualizarDatosCuidadores = async (userId, { geriatrico, adultosmay
 };
 
 //Linkear a los elders con sus familiares y cuidadores
-
 export const linkearUsuarios = async (userId, { emailFamiliar, rol }) => {
 
     const { data: elderData, error: elderError } = await supabase
@@ -266,8 +265,38 @@ export const linkearUsuarios = async (userId, { emailFamiliar, rol }) => {
     return { success: true };
 };
 
-//Actualizar datos de la cuenta
+//Eliminamos el control sobre un elder
+export const desvincularUsuarios = async (userId, emailElder) => {
+    const { data: elderData, error: elderError } = await supabase
+        .schema("public")
+        .from("profiles")
+        .select("id")
+        .eq("email", emailElder)
+        .eq("role", "elder")
+        .single();
 
+    if (elderError || !elderData) {
+        return { success: false, message: "No existe un usuario con ese email. Vuelva a intentar." };
+    };
+
+    const { error: deleteError } = await supabase
+        .schema("public")
+        .from("links")
+        .delete()
+        .eq('elder_id', elderData.id)
+        .eq('linked_id', userId);
+
+    if (deleteError) {
+        return {
+            success: false,
+            message: "Error al eliminar el vínculo: " + deleteError.message
+        };
+    };
+
+    return { success: true };
+};
+
+//Actualizar datos de la cuenta
 export const updateEmail = async (userId, { nuevoEmail }) => {
 
     const { error } = await supabase.auth.updateUser({
