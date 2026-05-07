@@ -1,6 +1,6 @@
-import { useState, useEffect, useEffectEvent, useRef } from "react";
+import { useState, useEffect, useEffectEvent, useRef, use } from "react";
 import { Typography, Button, TextField, Box, Divider, Select, MenuItem, Alert, Grid, Paper, InputAdornment, IconButton } from "@mui/material";
-import { tomarDatosFamiliares, actualizarDatosFamiliares, actualizarDatosPerfiles, updateEmail, updateContraseña, linkearUsuarios } from "../../../exports/datosInicialesUsuarios";
+import { tomarDatosFamiliares, actualizarDatosFamiliares, actualizarDatosPerfiles, updateEmail, updateContraseña, linkearUsuarios, desvincularUsuarios } from "../../../exports/datosInicialesUsuarios";
 import { useAuth } from "../../../../../auth/useAuth";
 import CircularProgress from '@mui/material/CircularProgress';
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
@@ -12,6 +12,7 @@ import Diversity1RoundedIcon from '@mui/icons-material/Diversity1Rounded';
 import FamilyRestroomRoundedIcon from '@mui/icons-material/FamilyRestroomRounded';
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import InsertEmoticonRoundedIcon from '@mui/icons-material/InsertEmoticonRounded';
 import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
 
@@ -40,6 +41,9 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
     //Para agregar un nuevo elder
     const [emailElder, setEmailElder] = useState("");
     const [loadingNuevoElder, setLoadingNuevoElder] = useState(false);
+    //Para eliminar un elder
+    const [loadingEliminarElder, setLoadingEliminarElder] = useState(false);
+    const [emailDeleteElder, setEmailDeleteElder] = useState("");
     //
     const [showPassword, setShowPassword] = useState(false);
     const { user } = useAuth();
@@ -73,20 +77,23 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
         setShowPassword((prev) => !prev);
     };
 
-    useEffect(() => {
+    const fetchInfoElder = async () => {
         if (!user) return;
+        try {
+            const data = await tomarDatosFamiliares(user.id);
+            if (data) {
+                setProfileFamiliar(data);
+                setOriginalData(data);
+            } else {
+                setProfileFamiliar(null);
+                setOriginalData(null);
+            }
+        } catch (error) {
+            console.error("Error cargando datos:", error);
+        }
+    };
 
-        const fetchInfoElder = async () => {
-            try {
-                const data = await tomarDatosFamiliares(user.id);
-                if (data) {
-                    setProfileFamiliar(data);
-                    setOriginalData(data);
-                }
-            } catch (error) {
-                console.error("Error cargando datos:", error);
-            };
-        };
+    useEffect(() => {
         fetchInfoElder();
     }, [user]);
 
@@ -100,7 +107,6 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
             telefonoFamiliar
         }));
     }, [usernameLocal, nombreFamiliar, tipoFamiliar, telefonoFamiliar, dataLoaded]);
-
 
     useEffect(() => {
         if (!profileFamiliar || !profile || originalUsername !== null) return;
@@ -292,7 +298,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
         setLoadingNuevoElder(true);
 
         const succesStore = await linkearUsuarios(user.id, {
-            emailFamiliar: emailElder,
+            emailFamiliar: emailElder.trim().toLowerCase(),
             rol: profile?.role
         });
 
@@ -310,9 +316,49 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
         setAlertMessage("Vinculación exitosa. Familiar añadido");
         setErrorAlert(true);
         setSeverity("success");
+        await fetchInfoElder();
         setEmailElder("");
         setTimeout(() => setErrorAlert(false), 5000);
         setLoadingNuevoElder(false);
+    };
+
+    //Eliminar un anciano que estamos controlando
+    const handleDeteleElder = async (e) => {
+        e.preventDefault();
+        if (loadingEliminarElder) return;
+
+        if (!emailDeleteElder.trim()) {
+            setAlertMessage("Ingresá el email de tu familiar.");
+            setErrorAlert(true);
+            setSeverity("error");
+            setTimeout(() => setErrorAlert(false), 5000);
+            return;
+        };
+        setLoadingEliminarElder(true);
+
+        const succesStore = await desvincularUsuarios(
+            user.id,
+            emailDeleteElder.trim().toLowerCase()
+        );
+
+        if (!succesStore.success) {
+            setAlertMessage(succesStore.message);
+            setErrorAlert(true);
+            setSeverity("error");
+            setTimeout(() => {
+                setErrorAlert(false);
+            }, 5000);
+            setLoadingEliminarElder(false);
+            return;
+        };
+
+        setAlertMessage("Desvinculación exitosa. Familiar eliminado");
+        setErrorAlert(true);
+        setSeverity("success");
+        await fetchInfoElder();
+        setEmailDeleteElder("");
+        setTimeout(() => setErrorAlert(false), 5000);
+        setLoadingEliminarElder(false);
     };
 
     return (
@@ -1125,7 +1171,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                             )
                         }}
                     ></TextField>
-                    <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "14.2%" }, mt: 2 }}>
+                    <Box sx={{ mt: 2 }}>
                         <Button variant="contained" type="submit" fullWidth disabled={loadingNuevoElder}
                             sx={{
                                 boxShadow: 3,
@@ -1146,6 +1192,108 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                     color: "#ffffff !important",
                                 }
                             }}>Agregar
+                        </Button>
+                    </Box>
+                </Paper>
+                <Paper
+                    component="form"
+                    onSubmit={handleDeteleElder}
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "flex-start",
+                        width: "100%",
+                        p: { xs: 2, sm: 3, md: 3 },
+                        borderRadius: 4,
+                        background: "transparent",
+                        boxShadow: 3,
+                        flexGrow: 0,
+                    }}
+                >
+                    <Typography variant="h3" sx={{
+                        color: "#000000",
+                        fontSize: {
+                            xs: "1.4rem",
+                            sm: "1.4rem",
+                            md: "1.4rem",
+                            lg: "1.5rem",
+                            xl: "1.5rem"
+                        },
+                        textAlign: { xs: "center", sm: "center", md: "start" },
+                    }}>Eliminar familiar vinculado</Typography>
+                    <Typography variant="body2" sx={{
+                        mt: { xs: 1, sm: 1, md: 1, lg: 0, xl: 0 },
+                        color: "#000000",
+                        fontSize: {
+                            xs: "1.1rem",
+                            sm: "1.1rem",
+                            md: "1.2rem",
+                            lg: "1.3rem",
+                            xl: "1.3rem",
+                        },
+                        textAlign: { xs: "center", sm: "center", md: "start" },
+                        lineHeight: 1.8,
+                    }}>Aquí puedes eliminar al familiar al que no quieras supervisar más
+                    </Typography>
+                    <TextField
+                        placeholder="Email del familiar"
+                        value={emailDeleteElder}
+                        onChange={(e) => setEmailDeleteElder(e.target.value)}
+                        variant="outlined"
+                        fullWidth
+                        margin="dense"
+                        sx={{
+                            backgroundColor: "#d7d6d6",
+                            color: "#000000",
+                            borderRadius: 3,
+                            boxShadow: 3,
+                            input: { color: "#000000" },
+                            "& .MuiOutlinedInput-root": {
+                                borderRadius: 3,
+                                pr: 1,
+                            },
+                            "& fieldset": {
+                                borderColor: "transparent"
+                            },
+                            "& .MuiInputBase-input::placeholder": {
+                                color: "#000000",
+                                opacity: 0.6,
+                            },
+                            "&:hover fieldset": {
+                                borderColor: "transparent"
+                            },
+                            "&.Mui-focused fieldset": {
+                                borderColor: "gray"
+                            },
+                        }}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#000000" }}>
+                                        <PersonRemoveIcon fontSize="medium" sx={{ mr: 1, color: "#000000" }}></PersonRemoveIcon>
+                                    </Box>
+                                </InputAdornment>
+                            )
+                        }}
+                    ></TextField>
+                    <Box sx={{ mt: 2 }}>
+                        <Button variant="contained" type="submit" fullWidth disabled={loadingEliminarElder}
+                            sx={{
+                                boxShadow: 3,
+                                borderRadius: 2,
+                                my: { xs: 1, sm: 1, md: 1, lg: 0 },
+                                width: { xs: "100%", sm: "100%", md: "fit-content" },
+                                minWidth: "auto",
+                                whiteSpace: "nowrap",
+                                textTransform: "none",
+                                backgroundColor: "#c31313",
+                                fontSize: "1.1rem",
+                                color: "#ffffff",
+                                textTransform: "none",
+                                "&:hover": {
+                                    backgroundColor: "#8f0c0c"
+                                },
+                            }}>Eliminar
                         </Button>
                     </Box>
                 </Paper>

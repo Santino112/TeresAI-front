@@ -353,7 +353,6 @@ const ProfileElder = ({ profile, setProfile }) => {
                         boxShadow: 4,
                         borderRadius: 3,
                         fontSize: "1rem",
-                        fontFamily: "'Lora', serif",
                     }}
                 >{alertMessage}</Alert>
                 :
