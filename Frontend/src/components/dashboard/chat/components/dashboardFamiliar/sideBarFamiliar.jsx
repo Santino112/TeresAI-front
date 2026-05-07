@@ -8,7 +8,7 @@ import MenuUsuario from "./menu.jsx";
 import Inicio from "./Inicio.jsx";
 import Chat from "./chatIA/Chat.jsx";
 import Buscador from '../buscador/Buscador.jsx';
-import Perfil from "../profile/profile.jsx";
+import Perfil from "../profile/Profile.jsx";
 import Calendar from "../calendar/calendar.jsx";
 import Familiar from "./familiar/Familiar.jsx";
 import Menu from "@mui/material/Menu";

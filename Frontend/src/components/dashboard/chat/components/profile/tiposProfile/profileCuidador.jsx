@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Typography, Button, TextField, Box, Paper, Divider, Alert, FormControlLabel, Checkbox, Grid } from "@mui/material";
-import { tomarDatosCuidadores, actualizarDatosCuidadores, actualizarDatosPerfiles } from "../../../exports/datosInicialesUsuarios";
+import { tomarDatosCuidadores, actualizarDatosCuidadores, actualizarDatosPerfiles } from "../../../exports/datosInicialesUsuarios.js";
 import { useAuth } from "../../../../../auth/useAuth.jsx";
 import CircularProgress from '@mui/material/CircularProgress';
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Typography, Button, TextField, Box, Divider, Select, MenuItem, Alert, Grid, Paper, Skeleton, InputAdornment, IconButton } from "@mui/material";
-import { tomarDatosElder, actualizarDatosElders, actualizarDatosPerfiles, updateEmail, updateContraseña } from "../../../exports/datosInicialesUsuarios";
+import { tomarDatosElder, actualizarDatosElders, actualizarDatosPerfiles, updateEmail, updateContraseña } from "../../../exports/datosInicialesUsuarios.js";
 import { useAuth } from "../../../../../auth/useAuth.jsx";
 import CircularProgress from '@mui/material/CircularProgress';
 import InsertEmoticonRoundedIcon from '@mui/icons-material/InsertEmoticonRounded';
