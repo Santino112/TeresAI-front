@@ -234,7 +234,6 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                                 textAlign: "center",
                                 color: "#000000",
                                 mt: 4,
-                                fontFamily: "'Lora', serif"
                             }}>
                                 No se encontraron conversaciones
                             </Typography>
