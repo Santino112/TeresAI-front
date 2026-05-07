@@ -1,14 +1,11 @@
 import api from "../../../../api/axios";
 
-export const getNews = async ({ query = "", country, global = false } = {}) => {
+export const getNews = async ({ query = "", country = "ar" } = {}) => {
   try {
-    const payload = { query, global };
-
-    if (country) {
-      payload.country = country;
-    }
-
-    const response = await api.post("/news", payload);
+    const response = await api.post("/news", {
+      query,
+      country
+    });
     return response.data;
   } catch (error) {
     console.error("Error obteniendo noticias:", error);
