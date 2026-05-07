@@ -21,6 +21,7 @@ import {
   LineChart,
 } from "@mui/x-charts";
 import { useAuth } from "../../../../../auth/useAuth.jsx";
+import fondoChatAI from "../../../../../../assets/images/fondoChatAI.png";
 
 const Familiar = () => {
   const { user, accessToken, loading: authLoading } = useAuth();
@@ -126,20 +127,33 @@ const Familiar = () => {
         flexDirection: "column",
         width: "100%",
         height: "100%",
+        background: `url(${fondoChatAI})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
         overflow: "auto",
-        background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)",
         p: { xs: 1, sm: 2, md: 3, lg: 3 }
       }}
     >
-      {/* Header */}
       <Paper
         sx={{
-          p: { xs: 1.5, sm: 2, md: 3 },
+          background: "transparent",
           borderRadius: 3,
-          background: "rgba(255, 255, 255, 0.05)",
-          backdropFilter: "blur(10px)",
           border: "1px solid rgba(255, 255, 255, 0.1)",
-          mb: { xs: 2, md: 3 }
+          mb: { xs: 2, md: 3 },
+          p: { xs: 2, sm: 2, md: 2 },
+          boxShadow: 0,
+          animation: "slideDown 0.4s ease",
+          "@keyframes slideDown": {
+            from: {
+              opacity: 0,
+              transform: "translateY(-40px)"
+            },
+            to: {
+              opacity: 1,
+              transform: "translateY(0)"
+            }
+          }
         }}
       >
         <Stack
@@ -150,21 +164,38 @@ const Familiar = () => {
         >
           <Box>
             <Typography
-              variant="h4"
+              variant="h3"
               sx={{
-                fontFamily: "'Lora', serif",
-                fontWeight: 600,
-                mb: 0.5,
-                fontSize: { xs: "1.3rem", sm: "1.5rem", md: "1.8rem" }
+                display: "flex",
+                justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+                alignItems: "center",
+                color: "#000000",
+                fontSize: {
+                  xs: "1.5rem",
+                  sm: "1.5rem",
+                  md: "1.5rem",
+                  lg: "1.7rem",
+                  xl: "1.8rem"
+                },
+                mb: 1
               }}
             >
               Estadísticas del Familiar
             </Typography>
             <Typography
-              variant="body2"
+              variant="body1"
               sx={{
-                opacity: 0.8,
-                fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1rem" }
+                color: "#000000",
+                fontSize: {
+                  xs: "1rem",
+                  sm: "1rem",
+                  md: "1.2rem",
+                  lg: "1.3rem",
+                  xl: "1.3rem",
+                },
+
+                lineHeight: 1.6,
+                textAlign: { xs: "center", sm: "center", md: "start" },
               }}
             >
               Análisis de últimos 180 días
@@ -175,16 +206,30 @@ const Familiar = () => {
               value={selectedElder || ""}
               onChange={(e) => setSelectedElder(e.target.value)}
               sx={{
-                width: { xs: "100%", sm: "auto", md: 280 },
-                minWidth: { xs: "100%", sm: 200, md: 250 },
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                color: "#fff",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "rgba(255, 255, 255, 0.2)"
+                backgroundColor: "#d7d6d6",
+                mt: 1,
+                color: "#000000",
+                borderRadius: 3,
+                boxShadow: 3,
+                input: { color: "#000000" },
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 3,
+                  pr: 1,
                 },
-                "& .MuiOutlinedInput-input": {
-                  fontSize: { xs: "0.85rem", sm: "0.9rem" }
-                }
+                "& fieldset": {
+                  borderColor: "transparent"
+                },
+                "& .MuiInputBase-input::placeholder": {
+                  color: "#000000",
+                  opacity: 0.6,
+                },
+                "&:hover fieldset": {
+                  borderColor: "transparent"
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "gray"
+                },
+                mb: 1
               }}
             >
               {elders.map((elder) => (
@@ -196,24 +241,34 @@ const Familiar = () => {
           )}
         </Stack>
       </Paper>
-
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
       {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
-          <CircularProgress />
+        <Box sx={{ p: 5, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 2, flexGrow: 1 }}>
+          <Typography variant="h2" sx={{ fontSize: "1rem", fontFamily: "'Lora', serif", color: "#000000" }}>Cargando información</Typography>
+          <CircularProgress sx={{ color: "#000000" }} />
         </Box>
       ) : analytics ? (
-        <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }}>
-          {/* Tiempo de Uso por Día de Semana */}
-          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
+        <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }} sx={{
+          animation: "slideDown 0.4s ease",
+          "@keyframes slideDown": {
+            from: {
+              opacity: 0,
+              transform: "translateY(-40px)"
+            },
+            to: {
+              opacity: 1,
+              transform: "translateY(0)"
+            }
+          }
+        }}>
+          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }} sx={{ boxShadow: 3, }}>
             <Card
               sx={{
                 height: "100%",
-                background: "rgba(255, 255, 255, 0.05)",
                 backdropFilter: "blur(10px)",
                 border: "1px solid rgba(255, 255, 255, 0.1)",
-                borderRadius: 2
+                borderRadius: 2,
               }}
             >
               <CardContent sx={{ p: { xs: 1.5, sm: 2, md: 2.5 }, height: "100%", display: "flex", flexDirection: "column" }}>
@@ -222,7 +277,7 @@ const Familiar = () => {
                   sx={{
                     mb: { xs: 1, md: 2 },
                     fontWeight: 600,
-                    fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" }
+                    fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
                   }}
                 >
                   ⏰ Tiempo de Uso por Día
@@ -230,7 +285,14 @@ const Familiar = () => {
                 <Box sx={{ width: "100%", display: "flex", justifyContent: "center", overflowX: "auto" }}>
                   <BarChart
                     dataset={analytics.charts.usageByWeekday}
-                    xAxis={[{ scaleType: "band", dataKey: "day" }]}
+                    xAxis={[{
+                      scaleType: "band",
+                      dataKey: "day",
+                      tickLabelStyle: { fill: '#ffffff' }
+                    }]}
+                    yAxis={[{
+                      tickLabelStyle: { fill: '#ffffff' }
+                    }]}
                     series={[{ dataKey: "hours", label: "Horas", color: "#4caf50" }]}
                     width={chartDimensions.barChart.width}
                     height={chartDimensions.barChart.height}
@@ -250,16 +312,13 @@ const Familiar = () => {
               </CardContent>
             </Card>
           </Grid>
-
-          {/* Distribución de Estados Emocionales */}
-          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
+          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }} sx={{ boxShadow: 3 }}>
             <Card
               sx={{
                 height: "100%",
-                background: "rgba(255, 255, 255, 0.05)",
                 backdropFilter: "blur(10px)",
                 border: "1px solid rgba(255, 255, 255, 0.1)",
-                borderRadius: 2
+                borderRadius: 2,
               }}
             >
               <CardContent sx={{ p: { xs: 1.5, sm: 2, md: 2.5 }, height: "100%", display: "flex", flexDirection: "column" }}>
@@ -268,7 +327,7 @@ const Familiar = () => {
                   sx={{
                     mb: { xs: 1, md: 2 },
                     fontWeight: 600,
-                    fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" }
+                    fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
                   }}
                 >
                   😊 Estados Emocionales
@@ -302,9 +361,22 @@ const Familiar = () => {
                         <Typography
                           key={emotion.id}
                           variant="body2"
-                          sx={{ opacity: 0.8, fontSize: { xs: "0.75rem", sm: "0.85rem" } }}
+                          sx={{
+                            fontSize: { xs: "0.75rem", sm: "0.85rem" },
+                            color: "#ffffff !important", // Forzamos el color negro
+                            display: "flex",
+                            alignItems: "center",
+                            fontWeight: 500, // Un poco más de grosor para que resalte
+                            opacity: 1 // Quitamos la opacidad para que no se vea gris
+                          }}
                         >
-                          <span style={{ color: colors[idx], fontSize: "14px" }}>●</span> {emotion.label}: {emotion.percentage}%
+                          <span style={{
+                            color: colors[idx],
+                            fontSize: "18px",
+                            marginRight: "8px",
+                            lineHeight: 0
+                          }}>●</span>
+                          {emotion.label} ({emotion.percentage}%)
                         </Typography>
                       );
                     })}
@@ -314,12 +386,10 @@ const Familiar = () => {
             </Card>
           </Grid>
 
-          {/* Alertas Importantes */}
           <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
             <Card
               sx={{
                 height: "100%",
-                background: "rgba(255, 255, 255, 0.05)",
                 backdropFilter: "blur(10px)",
                 border: "1px solid rgba(255, 255, 255, 0.1)",
                 borderRadius: 2
@@ -346,8 +416,8 @@ const Familiar = () => {
                         background: `conic-gradient(
                           ${analytics.charts.importantAlerts.score >= 80 ? "#f44336" :
                             analytics.charts.importantAlerts.score >= 60 ? "#ff9800" :
-                            analytics.charts.importantAlerts.score >= 35 ? "#ffc107" :
-                            "#4caf50"} 0deg ${(analytics.charts.importantAlerts.score / 100) * 360}deg,
+                              analytics.charts.importantAlerts.score >= 35 ? "#ffc107" :
+                                "#4caf50"} 0deg ${(analytics.charts.importantAlerts.score / 100) * 360}deg,
                           rgba(255,255,255,0.1) ${(analytics.charts.importantAlerts.score / 100) * 360}deg 360deg
                         )`,
                         display: "flex",
@@ -389,9 +459,9 @@ const Familiar = () => {
                       sx={{
                         color:
                           analytics.charts.importantAlerts.score >= 80 ? "#f44336" :
-                          analytics.charts.importantAlerts.score >= 60 ? "#ff9800" :
-                          analytics.charts.importantAlerts.score >= 35 ? "#ffc107" :
-                          "#4caf50",
+                            analytics.charts.importantAlerts.score >= 60 ? "#ff9800" :
+                              analytics.charts.importantAlerts.score >= 35 ? "#ffc107" :
+                                "#4caf50",
                         fontWeight: 600,
                         mt: 1,
                         fontSize: { xs: "0.9rem", sm: "1rem", md: "1.1rem" }
@@ -448,7 +518,6 @@ const Familiar = () => {
             <Card
               sx={{
                 height: "100%",
-                background: "rgba(255, 255, 255, 0.05)",
                 backdropFilter: "blur(10px)",
                 border: "1px solid rgba(255, 255, 255, 0.1)",
                 borderRadius: 2
@@ -504,12 +573,9 @@ const Familiar = () => {
               </CardContent>
             </Card>
           </Grid>
-
-          {/* Resumen General */}
           <Grid size={12}>
             <Card
               sx={{
-                background: "rgba(255, 255, 255, 0.05)",
                 backdropFilter: "blur(10px)",
                 border: "1px solid rgba(255, 255, 255, 0.1)",
                 borderRadius: 2

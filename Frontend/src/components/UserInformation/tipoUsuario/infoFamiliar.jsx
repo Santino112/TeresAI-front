@@ -25,10 +25,11 @@ const InfoFamiliar = ({
                     fullWidth
                     margin="dense"
                     sx={{
-                        backgroundColor: "#303030",
+                        backgroundColor: "#d7d6d6",
+                        color: "#000000",
                         borderRadius: 3,
                         boxShadow: 3,
-                        input: { color: "white" },
+                        input: { color: "#000000" },
                         "& .MuiOutlinedInput-root": {
                             borderRadius: 3,
                             pr: 1,
@@ -36,12 +37,21 @@ const InfoFamiliar = ({
                         "& fieldset": {
                             borderColor: "transparent"
                         },
+                        "& .MuiInputBase-input::placeholder": {
+                            color: "#000000",
+                            opacity: 0.6,
+                        },
                         "&:hover fieldset": {
                             borderColor: "transparent"
                         },
                         "&.Mui-focused fieldset": {
                             borderColor: "gray"
-                        }
+                        },
+                        "& .MuiFormHelperText-root": {
+                            color: "#000000 !important",
+                            opacity: 0.8,
+                            fontWeight: 500,
+                        },
                     }}
                 ></TextField>
             </Box>
@@ -56,10 +66,11 @@ const InfoFamiliar = ({
                     fullWidth
                     margin="dense"
                     sx={{
-                        backgroundColor: "#303030",
+                        backgroundColor: "#d7d6d6",
+                        color: "#000000",
                         borderRadius: 3,
                         boxShadow: 3,
-                        input: { color: "white" },
+                        input: { color: "#000000" },
                         "& .MuiOutlinedInput-root": {
                             borderRadius: 3,
                             pr: 1,
@@ -67,18 +78,27 @@ const InfoFamiliar = ({
                         "& fieldset": {
                             borderColor: "transparent"
                         },
+                        "& .MuiInputBase-input::placeholder": {
+                            color: "#000000",
+                            opacity: 0.6,
+                        },
                         "&:hover fieldset": {
                             borderColor: "transparent"
                         },
                         "&.Mui-focused fieldset": {
                             borderColor: "gray"
-                        }
+                        },
+                        "& .MuiFormHelperText-root": {
+                            color: "#000000 !important",
+                            opacity: 0.8,
+                            fontWeight: 500,
+                        },
                     }}
                 ></TextField>
-                <FormHelperText>Usa el email con el que el se registro. De esta manera podremos conectarlos.</FormHelperText>
+                <FormHelperText sx={{color: "#000000"}}>Usa el email con el que el se registro. De esta manera podremos conectarlos.</FormHelperText>
             </Box>
             <Box sx={{ my: 0, width: "100%" }}>
-                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>Cual es tu numero de telefono?</Typography>
+                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>¿Cúal es tu número de teléfono?</Typography>
                 <TextField
                     error={errorTextFields}
                     value={numeroTelefono}
@@ -88,10 +108,11 @@ const InfoFamiliar = ({
                     fullWidth
                     margin="dense"
                     sx={{
-                        backgroundColor: "#303030",
+                        backgroundColor: "#d7d6d6",
+                        color: "#000000",
                         borderRadius: 3,
                         boxShadow: 3,
-                        input: { color: "white" },
+                        input: { color: "#000000" },
                         "& .MuiOutlinedInput-root": {
                             borderRadius: 3,
                             pr: 1,
@@ -99,15 +120,24 @@ const InfoFamiliar = ({
                         "& fieldset": {
                             borderColor: "transparent"
                         },
+                        "& .MuiInputBase-input::placeholder": {
+                            color: "#000000",
+                            opacity: 0.6,
+                        },
                         "&:hover fieldset": {
                             borderColor: "transparent"
                         },
                         "&.Mui-focused fieldset": {
                             borderColor: "gray"
-                        }
+                        },
+                        "& .MuiFormHelperText-root": {
+                            color: "#000000 !important",
+                            opacity: 0.8,
+                            fontWeight: 500,
+                        },
                     }}
                 ></TextField>
-                <FormHelperText>Este numero se usara para contactarte en emergencias.</FormHelperText>
+                <FormHelperText sx={{color: "#000000"}}>Este numero se usara para contactarte en emergencias.</FormHelperText>
             </Box>
             <Box sx={{ my: 0, width: "100%" }}>
                 <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>Cual es tu relacion con esa persona?</Typography>
@@ -127,12 +157,14 @@ const InfoFamiliar = ({
                             }
                         },
                         MenuListProps: { sx: { p: 0 } }
-                    }} sx={{
-                        backgroundColor: "#303030",
+                    }}
+                    sx={{
+                        backgroundColor: "#d7d6d6",
+                        color: "#000000",
                         borderRadius: 3,
-                        boxShadow: 3,
                         mt: 1,
-                        input: { color: "white" },
+                        boxShadow: 3,
+                        input: { color: "#000000" },
                         "& .MuiOutlinedInput-root": {
                             borderRadius: 3,
                             pr: 1,
@@ -140,11 +172,18 @@ const InfoFamiliar = ({
                         "& fieldset": {
                             borderColor: "transparent"
                         },
+                        "& .MuiInputBase-input::placeholder": {
+                            color: "#000000",
+                            opacity: 0.6,
+                        },
                         "&:hover fieldset": {
                             borderColor: "transparent"
                         },
                         "&.Mui-focused fieldset": {
                             borderColor: "gray"
+                        },
+                        "& .MuiSelect-icon": {
+                            color: "#000000",
                         },
                         mb: 1
                     }}

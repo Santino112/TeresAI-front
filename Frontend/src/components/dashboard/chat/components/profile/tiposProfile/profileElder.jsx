@@ -959,7 +959,8 @@ const ProfileElder = ({ profile, setProfile }) => {
                                                                 }
                                                             },
                                                             MenuListProps: { sx: { p: 0 } }
-                                                        }} sx={{
+                                                        }} 
+                                                        sx={{
                                                             backgroundColor: "#d7d6d6",
                                                             color: "#000000",
                                                             borderRadius: 3,

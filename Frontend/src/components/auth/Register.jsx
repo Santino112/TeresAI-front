@@ -239,7 +239,7 @@ const Register = () => {
                             <Typography variant="body1" sx={{ color: "#000000", fontWeight: 'bold' }}>∼</Typography>
                         </Divider>
                         {errorAlert ?
-                            <Alert severity="error" sx={{ my: 1, boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>
+                            <Alert variant="filled" severity="error" sx={{ my: 1, boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>
                             :
                             null
                         }
@@ -389,6 +389,7 @@ const Register = () => {
                             mb: 1,
                             mt: 2,
                             boxShadow: 3,
+                            borderRadius: 2,
                             backgroundColor: "#7d745c",
                             color: "#ffffff",
                             fontSize: "1rem",
