@@ -452,7 +452,10 @@ function ResponsiveDrawer() {
                 }}
                     sx={{
                         justifyContent: "flex-start",
-                        backgroundColor: "transparent",
+                        backgroundColor: paginaActiva === "chat" ? "#e1e1e1" : "transparent",
+                        borderRadius: 2,
+                        border: "2px solid",
+                        borderColor: paginaActiva === "chat" ? "gray" : "transparent",
                         mt: 1,
                         mb: 1,
                         color: "#000000",
@@ -466,7 +469,10 @@ function ResponsiveDrawer() {
                     sx={{
                         justifyContent: "flex-start",
                         mb: 1,
-                        backgroundColor: "transparent",
+                        backgroundColor: paginaActiva === "buscador" ? "#e1e1e1" : "transparent",
+                        borderRadius: 2,
+                        border: "2px solid",
+                        borderColor: paginaActiva === "buscador" ? "gray" : "transparent",
                         color: "#000000",
                         "&:hover": {
                             backgroundColor: "#e1e1e1",
@@ -477,7 +483,10 @@ function ResponsiveDrawer() {
                 }} sx={{
                     justifyContent: "flex-start",
                     mb: 1,
-                    backgroundColor: "transparent",
+                    backgroundColor: paginaActiva === "calendario" ? "#e1e1e1" : "transparent",
+                    borderRadius: 2,
+                    border: "2px solid",
+                    borderColor: paginaActiva === "calendario" ? "gray" : "transparent",
                     color: "#000000",
                     "&:hover": {
                         backgroundColor: "#e1e1e1",
@@ -488,7 +497,10 @@ function ResponsiveDrawer() {
                 }} sx={{
                     justifyContent: "flex-start",
                     mb: 1,
-                    backgroundColor: "transparent",
+                    backgroundColor: paginaActiva === "juegos" ? "#e1e1e1" : "transparent",
+                    borderRadius: 2,
+                    border: "2px solid",
+                    borderColor: paginaActiva === "juegos" ? "gray" : "transparent",
                     color: "#000000",
                     "&:hover": {
                         backgroundColor: "#e1e1e1",
@@ -499,7 +511,10 @@ function ResponsiveDrawer() {
                 }} sx={{
                     justifyContent: "flex-start",
                     mb: 1,
-                    backgroundColor: "transparent",
+                    backgroundColor: paginaActiva === "Noticias" ? "#e1e1e1" : "transparent",
+                    borderRadius: 2,
+                    border: "2px solid",
+                    borderColor: paginaActiva === "Noticias" ? "gray" : "transparent",
                     color: "#000000",
                     "&:hover": {
                         backgroundColor: "#e1e1e1",
@@ -510,7 +525,10 @@ function ResponsiveDrawer() {
                 }} sx={{
                     justifyContent: "flex-start",
                     mb: 1,
-                    backgroundColor: "transparent",
+                    backgroundColor: paginaActiva === "Lista de compras" ? "#e1e1e1" : "transparent",
+                    borderRadius: 2,
+                    border: "2px solid",
+                    borderColor: paginaActiva === "Lista de compras" ? "gray" : "transparent",
                     color: "#000000",
                     "&:hover": {
                         backgroundColor: "#e1e1e1",
@@ -521,7 +539,10 @@ function ResponsiveDrawer() {
                 }} sx={{
                     justifyContent: "flex-start",
                     mb: 1,
-                    backgroundColor: "transparent",
+                    backgroundColor: paginaActiva === "notas" ? "#e1e1e1" : "transparent",
+                    borderRadius: 2,
+                    border: "2px solid",
+                    borderColor: paginaActiva === "notas" ? "gray" : "transparent",
                     color: "#000000",
                     "&:hover": {
                         backgroundColor: "#e1e1e1",

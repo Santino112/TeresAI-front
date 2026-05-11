@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Typography, Button, TextField, Box, Stack, Paper, Divider, Grid, Modal } from "@mui/material";
+import { Typography, Button, TextField, Box, Stack, Paper, Divider, Grid, Modal, Alert } from "@mui/material";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 import BotonCalendar from '../buttons/botonCalendar.jsx';
 import FullCalendar from '@fullcalendar/react';
@@ -10,6 +10,7 @@ import api from "../../../../../api/axios.js";
 import esLocale from "@fullcalendar/core/locales/es";
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import EditCalendarRoundedIcon from '@mui/icons-material/EditCalendarRounded';
+import CircularProgress from "@mui/material/CircularProgress";
 import { supabase } from "../../../../../supabaseClient.js";
 
 const styleModal = {
@@ -54,6 +55,7 @@ const Calendar = () => {
     });
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [openModal, setOpenModal] = useState(false);
+    const [createError, setCreateError] = useState("");
     const [createForm, setCreateForm] = useState({
         title: "",
         content: "",
@@ -109,29 +111,38 @@ const Calendar = () => {
         const endDate = new Date(formData.end);
 
         if (!title) {
-            setErrorMessage("El titulo del evento es obligatorio.");
+            setCreateError("El titulo del evento es obligatorio.");
+            setTimeout(() => {
+                setCreateError("");
+            }, 7000);
             return;
         }
 
         if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
-            setErrorMessage("Las fechas ingresadas no son validas.");
+            setCreateError("Las fechas ingresadas no son validas.");
+            setTimeout(() => {
+                setCreateError("");
+            }, 7000);
             return;
         }
 
         if (endDate <= startDate) {
-            setErrorMessage("La fecha de fin debe ser posterior a la fecha de inicio.");
+            setCreateError("La fecha de fin debe ser posterior a la fecha de inicio.");
+            setTimeout(() => {
+                setCreateError("");
+            }, 7000);
             return;
         }
 
         setSubmitting(true);
-        setErrorMessage("");
+        setCreateError("");
 
         try {
             const { data } = await supabase.auth.getSession();
             const session = data.session;
 
             if (!session) {
-                setErrorMessage("Usuario no autenticado.");
+                setCreateError("Usuario no autenticado.");
                 return;
             }
 
@@ -154,7 +165,10 @@ const Calendar = () => {
             await fetchEvents();
             window.dispatchEvent(new Event("calendarUpdated"));
         } catch (error) {
-            setErrorMessage(error?.response?.data?.error || "No se pudo crear el evento.");
+            setCreateError(error?.response?.data?.error || "No se pudo crear el evento.");
+            setTimeout(() => {
+                setCreateError("");
+            }, 7000);
         } finally {
             setSubmitting(false);
         }
@@ -183,37 +197,68 @@ const Calendar = () => {
         };
     }, [fetchEvents]);
 
+    const ActionButtons = ({ handleOpenCreate, isMobile = false }) => (
+        <Box
+            sx={{
+                display: isMobile ? { xs: "flex", md: "none" } : { xs: "none", md: "flex" },
+                mt: isMobile ? 2 : 0,
+                mb: isMobile ? 1 : 0,
+                width: isMobile ? "100%" : "auto",
+                mb: 2,
+            }}
+        >
+            <Button
+                variant="contained"
+                onClick={handleOpenCreate}
+                sx={{
+                    borderRadius: 2,
+                    mr: { xs: 0, sm: 1 },
+                    boxShadow: 3,
+                    width: { xs: "100%", sm: "100%", md: "fit-content" },
+                    minWidth: "auto",
+                    whiteSpace: "nowrap",
+                    backgroundColor: "#7d745c",
+                    color: "#ffffff",
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    "&:hover": {
+                        backgroundColor: "#67604d"
+                    },
+                }}
+            >
+                <AddRoundedIcon fontSize="medium" sx={{ mr: 1 }} /> Agregar evento
+            </Button>
+        </Box>
+    );
+
     return (
         <Box
             sx={{
                 display: "flex",
                 flexDirection: "column",
+                alignItems: "stretch",
                 flexGrow: 1,
                 width: "100%",
                 height: "100%",
-                overflow: "hidden",
+                overflow: "auto",
                 background: `url(${fondoChatAI})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
-                p: { xs: 2, sm: 2, md: 2 }
+                p: 2
             }}
         >
             <Paper
-                elevation={0}
                 sx={{
                     display: "flex",
                     flexDirection: "column",
-                    height: "auto",
+                    justifyContent: "flex-start",
                     width: "100%",
-                    borderRadius: { xs: 4, md: 6 },
-                    p: { xs: 2, md: 2 },
+                    p: { xs: 2, sm: 2, md: 2 },
+                    borderRadius: 4,
                     background: "transparent",
-                    backdropFilter: "blur(12px)",
-                    WebkitBackdropFilter: "blur(12px)",
-                    border: "1px solid rgba(255, 255, 255, 0.3)",
+                    flexGrow: 0,
                     boxShadow: 0,
-                    overflow: "hidden",
                     animation: "slideDown 0.4s ease",
                     "@keyframes slideDown": {
                         from: {
@@ -227,51 +272,55 @@ const Calendar = () => {
                     }
                 }}
             >
-                <Box sx={{ pb: 2 }}>
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid item xs={12} md={8}>
-                            <Typography
-                                variant="h3"
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: { xs: "center", sm: "center", md: "flex-start" },
-                                    alignItems: "center",
-                                    color: "#000000",
-                                    fontSize: {
-                                        xs: "1.5rem",
-                                        sm: "1.5rem",
-                                        md: "1.5rem",
-                                        lg: "1.7rem",
-                                        xl: "1.8rem"
-                                    },
-                                    mb: 1
-                                }}
-                            >
-                                Calendario <CalendarMonthRoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} />
-                            </Typography>
-                            <Typography
-                                variant="body1"
-                                sx={{
-                                    color: "#000000",
-                                    fontSize: {
-                                        xs: "1rem",
-                                        sm: "1rem",
-                                        md: "1.2rem",
-                                        lg: "1.3rem",
-                                        xl: "1.3rem",
-                                    },
+                <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    alignItems="center"
+                    justifyContent="space-between"
+                    spacing={2}
+                >
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                        <Typography
+                            variant="h3"
+                            sx={{
+                                display: "flex",
+                                justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+                                alignItems: "center",
+                                color: "#000000",
+                                fontSize: {
+                                    xs: "1.5rem",
+                                    sm: "1.5rem",
+                                    md: "1.5rem",
+                                    lg: "1.7rem",
+                                    xl: "1.8rem"
+                                },
+                            }}
+                        >
+                            Calendario <CalendarMonthRoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} />
+                        </Typography>
+                    </Stack>
+                    <ActionButtons handleOpenCreate={handleOpenCreate} isMobile={false} />
+                </Stack>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        my: 1,
+                        color: "#000000",
+                        fontSize: {
+                            xs: "1rem",
+                            sm: "1rem",
+                            md: "1.2rem",
+                            lg: "1.3rem",
+                            xl: "1.3rem",
+                        },
 
-                                    lineHeight: 1.6,
-                                    textAlign: { xs: "center", sm: "center", md: "start" },
-                                }}
-                            >
-                                Gestiona y visualiza tus eventos agendados con Teresa.
-                                Revisa tu disponibilidad por semana o mes de forma rápida.
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                </Box>
-                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", mb: 2 }} />
+                        lineHeight: 1.6,
+                        textAlign: { xs: "center", sm: "center", md: "start" },
+                    }}
+                >
+                    Gestiona y visualiza tus eventos agendados con Teresa.
+                    Revisa tu disponibilidad por semana o mes de forma rápida.
+                </Typography>
+                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)" }} />
                 <Box
                     sx={{
                         flexGrow: 1,
@@ -368,41 +417,19 @@ const Calendar = () => {
                                 transform: "translateY(0)"
                             }
                         },
-                        cursor: "pointer"
+                        cursor: "pointer",
+                        mt: 2,
                     }}
                 >
                     <Stack
                         direction={{ xs: "column", md: "row" }}
-                        spacing={1}
+                        spacing={2}
                         alignItems={{ xs: "stretch", md: "center" }}
                         sx={{ mb: 2 }}
                     >
                         <BotonCalendar />
-                        <Button
-                            variant="contained"
-                            onClick={handleOpenCreate}
-                            sx={{
-                                borderRadius: 3,
-                                mb: 3,
-                                mr: { xs: 0, sm: 1 },
-                                boxShadow: 3,
-                                width: { xs: "100%", sm: "100%", md: "fit-content" },
-                                minWidth: "auto",
-                                whiteSpace: "nowrap",
-                                px: 2,
-                                backgroundColor: "#7d745c",
-                                color: "#ffffff",
-                                textTransform: "none",
-                                fontSize: "1.1rem",
-                                "&:hover": {
-                                    backgroundColor: "#67604d"
-                                },
-                            }}
-                        >
-                            <AddRoundedIcon sx={{ mr: 1 }} /> Agregar evento
-                        </Button>
+                        <ActionButtons handleOpenCreate={handleOpenCreate} isMobile={true} />
                     </Stack>
-
                     {openCreateModal && (
                         <Modal
                             open={openCreateModal}
@@ -410,187 +437,273 @@ const Calendar = () => {
                             aria-labelledby="modal-create-title"
                         >
                             <Box sx={styleModal}>
-                                <Typography id="modal-create-title" variant="h5" sx={{
-                                    display: "flex",
-                                    justifyContent: "flex-start",
-                                    alignItems: "center",
-                                    fontWeight: 700,
-                                    mb: 1
-
-                                }}>
-                                    Nuevo Evento <EditCalendarRoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} />
-                                </Typography>
-                                <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", mb: 3 }} />
-                                <Stack spacing={3}>
-                                    <TextField
-                                        placeholder="Título del evento"
-                                        value={formData.title}
-                                        onChange={handleFormChange("title")}
-                                        fullWidth
-                                        required
-                                        sx={{
-                                            backgroundColor: "#d7d6d6",
-                                            color: "#000000",
-                                            borderRadius: 3,
-                                            boxShadow: 3,
-                                            input: { color: "#000000" },
-                                            "& .MuiOutlinedInput-root": {
-                                                borderRadius: 3,
-                                                pr: 1,
-                                            },
-                                            "& fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "& .MuiInputBase-input::placeholder": {
-                                                color: "#000000",
-                                                opacity: 0.6,
-                                            },
-                                            "&:hover fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "gray"
-                                            },
-                                            "& .MuiFormHelperText-root": {
-                                                color: "#000000 !important",
-                                                opacity: 0.8,
-                                                fontWeight: 500,
-                                            },
-                                        }}
-                                    />
-                                    <TextField
-                                        placeholder="Descripción"
-                                        value={formData.description}
-                                        onChange={handleFormChange("description")}
-                                        fullWidth
-                                        inputProps={{ maxLength: 500 }}
-                                        minRows={5}
-                                        maxRows={5}
-                                        multiline
-                                        helperText={
-                                            <span>500 caracteres</span>
-                                        }
-                                        sx={{
-                                            backgroundColor: "#d7d6d6",
-                                            color: "#000000",
-                                            borderRadius: 3,
-                                            boxShadow: 3,
-                                            "& .MuiInputBase-input": {
-                                                color: "#000000",
-                                                WebkitTextFillColor: "#000000",
-                                            },
-                                            "& textarea": {
-                                                color: "#000000",
-                                            },
-                                            "& .MuiOutlinedInput-root": {
-                                                borderRadius: 3,
-                                                pr: 1,
-                                            },
-                                            "& fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "& .MuiInputBase-input::placeholder": {
-                                                color: "#000000",
-                                                opacity: 0.6,
-                                            },
-                                            "&:hover fieldset": {
-                                                borderColor: "transparent"
-                                            },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "gray"
-                                            },
-                                            "& .MuiFormHelperText-root": {
-                                                color: "#000000",
-                                                opacity: 0.8,
-                                                fontWeight: 500,
-                                            },
-                                        }}
-                                    />
-                                    <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                                        <TextField
-                                            label="Inicio"
-                                            type="datetime-local"
-                                            value={formData.start}
-                                            onChange={handleFormChange("start")}
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            required
-                                            sx={{
-                                                backgroundColor: "#d7d6d6",
-                                                color: "#000000",
-                                                borderRadius: 3,
-                                                boxShadow: 3,
-                                                input: { color: "#000000" },
-                                                "& .MuiOutlinedInput-root": {
-                                                    borderRadius: 3,
-                                                    pr: 1,
-                                                },
-                                                "& fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "& .MuiInputBase-input::placeholder": {
-                                                    color: "#000000",
-                                                    opacity: 0.6,
-                                                },
-                                                "&:hover fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&.Mui-focused fieldset": {
-                                                    borderColor: "gray"
-                                                },
-                                                "& .MuiFormHelperText-root": {
-                                                    color: "#000000 !important",
-                                                    opacity: 0.8,
-                                                    fontWeight: 500,
-                                                },
-                                            }}
-                                        />
-                                        <TextField
-                                            label="Fin"
-                                            type="datetime-local"
-                                            value={formData.end}
-                                            onChange={handleFormChange("end")}
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            required
-                                            sx={{
-                                                backgroundColor: "#d7d6d6",
-                                                color: "#000000",
-                                                borderRadius: 3,
-                                                boxShadow: 3,
-                                                input: { color: "#000000" },
-                                                "& .MuiOutlinedInput-root": {
-                                                    borderRadius: 3,
-                                                    pr: 1,
-                                                },
-                                                "& fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "& .MuiInputBase-input::placeholder": {
-                                                    color: "#000000",
-                                                    opacity: 0.6,
-                                                },
-                                                "&:hover fieldset": {
-                                                    borderColor: "transparent"
-                                                },
-                                                "&.Mui-focused fieldset": {
-                                                    borderColor: "gray"
-                                                },
-                                                "& .MuiFormHelperText-root": {
-                                                    color: "#000000 !important",
-                                                    opacity: 0.8,
-                                                    fontWeight: 500,
-                                                },
-                                            }}
-                                        />
-                                    </Stack>
-                                    {errorMessage && (
-                                        <Typography variant="body2" color="error">
-                                            {errorMessage}
-                                        </Typography>
-                                    )}
+                                <Box sx={{ mb: 1, borderBottom: '1px solid rgba(0,0,0,0.1)' }}>
+                                    <Typography id="modal-create-title" variant="h5" sx={{
+                                        display: "flex",
+                                        justifyContent: "flex-start",
+                                        alignItems: "center",
+                                        color: "#000000",
+                                        fontWeight: 600,
+                                        mb: 1
+                                    }}>
+                                        Nuevo Evento <EditCalendarRoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} />
+                                    </Typography>
                                     <Divider sx={{ borderColor: "rgba(0,0,0,0.1)" }} />
-                                    <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+                                </Box>
+                                <Box sx={{ mt: 2 }}>
+                                    <Stack spacing={3}>
+                                        {createError ? <Alert variant="filled" severity="error" sx={{
+                                            boxShadow: 4,
+                                            borderRadius: 3,
+                                            fontSize: "1rem",
+                                        }}>{createError}</Alert> : null}
+                                        <TextField
+                                            label="Título del evento"
+                                            value={formData.title}
+                                            onChange={handleFormChange("title")}
+                                            fullWidth
+                                            sx={{
+                                                backgroundColor: "#d7d6d6",
+                                                borderRadius: 3,
+                                                boxShadow: 3,
+                                                input: { color: "#000000" },
+                                                "& .MuiInputLabel-root": {
+                                                    color: "#000000",
+                                                    opacity: 0.8
+                                                },
+                                                "& .MuiInputLabel-root.Mui-focused": {
+                                                    color: "#000000 !important"
+                                                },
+                                                "& .MuiInputBase-input::placeholder": {
+                                                    color: "#000000",
+                                                    opacity: 0.6,
+                                                },
+                                                "& .MuiOutlinedInput-root": {
+                                                    borderRadius: 3,
+                                                    pr: 1,
+                                                    "& fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "&:hover fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "gray"
+                                                    },
+                                                },
+                                                "& .MuiFormHelperText-root": {
+                                                    color: "#000000 !important",
+                                                    opacity: 0.8,
+                                                    fontWeight: 500,
+                                                },
+                                            }}
+                                        />
+                                        <TextField
+                                            label="Descripción"
+                                            placeholder="Ej: Recordar ir al médico..."
+                                            value={formData.description}
+                                            onChange={handleFormChange("description")}
+                                            fullWidth
+                                            minRows={6}
+                                            multiline
+                                            helperText={
+                                                <span >
+                                                    {`500 caracteres`}
+                                                </span>
+                                            }
+                                            inputProps={{ maxLength: 500 }}
+                                            sx={{
+                                                backgroundColor: "#d7d6d6",
+                                                color: "#000000",
+                                                borderRadius: 3,
+                                                boxShadow: 3,
+                                                "& .MuiInputBase-input": {
+                                                    color: "#000000",
+                                                    WebkitTextFillColor: "#000000",
+                                                },
+                                                "& .MuiInputLabel-root": {
+                                                    color: "#000000",
+                                                    opacity: 0.8
+                                                },
+                                                "& textarea": {
+                                                    color: "#000000",
+                                                },
+                                                "& .MuiOutlinedInput-root": {
+                                                    borderRadius: 3,
+                                                    pr: 1,
+                                                },
+                                                "& fieldset": {
+                                                    borderColor: "transparent"
+                                                },
+                                                "& .MuiInputBase-input::placeholder": {
+                                                    color: "#000000",
+                                                    opacity: 0.6,
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: "transparent"
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: "gray"
+                                                },
+                                                "& .MuiFormHelperText-root": {
+                                                    color: "#000000",
+                                                    opacity: 0.8,
+                                                    fontWeight: 500,
+                                                },
+                                                "& .MuiInputLabel-root.Mui-focused": {
+                                                    color: "#000000 !important"
+                                                },
+                                                "& .MuiOutlinedInput-root": {
+                                                    borderRadius: 3,
+                                                    pr: 1,
+                                                    "& fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "&:hover fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "gray"
+                                                    },
+                                                },
+                                            }}
+                                        />
+                                        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                                            <TextField
+                                                label="Inicio"
+                                                type="datetime-local"
+                                                value={formData.start}
+                                                onChange={handleFormChange("start")}
+                                                InputLabelProps={{ shrink: true }}
+                                                fullWidth
+                                                sx={{
+                                                    backgroundColor: "#d7d6d6",
+                                                    color: "#000000",
+                                                    borderRadius: 3,
+                                                    boxShadow: 3,
+                                                    "& .MuiInputBase-input": {
+                                                        color: "#000000",
+                                                        WebkitTextFillColor: "#000000",
+                                                    },
+                                                    "& .MuiInputLabel-root": {
+                                                        color: "#000000",
+                                                        opacity: 0.8
+                                                    },
+                                                    "& textarea": {
+                                                        color: "#000000",
+                                                    },
+                                                    "& .MuiOutlinedInput-root": {
+                                                        borderRadius: 3,
+                                                        pr: 1,
+                                                    },
+                                                    "& fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "& .MuiInputBase-input::placeholder": {
+                                                        color: "#000000",
+                                                        opacity: 0.6,
+                                                    },
+                                                    "&:hover fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "gray"
+                                                    },
+                                                    "& .MuiFormHelperText-root": {
+                                                        color: "#000000",
+                                                        opacity: 0.8,
+                                                        fontWeight: 500,
+                                                    },
+                                                    "& .MuiInputLabel-root.Mui-focused": {
+                                                        color: "#000000 !important"
+                                                    },
+                                                    "& .MuiOutlinedInput-root": {
+                                                        borderRadius: 3,
+                                                        pr: 1,
+                                                        "& fieldset": {
+                                                            borderColor: "transparent"
+                                                        },
+                                                        "&:hover fieldset": {
+                                                            borderColor: "transparent"
+                                                        },
+                                                        "&.Mui-focused fieldset": {
+                                                            borderColor: "gray"
+                                                        },
+                                                    },
+                                                }}
+                                            />
+                                            <TextField
+                                                label="Fin"
+                                                type="datetime-local"
+                                                value={formData.end}
+                                                onChange={handleFormChange("end")}
+                                                InputLabelProps={{ shrink: true }}
+                                                fullWidth
+                                                sx={{
+                                                    backgroundColor: "#d7d6d6",
+                                                    color: "#000000",
+                                                    borderRadius: 3,
+                                                    boxShadow: 3,
+                                                    "& .MuiInputBase-input": {
+                                                        color: "#000000",
+                                                        WebkitTextFillColor: "#000000",
+                                                    },
+                                                    "& .MuiInputLabel-root": {
+                                                        color: "#000000",
+                                                        opacity: 0.8
+                                                    },
+                                                    "& textarea": {
+                                                        color: "#000000",
+                                                    },
+                                                    "& .MuiOutlinedInput-root": {
+                                                        borderRadius: 3,
+                                                        pr: 1,
+                                                    },
+                                                    "& fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "& .MuiInputBase-input::placeholder": {
+                                                        color: "#000000",
+                                                        opacity: 0.6,
+                                                    },
+                                                    "&:hover fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "gray"
+                                                    },
+                                                    "& .MuiFormHelperText-root": {
+                                                        color: "#000000",
+                                                        opacity: 0.8,
+                                                        fontWeight: 500,
+                                                    },
+                                                    "& .MuiInputLabel-root.Mui-focused": {
+                                                        color: "#000000 !important"
+                                                    },
+                                                    "& .MuiOutlinedInput-root": {
+                                                        borderRadius: 3,
+                                                        pr: 1,
+                                                        "& fieldset": {
+                                                            borderColor: "transparent"
+                                                        },
+                                                        "&:hover fieldset": {
+                                                            borderColor: "transparent"
+                                                        },
+                                                        "&.Mui-focused fieldset": {
+                                                            borderColor: "gray"
+                                                        },
+                                                    },
+                                                }}
+                                            />
+                                        </Stack>
+                                        {errorMessage && (
+                                            <Typography variant="body2" color="error">
+                                                {errorMessage}
+                                            </Typography>
+                                        )}
+                                        <Divider sx={{ borderColor: "rgba(0,0,0,0.1)" }} />
+                                    </Stack>
+                                    <Box sx={{ mt: 1, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
                                         <Button
                                             onClick={handleCloseCreate}
                                             sx={{
@@ -611,22 +724,33 @@ const Calendar = () => {
                                             disabled={submitting}
                                             sx={{
                                                 backgroundColor: "#7d745c",
-                                                color: "#ffffff",
                                                 borderRadius: 2,
+                                                color: "#ffffff",
                                                 textTransform: "none",
-                                                "&:hover": { backgroundColor: "#67604d" },
-                                                mr: 1,
+                                                "&:hover": {
+                                                    backgroundColor: "#67604d"
+                                                },
+                                                "&.Mui-disabled": {
+                                                    backgroundColor: "#5a5342",
+                                                    color: "#ffffff !important",
+                                                },
                                                 mt: 1
                                             }}
                                         >
-                                            {submitting ? "Guardando..." : "Guardar evento"}
+                                            {submitting ?
+                                                <>
+                                                    <CircularProgress size={20} sx={{ color: "#ffffff", mr: 2 }} />
+                                                    Creando...
+                                                </>
+                                                :
+                                                "Crear evento"
+                                            }
                                         </Button>
                                     </Box>
-                                </Stack>
+                                </Box>
                             </Box>
                         </Modal>
                     )}
-
                     {!openCreateModal && errorMessage ? (
                         <Typography variant="body2" color="error" sx={{ mb: 2 }}>
                             {errorMessage}
@@ -657,24 +781,26 @@ const Calendar = () => {
                     aria-describedby="modal-event-description"
                 >
                     <Box sx={styleModal}>
-                        <Typography
-                            id="modal-event-title"
-                            variant="h5"
-                            sx={{ fontWeight: 700, mb: 0 }}
-                        >
-                            {selectedEvent?.title}
-                        </Typography>
-                        <Typography variant="subtitle1" sx={{ color: '#000000', mb: 0, display: 'flex', alignItems: 'center' }}>
-                            📅 {selectedEvent?.start?.toLocaleString('es-AR', {
-                                weekday: 'long',
-                                day: 'numeric',
-                                month: 'long',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            })}
-                        </Typography>
+                        <Stack direction={{ xs: "column", sm: "column", md: "row" }} justifyContent="space-between" alignItems="center" spacing={1}>
+                            <Typography
+                                id="modal-event-title"
+                                variant="h5"
+                                sx={{ fontWeight: 600, mb: 0 }}
+                            >
+                                {selectedEvent?.title}
+                            </Typography>
+                            <Typography variant="body1" sx={{ color: '#000000', mb: 0, display: 'flex', alignItems: 'center' }}>
+                                {selectedEvent?.start?.toLocaleString('es-AR', {
+                                    weekday: 'long',
+                                    day: 'numeric',
+                                    month: 'long',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
+                            </Typography>
+                        </Stack>
                         <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 1 }} />
-                        <Typography id="modal-event-description" variant="body1" sx={{ mt: 2, color: '#444' }}>
+                        <Typography id="modal-event-description" variant="body1" sx={{ mt: 2, color: '#000000' }}>
                             {selectedEvent?.extendedProps?.description || "No hay notas adicionales para este evento."}
                         </Typography>
                         <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", mt: 2 }} />
@@ -690,7 +816,6 @@ const Calendar = () => {
                                     "&:hover": {
                                         backgroundColor: "#67604d"
                                     },
-
                                 }}
                             >
                                 Cerrar

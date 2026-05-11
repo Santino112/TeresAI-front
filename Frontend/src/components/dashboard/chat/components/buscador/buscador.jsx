@@ -160,12 +160,11 @@ const Buscador = ({ activeConversationId, setActiveConversationId, setPaginaActi
                                 borderRadius: 3,
                                 boxShadow: 3,
                                 backgroundColor: "#7d745c",
-                                color: "#ffffff",
                                 textTransform: "none",
                                 "&:hover": {
                                     backgroundColor: "#67604d"
                                 },
-                                fontSize: "1.1rem",
+                                fontSize: "1rem",
                                 width: { xs: "100%", sm: "100%", md: "fit-content" },
                                 minWidth: "auto",
                                 whiteSpace: "nowrap",
