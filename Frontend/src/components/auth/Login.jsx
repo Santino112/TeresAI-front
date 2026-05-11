@@ -181,7 +181,117 @@ const Login = () => {
                         locale="es"
                         width="280"
                     />
-                    <Box component="form" onSubmit={loginUser}>
+
+                    {/* SECCIÓN DE EXPLICACIÓN DEL REGISTRO/LOGIN CON GOOGLE */}
+                    <Box sx={{ mt: 3, width: '100%' }}>
+                        <Typography variant="h6" sx={{
+                            color: "#000000",
+                            fontFamily: "'Lora', serif",
+                            fontWeight: 'bold',
+                            mb: 2,
+                            textAlign: 'center'
+                        }}>¿Cómo funciona el inicio de sesión con Google?</Typography>
+
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            {/* Paso 1 */}
+                            <Box sx={{
+                                p: 2,
+                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                borderRadius: 2,
+                                borderLeft: '4px solid #4285F4'
+                            }}>
+                                <Typography variant="subtitle2" sx={{
+                                    color: "#4285F4",
+                                    fontWeight: 'bold',
+                                    fontFamily: "'Lora', serif",
+                                    mb: 0.5
+                                }}>Paso 1: Haz clic en el botón</Typography>
+                                <Typography variant="body2" sx={{
+                                    color: "#000000",
+                                    fontFamily: "'Lora', serif",
+                                    fontSize: '0.9rem'
+                                }}>Presiona el botón "Continuar con Google" para iniciar el proceso de autenticación.</Typography>
+                            </Box>
+
+                            {/* Paso 2 */}
+                            <Box sx={{
+                                p: 2,
+                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                borderRadius: 2,
+                                borderLeft: '4px solid #EA4335'
+                            }}>
+                                <Typography variant="subtitle2" sx={{
+                                    color: "#EA4335",
+                                    fontWeight: 'bold',
+                                    fontFamily: "'Lora', serif",
+                                    mb: 0.5
+                                }}>Paso 2: Selecciona tu cuenta</Typography>
+                                <Typography variant="body2" sx={{
+                                    color: "#000000",
+                                    fontFamily: "'Lora', serif",
+                                    fontSize: '0.9rem'
+                                }}>Se abrirá una ventana de Google donde podrás elegir la cuenta de correo que deseas usar.</Typography>
+                            </Box>
+
+                            {/* Paso 3 */}
+                            <Box sx={{
+                                p: 2,
+                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                borderRadius: 2,
+                                borderLeft: '4px solid #FBBC04'
+                            }}>
+                                <Typography variant="subtitle2" sx={{
+                                    color: "#FBBC04",
+                                    fontWeight: 'bold',
+                                    fontFamily: "'Lora', serif",
+                                    mb: 0.5
+                                }}>Paso 3: Autoriza el acceso</Typography>
+                                <Typography variant="body2" sx={{
+                                    color: "#000000",
+                                    fontFamily: "'Lora', serif",
+                                    fontSize: '0.9rem'
+                                }}>Google te pedirá que autorices que TeresAI acceda a tu información de perfil de forma segura.</Typography>
+                            </Box>
+
+                            {/* Paso 4 */}
+                            <Box sx={{
+                                p: 2,
+                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                borderRadius: 2,
+                                borderLeft: '4px solid #34A853'
+                            }}>
+                                <Typography variant="subtitle2" sx={{
+                                    color: "#34A853",
+                                    fontWeight: 'bold',
+                                    fontFamily: "'Lora', serif",
+                                    mb: 0.5
+                                }}>Paso 4: ¡Listo!</Typography>
+                                <Typography variant="body2" sx={{
+                                    color: "#000000",
+                                    fontFamily: "'Lora', serif",
+                                    fontSize: '0.9rem'
+                                }}>Una vez autenticado, accederás directamente a TeresAI sin necesidad de contraseña adicional.</Typography>
+                            </Box>
+
+                            {/* Nota de seguridad */}
+                            <Box sx={{
+                                p: 2,
+                                backgroundColor: 'rgba(220, 220, 220, 0.6)',
+                                borderRadius: 2,
+                                mt: 1
+                            }}>
+                                <Typography variant="caption" sx={{
+                                    color: "#000000",
+                                    fontFamily: "'Lora', serif",
+                                    fontSize: '0.85rem',
+                                    fontStyle: 'italic'
+                                }}>🔒 Tu información está protegida. Google nunca compartirá tu contraseña con TeresAI.</Typography>
+                            </Box>
+                        </Box>
+                    </Box>
+
+                    {/* FORMULARIO DE LOGIN/REGISTRO COMENTADO - Mantener para referencia futura */}
+                    <Box component="form" onSubmit={loginUser} sx={{ display: 'none' }}>
                         <Divider sx={{
                             my: 1,
                             color: "#000000",
