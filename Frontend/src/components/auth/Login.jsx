@@ -144,7 +144,6 @@ const Login = () => {
                             lg: "1.5rem",
                             xl: "2rem"
                         },
-                        fontFamily: "'Lora', serif"
                     }} >
                         Bienvenido de vuelta
                     </Typography>
@@ -163,7 +162,6 @@ const Login = () => {
                     <Typography variant='body1' sx={{
                         color: "#000000",
                         mb: 1,
-                        fontFamily: "'Lora', serif",
                     }}>Ingresa o registrate con Google</Typography>
                     <GoogleLogin
                         onSuccess={async (credentialResponse) => {

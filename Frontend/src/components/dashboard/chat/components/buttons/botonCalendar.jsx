@@ -36,7 +36,7 @@ const BotonCalendar = () => {
       backgroundColor: "#7d745c",
       color: "#ffffff",
       textTransform: "none",
-      fontSize: "1.1rem",
+      fontSize: "1rem",
       "&:hover": {
         backgroundColor: "#67604d"
       },

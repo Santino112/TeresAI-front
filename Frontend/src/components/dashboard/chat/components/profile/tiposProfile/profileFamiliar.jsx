@@ -533,7 +533,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                     width: "100%",
                                     height: "100%",
                                     p: { xs: 2, sm: 3, md: 3 },
-                                    borderRadius: 4,
+                                    borderRadius: 3,
                                     boxShadow: 3,
                                     background: "transparent",
                                     flexGrow: 0,
