@@ -296,7 +296,16 @@ function ResponsiveDrawer() {
           conversations.map((conv) => {
             const isActive = conv.id === activeConversationId;
             return (
-              <Box key={conv.id}>
+              <Box
+                key={conv.id}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.5,
+                  width: "100%",
+                  mb: 1,
+                }}
+              >
                 <Button
                   fullWidth
                   onClick={() => {
@@ -304,13 +313,13 @@ function ResponsiveDrawer() {
                     setPaginaActiva("chat");
                   }}
                   sx={{
+                    flex: 1,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "flex-start",
                     gap: 1,
                     backgroundColor: isActive ? "#c1c1c1" : "transparent",
                     color: "#000000",
-                    mb: 1,
                     borderRadius: 2,
                     textTransform: 'none',
                     fontWeight: isActive ? 600 : 400,
@@ -332,17 +341,17 @@ function ResponsiveDrawer() {
                   >
                     {conv.title}
                   </Typography>
-                  <IconButton
-                    size="small"
-                    onClick={(e) => {
-                      handleMenuOpen(e, conv.id);
-                      e.stopPropagation();
-                    }}
-                    sx={{ flexShrink: 0, ml: "auto", color: "#000000", "&:hover": { color: "#999688" } }}
-                  >
-                    <MoreHorizRoundedIcon fontSize="small" sx={{ color: "#000000" }} />
-                  </IconButton>
                 </Button>
+                <IconButton
+                  size="small"
+                  onClick={(e) => {
+                    handleMenuOpen(e, conv.id);
+                    e.stopPropagation();
+                  }}
+                  sx={{ flexShrink: 0, color: "#000000", "&:hover": { color: "#999688" } }}
+                >
+                  <MoreHorizRoundedIcon fontSize="small" sx={{ color: "#000000" }} />
+                </IconButton>
                 <Menu
                   anchorEl={menuAnchor}
                   open={Boolean(menuAnchor) && menuConvId === conv.id}

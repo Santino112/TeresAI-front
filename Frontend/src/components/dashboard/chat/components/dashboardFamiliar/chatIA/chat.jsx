@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from "react";
-import { Typography, TextField, Box, CircularProgress, IconButton } from "@mui/material";
+﻿import { useEffect, useState, useRef } from "react";
+import { Typography, TextField, Box, CircularProgress, IconButton, Alert } from "@mui/material";
 import { enviarPromptFamiliar } from "../../../exports/enviarPromptFamiliar.js";
 import { playTTS, stopTTS } from "../../../exports/playTTS.js";
 import { useWakeWord } from "../../../exports/useWakeWord.js";
@@ -10,6 +10,7 @@ import fondoChatAI from "../../../../../../assets/images/fondoChatAI.png";
 import axios from "axios";
 import ReactMarkDown from "react-markdown";
 import BotonAudio from "../../buttons/BotonAudio.jsx";
+import VoiceStatusPill from "../../../../../common/VoiceStatusPill.jsx";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
@@ -81,9 +82,9 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   else saludo = "Buenas noches";
 
   const frases = [
-    "¡Hola! ¿Cómo estás hoy?",
-    "¿Qué quieres saber sobre tu familiar hoy?",
-    "¿En qué te puedo ayudar?",
+    "Â¡Hola! Â¿CÃ³mo estÃ¡s hoy?",
+    "Â¿QuÃ© quieres saber sobre tu familiar hoy?",
+    "Â¿En quÃ© te puedo ayudar?",
     "Preguntame por conversaciones, salud o intereses.",
     "Necesitas ayuda con algo de tu familiar?"
   ];
@@ -98,10 +99,32 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   const [fraseParaChat, setFraseParaChat] = useState(frasesParaIA[0]);
 
   const audioRef = useRef(null);
+  const [audioRecording, setAudioRecording] = useState(false);
 
-  const { startWake, stopWake } = useWakeWord(() => {
-    audioRef.current?.startRecording();
+  const { startWake, stopWake, wakeStatus, speechSupported, voiceError } = useWakeWord({
+    onWake: () => audioRef.current?.startRecording({ autoStopOnSilence: true }),
   });
+
+  const isThinking = pensandoIA === activeConversationId;
+  const voiceMode = voiceError
+    ? null
+    : isThinking
+      ? "thinking"
+      : audioRecording
+        ? "dictation"
+        : wakeStatus === "wake"
+          ? "wake"
+          : null;
+
+  const handleAudioStart = () => {
+    setAudioRecording(true);
+    stopWake();
+  };
+
+  const handleAudioStop = () => {
+    setAudioRecording(false);
+    startWake();
+  };
 
   useEffect(() => {
     startWake();
@@ -351,6 +374,19 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   "& fieldset": { border: "none" }
                 }}
               />
+              <Box sx={{ px: 1, pt: 1 }}>
+                {voiceMode ? (
+                  <VoiceStatusPill
+                    mode={voiceMode}
+                    supported={speechSupported}
+                  />
+                ) : null}
+                {voiceError ? (
+                  <Alert severity="warning" variant="filled" sx={{ mt: 1, py: 0.5 }}>
+                    {voiceError}
+                  </Alert>
+                ) : null}
+              </Box>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 1, px: 1, pb: 0.8 }}>
                 <Box>
                   <IconButton
@@ -374,8 +410,8 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   <BotonAudio
                     ref={audioRef}
                     onTranscription={recibirTextoDeAudio}
-                    onStart={stopWake}
-                    onStop={startWake}
+                    onStart={handleAudioStart}
+                    onStop={handleAudioStop}
                     sx={{ display: hayTexto ? "none" : "inline-flex" }}
                   />
                   {hayTexto && (
@@ -583,6 +619,19 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   }
                 }}
               />
+              <Box sx={{ px: 1, pt: 1 }}>
+                {voiceMode ? (
+                  <VoiceStatusPill
+                    mode={voiceMode}
+                    supported={speechSupported}
+                  />
+                ) : null}
+                {voiceError ? (
+                  <Alert severity="warning" variant="filled" sx={{ mt: 1, py: 0.5 }}>
+                    {voiceError}
+                  </Alert>
+                ) : null}
+              </Box>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 1, px: 1, pb: 1 }}>
                 <Box>
                   <IconButton
@@ -606,8 +655,8 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   <BotonAudio
                     ref={audioRef}
                     onTranscription={recibirTextoDeAudio}
-                    onStart={stopWake}
-                    onStop={startWake}
+                    onStart={handleAudioStart}
+                    onStop={handleAudioStop}
                     sx={{ display: hayTexto ? "none" : "inline-flex" }}
                   />
                   {hayTexto && (
@@ -634,4 +683,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
 };
 
 export default Chat;
+
+
+
 
