@@ -534,7 +534,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                     height: "100%",
                                     p: { xs: 2, sm: 3, md: 3 },
                                     borderRadius: 3,
-                                    boxShadow: 3,
+                                    boxShadow: 5,
                                     background: "transparent",
                                     flexGrow: 0,
                                 }}>
@@ -590,7 +590,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                     xl: 6
                                                 }} >
                                                     <Box sx={{ my: 0, width: "100%" }}>
-                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Contacto actual</Typography>
+                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Email actual</Typography>
                                                         <TextField
                                                             type="email"
                                                             disabled
@@ -647,26 +647,37 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                             margin="dense"
                                                             sx={{
                                                                 backgroundColor: "#d7d6d6",
-                                                                color: "#000000",
                                                                 borderRadius: 3,
                                                                 boxShadow: 3,
                                                                 input: { color: "#000000" },
-                                                                "& .MuiOutlinedInput-root": {
-                                                                    borderRadius: 3,
-                                                                    pr: 1,
+                                                                "& .MuiInputLabel-root": {
+                                                                    color: "#000000",
+                                                                    opacity: 0.8
                                                                 },
-                                                                "& fieldset": {
-                                                                    borderColor: "transparent"
+                                                                "& .MuiInputLabel-root.Mui-focused": {
+                                                                    color: "#000000 !important"
                                                                 },
                                                                 "& .MuiInputBase-input::placeholder": {
                                                                     color: "#000000",
                                                                     opacity: 0.6,
                                                                 },
-                                                                "&:hover fieldset": {
-                                                                    borderColor: "transparent"
+                                                                "& .MuiOutlinedInput-root": {
+                                                                    borderRadius: 3,
+                                                                    pr: 1,
+                                                                    "& fieldset": {
+                                                                        borderColor: "transparent"
+                                                                    },
+                                                                    "&:hover fieldset": {
+                                                                        borderColor: "transparent"
+                                                                    },
+                                                                    "&.Mui-focused fieldset": {
+                                                                        borderColor: "gray"
+                                                                    },
                                                                 },
-                                                                "&.Mui-focused fieldset": {
-                                                                    borderColor: "gray"
+                                                                "& .MuiFormHelperText-root": {
+                                                                    color: "#000000 !important",
+                                                                    opacity: 0.8,
+                                                                    fontWeight: 500,
                                                                 },
                                                             }}
                                                             InputProps={{
@@ -695,7 +706,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                         px: 2,
                                                         color: "#ffffff",
                                                         textTransform: "none",
-                                                        fontSize: "1.1rem",
+                                                        fontSize: "1rem",
                                                         "&:hover": {
                                                             backgroundColor: "#67604d"
                                                         },
@@ -762,26 +773,37 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                             margin="dense"
                                                             sx={{
                                                                 backgroundColor: "#d7d6d6",
-                                                                color: "#000000",
                                                                 borderRadius: 3,
                                                                 boxShadow: 3,
                                                                 input: { color: "#000000" },
-                                                                "& .MuiOutlinedInput-root": {
-                                                                    borderRadius: 3,
-                                                                    pr: 1,
+                                                                "& .MuiInputLabel-root": {
+                                                                    color: "#000000",
+                                                                    opacity: 0.8
                                                                 },
-                                                                "& fieldset": {
-                                                                    borderColor: "transparent"
+                                                                "& .MuiInputLabel-root.Mui-focused": {
+                                                                    color: "#000000 !important"
                                                                 },
                                                                 "& .MuiInputBase-input::placeholder": {
                                                                     color: "#000000",
                                                                     opacity: 0.6,
                                                                 },
-                                                                "&:hover fieldset": {
-                                                                    borderColor: "transparent"
+                                                                "& .MuiOutlinedInput-root": {
+                                                                    borderRadius: 3,
+                                                                    pr: 1,
+                                                                    "& fieldset": {
+                                                                        borderColor: "transparent"
+                                                                    },
+                                                                    "&:hover fieldset": {
+                                                                        borderColor: "transparent"
+                                                                    },
+                                                                    "&.Mui-focused fieldset": {
+                                                                        borderColor: "gray"
+                                                                    },
                                                                 },
-                                                                "&.Mui-focused fieldset": {
-                                                                    borderColor: "gray"
+                                                                "& .MuiFormHelperText-root": {
+                                                                    color: "#000000 !important",
+                                                                    opacity: 0.8,
+                                                                    fontWeight: 500,
                                                                 },
                                                             }}
                                                             InputProps={{
@@ -824,26 +846,37 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                             margin="dense"
                                                             sx={{
                                                                 backgroundColor: "#d7d6d6",
-                                                                color: "#000000",
                                                                 borderRadius: 3,
                                                                 boxShadow: 3,
                                                                 input: { color: "#000000" },
-                                                                "& .MuiOutlinedInput-root": {
-                                                                    borderRadius: 3,
-                                                                    pr: 1,
+                                                                "& .MuiInputLabel-root": {
+                                                                    color: "#000000",
+                                                                    opacity: 0.8
                                                                 },
-                                                                "& fieldset": {
-                                                                    borderColor: "transparent"
+                                                                "& .MuiInputLabel-root.Mui-focused": {
+                                                                    color: "#000000 !important"
                                                                 },
                                                                 "& .MuiInputBase-input::placeholder": {
                                                                     color: "#000000",
                                                                     opacity: 0.6,
                                                                 },
-                                                                "&:hover fieldset": {
-                                                                    borderColor: "transparent"
+                                                                "& .MuiOutlinedInput-root": {
+                                                                    borderRadius: 3,
+                                                                    pr: 1,
+                                                                    "& fieldset": {
+                                                                        borderColor: "transparent"
+                                                                    },
+                                                                    "&:hover fieldset": {
+                                                                        borderColor: "transparent"
+                                                                    },
+                                                                    "&.Mui-focused fieldset": {
+                                                                        borderColor: "gray"
+                                                                    },
                                                                 },
-                                                                "&.Mui-focused fieldset": {
-                                                                    borderColor: "gray"
+                                                                "& .MuiFormHelperText-root": {
+                                                                    color: "#000000 !important",
+                                                                    opacity: 0.8,
+                                                                    fontWeight: 500,
                                                                 },
                                                             }}
                                                             InputProps={{
@@ -880,7 +913,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                         my: { xs: 1, sm: 1, md: 1, lg: 0 },
                                                         backgroundColor: "#7d745c",
                                                         textTransform: "none",
-                                                        fontSize: "1.1rem",
+                                                        fontSize: "1rem",
                                                         color: "#ffffff",
                                                         "&:hover": {
                                                             backgroundColor: "#67604d"
@@ -917,7 +950,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                     justifyContent: "flex-start",
                                     width: "100%",
                                     height: "100%",
-                                    boxShadow: 3,
+                                    boxShadow: 5,
                                     p: { xs: 2, sm: 3, md: 3 },
                                     borderRadius: 4,
                                     background: "transparent",
@@ -966,26 +999,37 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                 margin="dense"
                                                 sx={{
                                                     backgroundColor: "#d7d6d6",
-                                                    color: "#000000",
                                                     borderRadius: 3,
                                                     boxShadow: 3,
                                                     input: { color: "#000000" },
-                                                    "& .MuiOutlinedInput-root": {
-                                                        borderRadius: 3,
-                                                        pr: 1,
+                                                    "& .MuiInputLabel-root": {
+                                                        color: "#000000",
+                                                        opacity: 0.8
                                                     },
-                                                    "& fieldset": {
-                                                        borderColor: "transparent"
+                                                    "& .MuiInputLabel-root.Mui-focused": {
+                                                        color: "#000000 !important"
                                                     },
                                                     "& .MuiInputBase-input::placeholder": {
                                                         color: "#000000",
                                                         opacity: 0.6,
                                                     },
-                                                    "&:hover fieldset": {
-                                                        borderColor: "transparent"
+                                                    "& .MuiOutlinedInput-root": {
+                                                        borderRadius: 3,
+                                                        pr: 1,
+                                                        "& fieldset": {
+                                                            borderColor: "transparent"
+                                                        },
+                                                        "&:hover fieldset": {
+                                                            borderColor: "transparent"
+                                                        },
+                                                        "&.Mui-focused fieldset": {
+                                                            borderColor: "gray"
+                                                        },
                                                     },
-                                                    "&.Mui-focused fieldset": {
-                                                        borderColor: "gray"
+                                                    "& .MuiFormHelperText-root": {
+                                                        color: "#000000 !important",
+                                                        opacity: 0.8,
+                                                        fontWeight: 500,
                                                     },
                                                 }}
                                                 InputProps={{
@@ -1012,26 +1056,37 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                 margin="dense"
                                                 sx={{
                                                     backgroundColor: "#d7d6d6",
-                                                    color: "#000000",
                                                     borderRadius: 3,
                                                     boxShadow: 3,
                                                     input: { color: "#000000" },
-                                                    "& .MuiOutlinedInput-root": {
-                                                        borderRadius: 3,
-                                                        pr: 1,
+                                                    "& .MuiInputLabel-root": {
+                                                        color: "#000000",
+                                                        opacity: 0.8
                                                     },
-                                                    "& fieldset": {
-                                                        borderColor: "transparent"
+                                                    "& .MuiInputLabel-root.Mui-focused": {
+                                                        color: "#000000 !important"
                                                     },
                                                     "& .MuiInputBase-input::placeholder": {
                                                         color: "#000000",
                                                         opacity: 0.6,
                                                     },
-                                                    "&:hover fieldset": {
-                                                        borderColor: "transparent"
+                                                    "& .MuiOutlinedInput-root": {
+                                                        borderRadius: 3,
+                                                        pr: 1,
+                                                        "& fieldset": {
+                                                            borderColor: "transparent"
+                                                        },
+                                                        "&:hover fieldset": {
+                                                            borderColor: "transparent"
+                                                        },
+                                                        "&.Mui-focused fieldset": {
+                                                            borderColor: "gray"
+                                                        },
                                                     },
-                                                    "&.Mui-focused fieldset": {
-                                                        borderColor: "gray"
+                                                    "& .MuiFormHelperText-root": {
+                                                        color: "#000000 !important",
+                                                        opacity: 0.8,
+                                                        fontWeight: 500,
                                                     },
                                                 }}
                                                 InputProps={{
@@ -1048,7 +1103,61 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                     </Grid>
                                     <Grid size={12}>
                                         <Box sx={{ my: 0, width: "100%" }}>
-                                            <Typography variant="body1" sx={{ color: "#000000" }}>¿Cuál es tu relación con esa persona?</Typography>
+                                            <Typography variant="body1" sx={{ color: "#000000" }}>Teléfono del adulto mayor</Typography>
+                                        </Box>
+                                        <TextField
+                                            value={telefonoNuevo}
+                                            onChange={(e) => setTelefonoNuevo(e.target.value)}
+                                            fullWidth
+                                            margin="dense"
+                                            placeholder="Ej: 099123456"
+                                            sx={{
+                                                backgroundColor: "#d7d6d6",
+                                                borderRadius: 3,
+                                                boxShadow: 3,
+                                                input: { color: "#000000" },
+                                                "& .MuiInputLabel-root": {
+                                                    color: "#000000",
+                                                    opacity: 0.8
+                                                },
+                                                "& .MuiInputLabel-root.Mui-focused": {
+                                                    color: "#000000 !important"
+                                                },
+                                                "& .MuiInputBase-input::placeholder": {
+                                                    color: "#000000",
+                                                    opacity: 0.6,
+                                                },
+                                                "& .MuiOutlinedInput-root": {
+                                                    borderRadius: 3,
+                                                    pr: 1,
+                                                    "& fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "&:hover fieldset": {
+                                                        borderColor: "transparent"
+                                                    },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "gray"
+                                                    },
+                                                },
+                                                "& .MuiFormHelperText-root": {
+                                                    color: "#000000 !important",
+                                                    opacity: 0.8,
+                                                    fontWeight: 500,
+                                                },
+                                            }}
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <PhoneRoundedIcon sx={{ color: "#000000", mr: 1 }} />
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                        />
+                                    </Grid>
+                                    <Grid size={12}>
+                                        <Box sx={{ my: 0, width: "100%" }}>
+                                            <Typography variant="body1" sx={{ color: "#000000", mb: 1 }}>¿Cuál es tu relación con esa persona?</Typography>
                                             <Select
                                                 value={tipoFamiliar}
                                                 onChange={(e) => setTipoFamiliar(e.target.value)}
@@ -1075,30 +1184,37 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                     backgroundColor: "#d7d6d6",
                                                     color: "#000000",
                                                     borderRadius: 3,
-                                                    mt: 1,
                                                     boxShadow: 3,
-                                                    input: { color: "#000000" },
-                                                    "& .MuiOutlinedInput-root": {
-                                                        borderRadius: 3,
-                                                        pr: 1,
+                                                    mb: 1,
+                                                    // 1. Esto fuerza el borde a la raíz del Select cuando está enfocado
+                                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                        borderColor: "gray !important",
+                                                        borderWidth: "2px !important",
                                                     },
-                                                    "& fieldset": {
-                                                        borderColor: "transparent"
+                                                    // 2. Quitamos el borde por defecto y en hover
+                                                    "& .MuiOutlinedInput-notchedOutline": {
+                                                        borderColor: "transparent",
                                                     },
-                                                    "& .MuiInputBase-input::placeholder": {
+                                                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                                                        borderColor: "transparent",
+                                                        borderWidth: "2px",
+                                                    },
+                                                    // Estilos del Input e Icono
+                                                    "& .MuiInputBase-input": {
                                                         color: "#000000",
-                                                        opacity: 0.6,
-                                                    },
-                                                    "&:hover fieldset": {
-                                                        borderColor: "transparent"
-                                                    },
-                                                    "&.Mui-focused fieldset": {
-                                                        borderColor: "gray"
+                                                        WebkitTextFillColor: "#000000",
                                                     },
                                                     "& .MuiSelect-icon": {
                                                         color: "#000000",
                                                     },
-                                                    mb: 1
+                                                    // Estilos del Label (opcional, para mantener el negro al enfocar)
+                                                    "& .MuiInputLabel-root.Mui-focused": {
+                                                        color: "#000000 !important",
+                                                    },
+                                                    // Corrección para el Start Adornment si fuera necesario
+                                                    "& .MuiInputAdornment-root": {
+                                                        color: "#000000",
+                                                    }
                                                 }}
                                             >
                                                 <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
@@ -1109,52 +1225,10 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                             </Select>
                                         </Box>
                                     </Grid>
-                                    <Grid size={12}>
-                                        <Box
-                                            sx={{
-                                                display: "flex",
-                                                flexDirection: { xs: "column", sm: "row" },
-                                                alignItems: { xs: "stretch", sm: "center" },
-                                                justifyContent: "space-between",
-                                                gap: 2,
-                                                mt: 1,
-                                                p: 2,
-                                                borderRadius: 3,
-                                                backgroundColor: "#d7d6d6",
-                                                boxShadow: 3,
-                                            }}
-                                        >
-                                            <Box sx={{ flex: 1, minWidth: 0 }}>
-                                                <Typography variant="body1" sx={{ color: "#000000", fontWeight: 600 }}>
-                                                    Teléfono del familiar
-                                                </Typography>
-                                                <Typography variant="body2" sx={{ color: "#000000", mt: 0.5 }}>
-                                                    {telefonoFamiliar || "No hay un número registrado"}
-                                                </Typography>
-                                            </Box>
-                                            <Button
-                                                variant="outlined"
-                                                startIcon={<PhoneRoundedIcon />}
-                                                onClick={handleOpenTelefonoModal}
-                                                sx={{
-                                                    borderRadius: 2,
-                                                    borderColor: "#7d745c",
-                                                    color: "#7d745c",
-                                                    whiteSpace: "nowrap",
-                                                    "&:hover": {
-                                                        borderColor: "#67604d",
-                                                        backgroundColor: "rgba(125, 116, 92, 0.08)",
-                                                    }
-                                                }}
-                                            >
-                                                Cambiar teléfono
-                                            </Button>
-                                        </Box>
-                                    </Grid>
                                 </Grid>
-                <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "30%" }, mt: 2 }}>
-                    <Button variant="contained" type="submit" fullWidth disabled={loading || !hasChanges}
-                        sx={{
+                                <Box sx={{ width: { xs: "100%", sm: "100%", md: "100%", lg: "30%" }, mt: 2 }}>
+                                    <Button variant="contained" type="submit" fullWidth disabled={loading || !hasChanges}
+                                        sx={{
                                             boxShadow: 3,
                                             borderRadius: 2,
                                             my: { xs: 1, sm: 1, md: 1, lg: 0 },
@@ -1164,7 +1238,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                             whiteSpace: "nowrap",
                                             color: "#ffffff",
                                             textTransform: "none",
-                                            fontSize: "1.1rem",
+                                            fontSize: "1rem",
                                             "&:hover": {
                                                 backgroundColor: "#67604d"
                                             },
@@ -1250,7 +1324,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                         p: { xs: 2, sm: 3, md: 3 },
                         borderRadius: 4,
                         background: "transparent",
-                        boxShadow: 3,
+                        boxShadow: 5,
                         flexGrow: 0,
                         my: 4
                     }}
@@ -1278,7 +1352,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                         },
                         textAlign: { xs: "center", sm: "center", md: "start" },
                         lineHeight: 1.8,
-                    }}>Aquí puedes agregar a otro familiar al que quieras cuidar usando su email
+                    }}>Aquí puedes agregar a otro adulto mayor al que quieras cuidar usando su email
                     </Typography>
                     <TextField
                         placeholder="Correo o teléfono del familiar"
@@ -1289,26 +1363,37 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                         margin="dense"
                         sx={{
                             backgroundColor: "#d7d6d6",
-                            color: "#000000",
                             borderRadius: 3,
                             boxShadow: 3,
                             input: { color: "#000000" },
-                            "& .MuiOutlinedInput-root": {
-                                borderRadius: 3,
-                                pr: 1,
+                            "& .MuiInputLabel-root": {
+                                color: "#000000",
+                                opacity: 0.8
                             },
-                            "& fieldset": {
-                                borderColor: "transparent"
+                            "& .MuiInputLabel-root.Mui-focused": {
+                                color: "#000000 !important"
                             },
                             "& .MuiInputBase-input::placeholder": {
                                 color: "#000000",
                                 opacity: 0.6,
                             },
-                            "&:hover fieldset": {
-                                borderColor: "transparent"
+                            "& .MuiOutlinedInput-root": {
+                                borderRadius: 3,
+                                pr: 1,
+                                "& fieldset": {
+                                    borderColor: "transparent"
+                                },
+                                "&:hover fieldset": {
+                                    borderColor: "transparent"
+                                },
+                                "&.Mui-focused fieldset": {
+                                    borderColor: "gray"
+                                },
                             },
-                            "&.Mui-focused fieldset": {
-                                borderColor: "gray"
+                            "& .MuiFormHelperText-root": {
+                                color: "#000000 !important",
+                                opacity: 0.8,
+                                fontWeight: 500,
                             },
                         }}
                         InputProps={{
@@ -1333,7 +1418,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                 whiteSpace: "nowrap",
                                 color: "#ffffff",
                                 textTransform: "none",
-                                fontSize: "1.1rem",
+                                fontSize: "1rem",
                                 "&:hover": {
                                     backgroundColor: "#67604d"
                                 },
@@ -1356,7 +1441,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                         p: { xs: 2, sm: 3, md: 3 },
                         borderRadius: 4,
                         background: "transparent",
-                        boxShadow: 3,
+                        boxShadow: 5,
                         flexGrow: 0,
                     }}
                 >
@@ -1383,7 +1468,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                         },
                         textAlign: { xs: "center", sm: "center", md: "start" },
                         lineHeight: 1.8,
-                    }}>Aquí puedes eliminar al familiar al que no quieras supervisar más
+                    }}>Aquí puedes eliminar al adulto mayor al que no quieras supervisar más
                     </Typography>
                     <TextField
                         placeholder="Correo o teléfono del familiar"
@@ -1394,26 +1479,37 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                         margin="dense"
                         sx={{
                             backgroundColor: "#d7d6d6",
-                            color: "#000000",
                             borderRadius: 3,
                             boxShadow: 3,
                             input: { color: "#000000" },
-                            "& .MuiOutlinedInput-root": {
-                                borderRadius: 3,
-                                pr: 1,
+                            "& .MuiInputLabel-root": {
+                                color: "#000000",
+                                opacity: 0.8
                             },
-                            "& fieldset": {
-                                borderColor: "transparent"
+                            "& .MuiInputLabel-root.Mui-focused": {
+                                color: "#000000 !important"
                             },
                             "& .MuiInputBase-input::placeholder": {
                                 color: "#000000",
                                 opacity: 0.6,
                             },
-                            "&:hover fieldset": {
-                                borderColor: "transparent"
+                            "& .MuiOutlinedInput-root": {
+                                borderRadius: 3,
+                                pr: 1,
+                                "& fieldset": {
+                                    borderColor: "transparent"
+                                },
+                                "&:hover fieldset": {
+                                    borderColor: "transparent"
+                                },
+                                "&.Mui-focused fieldset": {
+                                    borderColor: "gray"
+                                },
                             },
-                            "&.Mui-focused fieldset": {
-                                borderColor: "gray"
+                            "& .MuiFormHelperText-root": {
+                                color: "#000000 !important",
+                                opacity: 0.8,
+                                fontWeight: 500,
                             },
                         }}
                         InputProps={{
@@ -1437,7 +1533,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                 whiteSpace: "nowrap",
                                 textTransform: "none",
                                 backgroundColor: "#c31313",
-                                fontSize: "1.1rem",
+                                fontSize: "1rem",
                                 color: "#ffffff",
                                 textTransform: "none",
                                 "&:hover": {

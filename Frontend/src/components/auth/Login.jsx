@@ -21,13 +21,12 @@ const steps = [
         icon: <DeviceUnknownRoundedIcon sx={{ mr: 2, color: '#7d745c' }} />,
         label: "¿Cómo funciona el inicio de sesión con Google?",
         description: (
-            <Box sx={{ mt: 3, width: '100%' }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {/* Paso 1 */}
+            <Box sx={{ mt: 1, width: '100%' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                     <Box sx={{
                         p: 2,
                         backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                        borderRadius: 2,
+                        borderRadius: 3,
                         borderLeft: '4px solid #4285F4'
                     }}>
                         <Typography variant="subtitle2" sx={{
@@ -44,7 +43,7 @@ const steps = [
                     <Box sx={{
                         p: 2,
                         backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                        borderRadius: 2,
+                        borderRadius: 3,
                         borderLeft: '4px solid #EA4335'
                     }}>
                         <Typography variant="subtitle2" sx={{
@@ -62,7 +61,7 @@ const steps = [
                     <Box sx={{
                         p: 2,
                         backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                        borderRadius: 2,
+                        borderRadius: 3,
                         borderLeft: '4px solid #FBBC04'
                     }}>
                         <Typography variant="subtitle2" sx={{
@@ -80,7 +79,7 @@ const steps = [
                     <Box sx={{
                         p: 2,
                         backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                        borderRadius: 2,
+                        borderRadius: 3,
                         borderLeft: '4px solid #34A853'
                     }}>
                         <Typography variant="subtitle2" sx={{
@@ -97,14 +96,15 @@ const steps = [
                     {/* Nota de seguridad */}
                     <Box sx={{
                         p: 2,
-                        backgroundColor: 'rgba(220, 220, 220, 0.6)',
-                        borderRadius: 2,
-                        mt: 1
+                        backgroundColor: "#ffffff",
+                        borderRadius: 3,
+                        mt: 1,
+                        textAlign: "center"
                     }}>
                         <Typography variant="caption" sx={{
                             color: "#000000",
                             fontSize: '0.85rem',
-                            fontStyle: 'italic'
+                            fontStyle: 'italic',
                         }}>🔒 Tu información está protegida. Google nunca compartirá tu contraseña con TeresAI.</Typography>
                     </Box>
                 </Box>
@@ -260,7 +260,6 @@ const Login = () => {
             minHeight: "100dvh",
             width: "100%",
             minWidth: 0,
-            overflow: "hidden",
             background: `url(${fondoChatAI})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
@@ -274,11 +273,11 @@ const Login = () => {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                minHeight: "100dvh",
-                width: { xs: "100%", md: "50%" },
+                height: "80vh",
+                overflow: "hidden",
+                width: { xs: "100%", md: "40%" },
                 maxWidth: { xs: 440, sm: 440, md: 700, lg: 800 },
-                overflowY: "hidden",
-                p: { xs: 2, sm: 2, md: 2 },
+                p: { xs: 1, sm: 2, md: 2 },
             }}>
                 <AppBar
                     elevation={0}
@@ -305,13 +304,12 @@ const Login = () => {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        height: "auto",
-                        justifyContent: "center",
-                        p: { xs: 3 },
+                        maxHeight: "100%",
+                        overflowY: "auto",
+                        width: '100%',
+                        maxWidth: "600px",
                         background: "#ffffff",
-                        width: '100%',        // Ocupa el ancho disponible...
-                        maxWidth: '600px',    // ...pero no te pases de 400px
-                        margin: 'auto',
+                        p: { xs: 2 },
                         borderRadius: 3,
                         boxShadow: 5,
                         animation: "slideBounce 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
@@ -330,8 +328,8 @@ const Login = () => {
                     <Typography variant="h4" component="h1" sx={{
                         color: "#000000",
                         fontSize: {
-                            xs: "1.7rem",
-                            sm: "1.7rem",
+                            xs: "1.6rem",
+                            sm: "1.6rem",
                             md: "1.4rem",
                             lg: "1.5rem",
                             xl: "2rem"
@@ -354,7 +352,16 @@ const Login = () => {
                     <Typography variant='body1' sx={{
                         color: "#000000",
                         mb: 1,
-                    }}>Ingresa con Google o con tu teléfono</Typography>
+                        fontSize: "1.3rem",
+                        textAlign: "center",
+                        fontSize: {
+                            xs: "1.2rem",
+                            sm: "1.2rem",
+                            md: "1.3rem",
+                            lg: "1.3rem",
+                            xl: "1.3rem"
+                        },
+                    }}>Ingresa con Google</Typography>
                     <GoogleLogin
                         onSuccess={async (credentialResponse) => {
                             const { error } = await supabase.auth.signInWithIdToken({
@@ -371,11 +378,10 @@ const Login = () => {
                         locale="es"
                         width="280"
                     />
-                    {/* SECCIÓN DE EXPLICACIÓN DEL REGISTRO/LOGIN CON GOOGLE */}
                     <Typography
                         variant="caption"
                         sx={{
-                            color: "rgba(0, 0, 0, 0.6)",
+                            color: "rgb(0, 0, 0)",
                             display: "block",
                             lineHeight: 1.5,
                             textAlign: "center",
@@ -383,126 +389,10 @@ const Login = () => {
                                 xs: "1rem",
                                 md: "1rem"
                             },
-                            my: 1
+                            my: 2
                         }}
                     >Si no sabes como ingresar con Google, puedes leer el instructivo presionando el boton de abajo.
                     </Typography>
-                    <Box sx={{
-                        display: "none",
-                        width: "100%",
-                        mt: 1,
-                        p: 2,
-                        borderRadius: 3,
-                        backgroundColor: "rgba(255, 255, 255, 0.9)",
-                        boxShadow: 3,
-                    }}>
-                        <Typography variant="subtitle1" sx={{ color: "#000000", fontWeight: 700, mb: 1 }}>
-                            Ingreso con teléfono
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: "#000000", mb: 1.5 }}>
-                            Recibí un código SMS para entrar sin contraseña.
-                        </Typography>
-                        {phoneFeedbackOpen ? (
-                            <Alert
-                                severity={phoneFeedbackSeverity}
-                                sx={{ mb: 1.5, borderRadius: 2 }}
-                            >
-                                {phoneFeedback}
-                            </Alert>
-                        ) : null}
-                        <TextField
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
-                            placeholder="+54911xxxxxxx"
-                            fullWidth
-                            margin="dense"
-                            type="tel"
-                            sx={{
-                                backgroundColor: "#d7d6d6",
-                                color: "#000000",
-                                borderRadius: 3,
-                                boxShadow: 2,
-                                mb: 1,
-                                input: { color: "#000000" },
-                                "& .MuiOutlinedInput-root": {
-                                    borderRadius: 3,
-                                },
-                                "& fieldset": {
-                                    borderColor: "transparent",
-                                },
-                            }}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <PhoneRoundedIcon sx={{ color: "#000000" }} />
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                        {phoneOtpSent ? (
-                            <TextField
-                                value={phoneCode}
-                                onChange={(e) => setPhoneCode(e.target.value)}
-                                placeholder="Código SMS"
-                                fullWidth
-                                margin="dense"
-                                inputProps={{ inputMode: "numeric" }}
-                                sx={{
-                                    backgroundColor: "#d7d6d6",
-                                    color: "#000000",
-                                    borderRadius: 3,
-                                    boxShadow: 2,
-                                    mb: 1.5,
-                                    input: { color: "#000000" },
-                                    "& .MuiOutlinedInput-root": {
-                                        borderRadius: 3,
-                                    },
-                                    "& fieldset": {
-                                        borderColor: "transparent",
-                                    },
-                                }}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <SmsRoundedIcon sx={{ color: "#000000" }} />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                        ) : null}
-                        <Button
-                            variant="contained"
-                            fullWidth
-                            disabled={phoneLoading}
-                            onClick={phoneOtpSent ? handleVerifyPhoneOtp : handleSendPhoneOtp}
-                            sx={{
-                                backgroundColor: "#7d745c",
-                                color: "#ffffff",
-                                textTransform: "none",
-                                borderRadius: 2,
-                                "&:hover": {
-                                    backgroundColor: "#67604d",
-                                },
-                            }}
-                        >
-                            {phoneLoading ? "Procesando..." : phoneOtpSent ? "Verificar código" : "Enviar código"}
-                        </Button>
-                        {phoneOtpSent ? (
-                            <Button
-                                variant="text"
-                                fullWidth
-                                onClick={handleSendPhoneOtp}
-                                disabled={phoneLoading}
-                                sx={{
-                                    mt: 0.5,
-                                    color: "#7d745c",
-                                    textTransform: "none",
-                                }}
-                            >
-                                Reenviar código
-                            </Button>
-                        ) : null}
-                    </Box>
                     <Box sx={{
                         width: '100%', margin: 'auto', animation: "slideDown 0.4s ease",
                         "@keyframes slideDown": {
@@ -535,12 +425,24 @@ const Login = () => {
                                         bgcolor: "#d7d6d6",
                                         '&:hover': { backgroundColor: '#c1c1c1' },
                                         color: '#000000',
-                                        py: 1
+                                        '& .MuiAccordionSummary-content': {
+                                            justifyContent: 'center',
+                                            margin: '12px 0 !important'
+                                        }
                                     }}
                                 >
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                         {step.icon}
-                                        <Typography sx={{ fontWeight: '600', fontSize: '1.1rem', color: '#000000' }}>
+                                        <Typography sx={{
+                                            fontSize: {
+                                                xs: "1rem",
+                                                sm: "1.1rem",
+                                                md: "1.1rem",
+                                                lg: "1.2rem",
+                                                xl: "1.2rem"
+                                            },
+                                            color: '#000000',
+                                        }}>
                                             {step.label}
                                         </Typography>
                                     </Box>
@@ -561,21 +463,42 @@ const Login = () => {
                             opacity: 1
                         },
                     }}>
-                        <Typography variant="body1" sx={{ color: "#000000" }}>O tambíen puedes ingresar con</Typography>
+                        <Typography variant="body1" sx={{ color: "#000000" }}>O también puedes</Typography>
                     </Divider>
                     <Box sx={{
                         width: "100%",
-                        mt: 1,
-                        p: 2,
                         borderRadius: 3,
-                        backgroundColor: "rgba(255, 255, 255, 0.9)",
-                        boxShadow: 3,
+                        boxShadow: 0,
+                        textAlign: "center"
                     }}>
-                        <Typography variant="subtitle1" sx={{ color: "#000000", fontWeight: 700, mb: 1 }}>
-                            Ingreso con teléfono
+                        <Typography variant="body1" sx={{
+                            color: "#000000",
+                            mb: 1,
+                            fontSize: {
+                                xs: "1.2rem",
+                                sm: "1.2rem",
+                                md: "1.3rem",
+                                lg: "1.3rem",
+                                xl: "1.3rem"
+                            },
+                        }}>
+                            Ingresar con tú teléfono
                         </Typography>
-                        <Typography variant="body2" sx={{ color: "#000000", mb: 1.5 }}>
-                            Recibí un código SMS para entrar sin contraseña.
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: "rgb(0, 0, 0)",
+                                display: "block",
+                                lineHeight: 1.5,
+                                textAlign: "center",
+                                fontSize: {
+                                    xs: "1rem",
+                                    md: "1rem"
+                                },
+                                my: 1
+                            }}
+                        >
+                            Escribe tú número de teléfono e ingresa aquí el código que te enviaremos por SMS. Si no lo recibiste presiona en "Reenviar código".
                         </Typography>
                         {phoneFeedbackOpen ? (
                             <Alert
@@ -588,28 +511,50 @@ const Login = () => {
                         <TextField
                             value={phoneNumber}
                             onChange={(e) => setPhoneNumber(e.target.value)}
-                            placeholder="+54911xxxxxxx"
+                            placeholder="+549353244165"
                             fullWidth
                             margin="dense"
                             type="tel"
                             sx={{
                                 backgroundColor: "#d7d6d6",
-                                color: "#000000",
                                 borderRadius: 3,
-                                boxShadow: 2,
+                                boxShadow: 3,
                                 mb: 1,
                                 input: { color: "#000000" },
+                                "& .MuiInputLabel-root": {
+                                    color: "#000000",
+                                    opacity: 0.8
+                                },
+                                "& .MuiInputLabel-root.Mui-focused": {
+                                    color: "#000000 !important"
+                                },
+                                "& .MuiInputBase-input::placeholder": {
+                                    color: "#000000",
+                                    opacity: 0.6,
+                                },
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 3,
+                                    pr: 1,
+                                    "& fieldset": {
+                                        borderColor: "transparent"
+                                    },
+                                    "&:hover fieldset": {
+                                        borderColor: "transparent"
+                                    },
+                                    "&.Mui-focused fieldset": {
+                                        borderColor: "gray"
+                                    },
                                 },
-                                "& fieldset": {
-                                    borderColor: "transparent",
+                                "& .MuiFormHelperText-root": {
+                                    color: "#000000 !important",
+                                    opacity: 0.8,
+                                    fontWeight: 500,
                                 },
                             }}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <PhoneRoundedIcon sx={{ color: "#000000" }} />
+                                        <PhoneRoundedIcon sx={{ color: "#000000", mr: 1 }} />
                                     </InputAdornment>
                                 ),
                             }}
@@ -624,22 +569,44 @@ const Login = () => {
                                 inputProps={{ inputMode: "numeric" }}
                                 sx={{
                                     backgroundColor: "#d7d6d6",
-                                    color: "#000000",
                                     borderRadius: 3,
-                                    boxShadow: 2,
-                                    mb: 1.5,
+                                    boxShadow: 3,
+                                    my: 1,
                                     input: { color: "#000000" },
+                                    "& .MuiInputLabel-root": {
+                                        color: "#000000",
+                                        opacity: 0.8
+                                    },
+                                    "& .MuiInputLabel-root.Mui-focused": {
+                                        color: "#000000 !important"
+                                    },
+                                    "& .MuiInputBase-input::placeholder": {
+                                        color: "#000000",
+                                        opacity: 0.6,
+                                    },
                                     "& .MuiOutlinedInput-root": {
                                         borderRadius: 3,
+                                        pr: 1,
+                                        "& fieldset": {
+                                            borderColor: "transparent"
+                                        },
+                                        "&:hover fieldset": {
+                                            borderColor: "transparent"
+                                        },
+                                        "&.Mui-focused fieldset": {
+                                            borderColor: "gray"
+                                        },
                                     },
-                                    "& fieldset": {
-                                        borderColor: "transparent",
+                                    "& .MuiFormHelperText-root": {
+                                        color: "#000000 !important",
+                                        opacity: 0.8,
+                                        fontWeight: 500,
                                     },
                                 }}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            <SmsRoundedIcon sx={{ color: "#000000" }} />
+                                            <SmsRoundedIcon sx={{ color: "#000000", mr: 1 }} />
                                         </InputAdornment>
                                     ),
                                 }}
@@ -652,12 +619,19 @@ const Login = () => {
                             onClick={phoneOtpSent ? handleVerifyPhoneOtp : handleSendPhoneOtp}
                             sx={{
                                 backgroundColor: "#7d745c",
+                                borderRadius: 2,
+                                boxShadow: 3,
                                 color: "#ffffff",
                                 textTransform: "none",
-                                borderRadius: 2,
+                                fontSize: "1rem",
                                 "&:hover": {
-                                    backgroundColor: "#67604d",
+                                    backgroundColor: "#67604d"
                                 },
+                                "&.Mui-disabled": {
+                                    backgroundColor: "#5a5342",
+                                    color: "#ffffff !important",
+                                },
+                                my: 1,
                             }}
                         >
                             {phoneLoading ? "Procesando..." : phoneOtpSent ? "Verificar código" : "Enviar código"}
@@ -669,9 +643,12 @@ const Login = () => {
                                 onClick={handleSendPhoneOtp}
                                 disabled={phoneLoading}
                                 sx={{
-                                    mt: 0.5,
-                                    color: "#7d745c",
+                                    color: "#464545",
+                                    fontWeight: "bold",
+                                    borderRadius: 2,
                                     textTransform: "none",
+                                    fontSize: "1rem",
+                                    "&:hover": { backgroundColor: "#e0e0e0" },
                                 }}
                             >
                                 Reenviar código
