@@ -97,7 +97,7 @@ function IconMenu({ setPaginaActiva }) {
                     sx: {
                         p: 1,
                         fontSize: "21px",
-                        backgroundColor: "#eeeeee",
+                        backgroundColor: "#ffffff",
                         color: "#000000",
                         borderRadius: 3
                     }

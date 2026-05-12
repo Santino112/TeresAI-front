@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import api from "../../../../../api/axios";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
-import { Box, Typography, TextField, Paper, List, ListItem, ListItemText, Checkbox, Button, Divider, useTheme, Modal, Stack, Alert, CircularProgress, Grid } from "@mui/material";
+import { Box, Typography, TextField, Paper, List, ListItem, ListItemText, Checkbox, Button, Divider, useTheme, Modal, Stack, Alert, CircularProgress, Grid, InputAdornment } from "@mui/material";
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
 import AddShoppingCartRoundedIcon from '@mui/icons-material/AddShoppingCartRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import LocalOfferRoundedIcon from '@mui/icons-material/LocalOfferRounded';
+import PlusOneRoundedIcon from '@mui/icons-material/PlusOneRounded';
+import PendingActionsRoundedIcon from '@mui/icons-material/PendingActionsRounded';
+import InventoryRoundedIcon from '@mui/icons-material/InventoryRounded';
 
 const styleModal = {
   position: 'absolute',
@@ -187,7 +191,7 @@ export default function ShoppingList() {
           px: 2,
         }}
       >
-        <AddRoundedIcon fontSize="medium" sx={{mr: 1}}/> Agregar producto
+        <AddRoundedIcon fontSize="medium" sx={{ mr: 1 }} /> Agregar producto
       </Button>
     </Box>
   );
@@ -322,17 +326,20 @@ export default function ShoppingList() {
                 mb: 2,
                 boxShadow: 3
               }}>
-                <Typography variant="h6" sx={{
+                <Typography variant="h5" sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                   color: "#000000",
                   fontSize: {
-                    xs: "1.1rem",
-                    sm: "1.1rem",
+                    xs: "1rem",
+                    sm: "1rem",
                     md: "1.2rem",
                     lg: "1.3rem",
                     xl: "1.3rem",
                   },
                 }}>
-                  Articulos pendientes de compra
+                  <PendingActionsRoundedIcon fontSize="medium" sx={{ mr: 1 }} />Articulos pendientes de compra
                 </Typography>
               </Box>
               <Box sx={{
@@ -395,13 +402,13 @@ export default function ShoppingList() {
                     <Typography
                       variant="caption"
                       sx={{
-                        color: "rgba(0, 0, 0, 0.6)", 
-                        display: "block",    
+                        color: "rgba(0, 0, 0, 0.6)",
+                        display: "block",
                         lineHeight: 1.5,
                         textAlign: "center",
                         fontSize: {
                           xs: "0.75rem",
-                          md: "1rem"    
+                          md: "1rem"
                         },
                         mt: 1
                       }}
@@ -487,17 +494,20 @@ export default function ShoppingList() {
                   mb: 2,
                   boxShadow: 3
                 }}>
-                  <Typography variant="h6" sx={{
+                  <Typography variant="h5" sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                     color: "#000000",
                     fontSize: {
-                      xs: "1.1rem",
-                      sm: "1.1rem",
+                      xs: "1rem",
+                      sm: "1rem",
                       md: "1.2rem",
                       lg: "1.3rem",
                       xl: "1.3rem",
                     },
                   }}>
-                    Articulos comprados
+                    <InventoryRoundedIcon fontSize="medium" sx={{ mr: 1 }} />Articulos comprados
                   </Typography>
                 </Box>
                 <Box sx={{
@@ -584,8 +594,7 @@ export default function ShoppingList() {
             <Box sx={{ mb: 1, borderBottom: '1px solid rgba(0,0,0,0.1)' }}>
               <Typography
                 id="modal-title"
-                variant="h6"
-                component="h2"
+                variant="h5"
                 sx={{
                   display: "flex",
                   justifyContent: "flex-start",
@@ -598,7 +607,6 @@ export default function ShoppingList() {
                 Agregar producto nuevo <AddShoppingCartRoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} />
               </Typography>
             </Box>
-
             <Box sx={{ mt: 2 }}>
               <Stack spacing={3}>
                 {createError ? <Alert variant="filled" severity="error" sx={{
@@ -606,96 +614,118 @@ export default function ShoppingList() {
                   borderRadius: 3,
                   fontSize: "1rem",
                 }}>{createError}</Alert> : null}
-                <TextField
-                  label="Nombre del producto"
-                  type="text"
-                  value={createForm.text}
-                  onChange={(event) => setCreateForm((prev) => ({ ...prev, text: event.target.value }))}
-                  fullWidth
-                  placeholder="Ej: Leche, Pan, Frutas..."
-                  sx={{
-                    backgroundColor: "#d7d6d6",
-                    borderRadius: 3,
-                    boxShadow: 3,
-                    input: { color: "#000000" },
-                    "& .MuiInputLabel-root": {
-                      color: "#000000",
-                      opacity: 0.8
-                    },
-                    "& .MuiInputLabel-root.Mui-focused": {
-                      color: "#000000 !important"
-                    },
-                    "& .MuiInputBase-input::placeholder": {
-                      color: "#000000",
-                      opacity: 0.6,
-                    },
-                    "& .MuiOutlinedInput-root": {
+                <Box sx={{ my: 0, width: "100%" }}>
+                  <Typography variant="body1" sx={{ color: "#000000" }}>Nombre del producto</Typography>
+                  <TextField
+                    type="text"
+                    value={createForm.text}
+                    onChange={(event) => setCreateForm((prev) => ({ ...prev, text: event.target.value }))}
+                    fullWidth
+                    placeholder="Ej: Leche, Pan, Frutas..."
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                            <LocalOfferRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }} />
+                          </Box>
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      backgroundColor: "#d7d6d6",
                       borderRadius: 3,
-                      pr: 1,
-                      "& fieldset": {
-                        borderColor: "transparent"
+                      boxShadow: 3,
+                      input: { color: "#000000" },
+                      "& .MuiInputLabel-root": {
+                        color: "#000000",
+                        opacity: 0.8
                       },
-                      "&:hover fieldset": {
-                        borderColor: "transparent"
+                      "& .MuiInputLabel-root.Mui-focused": {
+                        color: "#000000 !important"
                       },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "gray"
+                      "& .MuiInputBase-input::placeholder": {
+                        color: "#000000",
+                        opacity: 0.6,
                       },
-                    },
-                    "& .MuiFormHelperText-root": {
-                      color: "#000000 !important",
-                      opacity: 0.8,
-                      fontWeight: 500,
-                    },
-                  }}
-                />
-                <TextField
-                  label="Cantidad (opcional)"
-                  value={createForm.quantity}
-                  onChange={(event) => setCreateForm((prev) => ({ ...prev, quantity: event.target.value }))}
-                  fullWidth
-                  type="number"
-                  inputProps={{ min: "1" }}
-                  placeholder="Ej: 2, 5, 10..."
-                  sx={{
-                    backgroundColor: "#d7d6d6",
-                    borderRadius: 3,
-                    boxShadow: 3,
-                    input: { color: "#000000" },
-                    "& .MuiInputLabel-root": {
-                      color: "#000000",
-                      opacity: 0.8
-                    },
-                    "& .MuiInputLabel-root.Mui-focused": {
-                      color: "#000000 !important"
-                    },
-                    "& .MuiInputBase-input::placeholder": {
-                      color: "#000000",
-                      opacity: 0.6,
-                    },
-                    "& .MuiOutlinedInput-root": {
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 3,
+                        pr: 1,
+                        "& fieldset": {
+                          borderColor: "transparent"
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "transparent"
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "gray"
+                        },
+                      },
+                      "& .MuiFormHelperText-root": {
+                        color: "#000000 !important",
+                        opacity: 0.8,
+                        fontWeight: 500,
+                      },
+                    }}
+                  />
+                </Box>
+                <Box sx={{ my: 0, width: "100%" }}>
+                  <Typography variant="body1" sx={{ color: "#000000" }}>Cantidad (opcional)</Typography>
+                  <TextField
+                    value={createForm.quantity}
+                    onChange={(event) => setCreateForm((prev) => ({ ...prev, quantity: event.target.value }))}
+                    fullWidth
+                    type="number"
+                    inputProps={{ min: "1" }}
+                    placeholder="Ej: 2, 5, 10..."
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                            <PlusOneRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }} />
+                          </Box>
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      backgroundColor: "#d7d6d6",
                       borderRadius: 3,
-                      pr: 1,
-                      "& fieldset": {
-                        borderColor: "transparent"
+                      boxShadow: 3,
+                      input: { color: "#000000" },
+                      "& .MuiInputLabel-root": {
+                        color: "#000000",
+                        opacity: 0.8
                       },
-                      "&:hover fieldset": {
-                        borderColor: "transparent"
+                      "& .MuiInputLabel-root.Mui-focused": {
+                        color: "#000000 !important"
                       },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "gray"
+                      "& .MuiInputBase-input::placeholder": {
+                        color: "#000000",
+                        opacity: 0.6,
                       },
-                    },
-                    "& .MuiFormHelperText-root": {
-                      color: "#000000 !important",
-                      opacity: 0.8,
-                      fontWeight: 500,
-                    },
-                  }}
-                />
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 3,
+                        pr: 1,
+                        "& fieldset": {
+                          borderColor: "transparent"
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "transparent"
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "gray"
+                        },
+                      },
+                      "& .MuiFormHelperText-root": {
+                        color: "#000000 !important",
+                        opacity: 0.8,
+                        fontWeight: 500,
+                      },
+                    }}
+                  />
+                </Box>
               </Stack>
             </Box>
-            <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 2 }} />
+            <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.18)", my: 2 }} />
             <Box sx={{
               display: 'flex',
               justifyContent: 'flex-end',
@@ -709,6 +739,7 @@ export default function ShoppingList() {
                   fontWeight: "bold",
                   borderRadius: 2,
                   textTransform: "none",
+                  fontSize: "1rem",
                   mr: 1,
                   mt: 1,
                   "&:hover": { backgroundColor: "#e0e0e0" },
@@ -725,6 +756,7 @@ export default function ShoppingList() {
                   borderRadius: 2,
                   color: "#ffffff",
                   textTransform: "none",
+                  fontSize: "1rem",
                   "&:hover": {
                     backgroundColor: "#67604d"
                   },

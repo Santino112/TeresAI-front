@@ -63,7 +63,7 @@ const style = {
     color: '#000000',
     overflowY: "auto",
     maxHeight: '90dvh',
-    bgcolor: "#eeeeee",
+    bgcolor: "#ffffff",
     border: '2px solid #000000',
     borderRadius: 3,
     boxShadow: 24,
@@ -359,6 +359,7 @@ function ResponsiveDrawer() {
                                                                 "&:hover": {
                                                                     backgroundColor: "#67604d"
                                                                 },
+                                                                fontSize: "1rem",
                                                                 mr: 1,
                                                                 mt: 1
                                                             }}
@@ -373,6 +374,7 @@ function ResponsiveDrawer() {
                                                                 fontWeight: "bold",
                                                                 borderRadius: 2,
                                                                 textTransform: "none",
+                                                                fontSize: "1rem",
                                                                 mr: 1,
                                                                 mt: 1,
                                                                 "&:hover": { backgroundColor: "#e0e0e0" },
@@ -396,6 +398,7 @@ function ResponsiveDrawer() {
                                                 "&:hover": {
                                                     backgroundColor: "#67604d"
                                                 },
+                                                fontSize: "1rem",
                                                 mr: 1,
                                                 mt: 1
                                             }}>
@@ -408,6 +411,7 @@ function ResponsiveDrawer() {
                                                 textTransform: "none",
                                                 ml: 1,
                                                 mt: 1,
+                                                fontSize: "1rem",
                                                 "&:hover": { backgroundColor: "#e0e0e0" },
                                             }}>
                                                 Repetir
