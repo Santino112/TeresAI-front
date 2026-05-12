@@ -374,19 +374,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   "& fieldset": { border: "none" }
                 }}
               />
-              <Box sx={{ px: 1, pt: 1 }}>
-                {voiceMode ? (
-                  <VoiceStatusPill
-                    mode={voiceMode}
-                    supported={speechSupported}
-                  />
-                ) : null}
-                {voiceError ? (
-                  <Alert severity="warning" variant="filled" sx={{ mt: 1, py: 0.5 }}>
-                    {voiceError}
-                  </Alert>
-                ) : null}
-              </Box>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 1, px: 1, pb: 0.8 }}>
                 <Box>
                   <IconButton
@@ -405,6 +392,19 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   >
                     {ttsEnabled ? <VolumeUpRoundedIcon fontSize="medium" /> : <VolumeOffRoundedIcon fontSize="medium" />}
                   </IconButton>
+                </Box>
+                <Box sx={{ px: 1, pt: 1 }}>
+                  {voiceMode ? (
+                    <VoiceStatusPill
+                      mode={voiceMode}
+                      supported={speechSupported}
+                    />
+                  ) : null}
+                  {voiceError ? (
+                    <Alert severity="warning" variant="filled" sx={{ mt: 1, py: 0.5 }}>
+                      {voiceError}
+                    </Alert>
+                  ) : null}
                 </Box>
                 <Box>
                   <BotonAudio
@@ -619,19 +619,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   }
                 }}
               />
-              <Box sx={{ px: 1, pt: 1 }}>
-                {voiceMode ? (
-                  <VoiceStatusPill
-                    mode={voiceMode}
-                    supported={speechSupported}
-                  />
-                ) : null}
-                {voiceError ? (
-                  <Alert severity="warning" variant="filled" sx={{ mt: 1, py: 0.5 }}>
-                    {voiceError}
-                  </Alert>
-                ) : null}
-              </Box>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 1, px: 1, pb: 1 }}>
                 <Box>
                   <IconButton
@@ -650,6 +637,19 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   >
                     {ttsEnabled ? <VolumeUpRoundedIcon fontSize="medium" /> : <VolumeOffRoundedIcon fontSize="medium" />}
                   </IconButton>
+                </Box>
+                <Box sx={{ px: 1, pt: 1 }}>
+                  {voiceMode ? (
+                    <VoiceStatusPill
+                      mode={voiceMode}
+                      supported={speechSupported}
+                    />
+                  ) : null}
+                  {voiceError ? (
+                    <Alert severity="warning" variant="filled" sx={{ mt: 1, py: 0.5 }}>
+                      {voiceError}
+                    </Alert>
+                  ) : null}
                 </Box>
                 <Box>
                   <BotonAudio

@@ -5,13 +5,16 @@ import { useAuth } from "../auth/useAuth.jsx";
 import { supabase } from "../../supabaseClient.js";
 import { saveProfile, elderPeople, familyPeople, caregivePeople, linkearUsuarios } from "../dashboard/chat/exports/datosInicialesUsuarios.js";
 import InfoElder from "./tipoUsuario/infoElder.jsx";
+import CircularProgress from '@mui/material/CircularProgress';
 import InfoFamiliar from "./tipoUsuario/infoFamiliar.jsx";
 import InfoCuidador from "./tipoUsuario/infoCuidador.jsx";
 import VoiceTextField from "./VoiceTextField.jsx";
 import fondoChatAI from "../../assets/images/fondoChatAI.png";
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 
+
 const InformacionUsuarios = () => {
+    const [loading, setLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [hasError, setHasError] = useState(false);
     const isProcessingRef = useRef(false);
@@ -130,6 +133,7 @@ const InformacionUsuarios = () => {
 
         setErrorAlert(false);
         setErrorTextFields(false);
+        setLoading(true);
         setIsSaving(true);
         isProcessingRef.current = true;
 
@@ -145,6 +149,7 @@ const InformacionUsuarios = () => {
             setAlertMessage("Ocurrió un error al guardar tu perfil, intentá de nuevo.");
             setErrorAlert(true);
             setErrorTextFields(true);
+            setLoading(false);
             setTimeout(() => {
                 setErrorAlert(false);
                 setErrorTextFields(false);
@@ -174,6 +179,7 @@ const InformacionUsuarios = () => {
                     setAlertMessage(traducirError(resultElder.message));
                     setErrorAlert(true);
                     setErrorTextFields(true);
+                    setLoading(false);
                     setTimeout(() => {
                         setErrorAlert(false);
                         setErrorTextFields(false);
@@ -206,6 +212,7 @@ const InformacionUsuarios = () => {
                     setAlertMessage(resultLinkear.message);
                     setErrorAlert(true);
                     setErrorTextFields(true);
+                    setLoading(false);
                     setTimeout(() => {
                         setErrorAlert(false);
                         setErrorTextFields(false);
@@ -234,6 +241,7 @@ const InformacionUsuarios = () => {
                     setAlertMessage(traducirError(resultFamiliar.message));
                     setErrorAlert(true);
                     setErrorTextFields(true);
+                    setLoading(false);
                     setTimeout(() => {
                         setErrorAlert(false);
                         setErrorTextFields(false);
@@ -242,7 +250,7 @@ const InformacionUsuarios = () => {
                     setTimeout(() => setIsSaving(false), 500);
                     return;
                 }
-                
+
                 navigate("/paginaFamiliar");
                 return;
 
@@ -265,6 +273,7 @@ const InformacionUsuarios = () => {
                     setAlertMessage(traducirError(resultCuidador.message));
                     setErrorAlert(true);
                     setErrorTextFields(true);
+                    setLoading(false);
                     setTimeout(() => {
                         setErrorAlert(false);
                         setErrorTextFields(false);
@@ -289,6 +298,7 @@ const InformacionUsuarios = () => {
             setHasError(true);
             setAlertMessage(traducirError("Ocurrio un error inesperado, reintentelo."));
             setErrorAlert(true);
+            setLoading(false);
             setErrorTextFields(true);
             setTimeout(() => {
                 setErrorAlert(false);
@@ -419,10 +429,9 @@ const InformacionUsuarios = () => {
                                 md: "1rem"
                             },
                         }}
-                    >Completa tu información personal así teresa puede conocerte mejor y generar una mejor experiencia. Si tienes dudas puedes presionar este botón
+                    >Completa tu información personal así teresa puede conocerte mejor y generar una mejor experiencia.
                     </Typography>
                     <Divider sx={{
-                        my: 0,
                         width: "100%",
                         "&::before, &::after": {
                             content: '""',
@@ -451,50 +460,28 @@ const InformacionUsuarios = () => {
                                     </InputAdornment>
                                 ),
                             }}
-                            sx={{
-                                backgroundColor: "#d7d6d6",
-                                borderRadius: 3,
-                                boxShadow: 3,
-                                input: { color: "#000000" },
-                                "& .MuiInputLabel-root": {
-                                    color: "#000000",
-                                    opacity: 0.8
-                                },
-                                "& .MuiInputLabel-root.Mui-focused": {
-                                    color: "#000000 !important"
-                                },
-                                "& .MuiInputBase-input::placeholder": {
-                                    color: "#000000",
-                                    opacity: 0.6,
-                                },
-                                "& .MuiOutlinedInput-root": {
-                                    borderRadius: 3,
-                                    pr: 1,
-                                    "& fieldset": {
-                                        borderColor: "transparent"
-                                    },
-                                    "&:hover fieldset": {
-                                        borderColor: "transparent"
-                                    },
-                                    "&.Mui-focused fieldset": {
-                                        borderColor: "gray"
-                                    },
-                                },
-                            }}
                         />
                     </Box>
-                    <Box sx={{ my: 1, width: "100%" }}>
-                        <Typography variant="body1" sx={{ color: "#000000" }}>¿Qué rol cumplis?</Typography>
+                    <Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", my: 1 }}>
+                        <Typography
+                            variant="body1"
+                            sx={{ color: "#000000", mb: 1, width: "100%" }}
+                        >
+                            ¿Qué rol cumplís?
+                        </Typography>
+
                         <FormControl
                             error={errorTextFields}
                             component="fieldset"
                             sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
                                 width: "100%",
-                                mt: 1,
-                                p: 1.5,
                                 borderRadius: 3,
                                 backgroundColor: "#d7d6d6",
                                 boxShadow: 3,
+                                overflow: "hidden" // Para que el redondeado se respet
                             }}
                         >
                             <RadioGroup
@@ -502,25 +489,39 @@ const InformacionUsuarios = () => {
                                 onChange={(e) => setRol(e.target.value)}
                                 row
                                 sx={{
-                                    justifyContent: "space-between",
-                                    gap: 1,
+                                    width: "100%",
+                                    display: "flex",
+                                    flexWrap: "nowrap",
+                                    justifyContent: "center", // Centra las opciones dentro de la fila
                                     "& .MuiFormControlLabel-root": {
                                         marginRight: 0,
+                                        marginLeft: 0,
                                         borderRadius: 3,
-                                        px: 1.2,
-                                        py: 0.5,
-                                        flex: 1,
-                                        border: "1px solid transparent",
+                                        py: 1,
+                                        flex: 1, // <--- ESTO hace que ocupen todo el ancho (50% cada uno)
+                                        display: "flex",
+                                        justifyContent: "center", // Centra el contenido (Radio + Texto)
+                                        border: "2px solid transparent",
+                                        transition: "all 0.3s ease",
                                     },
-                                    "& .MuiFormControlLabel-root.Mui-checked": {
+                                    "& .MuiFormControlLabel-root:has(.Mui-checked)": {
                                         borderColor: "gray",
+                                        backgroundColor: "rgba(0,0,0,0.05)",
                                     },
                                     "& .MuiRadio-root": {
                                         color: "#000000",
+                                        padding: "4px",
+                                    },
+                                    "& .MuiRadio-root.Mui-checked": {
+                                        color: "#000000 !important",
+                                    },
+                                    "& .MuiRadio-root:hover": {
+                                        backgroundColor: "rgba(0, 0, 0, 0.04)",
                                     },
                                     "& .MuiTypography-root": {
                                         color: "#000000",
                                         fontWeight: 500,
+                                        whiteSpace: "nowrap", // Evita que el texto se rompa en dos líneas
                                     },
                                 }}
                             >
@@ -528,7 +529,6 @@ const InformacionUsuarios = () => {
                                 <FormControlLabel value="familiar" control={<Radio />} label="🧑 Familiar" />
                             </RadioGroup>
                         </FormControl>
-                        <FormHelperText sx={{ color: "#000000" }}>Si sos adulto mayor no cambies de opción</FormHelperText>
                     </Box>
                     {rol === "elder" ?
                         <InfoElder
@@ -590,7 +590,7 @@ const InformacionUsuarios = () => {
                         <Typography variant="body1" sx={{ color: "#000000", fontWeight: 'bold' }}>∼</Typography>
                     </Divider>
                     <Box sx={{ width: "100%" }}>
-                        <Button variant="contained" type="submit" fullWidth
+                        <Button variant="contained" type="submit" disabled={loading} fullWidth
                             sx={{
                                 backgroundColor: "#7d745c",
                                 borderRadius: 2,
@@ -601,9 +601,20 @@ const InformacionUsuarios = () => {
                                 "&:hover": {
                                     backgroundColor: "#67604d"
                                 },
+                                "&.Mui-disabled": {
+                                    backgroundColor: "#5a5342",
+                                    color: "#ffffff !important",
+                                },
                                 mr: 1,
                                 mt: 1
-                            }}>Guardar información
+                            }}>{loading ?
+                                <>
+                                    <CircularProgress size={20} sx={{ color: "#ffffff", mr: 2 }} />
+                                    Guardando información...
+                                </>
+                                :
+                                "Guardar información"
+                            }
                         </Button>
                     </Box>
                 </Paper>

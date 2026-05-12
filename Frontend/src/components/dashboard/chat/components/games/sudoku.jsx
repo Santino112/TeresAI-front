@@ -123,7 +123,6 @@ export default function Sudoku() {
       {/* Título */}
       <Typography
         sx={{
-          fontFamily: "'Lora', serif",
           fontSize: { xs: "1.8rem", md: "2.2rem" },
           fontWeight: 700,
           color: "#2c3e50", // Azul grisáceo oscuro para mejor contraste
@@ -142,8 +141,7 @@ export default function Sudoku() {
             sx={{
               px: 2,
               borderRadius: 3,
-              fontSize: "0.8rem",
-              fontFamily: "'Lora', serif",
+              fontSize: "1rem",
               textTransform: "capitalize",
               // Colores de modo claro
               color: difficulty === d ? "#fff" : "#555",
@@ -167,7 +165,7 @@ export default function Sudoku() {
       ) : won ? (
         <Box sx={{ textAlign: "center", py: 4 }}>
           <EmojiEventsRoundedIcon sx={{ fontSize: "4rem", color: "#7d745c" }} />
-          <Typography sx={{ fontFamily: "'Lora', serif", fontSize: "1.5rem", color: "#2c3e50", mt: 1 }}>
+          <Typography sx={{ fontSize: "1.5rem", color: "#2c3e50", mt: 1 }}>
             ¡Felicitaciones, completaste el Sudoku!
           </Typography>
           <Button
@@ -176,7 +174,7 @@ export default function Sudoku() {
               mt: 2,
               backgroundColor: "#7d745c",
               color: "#fff",
-              fontFamily: "'Lora', serif",
+              fontSize: "1rem",
               "&:hover": { backgroundColor: "#6a624d" }
             }}
           >
@@ -233,7 +231,6 @@ export default function Sudoku() {
                   >
                     <Typography
                       sx={{
-                        fontFamily: "'Lora', serif",
                         fontSize: { xs: "1rem", sm: "1.2rem", md: "1.4rem" },
                         fontWeight: isOriginal ? 700 : 400,
                         color: isError
@@ -265,7 +262,6 @@ export default function Sudoku() {
                 height: { xs: "40px", sm: "48px" },
                 borderRadius: 2,
                 fontSize: "1.2rem",
-                fontFamily: "'Lora', serif",
                 fontWeight: 600,
                 color: "#4b5563",
                 backgroundColor: "#fff",
@@ -302,8 +298,8 @@ export default function Sudoku() {
             startIcon={<RefreshRoundedIcon />}
             sx={{
               color: "#555",
-              fontFamily: "'Lora', serif",
               textTransform: "none",
+              fontSize: "1rem",
               px: 3,
               "&:hover": { backgroundColor: "#e0e0e0" },
             }}
@@ -316,8 +312,8 @@ export default function Sudoku() {
             sx={{
               color: "#fff",
               backgroundColor: "#7d745c",
-              fontFamily: "'Lora', serif",
               textTransform: "none",
+              fontSize: "1rem",
               px: 3,
               "&:hover": { backgroundColor: "#6a624d" },
             }}

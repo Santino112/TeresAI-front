@@ -116,7 +116,6 @@ export default function Crossword() {
     }}>
 
       <Typography sx={{
-        fontFamily: "'Lora', serif",
         fontSize: "2.2rem",
         fontWeight: 700,
         color: "#2c3e50"
@@ -133,7 +132,7 @@ export default function Crossword() {
             sx={{
               borderRadius: 3,
               textTransform: "capitalize",
-              fontFamily: "'Lora', serif",
+              fontSize: "1rem",
               px: 2,
               color: difficulty === d ? "#fff" : "#555",
               backgroundColor: difficulty === d ? "#7d745c" : "#f0f0f0",
@@ -266,6 +265,7 @@ export default function Crossword() {
               minWidth: { xs: 32, sm: 38 },
               height: 38,
               backgroundColor: "#fff",
+              fontSize: "1rem",
               border: "1px solid #d1d5db",
               color: "#9ca3af",
               "&:hover": { backgroundColor: "#fee2e2", color: "#dc2626" }
@@ -283,7 +283,7 @@ export default function Crossword() {
           startIcon={<RefreshRoundedIcon />}
           sx={{
             color: "#555",
-            fontFamily: "'Lora', serif",
+            fontSize: "1rem",
             textTransform: "none",
             px: 3,
              "&:hover": { backgroundColor: "#e0e0e0" },
@@ -299,7 +299,7 @@ export default function Crossword() {
           sx={{
             color: "#fff",
             backgroundColor: "#7d745c",
-            fontFamily: "'Lora', serif",
+            fontSize: "1rem",
             textTransform: "none",
             px: 3,
             "&:hover": { backgroundColor: "#6a624d" }
@@ -343,7 +343,6 @@ export default function Crossword() {
       {won && (
         <Typography sx={{
           color: "#16a34a",
-          fontFamily: "'Lora', serif",
           fontWeight: 700,
           fontSize: "1.2rem",
           mt: 2

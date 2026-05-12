@@ -239,15 +239,15 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
       setMensajes(prev => [...prev, { id: assistantMessageId, role: "assistant", content: '' }]);
 
       const res = await enviarPrompt(
-        texto, 
-        conversationIdAlEnviar, 
-        location, 
+        texto,
+        conversationIdAlEnviar,
+        location,
         abortRef.current.signal,
         (chunk, fullText) => {
           if (activeConversationIdRef.current === conversationIdAlEnviar) {
-            setMensajes(prev => 
-              prev.map(msg => 
-                msg.id === assistantMessageId 
+            setMensajes(prev =>
+              prev.map(msg =>
+                msg.id === assistantMessageId
                   ? { ...msg, content: fullText }
                   : msg
               )
@@ -397,19 +397,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   "& fieldset": { border: "none" },
                 }}
               />
-              <Box sx={{ px: 1, pt: 1 }}>
-                {voiceMode ? (
-                  <VoiceStatusPill
-                    mode={voiceMode}
-                    supported={speechSupported}
-                  />
-                ) : null}
-                {voiceError ? (
-                  <Alert severity="warning" variant="filled" sx={{ mt: 1, py: 0.5 }}>
-                    {voiceError}
-                  </Alert>
-                ) : null}
-              </Box>
               <Box sx={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -438,6 +425,19 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                     {ttsEnabled ? <VolumeUpRoundedIcon fontSize="medium" /> : <VolumeOffRoundedIcon fontSize="medium" />}
                   </IconButton>
                 </Box>
+                <Box sx={{ px: 1, pt: 1 }}>
+                  {voiceMode ? (
+                    <VoiceStatusPill
+                      mode={voiceMode}
+                      supported={speechSupported}
+                    />
+                  ) : null}
+                  {voiceError ? (
+                    <Alert severity="warning" variant="filled" sx={{ mt: 1, py: 0.5 }}>
+                      {voiceError}
+                    </Alert>
+                  ) : null}
+                </Box>
                 <Box>
                   <BotonAudio
                     ref={audioRef}
@@ -447,8 +447,8 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                     sx={{ display: hayTexto || pensandoIA ? "none" : "inline-flex" }}
                   />
                   {hayTexto && (
-                    <IconButton 
-                      type='submit' 
+                    <IconButton
+                      type='submit'
                       disabled={pensandoIA}
                       sx={{
                         backgroundColor: "transparent",
@@ -648,19 +648,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   }
                 }}
               />
-              <Box sx={{ px: 1, pt: 1 }}>
-                {voiceMode ? (
-                  <VoiceStatusPill
-                    mode={voiceMode}
-                    supported={speechSupported}
-                  />
-                ) : null}
-                {voiceError ? (
-                  <Alert severity="warning" variant="filled" sx={{ mt: 1, py: 0.5 }}>
-                    {voiceError}
-                  </Alert>
-                ) : null}
-              </Box>
               <Box sx={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -688,6 +675,19 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   >
                     {ttsEnabled ? <VolumeUpRoundedIcon fontSize="medium" /> : <VolumeOffRoundedIcon fontSize="medium" />}
                   </IconButton>
+                </Box>
+                <Box sx={{ px: 1, pt: 1 }}>
+                  {voiceMode ? (
+                    <VoiceStatusPill
+                      mode={voiceMode}
+                      supported={speechSupported}
+                    />
+                  ) : null}
+                  {voiceError ? (
+                    <Alert severity="warning" variant="filled" sx={{ mt: 1, py: 0.5 }}>
+                      {voiceError}
+                    </Alert>
+                  ) : null}
                 </Box>
                 <Box>
                   <BotonAudio
