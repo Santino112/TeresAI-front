@@ -273,9 +273,9 @@ const Login = () => {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                height: "80vh",
+                height: {xs: "20dvh", sm: "30dvh", md: "90dvh" },
                 overflow: "hidden",
-                width: { xs: "100%", md: "40%" },
+                width: { xs: "100%", md: "45%" },
                 maxWidth: { xs: 440, sm: 440, md: 700, lg: 800 },
                 p: { xs: 1, sm: 2, md: 2 },
             }}>

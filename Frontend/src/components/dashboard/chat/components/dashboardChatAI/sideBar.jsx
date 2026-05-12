@@ -448,7 +448,7 @@ function ResponsiveDrawer() {
                 overflowY: "auto",
                 maxHeight: "500px",
                 width: "100%",
-                minHeight: "336px",
+                minHeight: {xs: "336px", sm: "336px", md: "250px", lg: "250px", xl: "336px", },
                 p: 1,
                 backgroundColor: "#eeeeee",
             }}>
