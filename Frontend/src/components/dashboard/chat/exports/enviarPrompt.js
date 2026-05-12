@@ -1,4 +1,4 @@
-import api from '../../../../api/axios';
+import { API_BASE_URL } from '../../../../config/api.js';
 import { supabase } from '../../../../supabaseClient';
 
 export const enviarPrompt = async (prompt, conversationId, location, signal, onChunk) => {
@@ -10,10 +10,7 @@ export const enviarPrompt = async (prompt, conversationId, location, signal, onC
     throw new Error('No hay sesión de autenticación');
   }
 
-  // La URL base ya apunta al backend en Railway.
-  const baseURL = api.defaults.baseURL || '/api';
-  const normalizedBaseURL = baseURL.replace(/\/$/, '');
-  const url = `${normalizedBaseURL}/ai/mandandoAlaIA`;
+  const url = `${API_BASE_URL}/ai/mandandoAlaIA`;
 
   const response = await fetch(url, {
     method: 'POST',

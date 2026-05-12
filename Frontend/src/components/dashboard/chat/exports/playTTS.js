@@ -9,7 +9,7 @@ export const playTTS = async (text) => {
     currentAudio = null;
   }
 
-  const response = await axios.post(`${API_BASE_URL}/api/ai/tts`,
+  const response = await axios.post(`${API_BASE_URL}/ai/tts`,
     { text },
     { responseType: "blob" }
   );

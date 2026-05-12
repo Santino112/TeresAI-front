@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 import axios from 'axios';
 import { supabase } from "../../../../../supabaseClient.js";
 import EventAvailableRoundedIcon from '@mui/icons-material/EventAvailableRounded';
-import { API_BASE_URL } from "../../../../../config/api.js";
+import { API_ORIGIN } from "../../../../../config/api.js";
 
 const BotonCalendar = () => {
 
@@ -15,7 +15,7 @@ const BotonCalendar = () => {
       return;
     }
 
-    const res = await axios.get(`${API_BASE_URL}/auth/google/connect`, {
+    const res = await axios.get(`${API_ORIGIN}/auth/google/connect`, {
       headers: {
         Authorization: `Bearer ${session.access_token}`,
       },

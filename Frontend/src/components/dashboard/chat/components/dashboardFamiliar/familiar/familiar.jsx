@@ -54,7 +54,7 @@ const Familiar = () => {
 
   const fetchElders = useCallback(async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/family/dashboard/elders`, {
+      const response = await fetch(`${API_BASE_URL}/family/dashboard/elders`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${accessToken}`,
@@ -82,7 +82,7 @@ const Familiar = () => {
         days: 180
       });
 
-      const response = await fetch(`${API_BASE_URL}/api/family/dashboard/analytics?${params}`, {
+      const response = await fetch(`${API_BASE_URL}/family/dashboard/analytics?${params}`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${accessToken}`,

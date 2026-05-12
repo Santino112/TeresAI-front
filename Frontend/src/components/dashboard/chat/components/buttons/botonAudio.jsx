@@ -234,7 +234,7 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop, ...props }, r
       formData.append("audio", audioBlob, "recording.webm");
 
       const res = await axios.post(
-        `${API_BASE_URL}/api/ai/transcribe`,
+        `${API_BASE_URL}/ai/transcribe`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

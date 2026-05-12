@@ -1,14 +1,9 @@
 import axios from 'axios';
 import { supabase } from '../supabaseClient';
-
-const rawBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-const normalizedBaseUrl = rawBaseUrl.replace(/\/$/, '');
-const apiBaseUrl = normalizedBaseUrl.endsWith('/api')
-  ? normalizedBaseUrl
-  : `${normalizedBaseUrl}/api`;
+import { API_BASE_URL } from '../config/api.js';
 
 const api = axios.create({
-  baseURL: apiBaseUrl,
+  baseURL: API_BASE_URL,
 });
 
 api.interceptors.request.use(async (config) => {
