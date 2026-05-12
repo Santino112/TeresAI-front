@@ -23,6 +23,7 @@ import {
   DialogActions,
   TextField,
   Alert,
+  InputAdornment
 } from "@mui/material";
 import StickyNote2RoundedIcon from "@mui/icons-material/StickyNote2Rounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
@@ -31,6 +32,8 @@ import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
 import CircularProgress from "@mui/material/CircularProgress";
+import TitleRoundedIcon from '@mui/icons-material/TitleRounded';
+import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 import api from "../../../../../api/axios";
 
 const styleModal = {
@@ -42,7 +45,7 @@ const styleModal = {
   maxWidth: 500,
   color: '#000000',
   overflowY: "auto",
-  bgcolor: "#eeeeee",
+  bgcolor: "#ffffff",
   border: '2px solid #000000',
   borderRadius: 3,
   boxShadow: 24,
@@ -411,7 +414,7 @@ export default function NotesDashboard() {
             maxHeight: { xs: "70dvh", sm: "70dvh", md: "90dvh" },
             overflowY: "auto",
             overflowX: "hidden",
-            p: 1.5, 
+            p: 1.5,
             m: -1.5
           }}
         >
@@ -559,8 +562,8 @@ export default function NotesDashboard() {
                 left: "50%",
                 transform: "translate(-50%, -50%)",
                 width: "90%",
-                maxWidth: 590,
-                bgcolor: "#d7d6d6",
+                maxWidth: 500,
+                bgcolor: "#ffffff",
                 color: "#000000",
                 borderRadius: 3,
                 boxShadow: 24,
@@ -579,7 +582,7 @@ export default function NotesDashboard() {
                   {formatDate(selectedNote?.created_at)}
                 </Typography>
               </Stack>
-              <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 2 }} />
+              <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.36)", my: 2 }} />
               {editingNote ? (
                 <Stack spacing={2}>
                   {editError ? <Alert variant="filled" severity="error" sx={{
@@ -587,127 +590,125 @@ export default function NotesDashboard() {
                     borderRadius: 3,
                     fontSize: "1rem",
                   }}>{editError}</Alert> : null}
-                  <TextField
-                    label="Titulo"
-                    value={editForm.title}
-                    onChange={(event) => setEditForm((prev) => ({ ...prev, title: event.target.value }))}
-                    fullWidth
-                    sx={{
-                      backgroundColor: "#d7d6d6",
-                      borderRadius: 3,
-                      boxShadow: 3,
-                      input: { color: "#000000" },
-                      "& .MuiInputLabel-root": {
-                        color: "#000000",
-                        opacity: 0.8
-                      },
-                      "& .MuiInputLabel-root.Mui-focused": {
-                        color: "#000000 !important"
-                      },
-                      "& .MuiInputBase-input::placeholder": {
-                        color: "#000000",
-                        opacity: 0.6,
-                      },
-                      "& .MuiOutlinedInput-root": {
+                  <Box sx={{ my: 0, width: "100%" }}>
+                    <Typography variant="body1" sx={{ color: "#000000" }}>Título de la nota</Typography>
+                    <TextField
+                      placeholder="Ingresá el título que querés que tenga"
+                      value={editForm.title}
+                      onChange={(event) => setEditForm((prev) => ({ ...prev, title: event.target.value }))}
+                      fullWidth
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                              <TitleRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }} />
+                            </Box>
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{
+                        backgroundColor: "#d7d6d6",
                         borderRadius: 3,
-                        pr: 1,
-                        "& fieldset": {
-                          borderColor: "transparent"
+                        boxShadow: 3,
+                        input: { color: "#000000" },
+                        "& .MuiInputLabel-root": {
+                          color: "#000000",
+                          opacity: 0.8
                         },
-                        "&:hover fieldset": {
-                          borderColor: "transparent"
+                        "& .MuiInputLabel-root.Mui-focused": {
+                          color: "#000000 !important"
                         },
-                        "&.Mui-focused fieldset": {
-                          borderColor: "gray"
+                        "& .MuiInputBase-input::placeholder": {
+                          color: "#000000",
+                          opacity: 0.6,
                         },
-                      },
-                      "& .MuiFormHelperText-root": {
-                        color: "#000000 !important",
-                        opacity: 0.8,
-                        fontWeight: 500,
-                      },
-                    }}
-                  />
-                  <TextField
-                    label="Contenido"
-                    placeholder="Ej: Comprar 3 tomates..."
-                    value={editForm.content}
-                    onChange={(event) => setEditForm((prev) => ({ ...prev, content: event.target.value }))}
-                    helperText={
-                      <span style={{
-                        color: createForm.content.length >= 500 ? "#d32f2f" : "inherit",
-                        fontWeight: createForm.content.length >= 500 ? "700" : "inherit"
-                      }}>
-                        {`${createForm.content.length} / 500 caracteres`}
-                      </span>
-                    }
-                    inputProps={{ maxLength: 500 }}
-                    multiline
-                    minRows={6}
-                    fullWidth
-                    sx={{
-                      backgroundColor: "#d7d6d6",
-                      color: "#000000",
-                      borderRadius: 3,
-                      boxShadow: 3,
-                      "& .MuiInputBase-input": {
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: 3,
+                          pr: 1,
+                          "& fieldset": {
+                            borderColor: "transparent"
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "transparent"
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "gray"
+                          },
+                        },
+                        "& .MuiFormHelperText-root": {
+                          color: "#000000 !important",
+                          opacity: 0.8,
+                          fontWeight: 500,
+                        },
+                      }}
+                    />
+                  </Box>
+                  <Box sx={{ my: 0, width: "100%" }}>
+                    <Typography variant="body1" sx={{ color: "#000000" }}>Descripción de la nota</Typography>
+                    <TextField
+                      placeholder="Ej: Comprar 3 tomates..."
+                      value={editForm.content}
+                      onChange={(event) => setEditForm((prev) => ({ ...prev, content: event.target.value }))}
+                      helperText={
+                        <span>
+                          {`500 caracteres`}
+                        </span>
+                      }
+                      inputProps={{ maxLength: 500 }}
+                      multiline
+                      minRows={5}
+                      fullWidth
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1.5, mr: 1 }}>
+                            <DescriptionRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }} />
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{
+                        backgroundColor: "#d7d6d6",
                         color: "#000000",
-                        WebkitTextFillColor: "#000000",
-                      },
-                      "& .MuiInputLabel-root": {
-                        color: "#000000",
-                        opacity: 0.8
-                      },
-                      "& textarea": {
-                        color: "#000000",
-                      },
-                      "& .MuiOutlinedInput-root": {
                         borderRadius: 3,
-                        pr: 1,
-                      },
-                      "& fieldset": {
-                        borderColor: "transparent"
-                      },
-                      "& .MuiInputBase-input::placeholder": {
-                        color: "#000000",
-                        opacity: 0.6,
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "transparent"
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "gray"
-                      },
-                      "& .MuiFormHelperText-root": {
-                        color: "#000000",
-                        opacity: 0.8,
-                        fontWeight: 500,
-                      },
-                      "& .MuiInputLabel-root.Mui-focused": {
-                        color: "#000000 !important"
-                      },
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 3,
-                        pr: 1,
-                        "& fieldset": {
-                          borderColor: "transparent"
+                        boxShadow: 3,
+                        "& .MuiFormHelperText-root": {
+                          color: "#000000",
+                          opacity: 0.8,
+                          fontWeight: 500,
                         },
-                        "&:hover fieldset": {
-                          borderColor: "transparent"
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: 3,
+                          alignItems: 'flex-start', // Alinea todo al techo
+                          paddingTop: 0,            // Quitamos el padding de MUI
+                          paddingLeft: 1.5,
+                          "& fieldset": { borderColor: "transparent" },
+                          "&:hover fieldset": { borderColor: "transparent" },
+                          "&.Mui-focused fieldset": { borderColor: "gray" },
                         },
-                        "&.Mui-focused fieldset": {
-                          borderColor: "gray"
+                        "& .MuiInputBase-input": {
+                          color: "#000000",
+                          WebkitTextFillColor: "#000000",
+                          paddingTop: '14px',
                         },
-                      },
-                    }}
-                  />
+                        "& textarea": {
+                          color: "#000000",
+                        },
+                        "& .MuiInputBase-input::placeholder": {
+                          color: "#000000",
+                          opacity: 0.6,
+                        },
+                        "& .MuiInputLabel-root.Mui-focused": {
+                          color: "#000000 !important"
+                        },
+                      }}
+                    />
+                  </Box>
                 </Stack>
               ) : (
                 <Typography variant="body1" sx={{ whiteSpace: "pre-line", lineHeight: 1.8, color: "#000000", my: 2 }}>
                   {selectedNote?.text}
                 </Typography>
               )}
-              <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 2 }} />
+              <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.36)", my: 2 }} />
               <Stack direction="row" spacing={2} justifyContent="flex-end">
                 {editingNote ? (
                   <>
@@ -719,6 +720,7 @@ export default function NotesDashboard() {
                         color: "#464545",
                         fontWeight: "bold",
                         borderRadius: 2,
+                        fontSize: "1rem",
                         textTransform: "none",
                         mr: 1,
                         mt: 1,
@@ -737,6 +739,7 @@ export default function NotesDashboard() {
                         borderRadius: 2,
                         color: "#ffffff",
                         textTransform: "none",
+                        fontSize: "1rem",
                         "&:hover": {
                           backgroundColor: "#67604d"
                         },
@@ -768,6 +771,7 @@ export default function NotesDashboard() {
                         fontWeight: "bold",
                         borderRadius: 2,
                         textTransform: "none",
+                        fontSize: "1rem",
                         mr: 1,
                         mt: 1,
                         "&:hover": { backgroundColor: "#e0e0e0" },
@@ -785,6 +789,7 @@ export default function NotesDashboard() {
                         borderColor: "#7d745c",
                         color: "#000000",
                         textTransform: "none",
+                        fontSize: "1rem",
                         mt: 1,
                         "&:hover": {
                           borderColor: "#6a5f49",
@@ -823,7 +828,7 @@ export default function NotesDashboard() {
         >
           <Box sx={styleModal}>
             <Box sx={{ mb: 1, borderBottom: '1px solid rgba(0,0,0,0.1)' }}>
-              <Typography id="modal-title" variant="h6" sx={{
+              <Typography id="modal-title" variant="h5" sx={{
                 display: "flex",
                 justifyContent: "flex-start",
                 alignItems: "center",
@@ -842,127 +847,127 @@ export default function NotesDashboard() {
                   borderRadius: 3,
                   fontSize: "1rem",
                 }}>{createError}</Alert> : null}
-                <TextField
-                  label="Título"
-                  value={createForm.title}
-                  onChange={(event) => setCreateForm((prev) => ({ ...prev, title: event.target.value }))}
-                  fullWidth
-                  inputProps={{ maxLength: 50 }}
-                  variant="outlined"
-                  helperText="Opcional: si lo dejás vacío se usa una versión corta"
-                  sx={{
-                    backgroundColor: "#d7d6d6",
-                    borderRadius: 3,
-                    boxShadow: 3,
-                    input: { color: "#000000" },
-                    "& .MuiInputLabel-root": {
-                      color: "#000000",
-                      opacity: 0.8
-                    },
-                    "& .MuiInputLabel-root.Mui-focused": {
-                      color: "#000000 !important"
-                    },
-                    "& .MuiInputBase-input::placeholder": {
-                      color: "#000000",
-                      opacity: 0.6,
-                    },
-                    "& .MuiOutlinedInput-root": {
+                <Box sx={{ my: 0, width: "100%" }}>
+                  <Typography variant="body1" sx={{ color: "#000000" }}>Título de la nota</Typography>
+                  <TextField
+                    value={createForm.title}
+                    onChange={(event) => setCreateForm((prev) => ({ ...prev, title: event.target.value }))}
+                    fullWidth
+                    placeholder="Ingresá el título que querés que tenga"
+                    inputProps={{ maxLength: 50 }}
+                    variant="outlined"
+                    helperText="Opcional: si lo dejás vacío se usa una versión corta"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                            <TitleRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }} />
+                          </Box>
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      backgroundColor: "#d7d6d6",
                       borderRadius: 3,
-                      pr: 1,
-                      "& fieldset": {
-                        borderColor: "transparent"
+                      boxShadow: 3,
+                      input: { color: "#000000" },
+                      "& .MuiInputLabel-root": {
+                        color: "#000000",
+                        opacity: 0.8
                       },
-                      "&:hover fieldset": {
-                        borderColor: "transparent"
+                      "& .MuiInputLabel-root.Mui-focused": {
+                        color: "#000000 !important"
                       },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "gray"
+                      "& .MuiInputBase-input::placeholder": {
+                        color: "#000000",
+                        opacity: 0.6,
                       },
-                    },
-                    "& .MuiFormHelperText-root": {
-                      color: "#000000 !important",
-                      opacity: 0.8,
-                      fontWeight: 500,
-                    },
-                  }}
-                />
-                <TextField
-                  label="Contenido"
-                  placeholder="Ej: Comprar 3 tomates..."
-                  value={createForm.content}
-                  onChange={(event) => setCreateForm((prev) => ({ ...prev, content: event.target.value }))}
-                  multiline
-                  inputProps={{ maxLength: 500 }}
-                  minRows={5}
-                  maxRows={5}
-                  fullWidth
-                  helperText={
-                    <span style={{
-                      color: createForm.content.length >= 500 ? "#d32f2f" : "inherit",
-                      fontWeight: createForm.content.length >= 500 ? "700" : "inherit"
-                    }}>
-                      {`${createForm.content.length} / 500 caracteres`}
-                    </span>
-                  }
-                  sx={{
-                    backgroundColor: "#d7d6d6",
-                    color: "#000000",
-                    borderRadius: 3,
-                    boxShadow: 3,
-                    "& .MuiInputBase-input": {
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 3,
+                        pr: 1,
+                        "& fieldset": {
+                          borderColor: "transparent"
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "transparent"
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "gray"
+                        },
+                      },
+                      "& .MuiFormHelperText-root": {
+                        color: "#000000 !important",
+                        opacity: 0.8,
+                        fontWeight: 500,
+                      },
+                    }}
+                  />
+                </Box>
+                <Box sx={{ my: 0, width: "100%" }}>
+                  <Typography variant="body1" sx={{ color: "#000000" }}>Descripción de la nota</Typography>
+                  <TextField
+                    placeholder="Ej: Comprar 3 tomates..."
+                    value={createForm.content}
+                    onChange={(event) => setCreateForm((prev) => ({ ...prev, content: event.target.value }))}
+                    multiline
+                    inputProps={{ maxLength: 500 }}
+                    minRows={5}
+                    fullWidth
+                    helperText={
+                      <span style={{
+                        color: createForm.content.length >= 500 ? "#d32f2f" : "inherit",
+                        fontWeight: createForm.content.length >= 500 ? "700" : "inherit"
+                      }}>
+                        {`${createForm.content.length} / 500 caracteres`}
+                      </span>
+                    }
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1.5, mr: 1 }}>
+                          <DescriptionRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      backgroundColor: "#d7d6d6",
                       color: "#000000",
-                      WebkitTextFillColor: "#000000",
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "#000000",
-                      opacity: 0.8
-                    },
-                    "& textarea": {
-                      color: "#000000",
-                    },
-                    "& .MuiOutlinedInput-root": {
                       borderRadius: 3,
-                      pr: 1,
-                    },
-                    "& fieldset": {
-                      borderColor: "transparent"
-                    },
-                    "& .MuiInputBase-input::placeholder": {
-                      color: "#000000",
-                      opacity: 0.6,
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "transparent"
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "gray"
-                    },
-                    "& .MuiFormHelperText-root": {
-                      color: "#000000",
-                      opacity: 0.8,
-                      fontWeight: 500,
-                    },
-                    "& .MuiInputLabel-root.Mui-focused": {
-                      color: "#000000 !important"
-                    },
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: 3,
-                      pr: 1,
-                      "& fieldset": {
-                        borderColor: "transparent"
+                      boxShadow: 3,
+                      "& .MuiFormHelperText-root": {
+                        color: "#000000",
+                        opacity: 0.8,
+                        fontWeight: 500,
                       },
-                      "&:hover fieldset": {
-                        borderColor: "transparent"
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 3,
+                        alignItems: 'flex-start', // Alinea todo al techo
+                        paddingTop: 0,            // Quitamos el padding de MUI
+                        paddingLeft: 1.5,
+                        "& fieldset": { borderColor: "transparent" },
+                        "&:hover fieldset": { borderColor: "transparent" },
+                        "&.Mui-focused fieldset": { borderColor: "gray" },
                       },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "gray"
+                      "& .MuiInputBase-input": {
+                        color: "#000000",
+                        WebkitTextFillColor: "#000000",
+                        paddingTop: '14px',
                       },
-                    },
-                  }}
-                />
+                      "& textarea": {
+                        color: "#000000",
+                      },
+                      "& .MuiInputBase-input::placeholder": {
+                        color: "#000000",
+                        opacity: 0.6,
+                      },
+                      "& .MuiInputLabel-root.Mui-focused": {
+                        color: "#000000 !important"
+                      },
+                    }}
+                  />
+                </Box>
               </Stack>
             </Box>
-            <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 2 }} />
+            <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.27)", my: 2 }} />
             <Box sx={{
               display: 'flex',
               justifyContent: 'flex-end',
@@ -976,6 +981,7 @@ export default function NotesDashboard() {
                   fontWeight: "bold",
                   borderRadius: 2,
                   textTransform: "none",
+                  fontSize: "1rem",
                   mr: 1,
                   mt: 1,
                   "&:hover": { backgroundColor: "#e0e0e0" },
@@ -992,6 +998,7 @@ export default function NotesDashboard() {
                   borderRadius: 2,
                   color: "#ffffff",
                   textTransform: "none",
+                  fontSize: "1rem",
                   "&:hover": {
                     backgroundColor: "#67604d"
                   },

@@ -137,7 +137,6 @@ const steps = [
             </Typography>
         )
     }
-
 ];
 
 const Manual = () => {

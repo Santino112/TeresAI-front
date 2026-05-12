@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Typography, Button, TextField, Box, Select, MenuItem, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel } from "@mui/material";
+import { Typography, Button, TextField, Box, Select, MenuItem, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel, InputAdornment } from "@mui/material";
 import { useAuth } from "../auth/useAuth.jsx";
 import { supabase } from "../../supabaseClient.js";
 import { saveProfile, elderPeople, familyPeople, caregivePeople, linkearUsuarios } from "../dashboard/chat/exports/datosInicialesUsuarios.js";
@@ -8,6 +8,8 @@ import InfoElder from "./tipoUsuario/infoElder.jsx";
 import InfoFamiliar from "./tipoUsuario/infoFamiliar.jsx";
 import InfoCuidador from "./tipoUsuario/infoCuidador.jsx";
 import fondoChatAI from "../../assets/images/fondoChatAI.png";
+import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
+import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 
 const InformacionUsuarios = () => {
     const [isSaving, setIsSaving] = useState(false);
@@ -41,6 +43,7 @@ const InformacionUsuarios = () => {
     const [rol, setRol] = useState("elder");
 
     const { user, loading: authLoading } = useAuth();
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     const traducirError = (mensaje) => {
@@ -232,7 +235,7 @@ const InformacionUsuarios = () => {
                     setTimeout(() => setIsSaving(false), 500);
                     return;
                 }
-
+                
                 navigate("/paginaFamiliar");
                 return;
 
@@ -384,8 +387,8 @@ const InformacionUsuarios = () => {
                         },
                         p: { xs: 2, sm: 3, md: 3 },
                         borderRadius: 4,
-                        boxShadow: 3,
-                        background: "transparent",
+                        boxShadow: 5,
+                        background: "#ffffff",
                         gap: 1,
                         color: "#000000",
                     }}
@@ -396,6 +399,20 @@ const InformacionUsuarios = () => {
                             color: "black",
                         }}
                     >Antes de comenzar
+                    </Typography>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            color: "#000000",
+                            display: "block",
+                            lineHeight: 1.5,
+                            textAlign: "center",
+                            fontSize: {
+                                xs: "1rem",
+                                md: "1rem"
+                            },
+                        }}
+                    >Completa tu información personal así teresa puede conocerte mejor y generar una mejor experiencia. Si tienes dudas puedes presionar este botón
                     </Typography>
                     <Divider sx={{
                         my: 0,
@@ -410,7 +427,7 @@ const InformacionUsuarios = () => {
                         <Typography variant="body1" sx={{ color: "#000000", fontWeight: 'bold' }}>∼</Typography>
                     </Divider>
                     <Box sx={{ my: 0, width: "100%" }}>
-                        <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cómo te llamas?</Typography>
+                        <Typography variant="body1" sx={{ color: "#000000" }}>¿Cómo te llamas?</Typography>
                         <TextField
                             error={errorTextFields}
                             placeholder="Nombre completo"
@@ -419,42 +436,51 @@ const InformacionUsuarios = () => {
                             variant="outlined"
                             fullWidth
                             margin="dense"
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                                            <BadgeRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }}></BadgeRoundedIcon>
+                                        </Box>
+                                    </InputAdornment>
+                                ),
+                            }}
                             sx={{
                                 backgroundColor: "#d7d6d6",
-                                color: "#000000",
                                 borderRadius: 3,
                                 boxShadow: 3,
                                 input: { color: "#000000" },
-                                "& .MuiOutlinedInput-root": {
-                                    borderRadius: 3,
-                                    pr: 1,
+                                "& .MuiInputLabel-root": {
+                                    color: "#000000",
+                                    opacity: 0.8
                                 },
-                                "& fieldset": {
-                                    borderColor: "transparent"
+                                "& .MuiInputLabel-root.Mui-focused": {
+                                    color: "#000000 !important"
                                 },
                                 "& .MuiInputBase-input::placeholder": {
                                     color: "#000000",
                                     opacity: 0.6,
                                 },
-                                "&:hover fieldset": {
-                                    borderColor: "transparent"
-                                },
-                                "&.Mui-focused fieldset": {
-                                    borderColor: "gray"
-                                },
-                                "& .MuiFormHelperText-root": {
-                                    color: "#000000 !important",
-                                    opacity: 0.8,
-                                    fontWeight: 500,
+                                "& .MuiOutlinedInput-root": {
+                                    borderRadius: 3,
+                                    pr: 1,
+                                    "& fieldset": {
+                                        borderColor: "transparent"
+                                    },
+                                    "&:hover fieldset": {
+                                        borderColor: "transparent"
+                                    },
+                                    "&.Mui-focused fieldset": {
+                                        borderColor: "gray"
+                                    },
                                 },
                             }}
                         ></TextField>
                     </Box>
                     <Box sx={{ my: 1, width: "100%" }}>
-                        <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Qué rol cumplis?</Typography>
+                        <Typography variant="body1" sx={{ color: "#000000" }}>¿Qué rol cumplis?</Typography>
                         <Select
                             error={errorTextFields}
-                            labelId="demo-simple-select-helper-label"
                             id="demo-simple-select-helper"
                             value={rol}
                             fullWidth
@@ -469,39 +495,49 @@ const InformacionUsuarios = () => {
                                 },
                                 MenuListProps: { sx: { p: 0 } }
                             }}
+                            startAdornment={
+                                <InputAdornment position="start">
+                                    <PeopleAltRoundedIcon fontSize="medium" sx={{ color: "#000000", mr: 1 }} />
+                                </InputAdornment>
+                            }
                             sx={{
                                 backgroundColor: "#d7d6d6",
                                 color: "#000000",
                                 borderRadius: 3,
-                                mt: 1,
                                 boxShadow: 3,
-                                input: { color: "#000000" },
-                                "& .MuiOutlinedInput-root": {
-                                    borderRadius: 3,
-                                    pr: 1,
+                                // 1. Esto fuerza el borde a la raíz del Select cuando está enfocado
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                    borderColor: "gray !important",
+                                    borderWidth: "2px !important",
                                 },
-                                "& fieldset": {
-                                    borderColor: "transparent"
+                                // 2. Quitamos el borde por defecto y en hover
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                    borderColor: "transparent",
                                 },
-                                "& .MuiInputBase-input::placeholder": {
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
+                                    borderColor: "transparent",
+                                    borderWidth: "2px",
+                                },
+                                // Estilos del Input e Icono
+                                "& .MuiInputBase-input": {
                                     color: "#000000",
-                                    opacity: 0.6,
-                                },
-                                "&:hover fieldset": {
-                                    borderColor: "transparent"
-                                },
-                                "&.Mui-focused fieldset": {
-                                    borderColor: "gray"
+                                    WebkitTextFillColor: "#000000",
                                 },
                                 "& .MuiSelect-icon": {
                                     color: "#000000",
                                 },
-                                mb: 1
+                                // Estilos del Label (opcional, para mantener el negro al enfocar)
+                                "& .MuiInputLabel-root.Mui-focused": {
+                                    color: "#000000 !important",
+                                },
+                                // Corrección para el Start Adornment si fuera necesario
+                                "& .MuiInputAdornment-root": {
+                                    color: "#000000",
+                                }
                             }}
                         >
                             <MenuItem value="elder">🧓 Adulto mayor</MenuItem>
                             <MenuItem value="familiar">🧑 Familiar</MenuItem>
-                            <MenuItem value="cuidador" disabled>👩‍⚕️ Cuidador</MenuItem>
                         </Select>
                         <FormHelperText sx={{ color: "#000000" }}>Si sos adulto mayor no cambies de opción</FormHelperText>
                     </Box>
@@ -572,12 +608,13 @@ const InformacionUsuarios = () => {
                                 boxShadow: 3,
                                 color: "#ffffff",
                                 textTransform: "none",
+                                fontSize: "1rem",
                                 "&:hover": {
                                     backgroundColor: "#67604d"
                                 },
                                 mr: 1,
                                 mt: 1
-                            }}>Guardar
+                            }}>Guardar información
                         </Button>
                     </Box>
                 </Paper>
