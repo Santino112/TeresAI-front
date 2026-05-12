@@ -91,7 +91,7 @@ function ResponsiveDrawer() {
   const fetchData = async () => {
     setLoading(true);
     const data = await getConversationsFamiliar();
-    setConversations(data || []);
+    setConversations(Array.isArray(data) ? data : []);
     setLoading(false);
   };
 
@@ -292,7 +292,7 @@ function ResponsiveDrawer() {
           Array.from(new Array(11)).map((_, index) => (
             <Skeleton key={index} variant="rectangular" animation="wave" width="100%" height={40} sx={{ mb: 1, borderRadius: 2, bgcolor: "#c1c1c1" }} />
           ))
-        ) : conversations && conversations.length > 0 ? (
+        ) : Array.isArray(conversations) && conversations.length > 0 ? (
           conversations.map((conv) => {
             const isActive = conv.id === activeConversationId;
             return (
@@ -449,7 +449,9 @@ function ResponsiveDrawer() {
           </IconButton>
           {activeConversationId && paginaActiva === "chat" && (
             <Typography noWrap sx={{ fontSize: "1rem" }}>
-              {conversations.find((c) => c.id === activeConversationId)?.title || "Chat sin titulo"}
+              {Array.isArray(conversations)
+                ? conversations.find((c) => c.id === activeConversationId)?.title || "Chat sin titulo"
+                : "Chat sin titulo"}
             </Typography>
           )}
         </Toolbar>
@@ -541,7 +543,9 @@ function ResponsiveDrawer() {
               fontWeight: 600,
             }}
           >
-            {conversations.find((c) => c.id === activeConversationId)?.title || "Chat sin titulo"}
+            {Array.isArray(conversations)
+              ? conversations.find((c) => c.id === activeConversationId)?.title || "Chat sin titulo"
+              : "Chat sin titulo"}
           </Toolbar>
         )}
         <Box
