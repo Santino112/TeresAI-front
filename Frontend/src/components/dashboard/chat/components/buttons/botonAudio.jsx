@@ -4,6 +4,7 @@ import axios from "axios";
 import Alert from "@mui/material/Alert";
 import MicRoundedIcon from "@mui/icons-material/MicRounded";
 import MicOffRoundedIcon from "@mui/icons-material/MicOffRounded";
+import { API_BASE_URL } from "../../../../../config/api.js";
 
 const SILENCE_THRESHOLD = 0.02;
 const SILENCE_DURATION_MS = 1400;
@@ -233,7 +234,7 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop, ...props }, r
       formData.append("audio", audioBlob, "recording.webm");
 
       const res = await axios.post(
-        "http://localhost:3000/api/ai/transcribe",
+        `${API_BASE_URL}/ai/transcribe`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
