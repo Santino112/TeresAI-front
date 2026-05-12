@@ -9,7 +9,7 @@ import { tomarDatosPerfiles } from "../../../exports/datosInicialesUsuarios.js";
 import fondoChatAI from "../../../../../../assets/images/fondoChatAI.png";
 import axios from "axios";
 import ReactMarkDown from "react-markdown";
-import BotonAudio from "../../buttons/BotonAudio.jsx";
+import BotonAudio from "../../buttons/botonAudio.jsx";
 import VoiceStatusPill from "../../../../../common/VoiceStatusPill.jsx";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
