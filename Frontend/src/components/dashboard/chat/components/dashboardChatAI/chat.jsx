@@ -59,7 +59,7 @@ const getCurrentLocation = async () => {
       lng: retryPosition.coords.longitude
     };
   } catch (retryError) {
-    console.warn("No se pudo obtener ubicacion tras reintento:", retryError?.message);
+    console.warn("No se pudo obtener ubicación tras reintento:", retryError?.message);
     return null;
   }
 };
@@ -81,17 +81,17 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   let saludo = "";
   const time = new Date().getHours();
   {
-    time >= 6 && time < 12 ? saludo = "Buenos dÃ­as"
+    time >= 6 && time < 12 ? saludo = "Buenos d­ías"
       : time >= 12 && time <= 19 ? saludo = "Buenas tardes"
         : saludo = "Buenas noches"
   };
 
   const frases = [
-    "Â¿QuÃ© haremos hoy?",
-    "Â¿En quÃ© te puedo ayudar?",
-    "Â¡Hola! Â¿CÃ³mo estÃ¡s hoy?",
-    "Â¿QuerÃ©s charlar un rato?",
-    "Â¿NecesitÃ¡s algo?",
+    "¿Qué haremos hoy?",
+    "¿En qué te puedo ayudar?",
+    "¡Hola! ¿Cómo estás hoy?",
+    "¿Quieres charlar un rato?",
+    "¿Necesitas algo?",
   ];
   const [fraseActual] = useState(frases[0]);
 
@@ -99,7 +99,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     "Pensando...",
     "Analizando...",
     "Generando ideas...",
-    "Teresa lo estÃ¡ viendo..."
+    "Teresa lo está viendo..."
   ];
   const [fraseParaChat, setFraseParaChat] = useState(frasesParaIA[0]);
 

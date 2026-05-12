@@ -1,4 +1,5 @@
-import { Typography, TextField, Box, Select, MenuItem, FormHelperText } from "@mui/material";
+import { Typography, Box, Select, MenuItem, FormHelperText } from "@mui/material";
+import VoiceTextField from "../VoiceTextField.jsx";
 
 const InfoFamiliar = ({
     nombreFamiliar,
@@ -16,14 +17,12 @@ const InfoFamiliar = ({
         <>
             <Box sx={{ my: 0, width: "100%" }}>
                 <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>Cual es el nombre de esa persona?</Typography>
-                <TextField
+                <VoiceTextField
                     error={errorTextFields}
                     placeholder="Nombre"
                     value={nombreFamiliar}
                     onChange={(e) => setNombreFamiliar(e.target.value)}
-                    variant="outlined"
                     fullWidth
-                    margin="dense"
                     sx={{
                         backgroundColor: "#d7d6d6",
                         color: "#000000",
@@ -53,18 +52,17 @@ const InfoFamiliar = ({
                             fontWeight: 500,
                         },
                     }}
-                ></TextField>
+                />
             </Box>
             <Box sx={{ my: 0, width: "100%" }}>
                 <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>Cual es el email de esa persona?</Typography>
-                <TextField
+                <VoiceTextField
                     error={errorTextFields}
                     value={emailFamiliar}
                     onChange={(e) => setEmailFamiliar(e.target.value)}
                     placeholder="Email"
-                    variant="outlined"
                     fullWidth
-                    margin="dense"
+                    type="email"
                     sx={{
                         backgroundColor: "#d7d6d6",
                         color: "#000000",
@@ -94,19 +92,19 @@ const InfoFamiliar = ({
                             fontWeight: 500,
                         },
                     }}
-                ></TextField>
+                />
                 <FormHelperText sx={{color: "#000000"}}>Usa el email con el que el se registro. De esta manera podremos conectarlos.</FormHelperText>
             </Box>
             <Box sx={{ my: 0, width: "100%" }}>
                 <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>¿Cúal es tu número de teléfono?</Typography>
-                <TextField
+                <VoiceTextField
                     error={errorTextFields}
                     value={numeroTelefono}
                     onChange={(e) => setNumeroTelefono(e.target.value)}
                     placeholder="Ej: +5491122334455"
-                    variant="outlined"
                     fullWidth
-                    margin="dense"
+                    type="tel"
+                    inputProps={{ inputMode: "tel" }}
                     sx={{
                         backgroundColor: "#d7d6d6",
                         color: "#000000",
@@ -136,11 +134,11 @@ const InfoFamiliar = ({
                             fontWeight: 500,
                         },
                     }}
-                ></TextField>
-                <FormHelperText sx={{color: "#000000"}}>Este numero se usara para contactarte en emergencias.</FormHelperText>
+                />
+                <FormHelperText sx={{color: "#000000"}}>Este número se usará para contactarte en emergencias.</FormHelperText>
             </Box>
             <Box sx={{ my: 0, width: "100%" }}>
-                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>Cual es tu relacion con esa persona?</Typography>
+                <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>¿Cuál es tu relación con esa persona?</Typography>
                 <Select
                     error={errorTextFields}
                     labelId="demo-simple-select-helper-label"

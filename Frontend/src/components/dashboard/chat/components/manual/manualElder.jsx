@@ -68,7 +68,7 @@ const steps = [
             <Typography variant='body1' sx={{ lineHeight: 1.8, color: '#000000' }}>
                 Para buscar las conversaciones que tuviste con teresa, haz clic en <strong><SearchRoundedIcon fontSize='small' sx={{ verticalAlign: "middle", mx: 0.5, color: '#f0750a' }} /> Buscar conversaciones</strong> ubicado en el panel lateral izquierdo de la pantalla. <br></br>
                 Al hacer clic, se abrirá un campo de búsqueda donde podrás escribir palabras clave o frases para encontrar conversaciones específicas. En el cuadrante grande se mostrará los resultados relacionados con tu búsqueda, facilitando el acceso a información importante que hayas compartido en el pasado. <br></br>
-                Luego, podrás clickear sobre alguno de estos resultados y la aplicación te llevará directamente a esa conversación, permitiéndote revisar el contexto completo y continuar la interacción que tuviste con teresa previamente.
+                Luego, podrás hacer clic sobre alguno de estos resultados y la aplicación te llevará directamente a esa conversación, permitiéndote revisar el contexto completo y continuar la interacción que tuviste con teresa previamente.
             </Typography>
         )
     },
@@ -118,8 +118,8 @@ const steps = [
             <Typography variant='body1' sx={{ lineHeight: 1.8, color: '#000000' }}>
                 Teresa puede ayudarte a crear y gestionar tu lista de compras. <br></br>
                 Para agregar un artículo a tu lista, simplemente dile algo como <strong>"Agrega leche a mi lista de compras"</strong>. Teresa se encargará de añadirlo a tu lista.<br></br>
-                Tambien puedes agregar un articulo manualmente apretando en <strong>"Agregar artículo"</strong> y llenando la información necesaria del mismo. <br></br>
-                Para eliminar un artículo, solo tienes que decirle a Teresa <strong>"Elimina leche de mi lista de compras"</strong> o aprentando en el botón <strong>Eliminar articulos</strong>. <br></br>
+                También puedes agregar un artículo manualmente apretando en <strong>"Agregar artículo"</strong> y llenando la información necesaria del mismo. <br></br>
+                Para eliminar un artículo, solo tienes que decirle a Teresa <strong>"Elimina leche de mi lista de compras"</strong> o apretando en el botón <strong>Eliminar artículos</strong>. <br></br>
                 Además, puedes marcar los artículos como comprados para mantener tu lista organizada y asegurarte de no olvidar nada importante durante tus compras.
             </Typography>
         )
@@ -132,8 +132,8 @@ const steps = [
             <Typography variant='body1' sx={{ lineHeight: 1.8, color: '#000000' }}>
                 En la sección de notas, puedes crear y gestionar tus notas personales. <br></br>
                 Para crear una nueva nota, simplemente dile a Teresa algo como <strong>"Crea una nueva nota"</strong>. Ella te pedirá que ingreses el contenido de la nota y se encargará de guardarla para ti.<br></br>
-                Tambien puedes crear una nota manualmente apretando en <strong>"Agregar nota"</strong> y llenando la información necesaria de la misma. <br></br>
-                Para eliminar una nota, solo tienes que decirle a Teresa <strong>"Elimina la nota sobre mi cita médica"</strong> o apretando en el botón <strong>Eliminar notas</strong>. Otra forma es abriendo la nota manualmente y eliminándola desde ahi.<br></br>
+                También puedes crear una nota manualmente apretando en <strong>"Agregar nota"</strong> y llenando la información necesaria de la misma. <br></br>
+                Para eliminar una nota, solo tienes que decirle a Teresa <strong>"Elimina la nota sobre mi cita médica"</strong> o apretando en el botón <strong>Eliminar notas</strong>. Otra forma es abriendo la nota manualmente y eliminándola desde ahí.<br></br>
             </Typography>
         )
     }

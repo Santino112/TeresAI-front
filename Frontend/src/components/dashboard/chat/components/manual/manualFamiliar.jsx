@@ -87,7 +87,7 @@ const steps = [
             <Typography variant='body1' sx={{ lineHeight: 1.8, color: '#000000' }}>
                 Para buscar las conversaciones que tuviste con teresa, haz clic en <strong><SearchRoundedIcon fontSize='small' sx={{ verticalAlign: "middle", mx: 0.5, color: '#f0750a' }} /> Buscar conversaciones</strong> ubicado en el panel lateral izquierdo de la pantalla. <br></br>
                 Al hacer clic, se abrirá un campo de búsqueda donde podrás escribir palabras clave o frases para encontrar conversaciones específicas. En el cuadrante grande se mostrará los resultados relacionados con tu búsqueda, facilitando el acceso a información importante que hayas compartido en el pasado. <br></br>
-                Luego, podrás clickear sobre alguno de estos resultados y la aplicación te llevará directamente a esa conversación, permitiéndote revisar el contexto completo y continuar la interacción que tuviste con teresa previamente.
+                Luego, podrás hacer clic sobre alguno de estos resultados y la aplicación te llevará directamente a esa conversación, permitiéndote revisar el contexto completo y continuar la interacción que tuviste con teresa previamente.
             </Typography>
         )
     },

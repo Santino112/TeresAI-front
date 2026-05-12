@@ -1,4 +1,5 @@
-import { Typography, Button, TextField, Box, Select, MenuItem, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel } from "@mui/material";
+import { Typography, Button, Box, Select, MenuItem, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel } from "@mui/material";
+import VoiceTextField from "../VoiceTextField.jsx";
 
 const InfoCuidador = (
     {
@@ -17,15 +18,13 @@ const InfoCuidador = (
         <>
             <Box sx={{ my: 0, width: "100%" }}>
                 <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿En qué geriátrico trabajas?</Typography>
-                <TextField
+                <VoiceTextField
                     disabled={sinGeriatrico}
                     error={errorTextFields}
                     placeholder="Nombre"
                     value={geriatrico}
                     onChange={(e) => setGeriatrico(e.target.value)}
-                    variant="outlined"
                     fullWidth
-                    margin="dense"
                     sx={{
                         backgroundColor: "#303030",
                         borderRadius: 3,
@@ -48,7 +47,7 @@ const InfoCuidador = (
                             borderColor: "transparent",
                         }
                     }}
-                ></TextField>
+                />
             </Box>
             <Box sx={{ width: "100%" }}>
                 <FormControlLabel
@@ -69,15 +68,14 @@ const InfoCuidador = (
             </Box>
             <Box sx={{ my: 0, width: "100%" }}>
                 <Typography variant="body1" sx={{ fontFamily: "'Lora', serif" }}>¿Cuántos adultos mayores tenes a tu cargo?</Typography>
-                <TextField
+                <VoiceTextField
                     error={errorTextFields}
                     placeholder=""
                     type="number"
                     value={numAdultos}
                     onChange={(e) => setNumAdultos(e.target.value)}
-                    variant="outlined"
                     fullWidth
-                    margin="dense"
+                    inputProps={{ inputMode: "numeric" }}
                     sx={{
                         backgroundColor: "#303030",
                         borderRadius: 3,
@@ -97,22 +95,20 @@ const InfoCuidador = (
                             borderColor: "gray"
                         }
                     }}
-                ></TextField>
+                />
             </Box>
 
             <Box sx={{ my: 0, width: "100%" }}>
                 <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Hay algo especifico que necesites monitorear?</Typography>
-                <TextField
+                <VoiceTextField
                     error={errorTextFields}
                     placeholder="Escribilo..."
                     value={infoEspecifica}
                     onChange={(e) => setInfoEspecifica(e.target.value)}
-                    variant="outlined"
                     fullWidth
                     multiline
                     minRows={4}
                     maxRows={4}
-                    margin="dense"
                     sx={{
                         backgroundColor: "#303030",
                         borderRadius: 3,
@@ -132,7 +128,7 @@ const InfoCuidador = (
                             borderColor: "gray"
                         }
                     }}
-                ></TextField>
+                />
             </Box>
         </>
     );

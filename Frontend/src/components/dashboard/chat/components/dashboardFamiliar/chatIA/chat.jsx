@@ -92,7 +92,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
 
   const frasesParaIA = [
     "Pensando...",
-    "Analizando informacion vinculada...",
+    "Analizando información vinculada...",
     "Revisando conversaciones previas...",
     "Teresa esta preparando la respuesta..."
   ];

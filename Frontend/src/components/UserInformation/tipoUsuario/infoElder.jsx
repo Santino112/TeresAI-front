@@ -1,4 +1,5 @@
-import { Typography, Button, TextField, Box, Select, MenuItem, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel } from "@mui/material";
+import { Typography, Button, Box, Select, MenuItem, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel } from "@mui/material";
+import VoiceTextField from "../VoiceTextField.jsx";
 
 const InfoElder = (
     {
@@ -83,7 +84,7 @@ const InfoElder = (
                 {tieneEnfermedad === "si" && (
                     <Box sx={{ width: "100%" }}>
                         <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cúal/es? Escribilas</Typography>
-                        <TextField
+                        <VoiceTextField
                             error={errorTextFields}
                             placeholder="Escribilas..."
                             value={enfermedad}
@@ -129,7 +130,7 @@ const InfoElder = (
                                     fontWeight: 500,
                                 },
                             }}
-                        ></TextField>
+                        />
                     </Box>
                 )}
             </Box>
@@ -193,7 +194,7 @@ const InfoElder = (
                 {tomaMedicamentos === "si" && (
                     <Box sx={{ width: "100%" }}>
                         <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cúal/es? Escribilos</Typography>
-                        <TextField
+                        <VoiceTextField
                             error={errorTextFields}
                             placeholder="Escribilos..."
                             value={medicamentos}
@@ -239,7 +240,7 @@ const InfoElder = (
                                     fontWeight: 500,
                                 },
                             }}
-                        ></TextField>
+                        />
                     </Box>
                 )}
             </Box>
@@ -303,7 +304,7 @@ const InfoElder = (
                 {tieneAlergias === "si" && (
                     <Box sx={{ width: "100%" }}>
                         <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cúal/es? Escribilas</Typography>
-                        <TextField
+                        <VoiceTextField
                             error={errorTextFields}
                             placeholder="Escribilas..."
                             value={alergias}
@@ -349,13 +350,13 @@ const InfoElder = (
                                     fontWeight: 500,
                                 },
                             }}
-                        ></TextField>
+                        />
                     </Box>
                 )}
             </Box>
             <Box sx={{ my: 1, width: "100%" }}>
                 <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Qué cosas te gustan hacer?</Typography>
-                <TextField
+                <VoiceTextField
                     placeholder="Escribilas..."
                     value={gustos}
                     onChange={(e) => setGustos(e.target.value)}
@@ -400,11 +401,11 @@ const InfoElder = (
                             fontWeight: 500,
                         },
                     }}
-                ></TextField>
+                />
             </Box>
             <Box sx={{ my: 0, width: "100%" }}>
                 <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Hay algo que no te guste o te moleste?</Typography>
-                <TextField
+                <VoiceTextField
                     placeholder="Escribilas..."
                     value={molestias}
                     onChange={(e) => setMolestias(e.target.value)}
@@ -449,7 +450,7 @@ const InfoElder = (
                             fontWeight: 500,
                         },
                     }}
-                ></TextField>
+                />
             </Box>
         </>
     );

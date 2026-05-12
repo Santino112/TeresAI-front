@@ -1,12 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Typography, Button, TextField, Box, Select, MenuItem, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel } from "@mui/material";
+import { Typography, Button, Box, Select, MenuItem, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel } from "@mui/material";
 import { useAuth } from "../auth/useAuth.jsx";
 import { supabase } from "../../supabaseClient.js";
 import { saveProfile, elderPeople, familyPeople, caregivePeople, linkearUsuarios } from "../dashboard/chat/exports/datosInicialesUsuarios.js";
 import InfoElder from "./tipoUsuario/infoElder.jsx";
 import InfoFamiliar from "./tipoUsuario/infoFamiliar.jsx";
 import InfoCuidador from "./tipoUsuario/infoCuidador.jsx";
+import VoiceTextField from "./VoiceTextField.jsx";
 import fondoChatAI from "../../assets/images/fondoChatAI.png";
 
 const InformacionUsuarios = () => {
@@ -411,14 +412,12 @@ const InformacionUsuarios = () => {
                     </Divider>
                     <Box sx={{ my: 0, width: "100%" }}>
                         <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Cómo te llamas?</Typography>
-                        <TextField
+                        <VoiceTextField
                             error={errorTextFields}
                             placeholder="Nombre completo"
                             value={nombre}
                             onChange={(e) => setNombre(e.target.value)}
-                            variant="outlined"
                             fullWidth
-                            margin="dense"
                             sx={{
                                 backgroundColor: "#d7d6d6",
                                 color: "#000000",
@@ -448,7 +447,7 @@ const InformacionUsuarios = () => {
                                     fontWeight: 500,
                                 },
                             }}
-                        ></TextField>
+                        />
                     </Box>
                     <Box sx={{ my: 1, width: "100%" }}>
                         <Typography variant="body1" sx={{ fontFamily: "'Lora', serif", }}>¿Qué rol cumplis?</Typography>
