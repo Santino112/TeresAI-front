@@ -22,6 +22,7 @@ import {
 } from "@mui/x-charts";
 import { useAuth } from "../../../../../auth/useAuth.jsx";
 import fondoChatAI from "../../../../../../assets/images/fondoChatAI.png";
+import { API_BASE_URL } from "../../../../../../config/api.js";
 
 const Familiar = () => {
   const { user, accessToken, loading: authLoading } = useAuth();
@@ -34,8 +35,6 @@ const Familiar = () => {
   const [error, setError] = useState(null);
   const [selectedElder, setSelectedElder] = useState(null);
   const [elders, setElders] = useState([]);
-
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
   // Tamaños responsivos de gráficos
   const chartDimensions = {
@@ -55,7 +54,7 @@ const Familiar = () => {
 
   const fetchElders = useCallback(async () => {
     try {
-      const response = await fetch(`${API_URL}/api/family/dashboard/elders`, {
+      const response = await fetch(`${API_BASE_URL}/api/family/dashboard/elders`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${accessToken}`,
@@ -73,7 +72,7 @@ const Familiar = () => {
       console.error("Error:", err);
       setError("No se pudieron cargar los adultos mayores vinculados");
     }
-  }, [API_URL, accessToken]);
+  }, [accessToken]);
 
   const fetchAnalytics = useCallback(async (elderId) => {
     try {
@@ -83,7 +82,7 @@ const Familiar = () => {
         days: 180
       });
 
-      const response = await fetch(`${API_URL}/api/family/dashboard/analytics?${params}`, {
+      const response = await fetch(`${API_BASE_URL}/api/family/dashboard/analytics?${params}`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${accessToken}`,
@@ -101,7 +100,7 @@ const Familiar = () => {
     } finally {
       setLoading(false);
     }
-  }, [API_URL, accessToken]);
+  }, [accessToken]);
 
   useEffect(() => {
     if (authLoading) return;
