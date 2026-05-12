@@ -311,7 +311,7 @@ function ResponsiveDrawer() {
                     >
                         <Fade in={open}>
                             <Box sx={style}>
-                                <Typography variant='h6' sx={{ mb: 1 }}>¿Cómo funciona la aplicación?</Typography>
+                                <Typography variant='h6' sx={{ mb: 1, fontWeight: 600 }}>¿Cómo funciona la aplicación?</Typography>
                                 <Box sx={{ width: "100%", color: "#000000" }}>
                                     <Stepper activeStep={activeStep} orientation="vertical">
                                         {steps.map((step, index) => (
@@ -343,7 +343,9 @@ function ResponsiveDrawer() {
                                                             },
                                                         },
                                                     }}>
-                                                    {step.label}
+                                                    <Typography sx={{ color: "#000000"}}>
+                                                        {step.label}
+                                                    </Typography>
                                                 </StepLabel>
                                                 <StepContent>
                                                     <Typography sx={{ color: "#000000" }}>{step.description}</Typography>

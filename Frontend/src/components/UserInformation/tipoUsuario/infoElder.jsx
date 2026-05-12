@@ -28,18 +28,20 @@ const InfoElder = (
 ) => {
     return (
         <>
-            <Box sx={{ mb: 1, width: "100%" }}>
-                <Typography variant="body1" sx={{ color: "#000000" }}>¿Sufrís de alguna enfermedad?</Typography>
+            <Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <Typography variant="body1" sx={{ color: "#000000", mb: 1, width: "100%" }}>¿Sufrís de alguna enfermedad?</Typography>
                 <FormControl
                     error={errorTextFields}
                     component="fieldset"
                     sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
                         width: "100%",
-                        mt: 1,
-                        p: 1.5,
                         borderRadius: 3,
                         backgroundColor: "#d7d6d6",
                         boxShadow: 3,
+                        overflow: "hidden"
                     }}
                 >
                     <RadioGroup
@@ -50,24 +52,39 @@ const InfoElder = (
                         }}
                         row
                         sx={{
-                            gap: 1,
+                            width: "100%",
+                            display: "flex",
+                            flexWrap: "nowrap",
+                            justifyContent: "center",
                             "& .MuiFormControlLabel-root": {
                                 marginRight: 0,
+                                marginLeft: 0,
                                 borderRadius: 3,
-                                px: 1.2,
-                                py: 0.5,
+                                py: 1,
                                 flex: 1,
-                                border: "1px solid transparent",
+                                display: "flex",
+                                justifyContent: "center",
+                                border: "2px solid transparent",
+                                transition: "all 0.3s ease",
                             },
-                            "& .MuiFormControlLabel-root.Mui-checked": {
+                            "& .MuiFormControlLabel-root:has(.Mui-checked)": {
                                 borderColor: "gray",
+                                backgroundColor: "rgba(0,0,0,0.05)",
                             },
                             "& .MuiRadio-root": {
                                 color: "#000000",
+                                padding: "4px",
+                            },
+                            "& .MuiRadio-root.Mui-checked": {
+                                color: "#000000 !important",
+                            },
+                            "& .MuiRadio-root:hover": {
+                                backgroundColor: "rgba(0, 0, 0, 0.04)",
                             },
                             "& .MuiTypography-root": {
                                 color: "#000000",
                                 fontWeight: 500,
+                                whiteSpace: "nowrap",
                             },
                         }}
                     >
@@ -76,8 +93,8 @@ const InfoElder = (
                     </RadioGroup>
                 </FormControl>
                 {tieneEnfermedad === "si" && (
-                    <Box sx={{ width: "100%" }}>
-                        <Typography variant="body1" sx={{ color: "#000000"  }}>¿Cuál/es? Escribilas o decilas aquí abajo</Typography>
+                    <Box sx={{ width: "100%", mt: 2 }}>
+                        <Typography variant="body1" sx={{ color: "#000000" }}>¿Cuál/es? Escribilas o decilas aquí abajo</Typography>
                         <VoiceTextField
                             error={errorTextFields}
                             placeholder="Escribilas o decilas aquí..."
@@ -125,18 +142,20 @@ const InfoElder = (
                     </Box>
                 )}
             </Box>
-            <Box sx={{ my: 0, width: "100%" }}>
-                <Typography variant="body1" sx={{ color: "#000000"  }}>¿Tomás medicamentos?</Typography>
+            <Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", my: 1 }}>
+                <Typography variant="body1" sx={{ color: "#000000", mb: 1, width: "100%" }}>¿Tomás medicamentos?</Typography>
                 <FormControl
                     error={errorTextFields}
                     component="fieldset"
                     sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
                         width: "100%",
-                        mt: 1,
-                        p: 1.5,
                         borderRadius: 3,
                         backgroundColor: "#d7d6d6",
                         boxShadow: 3,
+                        overflow: "hidden"
                     }}
                 >
                     <RadioGroup
@@ -147,24 +166,39 @@ const InfoElder = (
                         }}
                         row
                         sx={{
-                            gap: 1,
+                            width: "100%",
+                            display: "flex",
+                            flexWrap: "nowrap",
+                            justifyContent: "center",
                             "& .MuiFormControlLabel-root": {
                                 marginRight: 0,
+                                marginLeft: 0,
                                 borderRadius: 3,
-                                px: 1.2,
-                                py: 0.5,
+                                py: 1,
                                 flex: 1,
-                                border: "1px solid transparent",
+                                display: "flex",
+                                justifyContent: "center",
+                                border: "2px solid transparent",
+                                transition: "all 0.3s ease",
                             },
-                            "& .MuiFormControlLabel-root.Mui-checked": {
+                            "& .MuiFormControlLabel-root:has(.Mui-checked)": {
                                 borderColor: "gray",
+                                backgroundColor: "rgba(0,0,0,0.05)",
                             },
                             "& .MuiRadio-root": {
                                 color: "#000000",
+                                padding: "4px",
+                            },
+                            "& .MuiRadio-root.Mui-checked": {
+                                color: "#000000 !important",
+                            },
+                            "& .MuiRadio-root:hover": {
+                                backgroundColor: "rgba(0, 0, 0, 0.04)",
                             },
                             "& .MuiTypography-root": {
                                 color: "#000000",
                                 fontWeight: 500,
+                                whiteSpace: "nowrap",
                             },
                         }}
                     >
@@ -173,8 +207,8 @@ const InfoElder = (
                     </RadioGroup>
                 </FormControl>
                 {tomaMedicamentos === "si" && (
-                    <Box sx={{ width: "100%" }}>
-                        <Typography variant="body1" sx={{ color: "#000000"  }}>¿Cuál/es? Escribilos o decilos aquí abajo</Typography>
+                    <Box sx={{ width: "100%", mt: 2 }}>
+                        <Typography variant="body1" sx={{ color: "#000000" }}>¿Cuál/es? Escribilos o decilos aquí abajo</Typography>
                         <VoiceTextField
                             error={errorTextFields}
                             placeholder="Escribilos o decilos aquí..."
@@ -222,18 +256,20 @@ const InfoElder = (
                     </Box>
                 )}
             </Box>
-            <Box sx={{ my: 0, width: "100%" }}>
-                <Typography variant="body1" sx={{ color: "#000000"  }}>¿Sufrís de alergias?</Typography>
+            <Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <Typography variant="body1" sx={{ color: "#000000", mb: 1, width: "100%" }}>¿Sufrís de alergias?</Typography>
                 <FormControl
                     error={errorTextFields}
                     component="fieldset"
                     sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
                         width: "100%",
-                        mt: 1,
-                        p: 1.5,
                         borderRadius: 3,
                         backgroundColor: "#d7d6d6",
                         boxShadow: 3,
+                        overflow: "hidden"
                     }}
                 >
                     <RadioGroup
@@ -244,24 +280,39 @@ const InfoElder = (
                         }}
                         row
                         sx={{
-                            gap: 1,
+                            width: "100%",
+                            display: "flex",
+                            flexWrap: "nowrap",
+                            justifyContent: "center", 
                             "& .MuiFormControlLabel-root": {
                                 marginRight: 0,
+                                marginLeft: 0,
                                 borderRadius: 3,
-                                px: 1.2,
-                                py: 0.5,
-                                flex: 1,
-                                border: "1px solid transparent",
+                                py: 1,
+                                flex: 1, 
+                                display: "flex",
+                                justifyContent: "center", 
+                                border: "2px solid transparent",
+                                transition: "all 0.3s ease",
                             },
-                            "& .MuiFormControlLabel-root.Mui-checked": {
+                            "& .MuiFormControlLabel-root:has(.Mui-checked)": {
                                 borderColor: "gray",
+                                backgroundColor: "rgba(0,0,0,0.05)",
                             },
                             "& .MuiRadio-root": {
                                 color: "#000000",
+                                padding: "4px",
+                            },
+                            "& .MuiRadio-root.Mui-checked": {
+                                color: "#000000 !important",
+                            },
+                            "& .MuiRadio-root:hover": {
+                                backgroundColor: "rgba(0, 0, 0, 0.04)",
                             },
                             "& .MuiTypography-root": {
                                 color: "#000000",
                                 fontWeight: 500,
+                                whiteSpace: "nowrap", 
                             },
                         }}
                     >
@@ -270,8 +321,8 @@ const InfoElder = (
                     </RadioGroup>
                 </FormControl>
                 {tieneAlergias === "si" && (
-                    <Box sx={{ width: "100%" }}>
-                        <Typography variant="body1" sx={{ color: "#000000"  }}>¿Cuál/es? Escribilas o decilas aquí abajo</Typography>
+                    <Box sx={{ width: "100%", mt: 2 }}>
+                        <Typography variant="body1" sx={{ color: "#000000" }}>¿Cuál/es? Escribilas o decilas aquí abajo</Typography>
                         <VoiceTextField
                             error={errorTextFields}
                             placeholder="Escribilas o decilas aquí..."
@@ -319,8 +370,8 @@ const InfoElder = (
                     </Box>
                 )}
             </Box>
-            <Box sx={{ my: 1, width: "100%" }}>
-                <Typography variant="body1" sx={{ color: "#000000"  }}>¿Qué cosas te gustan hacer?</Typography>
+            <Box sx={{ width: "100%", mt: 1 }}>
+                <Typography variant="body1" sx={{ color: "#000000" }}>¿Qué cosas te gustan hacer?</Typography>
                 <VoiceTextField
                     placeholder="Escribilas..."
                     value={gustos}
@@ -371,8 +422,8 @@ const InfoElder = (
                     }}
                 />
             </Box>
-            <Box sx={{ my: 0, width: "100%" }}>
-                <Typography variant="body1" sx={{ color: "#000000"  }}>¿Hay algo que no te guste o te moleste?</Typography>
+            <Box sx={{ width: "100%" }}>
+                <Typography variant="body1" sx={{ color: "#000000" }}>¿Hay algo que no te guste o te moleste?</Typography>
                 <VoiceTextField
                     placeholder="Escribilas..."
                     value={molestias}

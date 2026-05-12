@@ -1,5 +1,5 @@
-import { useState, useRef } from "react";
-import { TextField, IconButton, Box, CircularProgress, Tooltip } from "@mui/material";
+import { useState, useRef, useEffect } from "react";
+import { TextField, IconButton, Box, CircularProgress, Tooltip, InputAdornment, Alert } from "@mui/material";
 import MicRoundedIcon from "@mui/icons-material/MicRounded";
 import MicOffRoundedIcon from "@mui/icons-material/MicOffRounded";
 import api from "../../api/axios.js";
@@ -18,14 +18,24 @@ const VoiceTextField = ({
   fullWidth = true,
   sx,
   error,
-  type = "text",
   helperText,
   disabled = false,
-  inputProps,
+  InputProps,
+  onStart,
+  onStop,
   ...textFieldProps
 }) => {
+  // ESTADOS PARA ALERTS
+  const [errorAlert, setErrorAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [severity, setSeverity] = useState("");
+
   const [recording, setRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [stream, setStream] = useState(null);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+
+  // REFERENCIAS
   const mediaRecorderRef = useRef(null);
   const streamRef = useRef(null);
   const audioContextRef = useRef(null);
@@ -33,8 +43,10 @@ const VoiceTextField = ({
   const animationFrameRef = useRef(null);
   const silenceSinceRef = useRef(null);
   const speechDetectedRef = useRef(false);
-  const chunksRef = useRef([]);
   const startTimeRef = useRef(null);
+  const recordingRef = useRef(false);
+  const autoStopRef = useRef(false);
+  const abortarEnvioRef = useRef(false);
 
   const cleanupMonitoring = () => {
     if (animationFrameRef.current) {
@@ -44,7 +56,7 @@ const VoiceTextField = ({
     silenceSinceRef.current = null;
     speechDetectedRef.current = false;
     if (audioContextRef.current) {
-      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current.close().catch(() => { });
       audioContextRef.current = null;
     }
     analyserRef.current = null;
@@ -53,110 +65,163 @@ const VoiceTextField = ({
   const stopTracks = () => {
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
+    setStream(null);
   };
 
-  const startMonitoring = () => {
-    if (!streamRef.current) return;
+  // Función de nivel de audio (del segundo JSX)
+  const sampleAudioLevel = () => {
+    const analyser = analyserRef.current;
+    if (!analyser || !recordingRef.current) return;
+
+    const buffer = new Uint8Array(analyser.fftSize);
+    analyser.getByteTimeDomainData(buffer);
+
+    let sumSquares = 0;
+    for (let i = 0; i < buffer.length; i += 1) {
+      const normalized = (buffer[i] - 128) / 128;
+      sumSquares += normalized * normalized;
+    }
+
+    const rms = Math.sqrt(sumSquares / buffer.length);
+    const elapsed = Date.now() - (startTimeRef.current || Date.now());
+
+    if (rms >= SILENCE_THRESHOLD) {
+      speechDetectedRef.current = true;
+      silenceSinceRef.current = null;
+    } else if (speechDetectedRef.current) {
+      if (!silenceSinceRef.current) {
+        silenceSinceRef.current = Date.now();
+      }
+      if (Date.now() - silenceSinceRef.current >= SILENCE_DURATION_MS) {
+        stopRecording("silence");
+        return;
+      }
+    } else if (elapsed >= MAX_WAIT_FOR_VOICE_MS) {
+      stopRecording("no_voice");
+      return;
+    }
+
+    animationFrameRef.current = requestAnimationFrame(sampleAudioLevel);
+  };
+
+  const startMonitoringSilence = async () => {
+    const AudioContextImpl = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextImpl || !streamRef.current) return;
 
     try {
-      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
-      analyserRef.current = audioContextRef.current.createAnalyser();
-      const source = audioContextRef.current.createMediaStreamSource(streamRef.current);
-      source.connect(analyserRef.current);
+      const audioContext = new AudioContextImpl();
+      await audioContext.resume().catch(() => { });
+      const source = audioContext.createMediaStreamSource(streamRef.current);
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 2048;
+      source.connect(analyser);
 
-      const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
-      silenceSinceRef.current = Date.now();
-      speechDetectedRef.current = false;
-
-      const checkAudio = () => {
-        analyserRef.current.getByteFrequencyData(dataArray);
-        const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-
-        if (average > SILENCE_THRESHOLD) {
-          silenceSinceRef.current = Date.now();
-          speechDetectedRef.current = true;
-        }
-
-        const silenceDuration = Date.now() - silenceSinceRef.current;
-        const totalDuration = Date.now() - startTimeRef.current;
-
-        if (
-          speechDetectedRef.current &&
-          silenceDuration > SILENCE_DURATION_MS &&
-          totalDuration > 500
-        ) {
-          stopRecording("silence");
-          return;
-        }
-
-        if (totalDuration > MAX_WAIT_FOR_VOICE_MS && !speechDetectedRef.current) {
-          stopRecording("no_voice");
-          return;
-        }
-
-        animationFrameRef.current = requestAnimationFrame(checkAudio);
-      };
-
-      checkAudio();
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+      animationFrameRef.current = requestAnimationFrame(sampleAudioLevel);
     } catch (error) {
-      console.error("Error inicializando monitoreo:", error);
-      stopRecording("error");
+      console.warn("No se pudo iniciar la detección de silencio:", error);
+      cleanupMonitoring();
     }
   };
 
-  const startRecording = async () => {
+  const startRecording = async (options = { autoStopOnSilence: true }) => {
+    if (recordingRef.current) return;
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      streamRef.current = stream;
-      chunksRef.current = [];
+      const audioStream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
+
+      const recorder = new MediaRecorder(audioStream, {
+        mimeType: "audio/webm;codecs=opus",
+      });
+
+      if (navigator.vibrate) navigator.vibrate(60);
+
+      const chunks = [];
+      autoStopRef.current = Boolean(options?.autoStopOnSilence);
+      abortarEnvioRef.current = false;
       startTimeRef.current = Date.now();
+      speechDetectedRef.current = false;
+      silenceSinceRef.current = null;
 
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
+      streamRef.current = audioStream;
+      mediaRecorderRef.current = recorder;
+      setStream(audioStream);
+      setMediaRecorder(recorder);
+      recordingRef.current = true;
+      setRecording(true);
 
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunksRef.current.push(event.data);
-        }
+      recorder.ondataavailable = (event) => {
+        chunks.push(event.data);
       };
 
-      mediaRecorder.onstop = async () => {
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(chunks, { type: "audio/webm" });
         cleanupMonitoring();
         stopTracks();
-
-        const audioBlob = new Blob(chunksRef.current, { type: "audio/webm" });
-        await sendAudioToWhisper(audioBlob);
-        chunksRef.current = [];
+        mediaRecorderRef.current = null;
+        setMediaRecorder(null);
+        recordingRef.current = false;
+        setRecording(false);
+        if (!abortarEnvioRef.current) {
+          await sendAudioToWhisper(audioBlob);
+        }
       };
 
-      mediaRecorder.start();
-      setRecording(true);
-      startMonitoring();
-    } catch (error) {
-      console.error("Error iniciando grabación:", error);
+      recorder.start();
+      onStart?.();
+
+      if (autoStopRef.current) {
+        await startMonitoringSilence();
+      }
+    } catch (err) {
+      recordingRef.current = false;
       setRecording(false);
+
+      // LÓGICA DE ALERTS IGUAL AL OTRO JSX
+      if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+        setErrorAlert(true);
+        setSeverity("info");
+        setAlertMessage("No podemos escucharte porque el acceso al micrófono está bloqueado. Por favor, habilítalo en la configuración de tu navegador.");
+        setTimeout(() => setErrorAlert(false), 7000);
+      } else {
+        setErrorAlert(true);
+        setSeverity("error");
+        setAlertMessage("Error al acceder al micrófono: " + (err.message || ""));
+        setTimeout(() => setErrorAlert(false), 5000);
+      }
     }
   };
 
-  const stopRecording = async (reason = "manual") => {
-    void reason;
+  const stopRecording = (reason = "manual") => {
+    const recorder = mediaRecorderRef.current;
+    if (!recorder || recorder.state === "inactive") return;
+
+    const duration = Date.now() - (startTimeRef.current || Date.now());
+    // Evitar enviar si no hubo voz
+    abortarEnvioRef.current = reason === "no_voice" || duration < 500;
+
     cleanupMonitoring();
-
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
-      try {
-        mediaRecorderRef.current.stop();
-      } catch (error) {
-        console.error("Error deteniendo grabación:", error);
-      }
-    }
-
-    stopTracks();
+    recordingRef.current = false;
     setRecording(false);
+
+    try {
+      recorder.stop();
+    } catch (error) {
+      console.warn("No se pudo detener la grabación:", error);
+      stopTracks();
+    }
+    onStop?.();
   };
 
   const sendAudioToWhisper = async (audioBlob) => {
     if (audioBlob.size < 100) return;
-
     setIsProcessing(true);
     try {
       const formData = new FormData();
@@ -167,14 +232,9 @@ const VoiceTextField = ({
       });
 
       const textoLimpio = res.data?.text?.trim();
-
       if (textoLimpio && textoLimpio.length > 1) {
-        // Append to existing value if there's text, or replace if empty
-        if (value) {
-          onChange({ target: { value: value + " " + textoLimpio } });
-        } else {
-          onChange({ target: { value: textoLimpio } });
-        }
+        const newValue = value ? `${value} ${textoLimpio}` : textoLimpio;
+        onChange({ target: { value: newValue } });
       }
     } catch (error) {
       console.error("Error transcribiendo audio:", error);
@@ -191,84 +251,100 @@ const VoiceTextField = ({
     }
   };
 
+  // Limpieza al desmontar
+  useEffect(() => {
+    return () => {
+      cleanupMonitoring();
+      stopTracks();
+    };
+  }, []);
+
   return (
-    <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start", width: fullWidth ? "100%" : "auto" }}>
+    <>
+      {errorAlert && (
+        <Alert
+          variant="filled"
+          severity={severity}
+          sx={{
+            position: "fixed",
+            top: 20,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 9999,
+            width: { xs: "85%", sm: "auto" },
+            borderRadius: 3,
+            boxShadow: 4,
+          }}
+        >
+          {alertMessage}
+        </Alert>
+      )}
+
       <TextField
-        error={error}
-        placeholder={placeholder}
-        value={value}
+        {...textFieldProps}
+        value={value || ""}
         onChange={onChange}
-        variant="outlined"
+        placeholder={placeholder}
+        error={error}
         multiline={multiline}
         minRows={minRows}
         maxRows={maxRows}
         fullWidth={fullWidth}
-        type={type}
         helperText={helperText}
         disabled={disabled || isProcessing}
-        inputProps={inputProps}
-        {...textFieldProps}
+        InputProps={{
+          ...InputProps,
+          endAdornment: (
+            <InputAdornment position="end" sx={{ mt: multiline ? 1 : 0 }}>
+              <Tooltip title={recording ? "Detener grabación" : "Grabar con voz"}>
+                <IconButton
+                  onClick={handleMicClick}
+                  disabled={isProcessing}
+                  size="small"
+                  sx={{
+                    backgroundColor: recording ? "#7d745c" : "transparent",
+                    color: recording ? "#ffffff" : "#000000",
+                    "&:hover": { backgroundColor: "#7d745c", color: "#ffffff" },
+                    transition: "all 0.2s"
+                  }}
+                >
+                  {isProcessing ? (
+                    <CircularProgress size={20} sx={{ color: "#000000" }} />
+                  ) : recording ? (
+                    <MicRoundedIcon />
+                  ) : (
+                    <MicOffRoundedIcon />
+                  )}
+                </IconButton>
+              </Tooltip>
+            </InputAdornment>
+          ),
+        }}
         sx={{
           backgroundColor: "#d7d6d6",
-          color: "#000000",
           borderRadius: 3,
           boxShadow: 3,
           "& .MuiInputBase-input": {
             color: "#000000",
             WebkitTextFillColor: "#000000",
           },
-          "& textarea": {
-            color: "#000000",
-          },
           "& .MuiOutlinedInput-root": {
             borderRadius: 3,
             pr: 1,
-          },
-          "& fieldset": {
-            borderColor: "transparent",
+            display: "flex",
+            alignItems: "center", 
+            "& fieldset": { borderColor: "transparent" },
+            "&:hover fieldset": { borderColor: "transparent" },
+            "&.Mui-focused fieldset": { borderColor: "gray" },
           },
           "& .MuiInputBase-input::placeholder": {
             color: "#000000",
             opacity: 0.6,
           },
-          "&:hover fieldset": {
-            borderColor: "transparent",
-          },
-          "&.Mui-focused fieldset": {
-            borderColor: "gray",
-          },
-          "& .MuiFormHelperText-root": {
-            color: "#000000",
-            opacity: 0.8,
-            fontWeight: 500,
-          },
-          ...sx,
+          ...sx, 
         }}
       />
-      <Tooltip title={recording ? "Detener grabación" : "Grabar con voz"}>
-        <IconButton
-          onClick={handleMicClick}
-          aria-label={recording ? "Detener grabación por voz" : "Grabar texto por voz"}
-          disabled={isProcessing}
-          sx={{
-            mt: multiline ? 0.5 : 0,
-            color: recording ? "#d32f2f" : "#000000",
-            backgroundColor: recording ? "rgba(211, 47, 47, 0.1)" : "transparent",
-            "&:hover": {
-              backgroundColor: recording ? "rgba(211, 47, 47, 0.2)" : "rgba(0, 0, 0, 0.1)",
-            },
-          }}
-        >
-          {isProcessing ? (
-            <CircularProgress size={24} />
-          ) : recording ? (
-            <MicOffRoundedIcon />
-          ) : (
-            <MicRoundedIcon />
-          )}
-        </IconButton>
-      </Tooltip>
-    </Box>
+    </>
   );
 };
 

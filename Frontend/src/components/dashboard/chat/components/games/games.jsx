@@ -59,7 +59,6 @@ const Games = () => {
                         lg: "1.7rem",
                         xl: "1.8rem"
                     },
-                    textAlign: { xs: "center", sm: "center", md: "start" },
                 }}>Juegos mentales <ExtensionRoundedIcon fontSize="medium" sx={{ color: "#000000", ml: 1 }} />
                 </Typography>
                 <Typography variant="body2" sx={{
