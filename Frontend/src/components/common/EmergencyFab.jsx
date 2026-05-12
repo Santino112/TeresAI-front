@@ -100,9 +100,10 @@ function EmergencyFab() {
           disabled={submitting}
           sx={{
             position: "fixed",
-            left: { xs: 16, md: "auto" },
-            right: { xs: "auto", md: 24 },
-            bottom: { xs: 96, md: 24 },
+            top: { xs: 88, md: "auto" },
+            right: { xs: 16, md: 24 },
+            bottom: { xs: "auto", md: 24 },
+            left: "auto",
             zIndex: (theme) => theme.zIndex.modal + 2,
           }}
         >

@@ -82,9 +82,9 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   else saludo = "Buenas noches";
 
   const frases = [
-    "Â¡Hola! Â¿CÃ³mo estÃ¡s hoy?",
-    "Â¿QuÃ© quieres saber sobre tu familiar hoy?",
-    "Â¿En quÃ© te puedo ayudar?",
+    "¡Hola! ¿Cómo estás hoy?",
+    "¿Qué quieres saber sobre tu familiar hoy?",
+    "¿En qué te puedo ayudar?",
     "Preguntame por conversaciones, salud o intereses.",
     "Necesitas ayuda con algo de tu familiar?"
   ];
@@ -105,7 +105,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     onWake: () => audioRef.current?.startRecording({ autoStopOnSilence: true }),
   });
 
-  const isThinking = pensandoIA === activeConversationId;
+  const isThinking = Boolean(pensandoIA && pensandoIA === activeConversationId);
   const voiceMode = voiceError
     ? null
     : isThinking
@@ -149,7 +149,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   useEffect(() => {
     let intervalo;
 
-    if (pensandoIA === activeConversationId) {
+    if (isThinking) {
       intervalo = setInterval(() => {
         setFraseParaChat((prevFrase) => {
           const indiceActual = frasesParaIA.indexOf(prevFrase);
@@ -162,7 +162,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     }
 
     return () => clearInterval(intervalo);
-  }, [pensandoIA, activeConversationId]);
+  }, [isThinking]);
 
   useEffect(() => {
     let mounted = true;
@@ -544,7 +544,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                   </Box>
                 </Box>
               ))}
-              {pensandoIA === activeConversationId && (
+              {isThinking && (
                 <Box sx={{ display: "flex", justifyContent: "flex-start", width: "100%", maxWidth: "800px", pl: 2 }}>
                   <Box
                     sx={{
