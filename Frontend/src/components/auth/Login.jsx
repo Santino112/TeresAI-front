@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert, Card, AppBar, Toolbar } from '@mui/material';
+import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert, Card, AppBar, Toolbar, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { supabase } from '../../supabaseClient.js';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import fondoChatAI from "../../assets/images/fondoChatAI.png"
 import TeresaiLogo from '../../assets/images/file.svg';
 import imagenLogin from "../../assets/images/imagenLogin.jpg"
@@ -10,6 +11,106 @@ import PasswordRoundedIcon from '@mui/icons-material/PasswordRounded';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
 import { GoogleLogin } from '@react-oauth/google';
+import DeviceUnknownRoundedIcon from '@mui/icons-material/DeviceUnknownRounded';
+
+const steps = [
+    {
+        id: 'panel1',
+        icon: <DeviceUnknownRoundedIcon sx={{ mr: 2, color: '#7d745c' }} />,
+        label: "¿Cómo funciona el inicio de sesión con Google?",
+        description: (
+            <Box sx={{ mt: 3, width: '100%' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {/* Paso 1 */}
+                    <Box sx={{
+                        p: 2,
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                        borderRadius: 2,
+                        borderLeft: '4px solid #4285F4'
+                    }}>
+                        <Typography variant="subtitle2" sx={{
+                            color: "#4285F4",
+                            fontWeight: 'bold',
+                            mb: 0.5
+                        }}>Paso 1: Haz clic en el botón</Typography>
+                        <Typography variant="body2" sx={{
+                            color: "#000000",
+                            fontSize: '0.9rem'
+                        }}>Presiona el botón "Continuar con Google" para iniciar el proceso de autenticación.</Typography>
+                    </Box>
+                    {/* Paso 2 */}
+                    <Box sx={{
+                        p: 2,
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                        borderRadius: 2,
+                        borderLeft: '4px solid #EA4335'
+                    }}>
+                        <Typography variant="subtitle2" sx={{
+                            color: "#EA4335",
+                            fontWeight: 'bold',
+                            mb: 0.5
+                        }}>Paso 2: Selecciona tu cuenta</Typography>
+                        <Typography variant="body2" sx={{
+                            color: "#000000",
+                            fontSize: '0.9rem'
+                        }}>Se abrirá una ventana de Google donde podrás elegir la cuenta de correo que deseas usar.</Typography>
+                    </Box>
+
+                    {/* Paso 3 */}
+                    <Box sx={{
+                        p: 2,
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                        borderRadius: 2,
+                        borderLeft: '4px solid #FBBC04'
+                    }}>
+                        <Typography variant="subtitle2" sx={{
+                            color: "#FBBC04",
+                            fontWeight: 'bold',
+                            mb: 0.5
+                        }}>Paso 3: Autoriza el acceso</Typography>
+                        <Typography variant="body2" sx={{
+                            color: "#000000",
+                            fontSize: '0.9rem'
+                        }}>Google te pedirá que autorices que TeresAI acceda a tu información de perfil de forma segura.</Typography>
+                    </Box>
+
+                    {/* Paso 4 */}
+                    <Box sx={{
+                        p: 2,
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                        borderRadius: 2,
+                        borderLeft: '4px solid #34A853'
+                    }}>
+                        <Typography variant="subtitle2" sx={{
+                            color: "#34A853",
+                            fontWeight: 'bold',
+                            mb: 0.5
+                        }}>Paso 4: ¡Listo!</Typography>
+                        <Typography variant="body2" sx={{
+                            color: "#000000",
+                            fontSize: '0.9rem'
+                        }}>Una vez autenticado, accederás directamente a TeresAI sin necesidad de contraseña adicional.</Typography>
+                    </Box>
+
+                    {/* Nota de seguridad */}
+                    <Box sx={{
+                        p: 2,
+                        backgroundColor: 'rgba(220, 220, 220, 0.6)',
+                        borderRadius: 2,
+                        mt: 1
+                    }}>
+                        <Typography variant="caption" sx={{
+                            color: "#000000",
+                            fontSize: '0.85rem',
+                            fontStyle: 'italic'
+                        }}>🔒 Tu información está protegida. Google nunca compartirá tu contraseña con TeresAI.</Typography>
+                    </Box>
+                </Box>
+            </Box>
+        )
+    }
+]
+
 
 const Login = () => {
     const navigate = useNavigate();
@@ -19,6 +120,11 @@ const Login = () => {
     const [errorLogueo, setErrorLogueo] = useState(false);
     const [errorAlert, setErrorAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
+    const [expanded, setExpanded] = useState(false);
+
+    const handleChange = (panel) => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : false);
+    };
 
     const traducirError = (mensaje) => {
         const errores = {
@@ -87,9 +193,10 @@ const Login = () => {
                 justifyContent: "center",
                 alignItems: "center",
                 minHeight: "100dvh",
-                width: { xs: "100%", md: "40%" },
+                width: { xs: "100%", md: "50%" },
                 maxWidth: { xs: 440, sm: 440, md: 700, lg: 800 },
                 overflowY: "hidden",
+                p: { xs: 2, sm: 2, md: 2 },
             }}>
                 <AppBar
                     elevation={0}
@@ -119,9 +226,12 @@ const Login = () => {
                         height: "auto",
                         justifyContent: "center",
                         p: { xs: 3 },
-                        background: "transparent",
+                        background: "#ffffff",
+                        width: '100%',        // Ocupa el ancho disponible...
+                        maxWidth: '600px',    // ...pero no te pases de 400px
+                        margin: 'auto',
                         borderRadius: 3,
-                        boxShadow: 4,
+                        boxShadow: 5,
                         animation: "slideBounce 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
                         "@keyframes slideBounce": {
                             from: {
@@ -144,15 +254,14 @@ const Login = () => {
                             lg: "1.5rem",
                             xl: "2rem"
                         },
-                        fontFamily: "'Lora', serif"
                     }} >
                         Bienvenido de vuelta
                     </Typography>
                     <Divider sx={{
                         my: 0,
-                        width: "100%", // Aseguramos que se estire horizontalmente
+                        width: "100%",
                         "&::before, &::after": {
-                            content: '""', // Reforzamos que existan los pseudo-elementos
+                            content: '""',
                             borderColor: "#000000",
                             borderTop: "1px solid #000000",
                             opacity: 1
@@ -163,7 +272,6 @@ const Login = () => {
                     <Typography variant='body1' sx={{
                         color: "#000000",
                         mb: 1,
-                        fontFamily: "'Lora', serif",
                     }}>Ingresa o registrate con Google</Typography>
                     <GoogleLogin
                         onSuccess={async (credentialResponse) => {
@@ -181,113 +289,131 @@ const Login = () => {
                         locale="es"
                         width="280"
                     />
-
                     {/* SECCIÓN DE EXPLICACIÓN DEL REGISTRO/LOGIN CON GOOGLE */}
-                    <Box sx={{ mt: 3, width: '100%' }}>
-                        <Typography variant="h6" sx={{
-                            color: "#000000",
-                            fontFamily: "'Lora', serif",
-                            fontWeight: 'bold',
-                            mb: 2,
-                            textAlign: 'center'
-                        }}>¿Cómo funciona el inicio de sesión con Google?</Typography>
-
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            {/* Paso 1 */}
-                            <Box sx={{
-                                p: 2,
-                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                                borderRadius: 2,
-                                borderLeft: '4px solid #4285F4'
-                            }}>
-                                <Typography variant="subtitle2" sx={{
-                                    color: "#4285F4",
-                                    fontWeight: 'bold',
-                                    fontFamily: "'Lora', serif",
-                                    mb: 0.5
-                                }}>Paso 1: Haz clic en el botón</Typography>
-                                <Typography variant="body2" sx={{
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            color: "rgba(0, 0, 0, 0.6)",
+                            display: "block",
+                            lineHeight: 1.5,
+                            textAlign: "center",
+                            fontSize: {
+                                xs: "1rem",
+                                md: "1rem"
+                            },
+                            my: 1
+                        }}
+                    >Si no sabes como ingresar con Google, puedes leer el instructivo presionando el boton de abajo.
+                    </Typography>
+                    <Box sx={{
+                        width: '100%', margin: 'auto', animation: "slideDown 0.4s ease",
+                        "@keyframes slideDown": {
+                            from: {
+                                opacity: 0,
+                                transform: "translateY(-40px)"
+                            },
+                            to: {
+                                opacity: 1,
+                                transform: "translateY(0)"
+                            }
+                        }
+                    }}>
+                        {steps.map((step) => (
+                            <Accordion
+                                key={step.id}
+                                expanded={expanded === step.id}
+                                onChange={handleChange(step.id)}
+                                sx={{
+                                    mb: 1.5,
+                                    borderRadius: '12px !important',
+                                    '&:before': { display: 'none' },
+                                    boxShadow: 4,
+                                    overflow: 'hidden'
+                                }}
+                            >
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon sx={{ color: '#7d745c' }} />}
+                                    sx={{
+                                        bgcolor: "#d7d6d6",
+                                        '&:hover': { backgroundColor: '#c1c1c1' },
+                                        color: '#000000',
+                                        py: 1
+                                    }}
+                                >
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        {step.icon}
+                                        <Typography sx={{ fontWeight: '600', fontSize: '1.1rem', color: '#000000' }}>
+                                            {step.label}
+                                        </Typography>
+                                    </Box>
+                                </AccordionSummary>
+                                <AccordionDetails sx={{ backgroundColor: '#eeeeee', borderTop: '1px solid #eee', p: 3 }}>
+                                    {step.description}
+                                </AccordionDetails>
+                            </Accordion>
+                        ))}
+                    </Box>
+                    <Divider sx={{
+                        my: 1,
+                        width: "100%",
+                        "&::before, &::after": {
+                            content: '""',
+                            borderColor: "#000000",
+                            borderTop: "1px solid #000000",
+                            opacity: 1
+                        },
+                    }}>
+                        <Typography variant="body1" sx={{ color: "#000000" }}>O tambíen puedes ingresar con</Typography>
+                    </Divider>
+                    <Box component="form" onSubmit={loginUser} sx={{ display: 'none' }}>
+                        {errorAlert ?
+                            <Alert variant="filled" severity="error" sx={{ my: 1, boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>
+                            :
+                            null
+                        }
+                        <TextField
+                            error={errorLogueo}
+                            placeholder="Correo electrónico"
+                            variant="outlined"
+                            margin="dense"
+                            fullWidth
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            sx={{
+                                backgroundColor: "#d7d6d6",
+                                color: "#000000",
+                                borderRadius: 3,
+                                boxShadow: 3,
+                                my: 1,
+                                input: { color: "black" },
+                                "& .MuiOutlinedInput-root": {
+                                    borderRadius: 3,
+                                    pr: 1,
+                                },
+                                "& fieldset": {
+                                    borderColor: "transparent"
+                                },
+                                "&:hover fieldset": {
+                                    borderColor: "transparent"
+                                },
+                                "&.Mui-focused fieldset": {
+                                    borderColor: "gray"
+                                },
+                                "& .MuiInputBase-input": {
                                     color: "#000000",
-                                    fontFamily: "'Lora', serif",
-                                    fontSize: '0.9rem'
-                                }}>Presiona el botón "Continuar con Google" para iniciar el proceso de autenticación.</Typography>
-                            </Box>
-
-                            {/* Paso 2 */}
-                            <Box sx={{
-                                p: 2,
-                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                                borderRadius: 2,
-                                borderLeft: '4px solid #EA4335'
-                            }}>
-                                <Typography variant="subtitle2" sx={{
-                                    color: "#EA4335",
-                                    fontWeight: 'bold',
-                                    fontFamily: "'Lora', serif",
-                                    mb: 0.5
-                                }}>Paso 2: Selecciona tu cuenta</Typography>
-                                <Typography variant="body2" sx={{
-                                    color: "#000000",
-                                    fontFamily: "'Lora', serif",
-                                    fontSize: '0.9rem'
-                                }}>Se abrirá una ventana de Google donde podrás elegir la cuenta de correo que deseas usar.</Typography>
-                            </Box>
-
-                            {/* Paso 3 */}
-                            <Box sx={{
-                                p: 2,
-                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                                borderRadius: 2,
-                                borderLeft: '4px solid #FBBC04'
-                            }}>
-                                <Typography variant="subtitle2" sx={{
-                                    color: "#FBBC04",
-                                    fontWeight: 'bold',
-                                    fontFamily: "'Lora', serif",
-                                    mb: 0.5
-                                }}>Paso 3: Autoriza el acceso</Typography>
-                                <Typography variant="body2" sx={{
-                                    color: "#000000",
-                                    fontFamily: "'Lora', serif",
-                                    fontSize: '0.9rem'
-                                }}>Google te pedirá que autorices que TeresAI acceda a tu información de perfil de forma segura.</Typography>
-                            </Box>
-
-                            {/* Paso 4 */}
-                            <Box sx={{
-                                p: 2,
-                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                                borderRadius: 2,
-                                borderLeft: '4px solid #34A853'
-                            }}>
-                                <Typography variant="subtitle2" sx={{
-                                    color: "#34A853",
-                                    fontWeight: 'bold',
-                                    fontFamily: "'Lora', serif",
-                                    mb: 0.5
-                                }}>Paso 4: ¡Listo!</Typography>
-                                <Typography variant="body2" sx={{
-                                    color: "#000000",
-                                    fontFamily: "'Lora', serif",
-                                    fontSize: '0.9rem'
-                                }}>Una vez autenticado, accederás directamente a TeresAI sin necesidad de contraseña adicional.</Typography>
-                            </Box>
-
-                            {/* Nota de seguridad */}
-                            <Box sx={{
-                                p: 2,
-                                backgroundColor: 'rgba(220, 220, 220, 0.6)',
-                                borderRadius: 2,
-                                mt: 1
-                            }}>
-                                <Typography variant="caption" sx={{
-                                    color: "#000000",
-                                    fontFamily: "'Lora', serif",
-                                    fontSize: '0.85rem',
-                                    fontStyle: 'italic'
-                                }}>🔒 Tu información está protegida. Google nunca compartirá tu contraseña con TeresAI.</Typography>
-                            </Box>
-                        </Box>
+                                    fontWeight: 500,
+                                },
+                            }}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#000000" }}>
+                                            <EmailRoundedIcon fontSize='medium' sx={{ mr: 1 }}></EmailRoundedIcon>
+                                        </Box>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
                     </Box>
 
                     {/* FORMULARIO DE LOGIN/REGISTRO COMENTADO - Mantener para referencia futura */}
@@ -351,7 +477,6 @@ const Login = () => {
                                     </InputAdornment>
                                 ),
                             }}
-
                         />
                         <br />
                         <TextField

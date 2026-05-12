@@ -63,7 +63,7 @@ const style = {
     color: '#000000',
     overflowY: "auto",
     maxHeight: '90dvh',
-    bgcolor: "#eeeeee",
+    bgcolor: "#ffffff",
     border: '2px solid #000000',
     borderRadius: 3,
     boxShadow: 24,
@@ -359,6 +359,7 @@ function ResponsiveDrawer() {
                                                                 "&:hover": {
                                                                     backgroundColor: "#67604d"
                                                                 },
+                                                                fontSize: "1rem",
                                                                 mr: 1,
                                                                 mt: 1
                                                             }}
@@ -373,6 +374,7 @@ function ResponsiveDrawer() {
                                                                 fontWeight: "bold",
                                                                 borderRadius: 2,
                                                                 textTransform: "none",
+                                                                fontSize: "1rem",
                                                                 mr: 1,
                                                                 mt: 1,
                                                                 "&:hover": { backgroundColor: "#e0e0e0" },
@@ -396,6 +398,7 @@ function ResponsiveDrawer() {
                                                 "&:hover": {
                                                     backgroundColor: "#67604d"
                                                 },
+                                                fontSize: "1rem",
                                                 mr: 1,
                                                 mt: 1
                                             }}>
@@ -408,6 +411,7 @@ function ResponsiveDrawer() {
                                                 textTransform: "none",
                                                 ml: 1,
                                                 mt: 1,
+                                                fontSize: "1rem",
                                                 "&:hover": { backgroundColor: "#e0e0e0" },
                                             }}>
                                                 Repetir
@@ -452,7 +456,10 @@ function ResponsiveDrawer() {
                 }}
                     sx={{
                         justifyContent: "flex-start",
-                        backgroundColor: "transparent",
+                        backgroundColor: paginaActiva === "chat" ? "#e1e1e1" : "transparent",
+                        borderRadius: 2,
+                        border: "2px solid",
+                        borderColor: paginaActiva === "chat" ? "gray" : "transparent",
                         mt: 1,
                         mb: 1,
                         color: "#000000",
@@ -466,7 +473,10 @@ function ResponsiveDrawer() {
                     sx={{
                         justifyContent: "flex-start",
                         mb: 1,
-                        backgroundColor: "transparent",
+                        backgroundColor: paginaActiva === "buscador" ? "#e1e1e1" : "transparent",
+                        borderRadius: 2,
+                        border: "2px solid",
+                        borderColor: paginaActiva === "buscador" ? "gray" : "transparent",
                         color: "#000000",
                         "&:hover": {
                             backgroundColor: "#e1e1e1",
@@ -477,7 +487,10 @@ function ResponsiveDrawer() {
                 }} sx={{
                     justifyContent: "flex-start",
                     mb: 1,
-                    backgroundColor: "transparent",
+                    backgroundColor: paginaActiva === "calendario" ? "#e1e1e1" : "transparent",
+                    borderRadius: 2,
+                    border: "2px solid",
+                    borderColor: paginaActiva === "calendario" ? "gray" : "transparent",
                     color: "#000000",
                     "&:hover": {
                         backgroundColor: "#e1e1e1",
@@ -488,7 +501,10 @@ function ResponsiveDrawer() {
                 }} sx={{
                     justifyContent: "flex-start",
                     mb: 1,
-                    backgroundColor: "transparent",
+                    backgroundColor: paginaActiva === "juegos" ? "#e1e1e1" : "transparent",
+                    borderRadius: 2,
+                    border: "2px solid",
+                    borderColor: paginaActiva === "juegos" ? "gray" : "transparent",
                     color: "#000000",
                     "&:hover": {
                         backgroundColor: "#e1e1e1",
@@ -499,7 +515,10 @@ function ResponsiveDrawer() {
                 }} sx={{
                     justifyContent: "flex-start",
                     mb: 1,
-                    backgroundColor: "transparent",
+                    backgroundColor: paginaActiva === "Noticias" ? "#e1e1e1" : "transparent",
+                    borderRadius: 2,
+                    border: "2px solid",
+                    borderColor: paginaActiva === "Noticias" ? "gray" : "transparent",
                     color: "#000000",
                     "&:hover": {
                         backgroundColor: "#e1e1e1",
@@ -510,7 +529,10 @@ function ResponsiveDrawer() {
                 }} sx={{
                     justifyContent: "flex-start",
                     mb: 1,
-                    backgroundColor: "transparent",
+                    backgroundColor: paginaActiva === "Lista de compras" ? "#e1e1e1" : "transparent",
+                    borderRadius: 2,
+                    border: "2px solid",
+                    borderColor: paginaActiva === "Lista de compras" ? "gray" : "transparent",
                     color: "#000000",
                     "&:hover": {
                         backgroundColor: "#e1e1e1",
@@ -521,7 +543,10 @@ function ResponsiveDrawer() {
                 }} sx={{
                     justifyContent: "flex-start",
                     mb: 1,
-                    backgroundColor: "transparent",
+                    backgroundColor: paginaActiva === "notas" ? "#e1e1e1" : "transparent",
+                    borderRadius: 2,
+                    border: "2px solid",
+                    borderColor: paginaActiva === "notas" ? "gray" : "transparent",
                     color: "#000000",
                     "&:hover": {
                         backgroundColor: "#e1e1e1",

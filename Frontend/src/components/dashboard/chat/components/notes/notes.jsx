@@ -23,13 +23,17 @@ import {
   DialogActions,
   TextField,
   Alert,
+  InputAdornment
 } from "@mui/material";
 import StickyNote2RoundedIcon from "@mui/icons-material/StickyNote2Rounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
+import CircularProgress from "@mui/material/CircularProgress";
+import TitleRoundedIcon from '@mui/icons-material/TitleRounded';
+import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 import api from "../../../../../api/axios";
 
 const styleModal = {
@@ -41,49 +45,13 @@ const styleModal = {
   maxWidth: 500,
   color: '#000000',
   overflowY: "auto",
-  bgcolor: "#eeeeee",
+  bgcolor: "#ffffff",
   border: '2px solid #000000',
   borderRadius: 3,
   boxShadow: 24,
   p: { xs: 3, sm: 3, md: 4 },
   outline: 'none'
 };
-
-const ActionButtons = ({ isMobile = false }) => (
-  <Stack
-    direction="row"
-    spacing={1}
-    alignItems="center"
-    justifyContent="center"
-    sx={{
-      display: isMobile ? { xs: "flex", md: "none" } : { xs: "none", md: "flex" },
-      mt: isMobile ? 2 : 0,
-      mb: isMobile ? 1 : 0,
-      width: isMobile ? "100%" : "auto"
-    }}
-  >
-    {notesCountChip}
-    <Button
-      variant="contained"
-      onClick={handleOpenCreate}
-      startIcon={<AddRoundedIcon />}
-      sx={{
-        height: "42px",
-        fontWeight: 700,
-        boxShadow: 3,
-        borderRadius: 2,
-        backgroundColor: "#7d745c",
-        width: isMobile ? "100%" : "fit-content",
-        color: "#ffffff",
-        textTransform: "none",
-        fontSize: "1rem",
-        "&:hover": { backgroundColor: "#67604d" },
-      }}
-    >
-      Nueva nota
-    </Button>
-  </Stack>
-);
 
 const formatDate = (value) => {
   if (!value) return "";
@@ -233,6 +201,9 @@ export default function NotesDashboard() {
 
     if (!editForm.content.trim()) {
       setEditError("Debes escribir el contenido de la nota.");
+      setTimeout(() => {
+        setEditError("");
+      }, 7000);
       return;
     }
 
@@ -261,6 +232,9 @@ export default function NotesDashboard() {
       window.dispatchEvent(new Event("notesUpdated"));
     } catch (error) {
       setEditError(error?.response?.data?.error || "No se pudo editar la nota.");
+      setTimeout(() => {
+        setEditError("");
+      }, 7000);
     } finally {
       setActionLoading(false);
     }
@@ -269,6 +243,9 @@ export default function NotesDashboard() {
   const handleCreateNote = async () => {
     if (!createForm.content.trim()) {
       setCreateError("Debes escribir el contenido de la nota.");
+      setTimeout(() => {
+        setCreateError("");
+      }, 7000);
       return;
     }
 
@@ -286,6 +263,9 @@ export default function NotesDashboard() {
       window.dispatchEvent(new Event("notesUpdated"));
     } catch (error) {
       setCreateError(error?.response?.data?.error || "No se pudo crear la nota.");
+      setTimeout(() => {
+        setCreateError("");
+      }, 7000);
     } finally {
       setCreateLoading(false);
     }
@@ -322,21 +302,23 @@ export default function NotesDashboard() {
       <Button
         variant="contained"
         onClick={handleOpenCreate}
-        startIcon={<AddRoundedIcon />}
         sx={{
-          height: "42px",
-          fontWeight: 700,
-          boxShadow: 3,
           borderRadius: 2,
+          mr: { xs: 0, sm: 1 },
+          boxShadow: 3,
+          width: { xs: "100%", sm: "100%", md: "fit-content" },
+          minWidth: "auto",
+          whiteSpace: "nowrap",
           backgroundColor: "#7d745c",
-          width: isMobile ? "100%" : "fit-content",
           color: "#ffffff",
           textTransform: "none",
           fontSize: "1rem",
-          "&:hover": { backgroundColor: "#67604d" },
+          "&:hover": {
+            backgroundColor: "#67604d"
+          },
         }}
       >
-        Nueva nota
+        <AddRoundedIcon fontSize="medium" sx={{ mr: 1 }} /> Nueva nota
       </Button>
       <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 1 }} />
       <Box sx={{ width: { xs: "100%", md: "auto" }, display: "flex", justifyContent: "center" }}>
@@ -368,7 +350,6 @@ export default function NotesDashboard() {
         p: { xs: 2, sm: 2, md: 2 },
         borderRadius: 4,
         background: "transparent",
-
         flexGrow: 0,
         boxShadow: 0,
         animation: "slideDown 0.4s ease",
@@ -422,113 +403,146 @@ export default function NotesDashboard() {
           lineHeight: 1.8,
         }}>
           Guarda tus recordatorios, ideas o lo que quieras registrar con Teresa.
-          Cada nota se muestra como una tarjeta interactiva; hacé click para verla en detalle.
+          Cada nota se muestra como una tarjeta interactiva, hacé click en una para verla en detalle.
         </Typography>
         <Divider sx={{ borderColor: "rgba(0,0,0,0.1)" }} />
         <ActionButtons isMobile={true} />
         <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", mb: 2 }} />
-        <Grid container spacing={3} justifyContent={{ xs: "center", md: "flex-start" }} sx={{
-          flexGrow: 1, animation: "slideDown 0.4s ease",
-          mt: 2,
-          width: "100%",
-          "@keyframes slideDown": {
-            from: {
-              opacity: 0,
-              transform: "translateY(-40px)"
-            },
-            to: {
-              opacity: 1,
-              transform: "translateY(0)"
-            }
-          },
-          margin: 0, // Evita scroll horizontal
-          "& > .MuiGrid-item": {
-            paddingLeft: { xs: 0, sm: 3 }, // Ajusta el espacio lateral en móvil
-          }
-        }}>
-          {loading
-            ? Array.from({ length: 6 }).map((_, index) => (
-              <Grid key={index} size={{ xs: 12, sm: 6, md: 4 }}>
-                <Skeleton variant="rounded" height={200} />
-              </Grid>
-            ))
+        <Box
+          sx={{
+            width: "100%",
+            maxHeight: { xs: "70dvh", sm: "70dvh", md: "90dvh" },
+            overflowY: "auto",
+            overflowX: "hidden",
+            p: 1.5,
+            m: -1.5
+          }}
+        >
+          <Grid container spacing={3} justifyContent={{ xs: "center", md: "flex-start" }}
+            sx={{
+              flexGrow: 1,
+              animation: "slideDown 0.4s ease",
+              mt: 2,
+              width: "100%",
+              "@keyframes slideDown": {
+                from: {
+                  opacity: 0,
+                  transform: "translateY(-40px)"
+                },
+                to: {
+                  opacity: 1,
+                  transform: "translateY(0)"
+                }
+              },
+              margin: 0,
+              "& > .MuiGrid-item": {
+                paddingLeft: { xs: 0, sm: 3 },
+              }
+            }}>
+            {loading
+              ? Array.from({ length: 6 }).map((_, index) => (
+                <Grid key={index} size={{ xs: 12, sm: 6, md: 4 }}>
+                  <Skeleton variant="rounded" height={200} />
+                </Grid>
+              ))
               : notes.length === 0
-              ? (
-                <Grid size={12}>
-                  <Box
-                    sx={{
-                      borderRadius: 3,
-                      border: "2px dashed rgba(0,0,0,0.2)",
-                      p: 3,
-                      textAlign: "center",
-                    }}
-                  >
-                    <Typography variant="h6" sx={{
-                      color: "#000000",
-                      mb: 1,
-                    }}>
-                      Todavía no hay notas guardadas
-                    </Typography>
-                    <Typography variant="body1" sx={{
-                      color: "#000000",
-                      lineHeight: 1.8,
-                    }} >
-                      Utilizá la herramienta para agregar nuevas notas y aparecerán aquí automáticamente.
-                    </Typography>
-                  </Box>
-                </Grid>
-              )
-              : notes.map((note) => (
-                <Grid key={note.id}
-                  item
-                  xs={12}    // Ocupa las 12 columnas (100%) en celular
-                  sm={6}
-                  md={4}
-                  sx={{
-                    display: "flex",
-                    justifyContent: { xs: "center", md: "flex-start" },
-                  }}>
-                  <Card
-                    elevation={2}
-                    sx={{
-                      borderRadius: 3,
-                      height: "100%",
-                      width: "100%", // FUERZA el ancho total
-                      maxWidth: { xs: "100%", sm: "none" }, // Evita que en celular se achique
-                      background: theme.palette.mode === "dark" ? "#303030" : "#ffffff"
-                    }}
-                  >
-                    <CardActionArea
+                ? (
+                  <Grid size={12}>
+                    <Box
                       sx={{
-                        height: "100%",
-                        p: 2,
-                        width: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "flex-start",
-                        justifyContent: "flex-start",
-                        color: "#000000",
-                        backgroundColor: "#d7d6d6"
+                        borderRadius: 3,
+                        border: "2px dashed rgba(0,0,0,0.2)",
+                        p: 3,
+                        textAlign: "center",
                       }}
-                      onClick={() => openNote(note)}
                     >
-                      <Stack direction="row" justifyContent="space-between" width="100%">
-                        <Typography variant="subtitle1" noWrap sx={{ fontWeight: 600, color: "#000000" }}>
-                          {note.text?.split("\n")[0] || "Nota sin título"}
+                      <Typography variant="h6" sx={{
+                        color: "#000000",
+                        fontSize: {
+                          xs: "1rem",
+                          sm: "1rem",
+                          md: "1rem",
+                          lg: "1.1rem",
+                          xl: "1.1rem",
+                        },
+                        lineHeight: 1.8,
+                      }}>
+                        Todavía no hay notas guardadas
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: "rgba(0, 0, 0, 0.6)",
+                          display: "block",
+                          lineHeight: 1.5,
+                          textAlign: "center",
+                          fontSize: {
+                            xs: "0.75rem",
+                            md: "1rem"
+                          },
+                          mt: 1
+                        }}
+                      >
+                        Puedes crear notas pidiéndoselo a Teresa o creando una manualmente apretando el botón de "Nueva nota"
+                      </Typography>
+                    </Box>
+                  </Grid>
+                )
+                : notes.map((note) => (
+                  <Grid key={note.id}
+                    item
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    sx={{
+                      display: "flex",
+                      justifyContent: { xs: "center", md: "flex-start" },
+                    }}>
+                    <Card
+                      elevation={2}
+                      sx={{
+                        borderRadius: 3,
+                        boxShadow: 3,
+                        height: "100%",
+                        width: "100%",
+                        maxWidth: { xs: "100%", sm: "none" },
+                        background: theme.palette.mode === "dark" ? "#303030" : "#ffffff"
+                      }}
+                    >
+                      <CardActionArea
+                        sx={{
+                          height: "100%",
+                          p: 2,
+                          width: "100%",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "flex-start",
+                          justifyContent: "flex-start",
+                          color: "#000000",
+                          backgroundColor: "#d7d6d6"
+                        }}
+                        onClick={() => openNote(note)}
+                      >
+                        <Stack direction="row" justifyContent="space-between" width="100%">
+                          <Typography variant="subtitle1" noWrap sx={{ fontWeight: 600, color: "#000000" }}>
+                            {note.text?.split("\n")[0] || "Nota sin título"}
+                          </Typography>
+                          <Chip label="Ver" size="small" sx={{ backgroundColor: "#7d745c", ml: 2 }} />
+                        </Stack>
+                        <Typography variant="caption" color="text.secondary" sx={{ mt: 1, mb: 2, color: "#000000" }}>
+                          {formatDate(note.created_at)}
                         </Typography>
-                        <Chip label="Ver" size="small" sx={{ color: "#000000", backgroundColor: "#ffffff" }} />
-                      </Stack>
-                      <Typography variant="caption" color="text.secondary" sx={{ mt: 1, mb: 2, color: "#000000" }}>
-                        {formatDate(note.created_at)}
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: "#000000" }}>
-                        {getSnippet(note.text)}
-                      </Typography>
-                    </CardActionArea>
-                  </Card>
-                </Grid>
-              ))}
-        </Grid>
+                        <Divider sx={{ borderColor: "rgba(0,0,0,0.1)" }} />
+                        <Typography variant="body2" sx={{ color: "#000000" }}>
+                          {getSnippet(note.text)}
+                        </Typography>
+                      </CardActionArea>
+                    </Card>
+                  </Grid>
+                ))}
+          </Grid>
+        </Box>
+
         <Modal
           open={modalOpen}
           onClose={closeModal}
@@ -549,7 +563,7 @@ export default function NotesDashboard() {
                 transform: "translate(-50%, -50%)",
                 width: "90%",
                 maxWidth: 500,
-                bgcolor: "#d7d6d6",
+                bgcolor: "#ffffff",
                 color: "#000000",
                 borderRadius: 3,
                 boxShadow: 24,
@@ -568,32 +582,133 @@ export default function NotesDashboard() {
                   {formatDate(selectedNote?.created_at)}
                 </Typography>
               </Stack>
-              <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 2 }} />
+              <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.36)", my: 2 }} />
               {editingNote ? (
                 <Stack spacing={2}>
-                  {editError ? <Alert severity="error">{editError}</Alert> : null}
-                  <TextField
-                    label="Titulo"
-                    value={editForm.title}
-                    onChange={(event) => setEditForm((prev) => ({ ...prev, title: event.target.value }))}
-                    fullWidth
-                  />
-                  <TextField
-                    label="Contenido"
-                    value={editForm.content}
-                    onChange={(event) => setEditForm((prev) => ({ ...prev, content: event.target.value }))}
-                    multiline
-                    minRows={6}
-                    fullWidth
-                    required
-                  />
+                  {editError ? <Alert variant="filled" severity="error" sx={{
+                    boxShadow: 4,
+                    borderRadius: 3,
+                    fontSize: "1rem",
+                  }}>{editError}</Alert> : null}
+                  <Box sx={{ my: 0, width: "100%" }}>
+                    <Typography variant="body1" sx={{ color: "#000000" }}>Título de la nota</Typography>
+                    <TextField
+                      placeholder="Ingresá el título que querés que tenga"
+                      value={editForm.title}
+                      onChange={(event) => setEditForm((prev) => ({ ...prev, title: event.target.value }))}
+                      fullWidth
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                              <TitleRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }} />
+                            </Box>
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{
+                        backgroundColor: "#d7d6d6",
+                        borderRadius: 3,
+                        boxShadow: 3,
+                        input: { color: "#000000" },
+                        "& .MuiInputLabel-root": {
+                          color: "#000000",
+                          opacity: 0.8
+                        },
+                        "& .MuiInputLabel-root.Mui-focused": {
+                          color: "#000000 !important"
+                        },
+                        "& .MuiInputBase-input::placeholder": {
+                          color: "#000000",
+                          opacity: 0.6,
+                        },
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: 3,
+                          pr: 1,
+                          "& fieldset": {
+                            borderColor: "transparent"
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "transparent"
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "gray"
+                          },
+                        },
+                        "& .MuiFormHelperText-root": {
+                          color: "#000000 !important",
+                          opacity: 0.8,
+                          fontWeight: 500,
+                        },
+                      }}
+                    />
+                  </Box>
+                  <Box sx={{ my: 0, width: "100%" }}>
+                    <Typography variant="body1" sx={{ color: "#000000" }}>Descripción de la nota</Typography>
+                    <TextField
+                      placeholder="Ej: Comprar 3 tomates..."
+                      value={editForm.content}
+                      onChange={(event) => setEditForm((prev) => ({ ...prev, content: event.target.value }))}
+                      helperText={
+                        <span>
+                          {`500 caracteres`}
+                        </span>
+                      }
+                      inputProps={{ maxLength: 500 }}
+                      multiline
+                      minRows={5}
+                      fullWidth
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1.5, mr: 1 }}>
+                            <DescriptionRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }} />
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{
+                        backgroundColor: "#d7d6d6",
+                        color: "#000000",
+                        borderRadius: 3,
+                        boxShadow: 3,
+                        "& .MuiFormHelperText-root": {
+                          color: "#000000",
+                          opacity: 0.8,
+                          fontWeight: 500,
+                        },
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: 3,
+                          alignItems: 'flex-start', // Alinea todo al techo
+                          paddingTop: 0,            // Quitamos el padding de MUI
+                          paddingLeft: 1.5,
+                          "& fieldset": { borderColor: "transparent" },
+                          "&:hover fieldset": { borderColor: "transparent" },
+                          "&.Mui-focused fieldset": { borderColor: "gray" },
+                        },
+                        "& .MuiInputBase-input": {
+                          color: "#000000",
+                          WebkitTextFillColor: "#000000",
+                          paddingTop: '14px',
+                        },
+                        "& textarea": {
+                          color: "#000000",
+                        },
+                        "& .MuiInputBase-input::placeholder": {
+                          color: "#000000",
+                          opacity: 0.6,
+                        },
+                        "& .MuiInputLabel-root.Mui-focused": {
+                          color: "#000000 !important"
+                        },
+                      }}
+                    />
+                  </Box>
                 </Stack>
               ) : (
                 <Typography variant="body1" sx={{ whiteSpace: "pre-line", lineHeight: 1.8, color: "#000000", my: 2 }}>
                   {selectedNote?.text}
                 </Typography>
               )}
-              <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 2 }} />
+              <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.36)", my: 2 }} />
               <Stack direction="row" spacing={2} justifyContent="flex-end">
                 {editingNote ? (
                   <>
@@ -602,13 +717,15 @@ export default function NotesDashboard() {
                       onClick={handleCancelEdit}
                       disabled={actionLoading}
                       sx={{
-                        border: "none",
                         color: "#464545",
                         fontWeight: "bold",
+                        borderRadius: 2,
+                        fontSize: "1rem",
                         textTransform: "none",
-                        ml: 1,
+                        mr: 1,
                         mt: 1,
                         "&:hover": { backgroundColor: "#e0e0e0" },
+                        border: "none",
                       }}
                     >
                       Cancelar
@@ -617,19 +734,31 @@ export default function NotesDashboard() {
                       variant="contained"
                       onClick={handleEditNote}
                       disabled={actionLoading}
-                      startIcon={<SaveRoundedIcon />}
                       sx={{
+                        backgroundColor: "#7d745c",
+                        borderRadius: 2,
                         color: "#ffffff",
                         textTransform: "none",
-                        backgroundColor: "#7d745c",
+                        fontSize: "1rem",
                         "&:hover": {
-                          backgroundColor: "#6a5f49"
+                          backgroundColor: "#67604d"
+                        },
+                        "&.Mui-disabled": {
+                          backgroundColor: "#5a5342",
+                          color: "#ffffff !important",
                         },
                         mr: 1,
                         mt: 1
                       }}
                     >
-                      {actionLoading ? "Guardando..." : "Guardar cambios"}
+                      {actionLoading ?
+                        <>
+                          <CircularProgress size={20} sx={{ color: "#ffffff", mr: 2 }} />
+                          Guardando...
+                        </>
+                        :
+                        "Guardar cambios"
+                      }
                     </Button>
                   </>
                 ) : (
@@ -638,15 +767,16 @@ export default function NotesDashboard() {
                       variant="outlined"
                       onClick={closeModal}
                       sx={{
-                              color: "#464545",
+                        color: "#464545",
                         fontWeight: "bold",
                         borderRadius: 2,
-                  textTransform: "none",
+                        textTransform: "none",
+                        fontSize: "1rem",
                         mr: 1,
                         mt: 1,
                         "&:hover": { backgroundColor: "#e0e0e0" },
                         border: "none"
-                }}
+                      }}
                     >
                       Cerrar
                     </Button>
@@ -657,8 +787,9 @@ export default function NotesDashboard() {
                       startIcon={<EditRoundedIcon />}
                       sx={{
                         borderColor: "#7d745c",
-                        color: "#7d745c",
+                        color: "#000000",
                         textTransform: "none",
+                        fontSize: "1rem",
                         mt: 1,
                         "&:hover": {
                           borderColor: "#6a5f49",
@@ -673,19 +804,16 @@ export default function NotesDashboard() {
                       color="error"
                       onClick={() => handleDeleteNote(selectedNote?.id)}
                       disabled={actionLoading || !selectedNote?.id}
-                      startIcon={<DeleteOutlineRoundedIcon />}
                       sx={{
                         color: "#ffffff",
                         textTransform: "none",
                         borderRadius: 2,
-                    "&:hover": {
-                          backgroundColor: "#aa0e0e"
-                        },
-                        mr: 1,
-                        mt: 1
+                        mt: 1,
+                        minWidth: "auto",
+                        whiteSpace: "nowrap",
                       }}
                     >
-                      Eliminar nota
+                      <DeleteRoundedIcon fontSize="small" sx={{ color: "#ffffff", mr: 1 }} /> Eliminar nota
                     </Button>
                   </>
                 )}
@@ -700,7 +828,7 @@ export default function NotesDashboard() {
         >
           <Box sx={styleModal}>
             <Box sx={{ mb: 1, borderBottom: '1px solid rgba(0,0,0,0.1)' }}>
-              <Typography id="modal-title" variant="h6" sx={{
+              <Typography id="modal-title" variant="h5" sx={{
                 display: "flex",
                 justifyContent: "flex-start",
                 alignItems: "center",
@@ -714,111 +842,136 @@ export default function NotesDashboard() {
             </Box>
             <Box sx={{ mt: 2 }}>
               <Stack spacing={3}>
-                {createError && <Alert variant="filled" severity="error" sx={{
+                {createError ? <Alert variant="filled" severity="error" sx={{
                   boxShadow: 4,
                   borderRadius: 3,
                   fontSize: "1rem",
-                }}>{createError}</Alert>}
-                <TextField
-                  placeholder="Título"
-                  value={createForm.title}
-                  onChange={(event) => setCreateForm((prev) => ({ ...prev, title: event.target.value }))}
-                  fullWidth
-                  inputProps={{ maxLength: 50 }}
-                  variant="outlined"
-                  helperText="Opcional: si lo dejás vacío se usa una versión corta"
-                  sx={{
-                    backgroundColor: "#d7d6d6",
-                    color: "#000000",
-                    borderRadius: 3,
-                    boxShadow: 3,
-                    input: { color: "#000000" },
-                    "& .MuiOutlinedInput-root": {
+                }}>{createError}</Alert> : null}
+                <Box sx={{ my: 0, width: "100%" }}>
+                  <Typography variant="body1" sx={{ color: "#000000" }}>Título de la nota</Typography>
+                  <TextField
+                    value={createForm.title}
+                    onChange={(event) => setCreateForm((prev) => ({ ...prev, title: event.target.value }))}
+                    fullWidth
+                    placeholder="Ingresá el título que querés que tenga"
+                    inputProps={{ maxLength: 50 }}
+                    variant="outlined"
+                    helperText="Opcional: si lo dejás vacío se usa una versión corta"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", color: "#ffffff" }}>
+                            <TitleRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }} />
+                          </Box>
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      backgroundColor: "#d7d6d6",
                       borderRadius: 3,
-                      pr: 1,
-                    },
-                    "& fieldset": {
-                      borderColor: "transparent"
-                    },
-                    "& .MuiInputBase-input::placeholder": {
+                      boxShadow: 3,
+                      input: { color: "#000000" },
+                      "& .MuiInputLabel-root": {
+                        color: "#000000",
+                        opacity: 0.8
+                      },
+                      "& .MuiInputLabel-root.Mui-focused": {
+                        color: "#000000 !important"
+                      },
+                      "& .MuiInputBase-input::placeholder": {
+                        color: "#000000",
+                        opacity: 0.6,
+                      },
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 3,
+                        pr: 1,
+                        "& fieldset": {
+                          borderColor: "transparent"
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "transparent"
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "gray"
+                        },
+                      },
+                      "& .MuiFormHelperText-root": {
+                        color: "#000000 !important",
+                        opacity: 0.8,
+                        fontWeight: 500,
+                      },
+                    }}
+                  />
+                </Box>
+                <Box sx={{ my: 0, width: "100%" }}>
+                  <Typography variant="body1" sx={{ color: "#000000" }}>Descripción de la nota</Typography>
+                  <TextField
+                    placeholder="Ej: Comprar 3 tomates..."
+                    value={createForm.content}
+                    onChange={(event) => setCreateForm((prev) => ({ ...prev, content: event.target.value }))}
+                    multiline
+                    inputProps={{ maxLength: 500 }}
+                    minRows={5}
+                    fullWidth
+                    helperText={
+                      <span style={{
+                        color: createForm.content.length >= 500 ? "#d32f2f" : "inherit",
+                        fontWeight: createForm.content.length >= 500 ? "700" : "inherit"
+                      }}>
+                        {`${createForm.content.length} / 500 caracteres`}
+                      </span>
+                    }
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1.5, mr: 1 }}>
+                          <DescriptionRoundedIcon fontSize='medium' sx={{ mr: 1, color: "#000000" }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      backgroundColor: "#d7d6d6",
                       color: "#000000",
-                      opacity: 0.6,
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "transparent"
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "gray"
-                    },
-                    "& .MuiFormHelperText-root": {
-                      color: "#000000 !important",
-                      opacity: 0.8,
-                      fontWeight: 500,
-                    },
-                  }}
-                />
-                <TextField
-                  placeholder="Contenido"
-                  value={createForm.content}
-                  onChange={(event) => setCreateForm((prev) => ({ ...prev, content: event.target.value }))}
-                  multiline
-                  inputProps={{ maxLength: 500 }}
-                  minRows={5}
-                  maxRows={5}
-                  fullWidth
-                  required
-                  helperText={
-                    <span style={{
-                      color: createForm.content.length >= 500 ? "#d32f2f" : "inherit",
-                      fontWeight: createForm.content.length >= 500 ? "700" : "inherit"
-                    }}>
-                      {`${createForm.content.length} / 500 caracteres`}
-                    </span>
-                  }
-                  sx={{
-                    backgroundColor: "#d7d6d6",
-                    color: "#000000",
-                    borderRadius: 3,
-                    boxShadow: 3,
-                    "& .MuiInputBase-input": {
-                      color: "#000000",
-                      WebkitTextFillColor: "#000000",
-                    },
-                    "& textarea": {
-                      color: "#000000",
-                    },
-                    "& .MuiOutlinedInput-root": {
                       borderRadius: 3,
-                      pr: 1,
-                    },
-                    "& fieldset": {
-                      borderColor: "transparent"
-                    },
-                    "& .MuiInputBase-input::placeholder": {
-                      color: "#000000",
-                      opacity: 0.6,
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "transparent"
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "gray"
-                    },
-                    "& .MuiFormHelperText-root": {
-                      color: "#000000",
-                      opacity: 0.8,
-                      fontWeight: 500,
-                    },
-                  }}
-                />
+                      boxShadow: 3,
+                      "& .MuiFormHelperText-root": {
+                        color: "#000000",
+                        opacity: 0.8,
+                        fontWeight: 500,
+                      },
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 3,
+                        alignItems: 'flex-start', // Alinea todo al techo
+                        paddingTop: 0,            // Quitamos el padding de MUI
+                        paddingLeft: 1.5,
+                        "& fieldset": { borderColor: "transparent" },
+                        "&:hover fieldset": { borderColor: "transparent" },
+                        "&.Mui-focused fieldset": { borderColor: "gray" },
+                      },
+                      "& .MuiInputBase-input": {
+                        color: "#000000",
+                        WebkitTextFillColor: "#000000",
+                        paddingTop: '14px',
+                      },
+                      "& textarea": {
+                        color: "#000000",
+                      },
+                      "& .MuiInputBase-input::placeholder": {
+                        color: "#000000",
+                        opacity: 0.6,
+                      },
+                      "& .MuiInputLabel-root.Mui-focused": {
+                        color: "#000000 !important"
+                      },
+                    }}
+                  />
+                </Box>
               </Stack>
             </Box>
-            <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", my: 2 }} />
+            <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.27)", my: 2 }} />
             <Box sx={{
               display: 'flex',
               justifyContent: 'flex-end',
               gap: 2,
-              bgcolor: 'rgba(0,0,0,0.03)'
             }}>
               <Button
                 onClick={handleCloseCreate}
@@ -828,6 +981,7 @@ export default function NotesDashboard() {
                   fontWeight: "bold",
                   borderRadius: 2,
                   textTransform: "none",
+                  fontSize: "1rem",
                   mr: 1,
                   mt: 1,
                   "&:hover": { backgroundColor: "#e0e0e0" },
@@ -844,14 +998,25 @@ export default function NotesDashboard() {
                   borderRadius: 2,
                   color: "#ffffff",
                   textTransform: "none",
+                  fontSize: "1rem",
                   "&:hover": {
                     backgroundColor: "#67604d"
                   },
-                  mr: 1,
+                  "&.Mui-disabled": {
+                    backgroundColor: "#5a5342",
+                    color: "#ffffff !important",
+                  },
                   mt: 1
                 }}
               >
-                {createLoading ? "Guardando..." : "Guardar nota"}
+                {createLoading ?
+                  <>
+                    <CircularProgress size={20} sx={{ color: "#ffffff", mr: 2 }} />
+                    Creando...
+                  </>
+                  :
+                  "Crear nota"
+                }
               </Button>
             </Box>
           </Box>
