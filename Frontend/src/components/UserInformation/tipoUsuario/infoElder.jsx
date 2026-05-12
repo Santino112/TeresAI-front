@@ -1,8 +1,7 @@
-import { Typography, Button, Box, Select, MenuItem, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel, InputAdornment } from "@mui/material";
+import { Typography, Box, FormControlLabel, InputAdornment, FormControl, FormLabel, RadioGroup, Radio } from "@mui/material";
 import VoiceTextField from "../VoiceTextField.jsx";
 import SickRoundedIcon from '@mui/icons-material/SickRounded';
 import MedicationRoundedIcon from '@mui/icons-material/MedicationRounded';
-import MasksRoundedIcon from '@mui/icons-material/MasksRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import HeartBrokenRoundedIcon from '@mui/icons-material/HeartBrokenRounded';
 
@@ -31,77 +30,55 @@ const InfoElder = (
         <>
             <Box sx={{ mb: 1, width: "100%" }}>
                 <Typography variant="body1" sx={{ color: "#000000" }}>¿Sufrís de alguna enfermedad?</Typography>
-                <Select
+                <FormControl
                     error={errorTextFields}
-                    labelId="demo-simple-select-helper-label"
-                    id="demo-simple-select-helper"
-                    value={tieneEnfermedad}
-                    fullWidth
-                    onChange={(e) => {
-                        setTieneEnfermedad(e.target.value)
-                        e.target.value === "si" ? setEnfermedad("") : setEnfermedad("No")
-                    }
-                    }
-                    MenuProps={{
-                        PaperProps: {
-                            sx: {
-                                borderRadius: 3,
-                                backgroundColor: "#303030",
-                                color: "#ffffff",
-                            }
-                        },
-                        MenuListProps: { sx: { p: 0 } }
-                    }}
-                    startAdornment={
-                        <InputAdornment position="start">
-                            <SickRoundedIcon fontSize="medium" sx={{ color: "#000000", mr: 1 }} />
-                        </InputAdornment>
-                    }
+                    component="fieldset"
                     sx={{
-                        backgroundColor: "#d7d6d6",
-                        color: "#000000",
+                        width: "100%",
+                        mt: 1,
+                        p: 1.5,
                         borderRadius: 3,
+                        backgroundColor: "#d7d6d6",
                         boxShadow: 3,
-                        mb: 1,
-                        // 1. Esto fuerza el borde a la raíz del Select cuando está enfocado
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "gray !important",
-                            borderWidth: "2px !important",
-                        },
-                        // 2. Quitamos el borde por defecto y en hover
-                        "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "transparent",
-                        },
-                        "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "transparent",
-                            borderWidth: "2px",
-                        },
-                        // Estilos del Input e Icono
-                        "& .MuiInputBase-input": {
-                            color: "#000000",
-                            WebkitTextFillColor: "#000000",
-                        },
-                        "& .MuiSelect-icon": {
-                            color: "#000000",
-                        },
-                        // Estilos del Label (opcional, para mantener el negro al enfocar)
-                        "& .MuiInputLabel-root.Mui-focused": {
-                            color: "#000000 !important",
-                        },
-                        // Corrección para el Start Adornment si fuera necesario
-                        "& .MuiInputAdornment-root": {
-                            color: "#000000",
-                        }
                     }}
                 >
-                    <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
-                    <MenuItem value="si">Si</MenuItem>
-                    <MenuItem value="no">No</MenuItem>
-                </Select>
+                    <RadioGroup
+                        value={tieneEnfermedad}
+                        onChange={(e) => {
+                            setTieneEnfermedad(e.target.value);
+                            e.target.value === "si" ? setEnfermedad("") : setEnfermedad("No");
+                        }}
+                        row
+                        sx={{
+                            gap: 1,
+                            "& .MuiFormControlLabel-root": {
+                                marginRight: 0,
+                                borderRadius: 3,
+                                px: 1.2,
+                                py: 0.5,
+                                flex: 1,
+                                border: "1px solid transparent",
+                            },
+                            "& .MuiFormControlLabel-root.Mui-checked": {
+                                borderColor: "gray",
+                            },
+                            "& .MuiRadio-root": {
+                                color: "#000000",
+                            },
+                            "& .MuiTypography-root": {
+                                color: "#000000",
+                                fontWeight: 500,
+                            },
+                        }}
+                    >
+                        <FormControlLabel value="si" control={<Radio />} label="Si" />
+                        <FormControlLabel value="no" control={<Radio />} label="No" />
+                    </RadioGroup>
+                </FormControl>
                 {tieneEnfermedad === "si" && (
                     <Box sx={{ width: "100%" }}>
-                        <Typography variant="body1" sx={{ color: "#000000"  }}>¿Cúal/es? Escribilas o decilas aquí abajo</Typography>
-                        <TextField
+                        <Typography variant="body1" sx={{ color: "#000000"  }}>¿Cuál/es? Escribilas o decilas aquí abajo</Typography>
+                        <VoiceTextField
                             error={errorTextFields}
                             placeholder="Escribilas o decilas aquí..."
                             value={enfermedad}
@@ -117,10 +94,6 @@ const InfoElder = (
                                 color: "#000000",
                                 borderRadius: 3,
                                 boxShadow: 3,
-                                "& .MuiInputBase-input::placeholder": {
-                                    color: "#000000",
-                                    opacity: 0.6,
-                                },
                                 "& .MuiFormHelperText-root": {
                                     color: "#000000",
                                     opacity: 0.8,
@@ -148,83 +121,61 @@ const InfoElder = (
                                     opacity: 0.6,
                                 },
                             }}
-                        ></TextField>
+                        />
                     </Box>
                 )}
             </Box>
             <Box sx={{ my: 0, width: "100%" }}>
                 <Typography variant="body1" sx={{ color: "#000000"  }}>¿Tomás medicamentos?</Typography>
-                <Select
+                <FormControl
                     error={errorTextFields}
-                    labelId="demo-simple-select-helper-label"
-                    id="demo-simple-select-helper"
-                    value={tomaMedicamentos}
-                    fullWidth
-                    onChange={(e) => {
-                        setTomaMedicamentos(e.target.value);
-                        e.target.value === "si" ? setMedicamentos("") : setMedicamentos("No")
-                    }
-                    }
-                    MenuProps={{
-                        PaperProps: {
-                            sx: {
-                                borderRadius: 3,
-                                backgroundColor: "#303030",
-                                color: "#ffffff",
-                            }
-                        },
-                        MenuListProps: { sx: { p: 0 } }
-                    }}
-                    startAdornment={
-                        <InputAdornment position="start">
-                            <MedicationRoundedIcon fontSize="medium" sx={{ color: "#000000", mr: 1 }} />
-                        </InputAdornment>
-                    }
+                    component="fieldset"
                     sx={{
-                        backgroundColor: "#d7d6d6",
-                        color: "#000000",
+                        width: "100%",
+                        mt: 1,
+                        p: 1.5,
                         borderRadius: 3,
+                        backgroundColor: "#d7d6d6",
                         boxShadow: 3,
-                        mb: 1,
-                        // 1. Esto fuerza el borde a la raíz del Select cuando está enfocado
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "gray !important",
-                            borderWidth: "2px !important",
-                        },
-                        // 2. Quitamos el borde por defecto y en hover
-                        "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "transparent",
-                        },
-                        "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "transparent",
-                            borderWidth: "2px",
-                        },
-                        // Estilos del Input e Icono
-                        "& .MuiInputBase-input": {
-                            color: "#000000",
-                            WebkitTextFillColor: "#000000",
-                        },
-                        "& .MuiSelect-icon": {
-                            color: "#000000",
-                        },
-                        // Estilos del Label (opcional, para mantener el negro al enfocar)
-                        "& .MuiInputLabel-root.Mui-focused": {
-                            color: "#000000 !important",
-                        },
-                        // Corrección para el Start Adornment si fuera necesario
-                        "& .MuiInputAdornment-root": {
-                            color: "#000000",
-                        }
                     }}
                 >
-                    <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
-                    <MenuItem value="si">Si</MenuItem>
-                    <MenuItem value="no">No</MenuItem>
-                </Select>
+                    <RadioGroup
+                        value={tomaMedicamentos}
+                        onChange={(e) => {
+                            setTomaMedicamentos(e.target.value);
+                            e.target.value === "si" ? setMedicamentos("") : setMedicamentos("No");
+                        }}
+                        row
+                        sx={{
+                            gap: 1,
+                            "& .MuiFormControlLabel-root": {
+                                marginRight: 0,
+                                borderRadius: 3,
+                                px: 1.2,
+                                py: 0.5,
+                                flex: 1,
+                                border: "1px solid transparent",
+                            },
+                            "& .MuiFormControlLabel-root.Mui-checked": {
+                                borderColor: "gray",
+                            },
+                            "& .MuiRadio-root": {
+                                color: "#000000",
+                            },
+                            "& .MuiTypography-root": {
+                                color: "#000000",
+                                fontWeight: 500,
+                            },
+                        }}
+                    >
+                        <FormControlLabel value="si" control={<Radio />} label="Si" />
+                        <FormControlLabel value="no" control={<Radio />} label="No" />
+                    </RadioGroup>
+                </FormControl>
                 {tomaMedicamentos === "si" && (
                     <Box sx={{ width: "100%" }}>
-                        <Typography variant="body1" sx={{ color: "#000000"  }}>¿Cúal/es? Escribilos o decilos aquí abajo</Typography>
-                        <TextField
+                        <Typography variant="body1" sx={{ color: "#000000"  }}>¿Cuál/es? Escribilos o decilos aquí abajo</Typography>
+                        <VoiceTextField
                             error={errorTextFields}
                             placeholder="Escribilos o decilos aquí..."
                             value={medicamentos}
@@ -240,10 +191,6 @@ const InfoElder = (
                                 color: "#000000",
                                 borderRadius: 3,
                                 boxShadow: 3,
-                                "& .MuiInputBase-input::placeholder": {
-                                    color: "#000000",
-                                    opacity: 0.6,
-                                },
                                 "& .MuiFormHelperText-root": {
                                     color: "#000000",
                                     opacity: 0.8,
@@ -271,83 +218,61 @@ const InfoElder = (
                                     opacity: 0.6,
                                 },
                             }}
-                        ></TextField>
+                        />
                     </Box>
                 )}
             </Box>
             <Box sx={{ my: 0, width: "100%" }}>
                 <Typography variant="body1" sx={{ color: "#000000"  }}>¿Sufrís de alergias?</Typography>
-                <Select
+                <FormControl
                     error={errorTextFields}
-                    labelId="demo-simple-select-helper-label"
-                    id="demo-simple-select-helper"
-                    value={tieneAlergias}
-                    fullWidth
-                    onChange={(e) => {
-                        setTieneAlergias(e.target.value)
-                        e.target.value === "si" ? setAlergias("") : setAlergias("No")
-                    }
-                    }
-                    MenuProps={{
-                        PaperProps: {
-                            sx: {
-                                borderRadius: 3,
-                                backgroundColor: "#303030",
-                                color: "#ffffff",
-                            }
-                        },
-                        MenuListProps: { sx: { p: 0 } }
-                    }}
-                    startAdornment={
-                        <InputAdornment position="start">
-                            <MasksRoundedIcon fontSize="medium" sx={{ color: "#000000", mr: 1 }} />
-                        </InputAdornment>
-                    }
+                    component="fieldset"
                     sx={{
-                        backgroundColor: "#d7d6d6",
-                        color: "#000000",
+                        width: "100%",
+                        mt: 1,
+                        p: 1.5,
                         borderRadius: 3,
+                        backgroundColor: "#d7d6d6",
                         boxShadow: 3,
-                        mb: 1,
-                        // 1. Esto fuerza el borde a la raíz del Select cuando está enfocado
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "gray !important",
-                            borderWidth: "2px !important",
-                        },
-                        // 2. Quitamos el borde por defecto y en hover
-                        "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "transparent",
-                        },
-                        "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "transparent",
-                            borderWidth: "2px",
-                        },
-                        // Estilos del Input e Icono
-                        "& .MuiInputBase-input": {
-                            color: "#000000",
-                            WebkitTextFillColor: "#000000",
-                        },
-                        "& .MuiSelect-icon": {
-                            color: "#000000",
-                        },
-                        // Estilos del Label (opcional, para mantener el negro al enfocar)
-                        "& .MuiInputLabel-root.Mui-focused": {
-                            color: "#000000 !important",
-                        },
-                        // Corrección para el Start Adornment si fuera necesario
-                        "& .MuiInputAdornment-root": {
-                            color: "#000000",
-                        }
                     }}
                 >
-                    <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
-                    <MenuItem value="si">Si</MenuItem>
-                    <MenuItem value="no">No</MenuItem>
-                </Select>
+                    <RadioGroup
+                        value={tieneAlergias}
+                        onChange={(e) => {
+                            setTieneAlergias(e.target.value)
+                            e.target.value === "si" ? setAlergias("") : setAlergias("No")
+                        }}
+                        row
+                        sx={{
+                            gap: 1,
+                            "& .MuiFormControlLabel-root": {
+                                marginRight: 0,
+                                borderRadius: 3,
+                                px: 1.2,
+                                py: 0.5,
+                                flex: 1,
+                                border: "1px solid transparent",
+                            },
+                            "& .MuiFormControlLabel-root.Mui-checked": {
+                                borderColor: "gray",
+                            },
+                            "& .MuiRadio-root": {
+                                color: "#000000",
+                            },
+                            "& .MuiTypography-root": {
+                                color: "#000000",
+                                fontWeight: 500,
+                            },
+                        }}
+                    >
+                        <FormControlLabel value="si" control={<Radio />} label="Si" />
+                        <FormControlLabel value="no" control={<Radio />} label="No" />
+                    </RadioGroup>
+                </FormControl>
                 {tieneAlergias === "si" && (
                     <Box sx={{ width: "100%" }}>
-                        <Typography variant="body1" sx={{ color: "#000000"  }}>¿Cúal/es? Escribilas o decilas aquí abajo</Typography>
-                        <TextField
+                        <Typography variant="body1" sx={{ color: "#000000"  }}>¿Cuál/es? Escribilas o decilas aquí abajo</Typography>
+                        <VoiceTextField
                             error={errorTextFields}
                             placeholder="Escribilas o decilas aquí..."
                             value={alergias}
@@ -363,10 +288,6 @@ const InfoElder = (
                                 color: "#000000",
                                 borderRadius: 3,
                                 boxShadow: 3,
-                                "& .MuiInputBase-input::placeholder": {
-                                    color: "#000000",
-                                    opacity: 0.6,
-                                },
                                 "& .MuiFormHelperText-root": {
                                     color: "#000000",
                                     opacity: 0.8,
@@ -394,13 +315,13 @@ const InfoElder = (
                                     opacity: 0.6,
                                 },
                             }}
-                        ></TextField>
+                        />
                     </Box>
                 )}
             </Box>
             <Box sx={{ my: 1, width: "100%" }}>
                 <Typography variant="body1" sx={{ color: "#000000"  }}>¿Qué cosas te gustan hacer?</Typography>
-                <TextField
+                <VoiceTextField
                     placeholder="Escribilas..."
                     value={gustos}
                     onChange={(e) => setGustos(e.target.value)}
@@ -421,10 +342,6 @@ const InfoElder = (
                         color: "#000000",
                         borderRadius: 3,
                         boxShadow: 3,
-                        "& .MuiInputBase-input::placeholder": {
-                            color: "#000000",
-                            opacity: 0.6,
-                        },
                         "& .MuiFormHelperText-root": {
                             color: "#000000",
                             opacity: 0.8,
@@ -452,11 +369,11 @@ const InfoElder = (
                             opacity: 0.6,
                         },
                     }}
-                ></TextField>
+                />
             </Box>
             <Box sx={{ my: 0, width: "100%" }}>
                 <Typography variant="body1" sx={{ color: "#000000"  }}>¿Hay algo que no te guste o te moleste?</Typography>
-                <TextField
+                <VoiceTextField
                     placeholder="Escribilas..."
                     value={molestias}
                     onChange={(e) => setMolestias(e.target.value)}
@@ -504,7 +421,7 @@ const InfoElder = (
                             opacity: 0.6,
                         },
                     }}
-                ></TextField>
+                />
             </Box>
         </>
     );

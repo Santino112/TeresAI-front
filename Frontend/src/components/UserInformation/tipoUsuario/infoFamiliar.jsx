@@ -1,8 +1,8 @@
-import { Typography, TextField, Box, Select, MenuItem, FormHelperText, InputAdornment } from "@mui/material";
+import { Typography, Box, FormHelperText, InputAdornment, FormControl, FormLabel, RadioGroup, Radio, FormControlLabel } from "@mui/material";
+import VoiceTextField from "../VoiceTextField.jsx";
 import ElderlyRoundedIcon from '@mui/icons-material/ElderlyRounded';
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import ContactPhoneRoundedIcon from '@mui/icons-material/ContactPhoneRounded';
-import FamilyRestroomRoundedIcon from '@mui/icons-material/FamilyRestroomRounded';
 
 const InfoFamiliar = ({
     nombreFamiliar,
@@ -20,7 +20,7 @@ const InfoFamiliar = ({
         <>
             <Box sx={{ my: 0, width: "100%" }}>
                 <Typography variant="body1" sx={{ color: "#000000" }}>¿Cuál es el nombre de esa persona?</Typography>
-                <TextField
+                <VoiceTextField
                     error={errorTextFields}
                     placeholder="Nombre del adulto mayor"
                     value={nombreFamiliar}
@@ -69,12 +69,12 @@ const InfoFamiliar = ({
                 />
             </Box>
             <Box sx={{ my: 0, width: "100%" }}>
-                <Typography variant="body1" sx={{ color: "#000000" }}>¿Cuál es el email de esa persona?</Typography>
-                <TextField
+                <Typography variant="body1" sx={{ color: "#000000" }}>¿Cuál es el correo o teléfono de esa persona?</Typography>
+                <VoiceTextField
                     error={errorTextFields}
                     value={emailFamiliar}
                     onChange={(e) => setEmailFamiliar(e.target.value)}
-                    placeholder="Email del adulto mayor"
+                    placeholder="Correo o teléfono del adulto mayor"
                     variant="outlined"
                     fullWidth
                     margin="dense"
@@ -117,12 +117,12 @@ const InfoFamiliar = ({
                             },
                         },
                     }}
-                ></TextField>
-                <FormHelperText sx={{ color: "#000000" }}>Usa el email con el que él se registró. De esta manera podremos conectarlos a ambos.</FormHelperText>
+                />
+                <FormHelperText sx={{ color: "#000000" }}>Usa el correo o teléfono con el que se registró. De esta manera podremos conectarlos a ambos.</FormHelperText>
             </Box>
             <Box sx={{ my: 0, width: "100%" }}>
-                <Typography variant="body1" sx={{ color: "#000000" }}>¿Cúal es tu número de teléfono?</Typography>
-                <TextField
+                <Typography variant="body1" sx={{ color: "#000000" }}>¿Cuál es tu número de teléfono?</Typography>
+                <VoiceTextField
                     error={errorTextFields}
                     value={numeroTelefono}
                     onChange={(e) => setNumeroTelefono(e.target.value)}
@@ -168,76 +168,55 @@ const InfoFamiliar = ({
                             },
                         },
                     }}
-                ></TextField>
+                />
                 <FormHelperText sx={{ color: "#000000" }}>Este número se usará para contactarte en caso de emergencias.</FormHelperText>
             </Box>
             <Box sx={{ my: 0, width: "100%" }}>
                 <Typography variant="body1" sx={{ color: "#000000" }}>¿Cuál es tu relación con esa persona?</Typography>
-                <Select
+                <FormControl
                     error={errorTextFields}
-                    labelId="demo-simple-select-helper-label"
-                    id="demo-simple-select-helper"
-                    value={tipoFamiliar}
-                    fullWidth
-                    onChange={(e) => setTipoFamiliar(e.target.value)}
-                    MenuProps={{
-                        PaperProps: {
-                            sx: {
-                                borderRadius: 3,
-                                backgroundColor: "#303030",
-                                color: "#ffffff",
-                            }
-                        },
-                        MenuListProps: { sx: { p: 0 } }
-                    }}
-                    startAdornment={
-                        <InputAdornment position="start">
-                            <FamilyRestroomRoundedIcon fontSize="medium" sx={{ color: "#000000", mr: 1 }} />
-                        </InputAdornment>
-                    }
+                    component="fieldset"
                     sx={{
-                        backgroundColor: "#d7d6d6",
-                        color: "#000000",
+                        width: "100%",
+                        mt: 1,
+                        p: 1.5,
                         borderRadius: 3,
+                        backgroundColor: "#d7d6d6",
                         boxShadow: 3,
-                        mb: 1,
-                        // 1. Esto fuerza el borde a la raíz del Select cuando está enfocado
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "gray !important",
-                            borderWidth: "2px !important",
-                        },
-                        // 2. Quitamos el borde por defecto y en hover
-                        "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "transparent",
-                        },
-                        "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "transparent",
-                            borderWidth: "2px",
-                        },
-                        // Estilos del Input e Icono
-                        "& .MuiInputBase-input": {
-                            color: "#000000",
-                            WebkitTextFillColor: "#000000",
-                        },
-                        "& .MuiSelect-icon": {
-                            color: "#000000",
-                        },
-                        // Estilos del Label (opcional, para mantener el negro al enfocar)
-                        "& .MuiInputLabel-root.Mui-focused": {
-                            color: "#000000 !important",
-                        },
-                        // Corrección para el Start Adornment si fuera necesario
-                        "& .MuiInputAdornment-root": {
-                            color: "#000000",
-                        }
                     }}
                 >
-                    <MenuItem value="seleccione" disabled>Seleccione</MenuItem>
-                    <MenuItem value="hijo">Hijo/a</MenuItem>
-                    <MenuItem value="nieto">Nieto/a</MenuItem>
-                    <MenuItem value="sobrino">Sobrino/a</MenuItem>
-                    <MenuItem value="otro">Ninguno de los anteriores</MenuItem>
-                </Select>
+                    <RadioGroup
+                        value={tipoFamiliar}
+                        onChange={(e) => setTipoFamiliar(e.target.value)}
+                        sx={{
+                            display: "grid",
+                            gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                            gap: 1,
+                            "& .MuiFormControlLabel-root": {
+                                marginRight: 0,
+                                borderRadius: 3,
+                                px: 1.2,
+                                py: 0.5,
+                                border: "1px solid transparent",
+                            },
+                            "& .MuiFormControlLabel-root.Mui-checked": {
+                                borderColor: "gray",
+                            },
+                            "& .MuiRadio-root": {
+                                color: "#000000",
+                            },
+                            "& .MuiTypography-root": {
+                                color: "#000000",
+                                fontWeight: 500,
+                            },
+                        }}
+                    >
+                        <FormControlLabel value="hijo" control={<Radio />} label="Hijo/a" />
+                        <FormControlLabel value="nieto" control={<Radio />} label="Nieto/a" />
+                        <FormControlLabel value="sobrino" control={<Radio />} label="Sobrino/a" />
+                        <FormControlLabel value="otro" control={<Radio />} label="Ninguno de los anteriores" />
+                    </RadioGroup>
+                </FormControl>
             </Box>
         </>
     );

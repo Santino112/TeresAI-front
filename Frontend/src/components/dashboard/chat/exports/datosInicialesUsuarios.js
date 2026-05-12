@@ -5,18 +5,59 @@ const isNetworkFetchError = (error) => {
     return message.includes("NetworkError") || message.includes("Failed to fetch");
 };
 
+const normalizeContactIdentifier = (value) => {
+    const contact = String(value || "").trim();
+
+    if (!contact) return "";
+    if (contact.includes("@")) return contact.toLowerCase();
+
+    return contact.replace(/\s+/g, "");
+};
+
+const findProfileByContact = async (contact) => {
+    const normalized = normalizeContactIdentifier(contact);
+
+    if (!normalized) return { data: null, error: null };
+
+    const { data: emailData, error: emailError } = await supabase
+        .schema("public")
+        .from("profiles")
+        .select("id, role, email, phone")
+        .eq("email", normalized)
+        .maybeSingle();
+
+    if (emailData || emailError) {
+        return { data: emailData, error: emailError };
+    }
+
+    const { data: phoneData, error: phoneError } = await supabase
+        .schema("public")
+        .from("profiles")
+        .select("id, role, email, phone")
+        .eq("phone", normalized)
+        .maybeSingle();
+
+    return { data: phoneData, error: phoneError };
+};
+
 //Almacenar la información en supabase
 ////////////////////////////////////////
-export const saveProfile = async (userId, { username, role, email }) => {
+export const saveProfile = async (userId, { username, role, email, phone }) => {
+    const payload = {
+        id: userId,
+        username,
+        role,
+        email,
+    };
+
+    if (phone) {
+        payload.phone = phone;
+    }
+
     const { error } = await supabase
         .schema("public")
         .from("profiles")
-        .insert({
-            id: userId,
-            username,
-            role,
-            email
-        });
+        .insert(payload);
 
     if (error) {
         console.error("Error guardando el perfil", error);
@@ -235,18 +276,12 @@ export const actualizarDatosCuidadores = async (userId, { geriatrico, adultosmay
 
 //Linkear a los elders con sus familiares y cuidadores
 export const linkearUsuarios = async (userId, { emailFamiliar, rol }) => {
-
-    const { data: elderData, error: elderError } = await supabase
-        .schema("public")
-        .from("profiles")
-        .select("id, role")
-        .eq("email", emailFamiliar)
-        .single()
+    const { data: elderData, error: elderError } = await findProfileByContact(emailFamiliar);
 
     if (elderError || !elderData) {
-        return { success: false, message: "No existe un usuario con ese email. Vuelva a intentar." };
+        return { success: false, message: "No existe un usuario con ese correo o teléfono. Vuelva a intentar." };
     } else if (elderData.role !== "elder") {
-        return { success: false, message: "El email no corresponde a un adulto mayor." };
+        return { success: false, message: "El contacto no corresponde a un adulto mayor." };
     }
 
     const { error } = await supabase
@@ -269,16 +304,12 @@ export const linkearUsuarios = async (userId, { emailFamiliar, rol }) => {
 
 //Eliminamos el control sobre un elder
 export const desvincularUsuarios = async (userId, emailElder) => {
-    const { data: elderData, error: elderError } = await supabase
-        .schema("public")
-        .from("profiles")
-        .select("id")
-        .eq("email", emailElder)
-        .eq("role", "elder")
-        .single();
+    const { data: elderData, error: elderError } = await findProfileByContact(emailElder);
 
     if (elderError || !elderData) {
-        return { success: false, message: "No existe un usuario con ese email. Vuelva a intentar." };
+        return { success: false, message: "No existe un usuario con ese correo o teléfono. Vuelva a intentar." };
+    } else if (elderData.role !== "elder") {
+        return { success: false, message: "El contacto no corresponde a un adulto mayor." };
     };
 
     const { error: deleteError } = await supabase

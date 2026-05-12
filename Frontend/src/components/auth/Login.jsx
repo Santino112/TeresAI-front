@@ -12,6 +12,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
 import { GoogleLogin } from '@react-oauth/google';
 import DeviceUnknownRoundedIcon from '@mui/icons-material/DeviceUnknownRounded';
+import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
+import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
 
 const steps = [
     {
@@ -121,6 +123,13 @@ const Login = () => {
     const [errorAlert, setErrorAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [expanded, setExpanded] = useState(false);
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [phoneCode, setPhoneCode] = useState("");
+    const [phoneOtpSent, setPhoneOtpSent] = useState(false);
+    const [phoneLoading, setPhoneLoading] = useState(false);
+    const [phoneFeedback, setPhoneFeedback] = useState("");
+    const [phoneFeedbackSeverity, setPhoneFeedbackSeverity] = useState("error");
+    const [phoneFeedbackOpen, setPhoneFeedbackOpen] = useState(false);
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
@@ -134,6 +143,9 @@ const Login = () => {
             "Too many request": "Demasiados intentos, espera unos minutos.",
             "User not found": "No existe una cuenta con ese email asociado.",
             "Network request failed": "Error de conexión, revisá tu internet",
+            "Invalid phone number": "El número de teléfono no es válido.",
+            "Token has expired or is invalid": "El código SMS no es válido o venció.",
+            "SMS sending failed": "No se pudo enviar el código SMS.",
         };
         return errores[mensaje] || "Ocurrió un herror, intentelo de nuevo.";
     };
@@ -145,6 +157,76 @@ const Login = () => {
     const handleRegister = () => {
         navigate('/register');
     }
+
+    const showPhoneFeedback = (message, severity = "error") => {
+        setPhoneFeedback(message);
+        setPhoneFeedbackSeverity(severity);
+        setPhoneFeedbackOpen(true);
+        window.setTimeout(() => {
+            setPhoneFeedbackOpen(false);
+        }, 6000);
+    };
+
+    const normalizePhoneNumber = (value) => String(value || "").trim().replace(/\s+/g, "");
+
+    const handleSendPhoneOtp = async () => {
+        const normalizedPhone = normalizePhoneNumber(phoneNumber);
+
+        if (!normalizedPhone) {
+            showPhoneFeedback("Ingresá tu número de teléfono.", "error");
+            return;
+        }
+
+        if (!normalizedPhone.startsWith("+")) {
+            showPhoneFeedback("Usá formato internacional, por ejemplo +54911xxxxxxx.", "error");
+            return;
+        }
+
+        setPhoneLoading(true);
+        const { error } = await supabase.auth.signInWithOtp({
+            phone: normalizedPhone,
+            options: {
+                channel: "sms",
+            },
+        });
+
+        if (error) {
+            showPhoneFeedback(traducirError(error.message), "error");
+            setPhoneLoading(false);
+            return;
+        }
+
+        setPhoneOtpSent(true);
+        setPhoneCode("");
+        showPhoneFeedback("Te enviamos un código por SMS.", "success");
+        setPhoneLoading(false);
+    };
+
+    const handleVerifyPhoneOtp = async () => {
+        const normalizedPhone = normalizePhoneNumber(phoneNumber);
+
+        if (!phoneCode.trim()) {
+            showPhoneFeedback("Ingresá el código que recibiste por SMS.", "error");
+            return;
+        }
+
+        setPhoneLoading(true);
+        const { error } = await supabase.auth.verifyOtp({
+            phone: normalizedPhone,
+            token: phoneCode.trim(),
+            type: "sms",
+        });
+
+        if (error) {
+            showPhoneFeedback(traducirError(error.message), "error");
+            setPhoneLoading(false);
+            return;
+        }
+
+        setPhoneFeedbackOpen(false);
+        navigate('/infoUser');
+        setPhoneLoading(false);
+    };
 
     const loginUser = async (e) => {
         e.preventDefault();
@@ -272,7 +354,7 @@ const Login = () => {
                     <Typography variant='body1' sx={{
                         color: "#000000",
                         mb: 1,
-                    }}>Ingresa o registrate con Google</Typography>
+                    }}>Ingresa con Google o con tu teléfono</Typography>
                     <GoogleLogin
                         onSuccess={async (credentialResponse) => {
                             const { error } = await supabase.auth.signInWithIdToken({
@@ -305,6 +387,122 @@ const Login = () => {
                         }}
                     >Si no sabes como ingresar con Google, puedes leer el instructivo presionando el boton de abajo.
                     </Typography>
+                    <Box sx={{
+                        display: "none",
+                        width: "100%",
+                        mt: 1,
+                        p: 2,
+                        borderRadius: 3,
+                        backgroundColor: "rgba(255, 255, 255, 0.9)",
+                        boxShadow: 3,
+                    }}>
+                        <Typography variant="subtitle1" sx={{ color: "#000000", fontWeight: 700, mb: 1 }}>
+                            Ingreso con teléfono
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#000000", mb: 1.5 }}>
+                            Recibí un código SMS para entrar sin contraseña.
+                        </Typography>
+                        {phoneFeedbackOpen ? (
+                            <Alert
+                                severity={phoneFeedbackSeverity}
+                                sx={{ mb: 1.5, borderRadius: 2 }}
+                            >
+                                {phoneFeedback}
+                            </Alert>
+                        ) : null}
+                        <TextField
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            placeholder="+54911xxxxxxx"
+                            fullWidth
+                            margin="dense"
+                            type="tel"
+                            sx={{
+                                backgroundColor: "#d7d6d6",
+                                color: "#000000",
+                                borderRadius: 3,
+                                boxShadow: 2,
+                                mb: 1,
+                                input: { color: "#000000" },
+                                "& .MuiOutlinedInput-root": {
+                                    borderRadius: 3,
+                                },
+                                "& fieldset": {
+                                    borderColor: "transparent",
+                                },
+                            }}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <PhoneRoundedIcon sx={{ color: "#000000" }} />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                        {phoneOtpSent ? (
+                            <TextField
+                                value={phoneCode}
+                                onChange={(e) => setPhoneCode(e.target.value)}
+                                placeholder="Código SMS"
+                                fullWidth
+                                margin="dense"
+                                inputProps={{ inputMode: "numeric" }}
+                                sx={{
+                                    backgroundColor: "#d7d6d6",
+                                    color: "#000000",
+                                    borderRadius: 3,
+                                    boxShadow: 2,
+                                    mb: 1.5,
+                                    input: { color: "#000000" },
+                                    "& .MuiOutlinedInput-root": {
+                                        borderRadius: 3,
+                                    },
+                                    "& fieldset": {
+                                        borderColor: "transparent",
+                                    },
+                                }}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <SmsRoundedIcon sx={{ color: "#000000" }} />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                        ) : null}
+                        <Button
+                            variant="contained"
+                            fullWidth
+                            disabled={phoneLoading}
+                            onClick={phoneOtpSent ? handleVerifyPhoneOtp : handleSendPhoneOtp}
+                            sx={{
+                                backgroundColor: "#7d745c",
+                                color: "#ffffff",
+                                textTransform: "none",
+                                borderRadius: 2,
+                                "&:hover": {
+                                    backgroundColor: "#67604d",
+                                },
+                            }}
+                        >
+                            {phoneLoading ? "Procesando..." : phoneOtpSent ? "Verificar código" : "Enviar código"}
+                        </Button>
+                        {phoneOtpSent ? (
+                            <Button
+                                variant="text"
+                                fullWidth
+                                onClick={handleSendPhoneOtp}
+                                disabled={phoneLoading}
+                                sx={{
+                                    mt: 0.5,
+                                    color: "#7d745c",
+                                    textTransform: "none",
+                                }}
+                            >
+                                Reenviar código
+                            </Button>
+                        ) : null}
+                    </Box>
                     <Box sx={{
                         width: '100%', margin: 'auto', animation: "slideDown 0.4s ease",
                         "@keyframes slideDown": {
@@ -365,6 +563,121 @@ const Login = () => {
                     }}>
                         <Typography variant="body1" sx={{ color: "#000000" }}>O tambíen puedes ingresar con</Typography>
                     </Divider>
+                    <Box sx={{
+                        width: "100%",
+                        mt: 1,
+                        p: 2,
+                        borderRadius: 3,
+                        backgroundColor: "rgba(255, 255, 255, 0.9)",
+                        boxShadow: 3,
+                    }}>
+                        <Typography variant="subtitle1" sx={{ color: "#000000", fontWeight: 700, mb: 1 }}>
+                            Ingreso con teléfono
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#000000", mb: 1.5 }}>
+                            Recibí un código SMS para entrar sin contraseña.
+                        </Typography>
+                        {phoneFeedbackOpen ? (
+                            <Alert
+                                severity={phoneFeedbackSeverity}
+                                sx={{ mb: 1.5, borderRadius: 2 }}
+                            >
+                                {phoneFeedback}
+                            </Alert>
+                        ) : null}
+                        <TextField
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            placeholder="+54911xxxxxxx"
+                            fullWidth
+                            margin="dense"
+                            type="tel"
+                            sx={{
+                                backgroundColor: "#d7d6d6",
+                                color: "#000000",
+                                borderRadius: 3,
+                                boxShadow: 2,
+                                mb: 1,
+                                input: { color: "#000000" },
+                                "& .MuiOutlinedInput-root": {
+                                    borderRadius: 3,
+                                },
+                                "& fieldset": {
+                                    borderColor: "transparent",
+                                },
+                            }}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <PhoneRoundedIcon sx={{ color: "#000000" }} />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                        {phoneOtpSent ? (
+                            <TextField
+                                value={phoneCode}
+                                onChange={(e) => setPhoneCode(e.target.value)}
+                                placeholder="Código SMS"
+                                fullWidth
+                                margin="dense"
+                                inputProps={{ inputMode: "numeric" }}
+                                sx={{
+                                    backgroundColor: "#d7d6d6",
+                                    color: "#000000",
+                                    borderRadius: 3,
+                                    boxShadow: 2,
+                                    mb: 1.5,
+                                    input: { color: "#000000" },
+                                    "& .MuiOutlinedInput-root": {
+                                        borderRadius: 3,
+                                    },
+                                    "& fieldset": {
+                                        borderColor: "transparent",
+                                    },
+                                }}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <SmsRoundedIcon sx={{ color: "#000000" }} />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                        ) : null}
+                        <Button
+                            variant="contained"
+                            fullWidth
+                            disabled={phoneLoading}
+                            onClick={phoneOtpSent ? handleVerifyPhoneOtp : handleSendPhoneOtp}
+                            sx={{
+                                backgroundColor: "#7d745c",
+                                color: "#ffffff",
+                                textTransform: "none",
+                                borderRadius: 2,
+                                "&:hover": {
+                                    backgroundColor: "#67604d",
+                                },
+                            }}
+                        >
+                            {phoneLoading ? "Procesando..." : phoneOtpSent ? "Verificar código" : "Enviar código"}
+                        </Button>
+                        {phoneOtpSent ? (
+                            <Button
+                                variant="text"
+                                fullWidth
+                                onClick={handleSendPhoneOtp}
+                                disabled={phoneLoading}
+                                sx={{
+                                    mt: 0.5,
+                                    color: "#7d745c",
+                                    textTransform: "none",
+                                }}
+                            >
+                                Reenviar código
+                            </Button>
+                        ) : null}
+                    </Box>
                     <Box component="form" onSubmit={loginUser} sx={{ display: 'none' }}>
                         {errorAlert ?
                             <Alert variant="filled" severity="error" sx={{ my: 1, boxShadow: 1, borderRadius: 3, fontSize: "1rem", fontFamily: "'Lora', serif" }}>{alertMessage}</Alert>

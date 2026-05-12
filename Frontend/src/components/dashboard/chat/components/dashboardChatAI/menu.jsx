@@ -107,7 +107,7 @@ function IconMenu({ setPaginaActiva }) {
                 }}
             >
                 <MenuItem disabled sx={{ borderRadius: 3 }}>
-                    <Typography variant='body2' sx={{ position: "relative", left: "7px" }}>{profile?.email}</Typography>
+                    <Typography variant='body2' sx={{ position: "relative", left: "7px" }}>{profile?.email || profile?.phone || "Sin contacto"}</Typography>
                 </MenuItem>
                 <Divider sx={{
                     width: "100%",

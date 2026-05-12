@@ -343,7 +343,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
         if (loadingNuevoElder) return;
 
         if (!emailElder.trim()) {
-            setAlertMessage("Ingresá el email de tu familiar.");
+            setAlertMessage("Ingresá el correo o teléfono de tu contacto.");
             setErrorAlert(true);
             setSeverity("error");
             setTimeout(() => setErrorAlert(false), 5000);
@@ -382,7 +382,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
         if (loadingEliminarElder) return;
 
         if (!emailDeleteElder.trim()) {
-            setAlertMessage("Ingresá el email de tu familiar.");
+            setAlertMessage("Ingresá el correo o teléfono de tu contacto.");
             setErrorAlert(true);
             setSeverity("error");
             setTimeout(() => setErrorAlert(false), 5000);
@@ -562,7 +562,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                     },
                                     textAlign: { xs: "center", sm: "center", md: "start" },
                                     lineHeight: 1.8,
-                                }}>Actualizar email con el que te registraste.
+                                }}>Actualizar el contacto con el que te registraste.
                                 </Typography>
 
                                 <Grid container spacing={2}>
@@ -590,11 +590,11 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                     xl: 6
                                                 }} >
                                                     <Box sx={{ my: 0, width: "100%" }}>
-                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Email actual</Typography>
+                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Contacto actual</Typography>
                                                         <TextField
                                                             type="email"
                                                             disabled
-                                                            placeholder={profile?.email}
+                                                            placeholder={profile?.email || profile?.phone || "Sin contacto"}
                                                             variant="outlined"
                                                             fullWidth
                                                             margin="dense"
@@ -636,7 +636,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                                                     xl: 6
                                                 }}>
                                                     <Box sx={{ my: 0, width: "100%" }}>
-                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Email nuevo</Typography>
+                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Nuevo email</Typography>
                                                         <TextField
                                                             type="email"
                                                             value={nuevoEmail}
@@ -1265,7 +1265,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                             xl: "1.5rem"
                         },
                         textAlign: { xs: "center", sm: "center", md: "start" },
-                    }}>Agregar nuevo familiar</Typography>
+                    }}>Agregar nuevo contacto</Typography>
                     <Typography variant="body2" sx={{
                         mt: { xs: 1, sm: 1, md: 1, lg: 0, xl: 0 },
                         color: "#000000",
@@ -1281,7 +1281,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                     }}>Aquí puedes agregar a otro familiar al que quieras cuidar usando su email
                     </Typography>
                     <TextField
-                        placeholder="Email del familiar"
+                        placeholder="Correo o teléfono del familiar"
                         value={emailElder}
                         onChange={(e) => setEmailElder(e.target.value)}
                         variant="outlined"
@@ -1370,7 +1370,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                             xl: "1.5rem"
                         },
                         textAlign: { xs: "center", sm: "center", md: "start" },
-                    }}>Eliminar familiar vinculado</Typography>
+                    }}>Eliminar contacto vinculado</Typography>
                     <Typography variant="body2" sx={{
                         mt: { xs: 1, sm: 1, md: 1, lg: 0, xl: 0 },
                         color: "#000000",
@@ -1386,7 +1386,7 @@ const ProfileFamiliar = ({ profile, setProfile }) => {
                     }}>Aquí puedes eliminar al familiar al que no quieras supervisar más
                     </Typography>
                     <TextField
-                        placeholder="Email del familiar"
+                        placeholder="Correo o teléfono del familiar"
                         value={emailDeleteElder}
                         onChange={(e) => setEmailDeleteElder(e.target.value)}
                         variant="outlined"

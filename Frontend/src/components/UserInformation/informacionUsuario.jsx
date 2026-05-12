@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Typography, Button, TextField, Box, Select, MenuItem, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel, InputAdornment } from "@mui/material";
+import { Typography, Button, Box, FormHelperText, Divider, Paper, Alert, Checkbox, FormControlLabel, InputAdornment, FormControl, FormLabel, RadioGroup, Radio } from "@mui/material";
 import { useAuth } from "../auth/useAuth.jsx";
 import { supabase } from "../../supabaseClient.js";
 import { saveProfile, elderPeople, familyPeople, caregivePeople, linkearUsuarios } from "../dashboard/chat/exports/datosInicialesUsuarios.js";
@@ -10,7 +10,6 @@ import InfoCuidador from "./tipoUsuario/infoCuidador.jsx";
 import VoiceTextField from "./VoiceTextField.jsx";
 import fondoChatAI from "../../assets/images/fondoChatAI.png";
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
-import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 
 const InformacionUsuarios = () => {
     const [isSaving, setIsSaving] = useState(false);
@@ -44,8 +43,14 @@ const InformacionUsuarios = () => {
     const [rol, setRol] = useState("elder");
 
     const { user, loading: authLoading } = useAuth();
-    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const metadataName = user?.user_metadata?.username || user?.user_metadata?.display_name || "";
+        if (metadataName && !nombre) {
+            setNombre(metadataName);
+        }
+    }, [user, nombre]);
 
     const traducirError = (mensaje) => {
         const errores = {
@@ -132,7 +137,8 @@ const InformacionUsuarios = () => {
             username: nombre,
             role: rol,
             interests: gustos,
-            email: user?.email
+            email: user?.email,
+            phone: user?.phone
         });
 
         if (!successStore) {
@@ -429,7 +435,7 @@ const InformacionUsuarios = () => {
                     </Divider>
                     <Box sx={{ my: 0, width: "100%" }}>
                         <Typography variant="body1" sx={{ color: "#000000" }}>¿Cómo te llamas?</Typography>
-                        <TextField
+                        <VoiceTextField
                             error={errorTextFields}
                             placeholder="Nombre completo"
                             value={nombre}
@@ -479,66 +485,49 @@ const InformacionUsuarios = () => {
                     </Box>
                     <Box sx={{ my: 1, width: "100%" }}>
                         <Typography variant="body1" sx={{ color: "#000000" }}>¿Qué rol cumplis?</Typography>
-                        <Select
+                        <FormControl
                             error={errorTextFields}
-                            id="demo-simple-select-helper"
-                            value={rol}
-                            fullWidth
-                            onChange={(e) => setRol(e.target.value)}
-                            MenuProps={{
-                                PaperProps: {
-                                    sx: {
-                                        borderRadius: 3,
-                                        backgroundColor: "#303030",
-                                        color: "#ffffff",
-                                    }
-                                },
-                                MenuListProps: { sx: { p: 0 } }
-                            }}
-                            startAdornment={
-                                <InputAdornment position="start">
-                                    <PeopleAltRoundedIcon fontSize="medium" sx={{ color: "#000000", mr: 1 }} />
-                                </InputAdornment>
-                            }
+                            component="fieldset"
                             sx={{
-                                backgroundColor: "#d7d6d6",
-                                color: "#000000",
+                                width: "100%",
+                                mt: 1,
+                                p: 1.5,
                                 borderRadius: 3,
+                                backgroundColor: "#d7d6d6",
                                 boxShadow: 3,
-                                // 1. Esto fuerza el borde a la raíz del Select cuando está enfocado
-                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                    borderColor: "gray !important",
-                                    borderWidth: "2px !important",
-                                },
-                                // 2. Quitamos el borde por defecto y en hover
-                                "& .MuiOutlinedInput-notchedOutline": {
-                                    borderColor: "transparent",
-                                },
-                                "&:hover .MuiOutlinedInput-notchedOutline": {
-                                    borderColor: "transparent",
-                                    borderWidth: "2px",
-                                },
-                                // Estilos del Input e Icono
-                                "& .MuiInputBase-input": {
-                                    color: "#000000",
-                                    WebkitTextFillColor: "#000000",
-                                },
-                                "& .MuiSelect-icon": {
-                                    color: "#000000",
-                                },
-                                // Estilos del Label (opcional, para mantener el negro al enfocar)
-                                "& .MuiInputLabel-root.Mui-focused": {
-                                    color: "#000000 !important",
-                                },
-                                // Corrección para el Start Adornment si fuera necesario
-                                "& .MuiInputAdornment-root": {
-                                    color: "#000000",
-                                }
                             }}
                         >
-                            <MenuItem value="elder">🧓 Adulto mayor</MenuItem>
-                            <MenuItem value="familiar">🧑 Familiar</MenuItem>
-                        </Select>
+                            <RadioGroup
+                                value={rol}
+                                onChange={(e) => setRol(e.target.value)}
+                                row
+                                sx={{
+                                    justifyContent: "space-between",
+                                    gap: 1,
+                                    "& .MuiFormControlLabel-root": {
+                                        marginRight: 0,
+                                        borderRadius: 3,
+                                        px: 1.2,
+                                        py: 0.5,
+                                        flex: 1,
+                                        border: "1px solid transparent",
+                                    },
+                                    "& .MuiFormControlLabel-root.Mui-checked": {
+                                        borderColor: "gray",
+                                    },
+                                    "& .MuiRadio-root": {
+                                        color: "#000000",
+                                    },
+                                    "& .MuiTypography-root": {
+                                        color: "#000000",
+                                        fontWeight: 500,
+                                    },
+                                }}
+                            >
+                                <FormControlLabel value="elder" control={<Radio />} label="🧓 Adulto mayor" />
+                                <FormControlLabel value="familiar" control={<Radio />} label="🧑 Familiar" />
+                            </RadioGroup>
+                        </FormControl>
                         <FormHelperText sx={{ color: "#000000" }}>Si sos adulto mayor no cambies de opción</FormHelperText>
                     </Box>
                     {rol === "elder" ?

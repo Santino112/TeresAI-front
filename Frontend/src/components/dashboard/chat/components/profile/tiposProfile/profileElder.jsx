@@ -482,7 +482,7 @@ const ProfileElder = ({ profile, setProfile }) => {
                                     },
                                     textAlign: { xs: "center", sm: "center", md: "start" },
                                     lineHeight: 1.8,
-                                }}>Actualizar email con el que te registraste
+                                }}>Actualizar el contacto con el que te registraste
                                 </Typography>
                                 <Grid container spacing={2}>
                                     <Grid size={12}>
@@ -509,11 +509,11 @@ const ProfileElder = ({ profile, setProfile }) => {
                                                     xl: 6
                                                 }} >
                                                     <Box sx={{ my: 0, width: "100%" }}>
-                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Email actual</Typography>
+                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Contacto actual</Typography>
                                                         <TextField
                                                             type="email"
                                                             disabled
-                                                            placeholder={profile?.email}
+                                                            placeholder={profile?.email || profile?.phone || "Sin contacto"}
                                                             variant="outlined"
                                                             fullWidth
                                                             margin="dense"
@@ -555,12 +555,12 @@ const ProfileElder = ({ profile, setProfile }) => {
                                                     xl: 6
                                                 }}>
                                                     <Box sx={{ my: 0, width: "100%" }}>
-                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Email nuevo</Typography>
+                                                        <Typography variant="body1" sx={{ color: "#000000" }}>Nuevo email</Typography>
                                                         <TextField
                                                             type="email"
                                                             value={nuevoEmail}
                                                             onChange={(e) => setNuevoEmail(e.target.value)}
-                                                            placeholder="Email nuevo"
+                                                            placeholder="Nuevo email"
                                                             variant="outlined"
                                                             fullWidth
                                                             margin="dense"
@@ -1067,7 +1067,7 @@ const ProfileElder = ({ profile, setProfile }) => {
                                                     </Select>
                                                     {tieneEnfermedad === "si" && (
                                                         <Box sx={{ width: "100%" }}>
-                                                            <Typography variant="body1" sx={{ color: "#000000" }}>¿Cúal/es? Escribilas o decilas aquí abajo</Typography>
+                                                            <Typography variant="body1" sx={{ color: "#000000" }}>¿Cuál/es? Escribilas o decilas aquí abajo</Typography>
                                                             <TextField
                                                                 placeholder="Escribilas o decilas aquí..."
                                                                 value={enfermedad}
@@ -1207,7 +1207,7 @@ const ProfileElder = ({ profile, setProfile }) => {
                                             )}
                                             {tomaMedicamentos === "si" && (
                                                 <Box sx={{ width: "100%" }}>
-                                                    <Typography variant="body1" sx={{ color: "#000000" }}>¿Cúal/es? Escribilos o decilos aquí abajo</Typography>
+                                                    <Typography variant="body1" sx={{ color: "#000000" }}>¿Cuál/es? Escribilos o decilos aquí abajo</Typography>
                                                     <TextField
                                                         placeholder="Escribilos o decilos aquí..."
                                                         value={medicamentos}
@@ -1339,7 +1339,7 @@ const ProfileElder = ({ profile, setProfile }) => {
                                             )}
                                             {tieneAlergias === "si" && (
                                                 <Box sx={{ width: "100%" }}>
-                                                    <Typography variant="body1" sx={{ color: "#000000" }}>¿Cúal/es? Escribilas o decilas aquí abajo</Typography>
+                                                    <Typography variant="body1" sx={{ color: "#000000" }}>¿Cuál/es? Escribilas o decilas aquí abajo</Typography>
                                                     <TextField
                                                         placeholder="Escribilas o decilas aquí..."
                                                         value={alergias}
