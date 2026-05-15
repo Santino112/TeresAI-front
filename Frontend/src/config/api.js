@@ -1,5 +1,6 @@
-const rawApiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
-console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
+const rawApiUrl =
+  import.meta.env.VITE_API_URL || "https://teresai-back-production.up.railway.app";
+
 const ensureProtocol = (value) => {
   if (/^https?:\/\//i.test(value)) return value;
 
