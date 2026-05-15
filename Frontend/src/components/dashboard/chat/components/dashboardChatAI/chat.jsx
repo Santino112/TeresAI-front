@@ -4,6 +4,7 @@ import { Typography, TextField, Box, CircularProgress, Alert } from "@mui/materi
 import { playTTS, stopTTS } from "../../exports/playTTS.js";
 import { useWakeWord } from "../../exports/useWakeWord.js";
 import { getMessages } from "../../exports/conversaciones.js";
+import { useBrowserLocation } from "../../exports/useBrowserLocation.js";
 import { IconButton } from "@mui/material";
 import { useAuth } from "../../../../auth/useAuth.jsx";
 import { tomarDatosPerfiles } from '../../exports/datosInicialesUsuarios.js';
@@ -15,54 +16,6 @@ import VoiceStatusPill from "../../../../common/VoiceStatusPill.jsx";
 import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
-
-const GEO_TIMEOUT_ERROR_CODE = 3;
-
-const getCurrentLocation = async () => {
-  if (!("geolocation" in navigator)) {
-    console.info("Geolocation no disponible en este navegador.");
-    return null;
-  }
-
-  const getPosition = (options) =>
-    new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject, options);
-    });
-
-  try {
-    const quickPosition = await getPosition({
-      enableHighAccuracy: false,
-      timeout: 6000,
-      maximumAge: 600000
-    });
-
-    return {
-      lat: quickPosition.coords.latitude,
-      lng: quickPosition.coords.longitude
-    };
-  } catch (firstError) {
-    if (firstError?.code !== GEO_TIMEOUT_ERROR_CODE) {
-      console.warn("No se pudo obtener ubicacion:", firstError?.message);
-      return null;
-    }
-  }
-
-  try {
-    const retryPosition = await getPosition({
-      enableHighAccuracy: true,
-      timeout: 12000,
-      maximumAge: 0
-    });
-
-    return {
-      lat: retryPosition.coords.latitude,
-      lng: retryPosition.coords.longitude
-    };
-  } catch (retryError) {
-    console.warn("No se pudo obtener ubicación tras reintento:", retryError?.message);
-    return null;
-  }
-};
 const Chat = ({ activeConversationId, setActiveConversationId, addConversation }) => {
   const [prompt, setPrompt] = useState("");
   const [mensajes, setMensajes] = useState([]);
@@ -77,6 +30,11 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   const scrollRef = useRef(null);
   const abortRef = useRef(null);
   const requestIdRef = useRef(0);
+  const {
+    location: browserLocation,
+    error: browserLocationError,
+    refreshLocation,
+  } = useBrowserLocation();
 
   let saludo = "";
   const time = new Date().getHours();
@@ -230,9 +188,11 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     const assistantMessageId = crypto.randomUUID();
 
     try {
-      location = await getCurrentLocation();
+      location = browserLocation ?? await refreshLocation();
       if (location) {
-        console.log("Ubicacion obtenida:", location);
+        console.info("[location] Enviando ubicación del frontend al backend:", location);
+      } else if (browserLocationError) {
+        console.warn("No se pudo obtener ubicacion del navegador:", browserLocationError);
       }
 
       // Agregar mensaje del asistente vacÃ­o

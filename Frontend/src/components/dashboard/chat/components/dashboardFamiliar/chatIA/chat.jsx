@@ -4,6 +4,7 @@ import { enviarPromptFamiliar } from "../../../exports/enviarPromptFamiliar.js";
 import { playTTS, stopTTS } from "../../../exports/playTTS.js";
 import { useWakeWord } from "../../../exports/useWakeWord.js";
 import { getMessagesFamiliar } from "../../../exports/conversacionesFamiliar.js";
+import { useBrowserLocation } from "../../../exports/useBrowserLocation.js";
 import { useAuth } from "../../../../../auth/useAuth.jsx";
 import { tomarDatosPerfiles } from "../../../exports/datosInicialesUsuarios.js";
 import fondoChatAI from "../../../../../../assets/images/fondoChatAI.png";
@@ -14,51 +15,6 @@ import VoiceStatusPill from "../../../../../common/VoiceStatusPill.jsx";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
-
-const GEO_TIMEOUT_ERROR_CODE = 3;
-
-const getCurrentLocation = async () => {
-  if (!("geolocation" in navigator)) {
-    return null;
-  }
-
-  const getPosition = (options) =>
-    new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject, options);
-    });
-
-  try {
-    const quickPosition = await getPosition({
-      enableHighAccuracy: false,
-      timeout: 6000,
-      maximumAge: 600000
-    });
-
-    return {
-      lat: quickPosition.coords.latitude,
-      lng: quickPosition.coords.longitude
-    };
-  } catch (firstError) {
-    if (firstError?.code !== GEO_TIMEOUT_ERROR_CODE) {
-      return null;
-    }
-  }
-
-  try {
-    const retryPosition = await getPosition({
-      enableHighAccuracy: true,
-      timeout: 12000,
-      maximumAge: 0
-    });
-
-    return {
-      lat: retryPosition.coords.latitude,
-      lng: retryPosition.coords.longitude
-    };
-  } catch {
-    return null;
-  }
-};
 
 const Chat = ({ activeConversationId, setActiveConversationId, addConversation }) => {
   const [prompt, setPrompt] = useState("");
@@ -73,6 +29,11 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   const activeConversationIdRef = useRef(activeConversationId);
   const scrollRef = useRef(null);
   const abortRef = useRef(null);
+  const {
+    location: browserLocation,
+    error: browserLocationError,
+    refreshLocation,
+  } = useBrowserLocation();
 
   let saludo = "";
   const time = new Date().getHours();
@@ -230,9 +191,11 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
     setPensandoIA(conversationIdAlEnviar);
 
     try {
-      location = await getCurrentLocation();
+      location = browserLocation ?? await refreshLocation();
       if (location) {
-        console.log("Ubicacion obtenida:", location);
+        console.info("[location] Enviando ubicación del frontend al backend:", location);
+      } else if (browserLocationError) {
+        console.warn("No se pudo obtener ubicacion del navegador:", browserLocationError);
       }
       const res = await enviarPromptFamiliar(texto, conversationIdAlEnviar, location, abortRef.current.signal);
 
