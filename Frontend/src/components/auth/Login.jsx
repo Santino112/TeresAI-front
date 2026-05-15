@@ -254,9 +254,9 @@ const Login = () => {
     return (
         <Box sx={{
             display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
+            flexDirection: { xs: "column", md: "row" },
+            justifyContent: { xs: "flex-start", md: "center" },
+            alignItems: { xs: "stretch", md: "center" },
             minHeight: "100dvh",
             width: "100%",
             minWidth: 0,
@@ -265,19 +265,20 @@ const Login = () => {
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             px: { xs: 2, sm: 0 },
-            py: 0
+            py: { xs: 2, md: 0 }
         }}>
             <Box sx={{
                 position: "relative",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
+                justifyContent: { xs: "flex-start", md: "center" },
                 alignItems: "center",
-                height: {xs: "20dvh", sm: "30dvh", md: "90dvh" },
-                overflow: "hidden",
+                height: { xs: "auto", md: "90dvh" },
+                overflow: { xs: "visible", md: "hidden" },
                 width: { xs: "100%", md: "45%" },
-                maxWidth: { xs: 440, sm: 440, md: 700, lg: 800 },
+                maxWidth: { xs: "100%", sm: 440, md: 700, lg: 800 },
                 p: { xs: 1, sm: 2, md: 2 },
+                mt: { xs: 2, md: 0 },
             }}>
                 <AppBar
                     elevation={0}
@@ -304,8 +305,8 @@ const Login = () => {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        maxHeight: "100%",
-                        overflowY: "auto",
+                        maxHeight: { xs: "none", md: "100%" },
+                        overflowY: { xs: "visible", md: "auto" },
                         width: '100%',
                         maxWidth: "600px",
                         background: "#ffffff",
