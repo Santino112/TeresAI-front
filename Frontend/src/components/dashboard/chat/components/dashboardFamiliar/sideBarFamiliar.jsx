@@ -253,6 +253,24 @@ function ResponsiveDrawer() {
   };
 
   useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    window.dispatchEvent(
+      new CustomEvent("teresai:dashboard-sidebar", {
+        detail: { open: mobileOpen },
+      })
+    );
+
+    return () => {
+      window.dispatchEvent(
+        new CustomEvent("teresai:dashboard-sidebar", {
+          detail: { open: false },
+        })
+      );
+    };
+  }, [mobileOpen]);
+
+  useEffect(() => {
     const fetchUserStatus = async () => {
       if (authLoading || !user) return;
 
