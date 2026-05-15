@@ -173,7 +173,7 @@ function ResponsiveDrawer(props) {
         </Box >
     );
 
-    const container = window !== undefined ? () => window().document.body : undefined;
+    const container = typeof window !== "undefined" ? () => window.document.body : undefined;
 
     return (
         <Box sx={{ display: 'flex', width: "100%" }}>
