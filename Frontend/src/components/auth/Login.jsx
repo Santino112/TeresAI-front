@@ -4,7 +4,7 @@ import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton
 import { supabase } from '../../supabaseClient.js';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import fondoChatAI from "../../assets/images/fondoChatAI.png"
-import TeresaiLogo from '../../assets/images/file.svg';
+import logoTeresAI from "../../assets/images/logo_teresAI.png"
 import imagenLogin from "../../assets/images/imagenLogin.jpg"
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import PasswordRoundedIcon from '@mui/icons-material/PasswordRounded';
@@ -12,7 +12,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
 import { GoogleLogin } from '@react-oauth/google';
 import DeviceUnknownRoundedIcon from '@mui/icons-material/DeviceUnknownRounded';
-import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
+import ContactPhoneRoundedIcon from '@mui/icons-material/ContactPhoneRounded';
 import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
 
 const steps = [
@@ -254,9 +254,9 @@ const Login = () => {
     return (
         <Box sx={{
             display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            justifyContent: { xs: "flex-start", md: "center" },
-            alignItems: { xs: "stretch", md: "center" },
+            flexDirection: { xs: "column", sm: "row", md: "row" },
+            justifyContent: { xs: "center", sm: "center", md: "center" },
+            alignItems: { xs: "center", md: "center" },
             minHeight: "100dvh",
             width: "100%",
             minWidth: 0,
@@ -275,29 +275,60 @@ const Login = () => {
                 alignItems: "center",
                 height: { xs: "auto", md: "90dvh" },
                 overflow: { xs: "visible", md: "hidden" },
-                width: { xs: "100%", md: "45%" },
-                maxWidth: { xs: "100%", sm: 440, md: 700, lg: 800 },
+                width: { xs: "100%", sm: "100%", md: "45%" },
+                maxWidth: { xs: "100%", sm: 540, md: 700, lg: 800 },
                 p: { xs: 1, sm: 2, md: 2 },
                 mt: { xs: 2, md: 0 },
             }}>
                 <AppBar
                     elevation={0}
                     sx={{
-                        background: "transparent",
-                        position: "absolute",
+                        background: "white",
+                        boxShadow: 3,
                         top: 0,
                         left: 0,
                         width: "100%",
-                        zIndex: 1100
+                        zIndex: 1100,
+                        height: "60px"
                     }}
                 >
                     <Toolbar sx={{
                         display: 'flex',
-                        justifyContent: 'flex-start',
+                        height: "60px",
+                        justifyContent: "space-between",
+                        alignItems: "center"
                     }}>
                         <Box
-
-                        />
+                            component="img"
+                            alt="Imagen de abuelos"
+                            src={logoTeresAI}
+                            sx={{
+                                width: 35,
+                                height: 50
+                            }}>
+                        </Box>
+                        <Box>
+                            <Button
+                                sx={{
+                                    backgroundColor: "#7d745c",
+                                    borderRadius: 2,
+                                    boxShadow: 3,
+                                    color: "#ffffff",
+                                    textTransform: "none",
+                                    fontSize: "1rem",
+                                    "&:hover": {
+                                        backgroundColor: "#67604d"
+                                    },
+                                    "&.Mui-disabled": {
+                                        backgroundColor: "#5a5342",
+                                        color: "#ffffff !important",
+                                    },
+                                    my: 1,
+                                }}
+                            >
+                                Página oficial
+                            </Button>
+                        </Box>
                     </Toolbar>
                 </AppBar>
                 <Card
@@ -306,9 +337,9 @@ const Login = () => {
                         flexDirection: "column",
                         alignItems: "center",
                         maxHeight: { xs: "none", md: "100%" },
-                        overflowY: { xs: "visible", md: "auto" },
+                        overflowY: { xs: "visible", md: "hidden" },
                         width: '100%',
-                        maxWidth: "600px",
+                        maxWidth: "550px",
                         background: "#ffffff",
                         p: { xs: 2 },
                         borderRadius: 3,
@@ -362,7 +393,8 @@ const Login = () => {
                             lg: "1.3rem",
                             xl: "1.3rem"
                         },
-                    }}>Ingresa con Google</Typography>
+                    }}>Ingresa con Google
+                    </Typography>
                     <GoogleLogin
                         onSuccess={async (credentialResponse) => {
                             const { error } = await supabase.auth.signInWithIdToken({
@@ -503,6 +535,7 @@ const Login = () => {
                         </Typography>
                         {phoneFeedbackOpen ? (
                             <Alert
+                                variant='filled'
                                 severity={phoneFeedbackSeverity}
                                 sx={{ mb: 1.5, borderRadius: 2 }}
                             >
@@ -555,7 +588,7 @@ const Login = () => {
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <PhoneRoundedIcon sx={{ color: "#000000", mr: 1 }} />
+                                        <ContactPhoneRoundedIcon fontSize="medium" sx={{ color: "#000000", mr: 1 }} />
                                     </InputAdornment>
                                 ),
                             }}
@@ -868,7 +901,7 @@ const Login = () => {
             <Box sx={{
                 display: {
                     xs: "none",
-                    sm: "block",
+                    sm: "none",
                     md: "block",
                     lg: "block",
                     xl: "block"
@@ -877,7 +910,8 @@ const Login = () => {
                 height: "100dvh",
                 width: "60%",
                 overflowY: "hidden",
-                boxShadow: 7
+                boxShadow: 7,
+                mt: "60px"
             }}>
                 <Box
                     component="img"
