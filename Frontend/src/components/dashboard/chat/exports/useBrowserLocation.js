@@ -25,17 +25,8 @@ const readCachedLocation = () => {
     }
 
     if (Date.now() - parsed.timestamp > CACHE_TTL_MS) {
-      console.info("[location] Cached location expired, discarding it.");
       return null;
     }
-
-    console.info("[location] Location restored from cache:", {
-      lat: parsed.lat,
-      lng: parsed.lng,
-      accuracy: parsed.accuracy,
-      ageMs: Date.now() - parsed.timestamp,
-      source: parsed.source || "cache",
-    });
 
     return {
       lat: parsed.lat,
@@ -116,7 +107,6 @@ export const useBrowserLocation = () => {
       source,
     };
 
-    console.info("[location] Browser location resolved:", next);
     cachedLocation.current = next;
     setLocation(next);
     setError("");
@@ -140,7 +130,6 @@ export const useBrowserLocation = () => {
     }
 
     if (typeof window === "undefined" || !("geolocation" in navigator)) {
-      console.info("[location] Geolocation is not available in this browser.");
       setError("Your browser does not support geolocation.");
       setIsResolving(false);
       return Promise.resolve(null);
@@ -149,19 +138,15 @@ export const useBrowserLocation = () => {
     watchStartedRef.current = true;
     setIsResolving(true);
     setError("");
-    console.info("[location] Starting browser location watch...");
-
     return new Promise((resolve) => {
       pendingResolversRef.current.push(resolve);
 
       watchIdRef.current = navigator.geolocation.watchPosition(
         (position) => {
-          console.info("[location] Browser watch produced a fix.");
           commitLocation(position.coords, "browser");
         },
         (geoError) => {
           if (geoError?.code === 1) {
-            console.warn("[location] Browser location permission denied.");
             setError(formatGeoError(geoError));
             settlePending(null);
             stopWatch();
@@ -169,7 +154,6 @@ export const useBrowserLocation = () => {
           }
 
           if (!loggedPendingRef.current) {
-            console.info("[location] Waiting for browser location fix:", geoError?.message || "no details");
             loggedPendingRef.current = true;
           }
         },
@@ -180,7 +164,6 @@ export const useBrowserLocation = () => {
         if (cachedLocation.current) {
           settlePending(cachedLocation.current);
         } else {
-          console.warn("[location] Browser location watch timed out without a fix.");
           settlePending(null);
         }
         stopWatch();

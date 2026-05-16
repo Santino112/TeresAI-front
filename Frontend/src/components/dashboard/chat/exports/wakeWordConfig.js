@@ -9,7 +9,7 @@ export const WAKE_WORD_CONFIG = {
     "ok teresa",
     "okay teresa",
   ],
-  wakeChunkMs: 2500,
-  wakeWindowChunks: 3,
-  wakeCooldownMs: 1500,
+  wakeChunkMs: 1500,
+  wakeWindowChunks: 7,
+  wakeCooldownMs: 500,
 };

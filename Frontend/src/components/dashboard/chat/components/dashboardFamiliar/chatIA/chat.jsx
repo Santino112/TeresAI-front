@@ -1,5 +1,5 @@
 ﻿import { useEffect, useState, useRef } from "react";
-import { Typography, TextField, Box, CircularProgress, IconButton, Alert } from "@mui/material";
+import { Typography, TextField, Box, CircularProgress, IconButton } from "@mui/material";
 import { enviarPromptFamiliar } from "../../../exports/enviarPromptFamiliar.js";
 import { playTTS, stopTTS } from "../../../exports/playTTS.js";
 import { useWakeWord } from "../../../exports/useWakeWord.js";
@@ -31,7 +31,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   const abortRef = useRef(null);
   const {
     location: browserLocation,
-    error: browserLocationError,
     refreshLocation,
   } = useBrowserLocation();
 
@@ -192,11 +191,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
 
     try {
       location = browserLocation ?? await refreshLocation();
-      if (location) {
-        console.info("[location] Enviando ubicación del frontend al backend:", location);
-      } else if (browserLocationError) {
-        console.warn("No se pudo obtener ubicacion del navegador:", browserLocationError);
-      }
       const res = await enviarPromptFamiliar(texto, conversationIdAlEnviar, location, abortRef.current.signal);
 
       if (activeConversationIdRef.current === conversationIdAlEnviar) {
@@ -362,11 +356,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                       mode={voiceMode}
                       supported={speechSupported}
                     />
-                  ) : null}
-                  {voiceError ? (
-                    <Alert severity="warning" variant="filled" sx={{ mt: 1, py: 0.5 }}>
-                      {voiceError}
-                    </Alert>
                   ) : null}
                 </Box>
                 <Box>
@@ -607,11 +596,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                       mode={voiceMode}
                       supported={speechSupported}
                     />
-                  ) : null}
-                  {voiceError ? (
-                    <Alert severity="warning" variant="filled" sx={{ mt: 1, py: 0.5 }}>
-                      {voiceError}
-                    </Alert>
                   ) : null}
                 </Box>
                 <Box>
