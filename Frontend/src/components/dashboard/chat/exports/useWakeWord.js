@@ -157,8 +157,8 @@ export const useWakeWord = ({ onWake } = {}) => {
         keepAliveRef.current = false;
         setWakeListening(false);
         setWakeStatus("wake");
-        await playWakeCue();
         onWake?.();
+        void playWakeCue();
         return;
       }
     } catch (error) {
