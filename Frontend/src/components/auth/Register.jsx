@@ -251,7 +251,7 @@ const Register = () => {
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "center",
-            minHeight: "100dvh",
+            minHeight: "var(--app-height)",
             width: "100%",
             minWidth: 0,
             overflow: "hidden",
@@ -268,7 +268,7 @@ const Register = () => {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                minHeight: "100dvh",
+                minHeight: "var(--app-height)",
                 width: { xs: "100%", md: "40%" },
                 maxWidth: { xs: 440, sm: 440, md: 700, lg: 800 },
                 overflowY: "hidden"
@@ -669,7 +669,7 @@ const Register = () => {
                     sm: "none",
                     md: "block"
                 },
-                height: "100dvh",
+                height: "var(--app-height)",
                 width: "60%",
                 overflowY: "hidden",
                 boxShadow: 7

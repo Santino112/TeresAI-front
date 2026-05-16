@@ -1,3 +1,7 @@
+:root {
+    --app-height: 100%;
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: #8f8e8e transparent; /* [Color de la barra] [Color del fondo] */
@@ -16,4 +20,9 @@
 /* 3. Cuando pasas el mouse por encima de la barrita */
 ::-webkit-scrollbar-thumb:hover {
   background: #444; /* Un azul un poco más vibrante al interactuar */
+}
+
+html, body {
+    height: 100%;
+    height: var(--app-height);
 }

@@ -257,7 +257,7 @@ const Login = () => {
             flexDirection: { xs: "column", sm: "row", md: "row" },
             justifyContent: { xs: "center", sm: "center", md: "center" },
             alignItems: { xs: "center", md: "center" },
-            minHeight: "100dvh",
+            minHeight: "var(--app-height)",
             width: "100%",
             minWidth: 0,
             background: `url(${fondoChatAI})`,
@@ -907,7 +907,7 @@ const Login = () => {
                     xl: "block"
                 },
                 position: "relative",
-                height: "100dvh",
+                height: "var(--app-height)",
                 width: "60%",
                 overflowY: "hidden",
                 boxShadow: 7,

@@ -356,7 +356,7 @@ const InformacionUsuarios = () => {
                     flexDirection: "column",
                     justifyContent: "",
                     alignItems: { xs: "flex-start", md: "center" },
-                    minHeight: "100dvh",
+                    minHeight: "var(--app-height)",
                     width: "100%",
                     px: { xs: 2, sm: 4, md: 0 },
                     py: { xs: 3, md: 4 },
