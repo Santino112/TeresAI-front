@@ -408,6 +408,17 @@ const InformacionUsuarios = () => {
                         background: "#ffffff",
                         gap: 1,
                         color: "#000000",
+                        animation: "slideDown 0.4s ease",
+                        "@keyframes slideDown": {
+                            from: {
+                                opacity: 0,
+                                transform: "translateY(-40px)"
+                            },
+                            to: {
+                                opacity: 1,
+                                transform: "translateY(0)"
+                            }
+                        }
                     }}
                 >
                     <Typography variant="h5"

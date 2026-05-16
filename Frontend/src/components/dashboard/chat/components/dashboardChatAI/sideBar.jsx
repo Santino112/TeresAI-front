@@ -76,7 +76,7 @@ const steps = [
         description: (
             <Typography variant='body1' sx={{ lineHeight: 1.8 }}>
                 Ella está diseñada para acompañarte en <strong>todo</strong> momento. Puedes consultarle dudas de la vida diaria, mantener una charla casual o
-                pedirle consejos. Lo más importante: es tu cuidadora 24/7, capaz de organizar tu agenda, recordarte tareas críticas, armar tu lista de compras y
+                pedirle consejos. Lo más importante: es tu cuidadora las 24 horas, los 7 dias de la semana, capaz de organizar tu agenda, recordarte tareas críticas, armar tu lista de compras y
                 estar pendiente de lo que necesites en cualquier momento del día.
             </Typography>
         )
@@ -764,7 +764,7 @@ function ResponsiveDrawer() {
                 sx={{
                     width: { sm: `calc(100% - ${drawerWidth}px)` },
                     ml: { sm: `${drawerWidth}px` },
-                    backgroundColor: "#eeeeee",
+                    backgroundColor: "#ffffff",
                     color: "#000000",
                 }}
             >
