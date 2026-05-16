@@ -344,7 +344,7 @@ function ResponsiveDrawer() {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100dvh"
+        height: "var(--app-height)"
       }}
     >
       {open && (
@@ -849,8 +849,8 @@ function ResponsiveDrawer() {
         sx={{
           display: "flex",
           flexDirection: "column",
-          height: "100dvh",
-          maxHeight: "100dvh",
+          height: "var(--app-height)",
+          maxHeight: "var(--app-height)",
           width: {
             xs: "100%",
             sm: "100%",

@@ -15,10 +15,18 @@ const PanelFamiliar = lazy(() => import('./components/dashboard/chat/paginaFamil
 const PanelCuidador = lazy(() => import('./components/dashboard/chat/paginaCuidador.jsx'));
 const EmergencyFab = lazy(() => import('./components/common/EmergencyFab.jsx'));
 
+const setAppHeight = () => {
+  document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+};
+window.addEventListener('resize', setAppHeight);
+setAppHeight();
+window.addEventListener('orientationchange', setAppHeight); // 👈
+setAppHeight();
+
 const RouteLoader = () => (
   <Box
     sx={{
-      minHeight: "100dvh",
+      minHeight: "var(--app-height)",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
@@ -51,35 +59,35 @@ function App() {
         <CssBaseline />
         <Suspense fallback={<RouteLoader />}>
           <Routes>
-              <Route path='/' element={
-                <PublicRoute>
-                  <Login />
-                  <div className="backgroundLogin"></div>
-                </PublicRoute>} />
-              <Route path='/register' element={<Register />} />
-              <Route path='/infoUser' element={<InformacionUsuarios />} />
-              <Route path='/paginaChatAI' element={
-                <PrivateRoute>
-                  <EmergencyFab />
-                  <ChatAI />
-                  <div className="background"></div>
-                </PrivateRoute>}
-              />
-              <Route path='/paginaFamiliar' element={
-                <PrivateRoute>
-                  <EmergencyFab />
-                  <PanelFamiliar />
-                  <div className="backgroundFamiliar"></div>
-                </PrivateRoute>}
-              />
-              <Route path='/paginaCuidador' element={
-                <PrivateRoute>
-                  <EmergencyFab />
-                  <PanelCuidador />
-                  <div className="backgroundFamiliar"></div>
-                </PrivateRoute>}
-              />
-            </Routes>
+            <Route path='/' element={
+              <PublicRoute>
+                <Login />
+                <div className="backgroundLogin"></div>
+              </PublicRoute>} />
+            <Route path='/register' element={<Register />} />
+            <Route path='/infoUser' element={<InformacionUsuarios />} />
+            <Route path='/paginaChatAI' element={
+              <PrivateRoute>
+                <EmergencyFab />
+                <ChatAI />
+                <div className="background"></div>
+              </PrivateRoute>}
+            />
+            <Route path='/paginaFamiliar' element={
+              <PrivateRoute>
+                <EmergencyFab />
+                <PanelFamiliar />
+                <div className="backgroundFamiliar"></div>
+              </PrivateRoute>}
+            />
+            <Route path='/paginaCuidador' element={
+              <PrivateRoute>
+                <EmergencyFab />
+                <PanelCuidador />
+                <div className="backgroundFamiliar"></div>
+              </PrivateRoute>}
+            />
+          </Routes>
         </Suspense>
       </ThemeProvider>
     </AuthProvider>
