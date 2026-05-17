@@ -50,6 +50,7 @@ import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
 import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
 import MicOffRoundedIcon from "@mui/icons-material/MicOffRounded";
+import EmergencyFab from "../../../../common/EmergencyFab.jsx";
 
 const drawerWidth = 290;
 
@@ -771,6 +772,7 @@ function ResponsiveDrawer() {
                 <Toolbar sx={{
                     display: 'flex',
                     justifyContent: 'space-between',
+                    alignItems: 'center',
                 }}>
                     <IconButton
                         color="inherit"
@@ -781,8 +783,11 @@ function ResponsiveDrawer() {
                     >
                         <MenuIcon />
                     </IconButton>
+                    <Box sx={{ ml: "auto", display: { xs: "flex", sm: "flex", md: "none" }, alignItems: "center" }}>
+                        {paginaActiva === "chat" && <EmergencyFab inline />}
+                    </Box>
                     {activeConversationId && paginaActiva === "chat" && (
-                        <Typography noWrap sx={{ fontSize: "1.1rem" }}>
+                        <Typography noWrap sx={{ fontSize: "1.1rem", display: { xs: "none", md: "block" } }}>
                             {Array.isArray(conversations)
                                 ? conversations.find(c => c.id === activeConversationId)?.title || "Chat sin título"
                                 : "Chat sin título"}
