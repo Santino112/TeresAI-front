@@ -784,7 +784,7 @@ function ResponsiveDrawer() {
                         <MenuIcon />
                     </IconButton>
                     <Box sx={{ ml: "auto", display: { xs: "flex", sm: "flex", md: "none" }, alignItems: "center" }}>
-                        {paginaActiva === "chat" && <EmergencyFab inline />}
+                        <EmergencyFab inline />
                     </Box>
                     {activeConversationId && paginaActiva === "chat" && (
                         <Typography noWrap sx={{ fontSize: "1.1rem", display: { xs: "none", md: "block" } }}>
