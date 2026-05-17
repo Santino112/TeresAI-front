@@ -77,7 +77,7 @@ function ResponsiveDrawer(props) {
         <Box sx={{
             display: 'flex',
             flexDirection: 'column',
-            height: '100dvh'
+            height: 'var(--app-height)'
         }}>
             <Toolbar sx={{
                 display: 'flex',
@@ -247,7 +247,7 @@ function ResponsiveDrawer(props) {
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    height: '100dvh',
+                    height: 'var(--app-height)',
                     width: {
                         xs: "100%",
                         sm: "100%",

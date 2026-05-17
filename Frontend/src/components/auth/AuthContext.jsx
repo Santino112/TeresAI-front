@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
     return (
       <Box
         sx={{
-          minHeight: "100dvh",
+          minHeight: "var(--app-height)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
