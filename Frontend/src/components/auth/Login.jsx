@@ -289,12 +289,12 @@ const Login = () => {
                         left: 0,
                         width: "100%",
                         zIndex: 1100,
-                        height: "60px"
+                        height: "68px"
                     }}
                 >
                     <Toolbar sx={{
                         display: 'flex',
-                        height: "60px",
+                        height: "67px",
                         justifyContent: "space-between",
                         alignItems: "center"
                     }}>
@@ -303,19 +303,22 @@ const Login = () => {
                             alt="Imagen de abuelos"
                             src={logoTeresAI}
                             sx={{
-                                width: 35,
-                                height: 50
+                                width: "auto",
+                                height: "65px",
                             }}>
                         </Box>
                         <Box>
                             <Button
+                                href="https://teresailanding.up.railway.app/"
+                                onClick="_blank"
+                                size='medium'
                                 sx={{
                                     backgroundColor: "#7d745c",
-                                    borderRadius: 2,
+                                    borderRadius: "100px",
+                                    px: 2.5,
                                     boxShadow: 3,
                                     color: "#ffffff",
                                     textTransform: "none",
-                                    fontSize: "1rem",
                                     "&:hover": {
                                         backgroundColor: "#67604d"
                                     },
@@ -323,7 +326,6 @@ const Login = () => {
                                         backgroundColor: "#5a5342",
                                         color: "#ffffff !important",
                                     },
-                                    my: 1,
                                 }}
                             >
                                 Página oficial
@@ -343,7 +345,7 @@ const Login = () => {
                         background: "#ffffff",
                         p: { xs: 2 },
                         borderRadius: 3,
-                        mt: {xs: "60px"},
+                        mt: { xs: "60px" },
                         boxShadow: 5,
                         animation: "slideBounce 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
                         "@keyframes slideBounce": {
