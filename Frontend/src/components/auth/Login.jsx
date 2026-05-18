@@ -4,7 +4,7 @@ import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton
 import { supabase } from '../../supabaseClient.js';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import fondoChatAI from "../../assets/images/fondoChatAI.png"
-import logoTeresAI from "../../assets/images/logo_teresAI.png"
+import logoTeresAI from "../../assets/images/logo_teresAI_noText.png"
 import imagenLogin from "../../assets/images/imagenLogin.jpg"
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import PasswordRoundedIcon from '@mui/icons-material/PasswordRounded';

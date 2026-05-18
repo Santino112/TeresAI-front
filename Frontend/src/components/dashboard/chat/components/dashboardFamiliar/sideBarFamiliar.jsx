@@ -252,6 +252,23 @@ function ResponsiveDrawer() {
     }
   };
 
+  const selectSection = (section) => {
+    setPaginaActiva(section);
+
+    if (mobileOpen) {
+      handleDrawerClose();
+    }
+  };
+
+  const openConversation = (convId) => {
+    setActiveConversationId(convId);
+    setPaginaActiva("chat");
+
+    if (mobileOpen) {
+      handleDrawerClose();
+    }
+  };
+
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
 
@@ -525,7 +542,7 @@ function ResponsiveDrawer() {
         <Button
           fullWidth
           onClick={() => {
-            setPaginaActiva("inicio");
+            selectSection("inicio");
           }}
           sx={{
             justifyContent: "flex-start",
@@ -543,7 +560,7 @@ function ResponsiveDrawer() {
         <Button
           fullWidth
           onClick={() => {
-            setPaginaActiva("familiar");
+            selectSection("familiar");
           }}
           sx={{
             justifyContent: "flex-start",
@@ -561,7 +578,7 @@ function ResponsiveDrawer() {
           fullWidth
           onClick={() => {
             setActiveConversationId(null);
-            setPaginaActiva("chat");
+            selectSection("chat");
           }}
           sx={{
             justifyContent: "flex-start",
@@ -576,7 +593,7 @@ function ResponsiveDrawer() {
           <QuestionAnswerRoundedIcon sx={{ mr: 1 }} />Nueva conversación
         </Button>
         <Button fullWidth onClick={() => {
-          setPaginaActiva("buscador");
+          selectSection("buscador");
         }}
           sx={{
             justifyContent: "flex-start",
@@ -590,7 +607,7 @@ function ResponsiveDrawer() {
         <Button
           fullWidth
           onClick={() => {
-            setPaginaActiva("calendario");
+            selectSection("calendario");
           }}
           sx={{
             justifyContent: "flex-start",
@@ -662,8 +679,7 @@ function ResponsiveDrawer() {
                 <Button
                   fullWidth
                   onClick={() => {
-                    setActiveConversationId(conv.id);
-                    setPaginaActiva("chat");
+                    openConversation(conv.id);
                   }}
                   sx={{
                     flex: 1,
