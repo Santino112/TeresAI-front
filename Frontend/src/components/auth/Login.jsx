@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Alert, Card, AppBar, Toolbar, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { supabase } from '../../supabaseClient.js';
@@ -130,6 +130,8 @@ const Login = () => {
     const [phoneFeedback, setPhoneFeedback] = useState("");
     const [phoneFeedbackSeverity, setPhoneFeedbackSeverity] = useState("error");
     const [phoneFeedbackOpen, setPhoneFeedbackOpen] = useState(false);
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
+    const esIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
@@ -251,6 +253,21 @@ const Login = () => {
         navigate('/infoUser');
     };
 
+    useEffect(() => {
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            setDeferredPrompt(e);
+        });
+    }, []);
+
+
+    const handleInstalar = async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        setDeferredPrompt(null);
+    };
+
     return (
         <Box sx={{
             display: "flex",
@@ -284,19 +301,18 @@ const Login = () => {
                     elevation={0}
                     sx={{
                         background: "white",
+                        backdropFilter: 'blur(16px)',
                         boxShadow: 3,
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        zIndex: 1100,
-                        height: "68px"
+                        p: 0.35
                     }}
                 >
                     <Toolbar sx={{
                         display: 'flex',
-                        height: "67px",
+                        height: "60px",
                         justifyContent: "space-between",
-                        alignItems: "center"
+                        alignItems: "center",
+                        px: { xs: 2, md: 6 },
+                        py: 0.5
                     }}>
                         <Box
                             component="img"
@@ -310,26 +326,45 @@ const Login = () => {
                         <Box>
                             <Button
                                 href="https://teresailanding.up.railway.app/"
-                                onClick="_blank"
                                 size='medium'
                                 sx={{
-                                    backgroundColor: "#7d745c",
+                                    color: "#464545",
                                     borderRadius: "100px",
-                                    px: 2.5,
-                                    boxShadow: 3,
-                                    color: "#ffffff",
                                     textTransform: "none",
-                                    "&:hover": {
-                                        backgroundColor: "#67604d"
-                                    },
-                                    "&.Mui-disabled": {
-                                        backgroundColor: "#5a5342",
-                                        color: "#ffffff !important",
-                                    },
+                                    px: 1.2,
+
+                                    mr: 1,
+                                    "&:hover": { backgroundColor: "#e0e0e0" },
                                 }}
                             >
                                 Página oficial
                             </Button>
+                            {esIOS ? (
+                                <Typography>Para instalar: Safari → compartir → "Agregar a pantalla de inicio"</Typography>
+                            ) : deferredPrompt ? (
+                                <Button
+                                    onClick={handleInstalar}
+                                    disabled={!deferredPrompt}
+                                    sx={{
+                                        backgroundColor: "#7d745c",
+                                        borderRadius: "100px",
+                                        px: 2.5,
+                                        boxShadow: 3,
+
+                                        color: "#ffffff",
+                                        textTransform: "none",
+                                        "&:hover": {
+                                            backgroundColor: "#67604d"
+                                        },
+                                        "&.Mui-disabled": {
+                                            backgroundColor: "#5a5342",
+                                            color: "#ffffff !important",
+                                        },
+                                    }}
+                                >
+                                    Instalar app
+                                </Button>
+                            ) : null}
                         </Box>
                     </Toolbar>
                 </AppBar>
@@ -345,7 +380,7 @@ const Login = () => {
                         background: "#ffffff",
                         p: { xs: 2 },
                         borderRadius: 3,
-                        mt: { xs: "60px" },
+                        mt: { xs: "80px" },
                         boxShadow: 5,
                         animation: "slideBounce 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
                         "@keyframes slideBounce": {
