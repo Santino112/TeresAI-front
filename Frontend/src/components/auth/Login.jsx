@@ -131,6 +131,7 @@ const Login = () => {
     const [phoneFeedbackSeverity, setPhoneFeedbackSeverity] = useState("error");
     const [phoneFeedbackOpen, setPhoneFeedbackOpen] = useState(false);
     const [deferredPrompt, setDeferredPrompt] = useState(null);
+    const [appInstalada, setAppInstalada] = useState(false);
     const esIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
     const handleChange = (panel) => (event, isExpanded) => {
@@ -254,12 +255,22 @@ const Login = () => {
     };
 
     useEffect(() => {
+
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            setAppInstalada(true);
+        };
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             setDeferredPrompt(e);
         });
-    }, []);
 
+        window.addEventListener('appinstalled', () => {
+            setAppInstalada(true);
+            setDeferredPrompt(null);
+        });
+
+    }, []);
 
     const handleInstalar = async () => {
         if (!deferredPrompt) return;
@@ -339,32 +350,29 @@ const Login = () => {
                             >
                                 Página oficial
                             </Button>
-                            {esIOS ? (
-                                <Typography>Para instalar: Safari → compartir → "Agregar a pantalla de inicio"</Typography>
-                            ) : deferredPrompt ? (
-                                <Button
-                                    onClick={handleInstalar}
-                                    disabled={!deferredPrompt}
-                                    sx={{
-                                        backgroundColor: "#7d745c",
-                                        borderRadius: "100px",
-                                        px: 2.5,
-                                        boxShadow: 3,
-
-                                        color: "#ffffff",
-                                        textTransform: "none",
-                                        "&:hover": {
-                                            backgroundColor: "#67604d"
-                                        },
-                                        "&.Mui-disabled": {
-                                            backgroundColor: "#5a5342",
-                                            color: "#ffffff !important",
-                                        },
-                                    }}
-                                >
-                                    Instalar app
-                                </Button>
-                            ) : null}
+                            {!appInstalada && (
+                                esIOS ? (
+                                    <Typography>Para instalar: Safari → compartir → "Agregar a pantalla de inicio"</Typography>
+                                ) : (
+                                    <Button
+                                        onClick={handleInstalar}
+                                        sx={{
+                                            display: { xs: "flex", sm: "flex", md: "none" },
+                                            backgroundColor: "#7d745c",
+                                            borderRadius: "100px",
+                                            px: 2.5,
+                                            boxShadow: 3,
+                                            color: "#ffffff",
+                                            textTransform: "none",
+                                            "&:hover": {
+                                                backgroundColor: "#67604d"
+                                            },
+                                        }}
+                                    >
+                                        Instalar app
+                                    </Button>
+                                )
+                            )}
                         </Box>
                     </Toolbar>
                 </AppBar>
@@ -374,7 +382,7 @@ const Login = () => {
                         flexDirection: "column",
                         alignItems: "center",
                         maxHeight: { xs: "none", md: "100%" },
-                        overflowY: { xs: "visible", md: "hidden" },
+                        overflowY: { xs: "visible", md: "auto" },
                         width: '100%',
                         maxWidth: "550px",
                         background: "#ffffff",
