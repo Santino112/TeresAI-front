@@ -11,8 +11,8 @@ export default defineConfig({
         name: 'TeresAI',
         short_name: 'TeresAI',
         description: 'Tu asistente de IA personal',
-        theme_color: '#010215',
-        background_color: '#010215',
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
         display: 'standalone',
         start_url: '/',
         icons: [
