@@ -163,28 +163,25 @@ const Login = () => {
     };
 
     useEffect(() => {
+
         if (window.matchMedia('(display-mode: standalone)').matches) {
             setAppInstalada(true);
-        }
-
-        if (window.deferredPrompt) {
-            setDeferredPrompt(window.deferredPrompt);
-        }
+        };
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
-            window.deferredPrompt = e;
             setDeferredPrompt(e);
         });
 
         window.addEventListener('appinstalled', () => {
             setAppInstalada(true);
             setDeferredPrompt(null);
-            window.deferredPrompt = null;
         });
+
     }, []);
 
     const handleInstalar = async () => {
+        console.log("deferredPrompt:", deferredPrompt);
         if (!deferredPrompt) return;
         deferredPrompt.prompt();
         await deferredPrompt.userChoice;
