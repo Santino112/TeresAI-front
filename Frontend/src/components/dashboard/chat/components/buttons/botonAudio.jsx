@@ -197,7 +197,15 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop, ...props }, r
   const stopRecording = (reason = "manual") => {
     const recorder = mediaRecorderRef.current;
 
-    if (!recorder || recorder.state === "inactive") return;
+    if (!recorder) return;
+
+    // Si el recorder ya está inactivo, limpiar el estado sin intentar detenerlo
+    if (recorder.state === "inactive") {
+      recordingRef.current = false;
+      setRecording(false);
+      cleanupMonitoring();
+      return;
+    }
 
     const duration = Date.now() - (startTimeRef.current || Date.now());
     const minimumDuration = autoStopRef.current ? AUTO_MIN_DURATION_MS : MANUAL_MIN_DURATION_MS;
