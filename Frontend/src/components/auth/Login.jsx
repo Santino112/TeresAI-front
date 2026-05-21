@@ -14,6 +14,8 @@ import { GoogleLogin } from '@react-oauth/google';
 import DeviceUnknownRoundedIcon from '@mui/icons-material/DeviceUnknownRounded';
 import ContactPhoneRoundedIcon from '@mui/icons-material/ContactPhoneRounded';
 import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
+import { isStandaloneDisplayMode, promptInstallApp } from '../../pwa/installPrompt.js';
+import { usePwaInstallPrompt } from '../../pwa/usePwaInstallPrompt.js';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -23,7 +25,6 @@ const Login = () => {
     const [errorLogueo, setErrorLogueo] = useState(false);
     const [errorAlert, setErrorAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
-    const [expanded, setExpanded] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [phoneCode, setPhoneCode] = useState("");
     const [phoneOtpSent, setPhoneOtpSent] = useState(false);
@@ -31,8 +32,8 @@ const Login = () => {
     const [phoneFeedback, setPhoneFeedback] = useState("");
     const [phoneFeedbackSeverity, setPhoneFeedbackSeverity] = useState("error");
     const [phoneFeedbackOpen, setPhoneFeedbackOpen] = useState(false);
-    const [deferredPrompt, setDeferredPrompt] = useState(null);
     const [appInstalada, setAppInstalada] = useState(false);
+    const deferredPrompt = usePwaInstallPrompt();
     const seccionPasosRef = useRef(null);
     const esIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
     const irAPasosDetallados = () => {
@@ -40,10 +41,6 @@ const Login = () => {
             behavior: 'smooth', // Hace que el deslizamiento sea suave
             block: 'start'      // Alinea el inicio del componente arriba de todo en la pantalla
         });
-    };
-
-    const handleChange = (panel) => (event, isExpanded) => {
-        setExpanded(isExpanded ? panel : false);
     };
 
     const traducirError = (mensaje) => {
@@ -163,29 +160,40 @@ const Login = () => {
     };
 
     useEffect(() => {
-
-        if (window.matchMedia('(display-mode: standalone)').matches) {
+        // Verificar si ya está instalada
+        if (isStandaloneDisplayMode()) {
             setAppInstalada(true);
-        };
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            setDeferredPrompt(e);
-        });
-
-        window.addEventListener('appinstalled', () => {
-            setAppInstalada(true);
-            setDeferredPrompt(null);
-        });
-
+        }
     }, []);
 
     const handleInstalar = async () => {
-        console.log("deferredPrompt:", deferredPrompt);
-        if (!deferredPrompt) return;
-        deferredPrompt.prompt();
-        await deferredPrompt.userChoice;
-        setDeferredPrompt(null);
+        console.log("🔍 Verificando deferredPrompt:", deferredPrompt);
+
+        if (!deferredPrompt) {
+            console.log("❌ deferredPrompt es null - beforeinstallprompt no se capturó");
+            // Fallback para iOS
+            if (esIOS) {
+                alert("En iOS: Toca Compartir (↑) → Agregar a pantalla de inicio");
+            } else {
+                alert("La app no está lista para instalar. Intenta recargar la página.");
+            }
+            return;
+        }
+
+        try {
+            console.log("📱 Mostrando prompt de instalación...");
+            const result = await promptInstallApp();
+            if (!result) {
+                alert("La app no está lista para instalar. Intenta recargar la página.");
+                return;
+            }
+
+            const { outcome } = result;
+            console.log(`✅ Usuario eligió: ${outcome}`);
+        } catch (error) {
+            console.error("❌ Error al instalar:", error);
+            alert("Ocurrió un error al instalar la app. Intenta de nuevo.");
+        }
     };
 
     return (
@@ -267,7 +275,7 @@ const Login = () => {
                                         <Button
                                             onClick={handleInstalar}
                                             sx={{
-                                                display: { xs: "", sm: "", md: "none" },
+                                                display: 'inline-flex',
                                                 backgroundColor: "#7d745c",
                                                 borderRadius: "100px",
                                                 px: 2.5,
@@ -340,7 +348,6 @@ const Login = () => {
                         <Typography variant='body1' sx={{
                             color: "#000000",
                             mb: 1,
-                            fontSize: "1.3rem",
                             textAlign: "center",
                             fontSize: {
                                 xs: "1.2rem",
@@ -421,7 +428,6 @@ const Login = () => {
                         }}>
                             <Typography variant="body1" sx={{
                                 color: "#000000",
-                                fontSize: "1.3rem",
                                 mb: 1,
                                 fontSize: {
                                     xs: "1.2rem",
