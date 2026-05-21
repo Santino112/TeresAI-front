@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Alert, Box, Fab, Snackbar, Tooltip, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import CircularProgress from '@mui/material/CircularProgress';
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 import { useAuth } from "../auth/useAuth.jsx";
 import { supabase } from "../../supabaseClient.js";
@@ -92,7 +93,7 @@ function EmergencyFab({ inline = false }) {
       setSnackbar({
         open: true,
         severity: "success",
-        message: `Alerta de emergencia enviada. Se notificó a ${notifiedCount} familiar(es).`,
+        message: `Alerta de emergencia enviada. Se notificó a ${notifiedCount} familiar(es). Por favor, aguarde`,
       });
     } catch (error) {
       setSnackbar({
@@ -107,21 +108,21 @@ function EmergencyFab({ inline = false }) {
 
   const fabSx = inline
     ? {
-        position: "static",
-        width: 44,
-        height: 44,
-        minWidth: 44,
-        flexShrink: 0,
-        boxShadow: "0 10px 20px rgba(176, 0, 32, 0.25)",
-      }
+      position: "static",
+      width: 44,
+      height: 44,
+      minWidth: 44,
+      flexShrink: 0,
+      boxShadow: "0 10px 20px rgba(176, 0, 32, 0.25)",
+    }
     : {
-        position: "fixed",
-        top: { xs: 88, md: "auto" },
-        right: { xs: 16, md: 24 },
-        bottom: { xs: "auto", md: 24 },
-        left: "auto",
-        zIndex: (themeValue) => themeValue.zIndex.modal + 2,
-      };
+      position: "fixed",
+      top: { xs: 88, md: "auto" },
+      right: { xs: 16, md: 24 },
+      bottom: { xs: "auto", md: 24 },
+      left: "auto",
+      zIndex: (themeValue) => themeValue.zIndex.modal + 2,
+    };
 
   return (
     <>
@@ -133,8 +134,19 @@ function EmergencyFab({ inline = false }) {
           disabled={submitting}
           size={inline ? "medium" : "large"}
           sx={fabSx}
-        >
-          <WarningRoundedIcon sx={{ fontSize: inline ? 22 : 24 }} />
+        > {submitting ? (
+          <CircularProgress
+            size={30}
+            sx={{
+              color: "#000000",
+              marginRight: "10px"
+            }}
+          />
+        )
+          : (
+            <WarningRoundedIcon sx={{ fontSize: inline ? 22 : 24 }} />
+          )
+          }
         </Fab>
       </Tooltip>
 
@@ -148,7 +160,7 @@ function EmergencyFab({ inline = false }) {
           severity={snackbar.severity}
           variant="filled"
           onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-          sx={{ width: "100%" }}
+          sx={{ width: "100%", color: "#ffffff" }}
         >
           {snackbar.message}
         </Alert>
