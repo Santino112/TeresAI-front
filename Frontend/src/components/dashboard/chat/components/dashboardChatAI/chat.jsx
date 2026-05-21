@@ -300,7 +300,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
             }}
             sx={{
               width: "100%",
-              boxShadow: 4,
+              boxShadow: 5,
               borderRadius: 4,
               flexShrink: 0,
               p: 0,
@@ -371,7 +371,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                     sx={{
                       backgroundColor: ttsEnabled ? "#c0beb9" : "transparent",
                       color: ttsEnabled ? "#000000" : "#000000",
-                      "&:hover": { backgroundColor: "#c0beb9", color: "#ffffff" },
+                      "&:hover": { backgroundColor: "#c0beb9", color: "#000000" },
                       "&:disabled": { opacity: 0.5, cursor: "not-allowed" }
                     }}
                   >
