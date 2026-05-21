@@ -9,8 +9,5 @@ npm-debug.log
 .idea
 *.md
 .DS_Store
-src
-public
-index.html
-vite.config.js
-eslint.config.js
+dist
+dev-dist
