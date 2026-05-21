@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Link, Alert, Grid, Card, AppBar, Toolbar, Accordion, AccordionSummary, AccordionDetails, Paper } from '@mui/material';
+import { Typography, Button, TextField, Box, InputAdornment, Divider, IconButton, Link, Alert, Grid, Card, AppBar, Toolbar, Select, MenuItem, Accordion, AccordionSummary, AccordionDetails, Paper } from '@mui/material';
 import { supabase } from '../../supabaseClient.js';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import fondoChatAI from "../../assets/images/fondoChatAI.png"
@@ -16,6 +16,13 @@ import ContactPhoneRoundedIcon from '@mui/icons-material/ContactPhoneRounded';
 import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
 import { isStandaloneDisplayMode, promptInstallApp } from '../../pwa/installPrompt.js';
 import { usePwaInstallPrompt } from '../../pwa/usePwaInstallPrompt.js';
+
+const paises = [
+    { codigo: 'AR', nombre: 'Argentina', prefijo: '+54' },
+    { codigo: 'BR', nombre: 'Brasil', prefijo: '+55' },
+    { codigo: 'CL', nombre: 'Chile', prefijo: '+56' },
+    { codigo: 'UY', nombre: 'Uruguay', prefijo: '+598' },
+];
 
 const Login = () => {
     const navigate = useNavigate();
@@ -34,12 +41,21 @@ const Login = () => {
     const [phoneFeedbackOpen, setPhoneFeedbackOpen] = useState(false);
     const [appInstalada, setAppInstalada] = useState(false);
     const deferredPrompt = usePwaInstallPrompt();
-    const seccionPasosRef = useRef(null);
+    const seccionPasosGoogle = useRef(null);
+    const seccionPasosCodigo = useRef(null);
     const esIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    const irAPasosDetallados = () => {
-        seccionPasosRef.current?.scrollIntoView({
-            behavior: 'smooth', // Hace que el deslizamiento sea suave
-            block: 'start'      // Alinea el inicio del componente arriba de todo en la pantalla
+    const [countryCode, setCountryCode] = useState('+54');
+
+    const irAPasosDetalladosGoogle = () => {
+        seccionPasosGoogle.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    };
+    const irAPasosDetalladosCodigo = () => {
+        seccionPasosCodigo.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
         });
     };
 
@@ -211,7 +227,7 @@ const Login = () => {
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
                 px: { xs: 2, sm: 2, md: 0 },
-                py: { xs: 2, md: 0 }
+                py: { xs: 2, md: 0 },
             }}>
                 <Box sx={{
                     position: "relative",
@@ -225,6 +241,7 @@ const Login = () => {
                     maxWidth: { xs: "100%", sm: 540, md: 700, lg: 800 },
                     p: { xs: 1, sm: 2, md: 2 },
                     mt: { xs: 2, md: 0 },
+
                 }}>
                     <AppBar
                         elevation={0}
@@ -390,7 +407,7 @@ const Login = () => {
                         >
                             Presiona el botón azul, selecciona la cuenta de email que quieras usar, acepta los terminos y condidiciones y listo. Para más información presiona en
                             <Link
-                                onClick={irAPasosDetallados}
+                                onClick={irAPasosDetalladosGoogle}
                                 component="button"
                                 variant="body1"
                                 sx={{
@@ -455,7 +472,7 @@ const Login = () => {
                             >
                                 Escribe tú número de teléfono e ingresa aquí el código que te enviaremos por SMS. Si no lo recibiste presiona en "Reenviar código". Para más información presiona en
                                 <Link
-                                    onClick={irAPasosDetallados}
+                                    onClick={irAPasosDetalladosCodigo}
                                     component="button"
                                     variant="body1"
                                     sx={{
@@ -477,15 +494,16 @@ const Login = () => {
                                 <Alert
                                     variant='filled'
                                     severity={phoneFeedbackSeverity}
-                                    sx={{ mb: 1.5, borderRadius: 2 }}
+                                    sx={{ mb: 1.5, borderRadius: 2, color: "#ffffff" }}
                                 >
                                     {phoneFeedback}
                                 </Alert>
                             ) : null}
                             <TextField
+                                label="Número de Teléfono" // Agregado por consistencia visual con tus estilos
                                 value={phoneNumber}
                                 onChange={(e) => setPhoneNumber(e.target.value)}
-                                placeholder="+549353244165"
+                                placeholder="9 353 244165" // Ajustado el placeholder ya que el prefijo va aparte
                                 fullWidth
                                 margin="dense"
                                 type="tel"
@@ -508,7 +526,7 @@ const Login = () => {
                                     },
                                     "& .MuiOutlinedInput-root": {
                                         borderRadius: 3,
-                                        pr: 1,
+
                                         "& fieldset": {
                                             borderColor: "transparent"
                                         },
@@ -528,7 +546,35 @@ const Login = () => {
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            <ContactPhoneRoundedIcon fontSize="medium" sx={{ color: "#000000", mr: 1 }} />
+                                            <Select
+                                                value={countryCode}
+                                                onChange={(e) => setCountryCode(e.target.value)}
+                                                variant="standard"
+                                                disableUnderline
+                                                sx={{
+                                                    color: "#000000",
+
+                                                    "& .MuiSelect-select": {
+                                                        paddingTop: 0,
+                                                        paddingBottom: 0,
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        backgroundColor: "transparent",
+                                                    },
+                                                    "& .MuiSelect-icon": {
+                                                        color: "#000000",
+                                                    },
+                                                    "& .MuiSelect-iconOpen": {
+                                                        color: "#000000", // Mantiene el negro cuando el menú se despliega
+                                                    }
+                                                }}
+                                            >
+                                                {paises.map((pais) => (
+                                                    <MenuItem key={pais.iso} value={pais.prefijo}>
+                                                        {pais.iso} ({pais.prefijo})
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
                                         </InputAdornment>
                                     ),
                                 }}
@@ -900,7 +946,7 @@ const Login = () => {
                     </Box>
                 </Box>
             </Box >
-            <Box ref={seccionPasosRef} sx={{
+            <Box ref={seccionPasosGoogle} sx={{
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
@@ -936,26 +982,42 @@ const Login = () => {
                     <Box
                         sx={{
                             display: 'flex',
+                            flexDirection: "column",
                             alignItems: 'center',
                             justifyContent: 'center',
-                            my: 2,
+                            my: 1,
                             borderRadius: 3,
                             p: 2,
-                            pl: 3,
                         }}
                     >
-                        <Typography variant="h4" component="h1" sx={{
+                        <Typography variant="h4" sx={{
                             color: "#000000",
                             fontSize: {
-                                xs: "1.6rem",
-                                sm: "1.6rem",
+                                xs: "1.4rem",
+                                sm: "1.4rem",
                                 md: "1.4rem",
                                 lg: "1.5rem",
-                                xl: "2rem"
+                                xl: "1.8rem"
                             },
                             whiteSpace: "nowrap",
                         }} >
                             ¿Cómo ingresar a la aplicación?
+                        </Typography>
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: "rgb(0, 0, 0)",
+                                display: "block",
+                                lineHeight: 1.5,
+                                textAlign: "center",
+                                fontSize: {
+                                    xs: "1rem",
+                                    md: "1.1rem"
+                                },
+                                mt: 2
+                            }}
+                        >
+                            En esta guia podrás encontrar el paso a paso de como ingresar con los 2 métodos de inicio de sesión que posee TeresAI.
                         </Typography>
                     </Box>
                     <Grid container spacing={3}>
@@ -1039,7 +1101,7 @@ const Login = () => {
                                                 md: "1rem"
                                             },
                                         }}>
-                                            Paso 1: Haz clic en el botón
+                                            Paso 1: Haz clic en el botón azul
                                         </Typography>
                                         <Typography variant="body2" sx={{
                                             color: "rgb(0, 0, 0)",
@@ -1051,7 +1113,7 @@ const Login = () => {
                                             },
                                             my: 1
                                         }}>
-                                            Presiona el botón "Continuar con Google" para iniciar el proceso de autenticación.
+                                            Presiona el botón "Iniciar sesión con Google" o "Continuar con Google" para iniciar el proceso de autenticación.
                                         </Typography>
                                     </Box>
 
@@ -1082,7 +1144,8 @@ const Login = () => {
                                             },
                                             my: 1
                                         }}>
-                                            Se abrirá una ventana de Google donde podrás elegir la cuenta de correo que deseas usar.
+                                            Se abrirá una ventana emergente en la cual deberás seleccionar el email con el que vas a querer ingresar. Además, podrás agregar un email nuevo apretando el botón de "Usar otra cuenta". <br />
+                                            Por otro lado, si no te deja seleccionar un email y, en cambio, te aparece una casilla vacia, entonces deberás escribir tu email y luego la contraseña de tu email manualmente para poder ingresar.
                                         </Typography>
                                     </Box>
 
@@ -1101,7 +1164,7 @@ const Login = () => {
                                                 md: "1rem"
                                             },
                                         }}>
-                                            Paso 3: Autoriza el acceso
+                                            Paso 3: Autoriza el acceso a tu cuenta
                                         </Typography>
                                         <Typography variant="body2" sx={{
                                             color: "rgb(0, 0, 0)",
@@ -1113,7 +1176,8 @@ const Login = () => {
                                             },
                                             my: 1
                                         }}>
-                                            Google te pedirá que autorices que TeresAI acceda a tu información de perfil de forma segura.
+                                            Seleccionado tú email, Google te pedirá que TeresAI acceda a la información de tu cuenta (foto de perfíl, email, etc.). Es necesario que se acepte esto para poder disfrutar de todos los beneficios de la aplicación. <br />
+                                            En caso de no ser un usuario nuevo, no se te pedirá esto y solamente tendrás que seleccionar tu email.
                                         </Typography>
                                     </Box>
 
@@ -1144,32 +1208,7 @@ const Login = () => {
                                             },
                                             my: 1
                                         }}>
-                                            Una vez autenticado, accederás directamente a TeresAI sin necesidad de contraseña adicional.
-                                        </Typography>
-                                    </Box>
-
-                                    {/* Nota de seguridad */}
-                                    <Box
-                                        sx={{
-                                            p: 2,
-                                            bgcolor: '#d7d6d6',
-                                            borderRadius: 3,
-                                            mt: 1,
-                                            textAlign: 'center',
-                                        }}
-                                    >
-                                        <Typography variant="caption" sx={{
-                                            color: "rgb(0, 0, 0)",
-                                            display: "block",
-                                            lineHeight: 1.5,
-                                            fontSize: {
-                                                xs: "1rem",
-                                                md: "1rem"
-                                            },
-                                            my: 1,
-                                            fontStyle: 'italic'
-                                        }}>
-                                            🔒 Tu información está protegida. Google nunca compartirá tu contraseña con TeresAI.
+                                            Una vez que el sistema haya validado tu email, la misma aplicación validará tu identidad y podrás ingresar sin inconvenientes.
                                         </Typography>
                                     </Box>
                                 </Box>
@@ -1182,6 +1221,7 @@ const Login = () => {
                             lg: 6
                         }}>
                             <Paper
+                                ref={seccionPasosCodigo}
                                 elevation={4}
                                 sx={{
                                     display: "flex",
@@ -1235,11 +1275,39 @@ const Login = () => {
                                             borderLeft: '4px solid #4285F4',
                                         }}
                                     >
-                                        <Typography variant="subtitle2" sx={{ color: '#4285F4', fontWeight: 'bold', mb: 0.5 }}>
-                                            Paso 1: Haz clic en el botón
+                                        <Typography
+                                            variant="caption"
+                                            sx={{
+                                                color: "rgb(0, 0, 0)",
+                                                display: "block",
+                                                lineHeight: 1.5,
+                                                textAlign: "center",
+                                                fontSize: {
+                                                    xs: "1rem",
+                                                    md: "1rem"
+                                                },
+                                                my: 1
+                                            }}
+                                        ></Typography>
+                                        <Typography variant="subtitle2" sx={{
+                                            color: '#4285F4', fontWeight: 'bold', mb: 0.5, fontSize: {
+                                                xs: "1rem",
+                                                md: "1rem"
+                                            },
+                                        }}>
+                                            Paso 1: Ingresar número de teléfono
                                         </Typography>
-                                        <Typography variant="body2" sx={{ color: '#000000', fontSize: '0.9rem' }}>
-                                            Presiona el botón "Continuar con Google" para iniciar el proceso de autenticación.
+                                        <Typography variant="body2" sx={{
+                                            color: "rgb(0, 0, 0)",
+                                            display: "block",
+                                            lineHeight: 1.5,
+                                            fontSize: {
+                                                xs: "1rem",
+                                                md: "1rem"
+                                            },
+                                            my: 1
+                                        }}>
+                                            Presiona la casilla donde está el número teléfonico de ejemplo y escribe tú número teléfonico ahí. Este debe ser en formato nacional.
                                         </Typography>
                                     </Box>
 
@@ -1252,11 +1320,26 @@ const Login = () => {
                                             borderLeft: '4px solid #EA4335',
                                         }}
                                     >
-                                        <Typography variant="subtitle2" sx={{ color: '#EA4335', fontWeight: 'bold', mb: 0.5 }}>
-                                            Paso 2: Selecciona tu cuenta
+                                        <Typography variant="subtitle2" sx={{
+                                            color: '#EA4335', fontWeight: 'bold', mb: 0.5, fontSize: {
+                                                xs: "1rem",
+                                                md: "1rem"
+                                            },
+                                        }}>
+                                            Paso 2: Recibir código via notifiación
                                         </Typography>
-                                        <Typography variant="body2" sx={{ color: '#000000', fontSize: '0.9rem' }}>
-                                            Se abrirá una ventana de Google donde podrás elegir la cuenta de correo que deseas usar.
+                                        <Typography variant="body2" sx={{
+                                            color: "rgb(0, 0, 0)",
+                                            display: "block",
+                                            lineHeight: 1.5,
+                                            fontSize: {
+                                                xs: "1rem",
+                                                md: "1rem"
+                                            },
+                                            my: 1
+                                        }}>
+                                            Una vez hayas hecho eso, tendrás que apretar el botón de abajo que dice "Enviar código". Al hacer esto te llegará un código que deberás usar en el paso siguiente. <br />
+                                            Si por algún motivo no recibiste un código en tu casilla de notificaciones, puedes presionar en "Reenviar código". Esto intentará mandarte el código nuevamente para que lo vuelvas a intentar.
                                         </Typography>
                                     </Box>
 
@@ -1269,11 +1352,25 @@ const Login = () => {
                                             borderLeft: '4px solid #FBBC04',
                                         }}
                                     >
-                                        <Typography variant="subtitle2" sx={{ color: '#FBBC04', fontWeight: 'bold', mb: 0.5 }}>
-                                            Paso 3: Autoriza el acceso
+                                        <Typography variant="subtitle2" sx={{
+                                            color: '#FBBC04', fontWeight: 'bold', mb: 0.5, fontSize: {
+                                                xs: "1rem",
+                                                md: "1rem"
+                                            },
+                                        }}>
+                                            Paso 3: Escribir el código
                                         </Typography>
-                                        <Typography variant="body2" sx={{ color: '#000000', fontSize: '0.9rem' }}>
-                                            Google te pedirá que autorices que TeresAI acceda a tu información de perfil de forma segura.
+                                        <Typography variant="body2" sx={{
+                                            color: "rgb(0, 0, 0)",
+                                            display: "block",
+                                            lineHeight: 1.5,
+                                            fontSize: {
+                                                xs: "1rem",
+                                                md: "1rem"
+                                            },
+                                            my: 1
+                                        }}>
+                                            A este código lo deberás escribir en la casilla que aparecera abajo, con la leyenda "Código SMS". Aprietas la casilla y escribes el código.
                                         </Typography>
                                     </Box>
 
@@ -1286,32 +1383,55 @@ const Login = () => {
                                             borderLeft: '4px solid #34A853',
                                         }}
                                     >
-                                        <Typography variant="subtitle2" sx={{ color: '#34A853', fontWeight: 'bold', mb: 0.5 }}>
+                                        <Typography variant="subtitle2" sx={{
+                                            color: '#34A853', fontWeight: 'bold', mb: 0.5, fontSize: {
+                                                xs: "1rem",
+                                                md: "1rem"
+                                            },
+                                        }}>
                                             Paso 4: ¡Listo!
                                         </Typography>
-                                        <Typography variant="body2" sx={{ color: '#000000', fontSize: '0.9rem' }}>
-                                            Una vez autenticado, accederás directamente a TeresAI sin necesidad de contraseña adicional.
-                                        </Typography>
-                                    </Box>
-
-                                    {/* Nota de seguridad */}
-                                    <Box
-                                        sx={{
-                                            p: 2,
-                                            backgroundColor: '#ffffff',
-                                            borderRadius: 3,
-                                            mt: 1,
-                                            textAlign: 'center',
-                                        }}
-                                    >
-                                        <Typography variant="caption" sx={{ color: '#000000', fontSize: '0.85rem', fontStyle: 'italic' }}>
-                                            🔒 Tu información está protegida. Google nunca compartirá tu contraseña con TeresAI.
+                                        <Typography variant="body2" sx={{
+                                            color: "rgb(0, 0, 0)",
+                                            display: "block",
+                                            lineHeight: 1.5,
+                                            fontSize: {
+                                                xs: "1rem",
+                                                md: "1rem"
+                                            },
+                                            my: 1
+                                        }}>
+                                            Una vez que el sistema haya validado el código insertado, la misma aplicación validará tu identidad y podrás ingresar sin inconvenientes.
                                         </Typography>
                                     </Box>
                                 </Box>
                             </Paper>
                         </Grid>
                     </Grid>
+                    <Box
+                        sx={{
+                            p: 2,
+                            bgcolor: '#d7d6d6',
+                            borderRadius: 3,
+                            my: 3,
+                            boxShadow: 5,
+                            textAlign: 'center',
+                        }}
+                    >
+                        <Typography variant="caption" sx={{
+                            color: "rgb(0, 0, 0)",
+                            display: "block",
+                            lineHeight: 1.5,
+                            fontSize: {
+                                xs: "1rem",
+                                md: "1rem"
+                            },
+                            my: 1,
+                            fontStyle: 'italic'
+                        }}>
+                            🔒 Tu información está protegida. Google nunca compartirá tus datos personales como contraseñas o datos sensibles con TeresAI.
+                        </Typography>
+                    </Box>
                 </Box>
             </Box>
         </>
