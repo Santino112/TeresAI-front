@@ -1,10 +1,25 @@
-{
-  auto_https off
-}
-
+# Configuración para desarrollo (localhost)
 :8080 {
   root * /srv
   encode gzip
+  
+  # Configuración para PWA
+  header Cache-Control "public, max-age=31536000, immutable" .js
+  header Cache-Control "public, max-age=31536000, immutable" .css
+  header Cache-Control "public, max-age=31536000, immutable" /icon-*.png
+  header Cache-Control "public, max-age=3600, must-revalidate" /index.html
+  header Cache-Control "public, max-age=3600, must-revalidate" /manifest.webmanifest
+  
+  # Headers de seguridad recomendados
+  header X-Content-Type-Options "nosniff"
+  header X-Frame-Options "SAMEORIGIN"
+  header Referrer-Policy "strict-origin-when-cross-origin"
+  header Permissions-Policy "geolocation=(self), microphone=(self), camera=(self)"
+  
+  # CSP Header (mejora la seguridad)
+  header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://cdn.jsdelivr.net; connect-src 'self' https: wss:; media-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src https://accounts.google.com;"
+  
+  # SPA routing - intentar archivo, si no existe servir index.html
   try_files {path} /index.html
   file_server
 }

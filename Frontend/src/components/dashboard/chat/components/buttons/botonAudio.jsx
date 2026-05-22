@@ -309,19 +309,28 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop, ...props }, r
       ) : null}
       <IconButton
         {...props}
-        onMouseDown={() => startRecording()}
-        onMouseUp={() => stopRecording("manual")}
-        onMouseLeave={recording ? () => stopRecording("manual") : undefined}
-        onTouchStart={(e) => {
-          e.preventDefault();
+        onPointerDown={(e) => {
+          if (typeof e.currentTarget.setPointerCapture === "function") {
+            try {
+              e.currentTarget.setPointerCapture(e.pointerId);
+            } catch {
+              // ignore capture failures
+            }
+          }
           startRecording();
         }}
-        onTouchEnd={() => stopRecording("manual")}
+        onPointerUp={() => stopRecording("manual")}
+        onPointerCancel={() => stopRecording("manual")}
+        onContextMenu={(e) => e.preventDefault()}
         sx={{
           transform: recording ? "scale(1.2)" : "scale(1)",
           transition: "transform 0.2s ease-in-out ",
           backgroundColor: recording ? "#c0beb9" : "transparent",
           color: recording ? "#000000" : "#000000",
+          touchAction: "none",
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          WebkitTouchCallout: "none",
           "&:hover": {
             backgroundColor: recording ? "#c0beb9" : "rgba(0, 0, 0, 0.1)",
           },

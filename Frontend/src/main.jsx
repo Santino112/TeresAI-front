@@ -4,6 +4,12 @@ import './index.css'
 import App from './App.jsx'
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { BrowserRouter } from 'react-router-dom'
+import { registerSW } from 'virtual:pwa-register'
+import { initInstallPrompt } from './pwa/installPrompt.js'
+
+initInstallPrompt()
+
+registerSW({ immediate: true })
 
 const DEFAULT_GOOGLE_CLIENT_ID =
   '1012721723060-4foenlo1hdq0bu73t6f6ot8bj8vr38kl.apps.googleusercontent.com';
