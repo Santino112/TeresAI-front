@@ -8,6 +8,8 @@ const SILENCE_THRESHOLD = 0.02;
 const SILENCE_DURATION_MS = 1400;
 const MAX_WAIT_FOR_VOICE_MS = 6000;
 
+const sonidoInicio = new Audio("/sounds/sonidoAudio.mp3");
+
 const VoiceTextField = ({
   value,
   onChange,
@@ -142,6 +144,8 @@ const VoiceTextField = ({
       });
 
       if (navigator.vibrate) navigator.vibrate(60);
+      sonidoInicio.currentTime = 0;
+      sonidoInicio.play().catch(() => { });
 
       const chunks = [];
       autoStopRef.current = Boolean(options?.autoStopOnSilence);

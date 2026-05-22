@@ -45,14 +45,14 @@ const RouteLoader = () => (
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  console.log("loading:", loading, "user:", !!user);
+
   if (loading) return <RouteLoader />;
   return user ? children : <Navigate to='/' />;
 };
 
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  console.log("loading:", loading, "user:", !!user);
+  
   if (loading) return <RouteLoader />;
   return !user ? children : <Navigate to="/infoUser" />;
 };
