@@ -303,6 +303,16 @@ const VoiceTextField = ({
               <Tooltip title={recording ? "Detener grabación" : "Grabar con voz"}>
                 <IconButton
                   onClick={handleMicClick}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    sonidoInicio.currentTime = 0;
+                    sonidoInicio.play().catch(() => { });
+                    if (!recording) startRecording();
+                  }}
+                  onTouchEnd={(e) => {
+                    e.preventDefault();
+                    if (recording) stopRecording("manual");
+                  }}
                   disabled={isProcessing}
                   size="small"
                   sx={{
@@ -336,7 +346,7 @@ const VoiceTextField = ({
             borderRadius: 3,
             pr: 1,
             display: "flex",
-            alignItems: "center", 
+            alignItems: "center",
             "& fieldset": { borderColor: "transparent" },
             "&:hover fieldset": { borderColor: "transparent" },
             "&.Mui-focused fieldset": { borderColor: "gray" },
@@ -345,7 +355,7 @@ const VoiceTextField = ({
             color: "#000000",
             opacity: 0.6,
           },
-          ...sx, 
+          ...sx,
         }}
       />
     </>

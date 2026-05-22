@@ -347,8 +347,24 @@ const Login = () => {
                                 lg: "1.5rem",
                                 xl: "2rem"
                             },
+                            mb:1
                         }} >
-                            Bienvenido de vuelta
+                            Bienvenido
+                        </Typography>
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: "rgb(0, 0, 0)",
+                                display: "block",
+                                lineHeight: 1.5,
+                                textAlign: "center",
+                                fontSize: {
+                                    xs: "1rem",
+                                    md: "1rem"
+                                },
+                            }}
+                        >
+                            Si eres el familiar a cargo primero registra al adulto mayor y luego registrate tú. Caso contrario, si eres el adulto mayor, simplemente registrate y empieza a usar a teresa.
                         </Typography>
                         <Divider sx={{
                             my: 0,
@@ -500,7 +516,7 @@ const Login = () => {
                                 </Alert>
                             ) : null}
                             <TextField
-                                label="Número de Teléfono" 
+                                label="Número de Teléfono"
                                 value={phoneNumber}
                                 onChange={(e) => setPhoneNumber(e.target.value)}
                                 placeholder="9 353 244165"
@@ -565,7 +581,7 @@ const Login = () => {
                                                         color: "#000000",
                                                     },
                                                     "& .MuiSelect-iconOpen": {
-                                                        color: "#000000", 
+                                                        color: "#000000",
                                                     }
                                                 }}
                                             >

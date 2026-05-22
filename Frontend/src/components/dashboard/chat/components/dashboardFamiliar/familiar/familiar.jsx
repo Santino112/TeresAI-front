@@ -197,7 +197,7 @@ const Familiar = () => {
                 textAlign: { xs: "center", sm: "center", md: "start" },
               }}
             >
-              Análisis de últimos 180 días
+              Aquí podrás encontrar un analisis de los últimos 180 dias de los adultos mayores que cuidas.
             </Typography>
           </Box>
           {elders.length > 0 && (
@@ -261,7 +261,7 @@ const Familiar = () => {
         </Stack>
         <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", width: "100%", my: 2 }} />
       </Paper>
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+      {error && <Alert variant="filled" severity="error" sx={{ mb: 2, fontSize: "1rem", boxShadow: 3, borderRadius: 3 }}>{error}</Alert>}
       {loading ? (
         <Box sx={{ p: 5, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 2, flexGrow: 1 }}>
           <Typography variant="h2" sx={{ fontSize: "1rem", fontFamily: "'Lora', serif", color: "#000000" }}>Cargando información</Typography>
