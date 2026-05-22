@@ -94,7 +94,7 @@ const Register = () => {
         }
 
         if (!normalizedPhone.startsWith("+")) {
-            showPhoneFeedback("Usá formato internacional, por ejemplo +54911xxxxxxx.", "error");
+            showPhoneFeedback("Usá formato internacional, por ejemplo +5411xxxxxxx.", "error");
             return;
         }
 
@@ -570,7 +570,7 @@ const Register = () => {
                         <TextField
                             value={phoneNumber}
                             onChange={(e) => setPhoneNumber(e.target.value)}
-                            placeholder="+54911xxxxxxx"
+                            placeholder="+5411xxxxxxx"
                             fullWidth
                             margin="dense"
                             type="tel"

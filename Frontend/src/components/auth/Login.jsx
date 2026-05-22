@@ -102,7 +102,7 @@ const Login = () => {
         }
 
         if (!normalizedPhone.startsWith("+")) {
-            showPhoneFeedback("Usá formato internacional, por ejemplo +54911xxxxxxx.", "error");
+            showPhoneFeedback("Usá formato internacional, por ejemplo +5411xxxxxxx.", "error");
             return;
         }
 
