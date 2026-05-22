@@ -378,10 +378,9 @@ const InformacionUsuarios = () => {
                             },
                             transform: "translateX(-50%)",
                             zIndex: 9999,
-                            boxShadow: 4,
+                            boxShadow: 3,
                             borderRadius: 3,
                             fontSize: "1rem",
-                            fontFamily: "'Lora', serif",
                         }}
                     >{alertMessage}</Alert>
                     :

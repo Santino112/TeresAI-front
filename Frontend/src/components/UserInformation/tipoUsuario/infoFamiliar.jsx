@@ -128,7 +128,7 @@ const InfoFamiliar = ({
                     error={errorTextFields}
                     value={numeroTelefono}
                     onChange={(e) => setNumeroTelefono(e.target.value)}
-                    placeholder="Ej: +541122334455"
+                    placeholder="Ej: +543534244165"
                     fullWidth
                     type="number"
                     margin="dense"
