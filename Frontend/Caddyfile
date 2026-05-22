@@ -14,7 +14,7 @@
   header X-Content-Type-Options "nosniff"
   header X-Frame-Options "SAMEORIGIN"
   header Referrer-Policy "strict-origin-when-cross-origin"
-  header Permissions-Policy "geolocation=(), microphone=(self), camera=(self)"
+  header Permissions-Policy "geolocation=(self), microphone=(self), camera=(self)"
   
   # CSP Header (mejora la seguridad)
   header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://cdn.jsdelivr.net; connect-src 'self' https: wss:; media-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src https://accounts.google.com;"
