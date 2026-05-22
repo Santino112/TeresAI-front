@@ -15,6 +15,7 @@ import Notes from '../notes/notes.jsx';
 import MenuUsuario from './menu.jsx';
 import Perfil from '../profile/profile.jsx';
 import Manual from '../manual/manualElder.jsx';
+import Clima from '../clima/clima.jsx';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AppBar from '@mui/material/AppBar';
@@ -51,6 +52,8 @@ import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
 import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
 import MicOffRoundedIcon from "@mui/icons-material/MicOffRounded";
 import EmergencyFab from "../../../../common/EmergencyFab.jsx";
+import CloudRoundedIcon from '@mui/icons-material/CloudRounded';
+import PhoneInTalkRoundedIcon from '@mui/icons-material/PhoneInTalkRounded';
 
 const drawerWidth = 290;
 
@@ -138,6 +141,10 @@ function ResponsiveDrawer() {
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [menuConvId, setMenuConvId] = useState(null);
     const { user, loading: authLoading } = useAuth();
+    //Para el modal del clima
+    const [openWeather, setOpenWeather] = useState(false);
+    const handleOpenWeather = () => setOpenWeather(true);
+    const handleCloseWeather = () => setOpenWeather(false);
     //Modal
     const [open, setOpen] = useState(false);
     const handleCloseModal = async () => {
@@ -379,7 +386,7 @@ function ResponsiveDrawer() {
                                                             },
                                                         },
                                                     }}>
-                                                    <Typography sx={{ color: "#000000"}}>
+                                                    <Typography sx={{ color: "#000000" }}>
                                                         {step.label}
                                                     </Typography>
                                                 </StepLabel>
@@ -484,7 +491,7 @@ function ResponsiveDrawer() {
                 overflowY: "auto",
                 maxHeight: "500px",
                 width: "100%",
-                minHeight: {xs: "336px", sm: "336px", md: "250px", lg: "250px", xl: "336px", },
+                minHeight: { xs: "336px", sm: "336px", md: "250px", lg: "250px", xl: "336px", },
                 p: 1,
                 backgroundColor: "#eeeeee",
             }}>
@@ -771,7 +778,6 @@ function ResponsiveDrawer() {
             >
                 <Toolbar sx={{
                     display: 'flex',
-                    justifyContent: 'space-between',
                     alignItems: 'center',
                 }}>
                     <IconButton
@@ -783,16 +789,44 @@ function ResponsiveDrawer() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Box sx={{ ml: "auto", display: { xs: "flex", sm: "flex", md: "none" }, alignItems: "center" }}>
+                    <Box sx={{ flexGrow: 1 }}>
+                        {activeConversationId && paginaActiva === "chat" && (
+                            <Typography noWrap sx={{ fontSize: "1.1rem", display: { xs: "none", md: "block" } }}>
+                                {Array.isArray(conversations)
+                                    ? conversations.find(c => c.id === activeConversationId)?.title || "Chat sin título"
+                                    : "Chat sin título"}
+                            </Typography>
+                        )}
+                    </Box>
+                    <IconButton color="inherit" onClick={handleOpenWeather} title="Ver clima" sx={{
+                        mr: 1,
+                        "&:hover": { backgroundColor: "#e1e1e1", color: "#000000" },
+                    }}>
+                        <CloudRoundedIcon fontSize='large' />
+                    </IconButton>
+                    <Box sx={{ display: { xs: "flex", sm: "flex", md: "none" }, alignItems: "center" }}>
+                        <IconButton
+                            onClick={() => window.location.href = "tel:911"}
+                            title="Llamar al 911"
+                            sx={{
+                                position: "static",
+                                width: 44,
+                                mr: 1,
+                                height: 44,
+                                minWidth: 44,
+                                flexShrink: 0,
+                                boxShadow: "0 10px 20px rgba(176, 0, 32, 0.25)",
+                                color: "white",
+                                backgroundColor: "#ca2828",
+                                "&:hover": {
+                                    backgroundColor: "#fc3232",
+                                }
+                            }}
+                        >
+                            <PhoneInTalkRoundedIcon fontSize='medium' />
+                        </IconButton>
                         <EmergencyFab inline />
                     </Box>
-                    {activeConversationId && paginaActiva === "chat" && (
-                        <Typography noWrap sx={{ fontSize: "1.1rem", display: { xs: "none", md: "block" } }}>
-                            {Array.isArray(conversations)
-                                ? conversations.find(c => c.id === activeConversationId)?.title || "Chat sin título"
-                                : "Chat sin título"}
-                        </Typography>
-                    )}
                 </Toolbar>
             </AppBar>
             <Box
@@ -916,6 +950,10 @@ function ResponsiveDrawer() {
                                                     />
                     }
                 </Box>
+                <Clima
+                    open={openWeather}
+                    onClose={handleCloseWeather}
+                />
             </Box>
         </Box>
     );

@@ -5,6 +5,7 @@ import { AuthProvider } from "./components/auth/AuthContext.jsx";
 import { useAuth } from "./components/auth/useAuth.jsx";
 import { Theme } from './theme/theme.jsx';
 import { Box, CircularProgress, CssBaseline } from '@mui/material';
+import logo from './assets/images/logo_teresAI.png';
 import './App.css'
 
 const Login = lazy(() => import("./components/auth/Login.jsx"));
@@ -33,21 +34,26 @@ const RouteLoader = () => (
       background: "#f7f2e8",
     }}
   >
-    <CircularProgress size={34} />
+    <Box
+      component="img"
+      src={logo}
+      alt="TeresAI"
+      sx={{ width: 120, height: "auto" }}
+    />
   </Box>
 );
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
-
-  if (loading) return null;
+  console.log("loading:", loading, "user:", !!user);
+  if (loading) return <RouteLoader />;
   return user ? children : <Navigate to='/' />;
 };
 
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
-
-  if (loading) return null;
+  console.log("loading:", loading, "user:", !!user);
+  if (loading) return <RouteLoader />;
   return !user ? children : <Navigate to="/infoUser" />;
 };
 
