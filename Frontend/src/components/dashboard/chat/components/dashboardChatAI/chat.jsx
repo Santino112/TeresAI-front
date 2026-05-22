@@ -8,6 +8,7 @@ import { useBrowserLocation } from "../../exports/useBrowserLocation.js";
 import { IconButton } from "@mui/material";
 import { useAuth } from "../../../../auth/useAuth.jsx";
 import { tomarDatosPerfiles } from '../../exports/datosInicialesUsuarios.js';
+import logo from "../../../../../assets/images/logo_teresAI_noText.png"
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 import axios from "axios";
 import ReactMarkDown from 'react-markdown';
@@ -433,6 +434,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                 alignItems: "center",
                 width: "100%",
                 gap: 4,
+                mt: 2,
                 p: { xs: 2, sm: 2, md: 3, lg: 3, xl: 3 },
                 scrollbarWidth: 'thin'
               }}
@@ -453,7 +455,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                       maxWidth: msg.role === "user" ? "70%" : "100%",
                       p: 2,
                       borderRadius: "15px",
-                      fontFamily: "Arial, sans-serif",
                       color: "#000000",
                       backgroundColor: msg.role === "user" ? "#cfcdc7" : "transparent",
                       boxShadow: msg.role === "user" ? 3 : 0,
@@ -525,15 +526,27 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
               {pensandoIA && (
                 <Box sx={{ display: "flex", justifyContent: "flex-start", width: "100%", maxWidth: "800px", pl: 2 }}>
                   <Box sx={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: 1,
                     maxWidth: "800px",
                     width: "100%",
-                    mb: 3,
-                    color: "#000000",
-                    fontStyle: "italic",
-                    fontSize: "1.05rem",
-                    fontFamily: "'Lora', serif"
                   }}>
-                    {fraseParaChat}
+                    <Box
+                      component="img"
+                      src={logo}
+                      alt="Teresa"
+                      sx={{ height: "1.50rem", width: "auto", mt: "10px" }}
+                    />
+                    <Box sx={{
+                      maxWidth: "800px",
+                      width: "100%",
+                      mb: 3,
+                      color: "#000000",
+                      fontSize: "1.05rem",
+                    }}>
+                      {fraseParaChat}
+                    </Box>
                   </Box>
                 </Box>
               )}
