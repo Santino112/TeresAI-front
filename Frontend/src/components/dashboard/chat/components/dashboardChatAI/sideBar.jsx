@@ -727,22 +727,6 @@ function ResponsiveDrawer() {
                                         }
                                     }}
                                 >
-                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3, color: "#000000", "&:hover": { backgroundColor: "#e1e1e1" } }}>
-                                        <StarRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Favorito
-                                    </MenuItem>
-                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3, color: "#000000", "&:hover": { backgroundColor: "#e1e1e1" } }}>
-                                        <EditRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Renombrar
-                                    </MenuItem>
-                                    <Divider sx={{
-                                        width: "100%",
-                                        color: "#000000",
-                                        backgroundColor: "#9f9e9e",
-                                        "&::before, &::after": {
-                                            borderColor: "#000000",
-                                        },
-                                        m: 0,
-                                        p: 0
-                                    }}></Divider>
                                     <MenuItem onClick={(e) => { e.stopPropagation(); handleDelete(); handleMenuClose(); }}
                                         sx={{
                                             color: "#000000",

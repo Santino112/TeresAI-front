@@ -94,10 +94,10 @@ const Login = () => {
     const normalizePhoneNumber = (value) => String(value || "").trim().replace(/\s+/g, "");
 
     const handleSendPhoneOtp = async () => {
-        const normalizedPhone = normalizePhoneNumber(phoneNumber);
+        const normalizedPhone = normalizePhoneNumber(countryCode + phoneNumber);
 
         if (!normalizedPhone) {
-            showPhoneFeedback("Ingresá tu número de teléfono.", "error");
+            showPhoneFeedback("Debes ingresár tu número de teléfono.", "error");
             return;
         }
 
@@ -122,15 +122,15 @@ const Login = () => {
 
         setPhoneOtpSent(true);
         setPhoneCode("");
-        showPhoneFeedback("Te enviamos un código por SMS.", "success");
+        showPhoneFeedback("Te enviaremos un código por SMS. Mira tus notificaciones", "success");
         setPhoneLoading(false);
     };
 
     const handleVerifyPhoneOtp = async () => {
-        const normalizedPhone = normalizePhoneNumber(phoneNumber);
+        const normalizedPhone = normalizePhoneNumber(countryCode + phoneNumber);
 
         if (!phoneCode.trim()) {
-            showPhoneFeedback("Ingresá el código que recibiste por SMS.", "error");
+            showPhoneFeedback("Debes ingresár el código que recibiste por SMS. Mira tus notificaciones", "error");
             return;
         }
 
@@ -494,16 +494,16 @@ const Login = () => {
                                 <Alert
                                     variant='filled'
                                     severity={phoneFeedbackSeverity}
-                                    sx={{ mb: 1.5, borderRadius: 2, color: "#ffffff" }}
+                                    sx={{ mb: 1.5, borderRadius: 3, color: "#ffffff", fontSize: "1rem", boxShadow: 3 }}
                                 >
                                     {phoneFeedback}
                                 </Alert>
                             ) : null}
                             <TextField
-                                label="Número de Teléfono" // Agregado por consistencia visual con tus estilos
+                                label="Número de Teléfono" 
                                 value={phoneNumber}
                                 onChange={(e) => setPhoneNumber(e.target.value)}
-                                placeholder="9 353 244165" // Ajustado el placeholder ya que el prefijo va aparte
+                                placeholder="9 353 244165"
                                 fullWidth
                                 margin="dense"
                                 type="tel"
@@ -565,13 +565,13 @@ const Login = () => {
                                                         color: "#000000",
                                                     },
                                                     "& .MuiSelect-iconOpen": {
-                                                        color: "#000000", // Mantiene el negro cuando el menú se despliega
+                                                        color: "#000000", 
                                                     }
                                                 }}
                                             >
                                                 {paises.map((pais) => (
-                                                    <MenuItem key={pais.iso} value={pais.prefijo}>
-                                                        {pais.iso} ({pais.prefijo})
+                                                    <MenuItem key={pais.codigo} value={pais.prefijo}>
+                                                        {pais.codigo} ({pais.prefijo})
                                                     </MenuItem>
                                                 ))}
                                             </Select>
