@@ -12,6 +12,8 @@ const MAX_WAIT_FOR_VOICE_MS = 6000;
 const AUTO_MIN_DURATION_MS = 500;
 const MANUAL_MIN_DURATION_MS = 1000;
 
+const sonidoInicio = new Audio("/sounds/sonidoAudio.mp3");
+
 const BotonAudio = forwardRef(({ onTranscription, onStart, onStop, ...props }, ref) => {
   const [errorAlert, setErrorAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
@@ -41,7 +43,7 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop, ...props }, r
     speechDetectedRef.current = false;
 
     if (audioContextRef.current) {
-      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current.close().catch(() => { });
       audioContextRef.current = null;
     }
 
@@ -98,7 +100,7 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop, ...props }, r
 
     try {
       const audioContext = new AudioContextImpl();
-      await audioContext.resume().catch(() => {});
+      await audioContext.resume().catch(() => { });
 
       const source = audioContext.createMediaStreamSource(streamRef.current);
       const analyser = audioContext.createAnalyser();
@@ -133,6 +135,8 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop, ...props }, r
       if (navigator.vibrate) {
         navigator.vibrate(60);
       }
+      sonidoInicio.currentTime = 0;
+      sonidoInicio.play().catch(() => { });
 
       const chunks = [];
       autoStopRef.current = Boolean(options?.autoStopOnSilence);
@@ -298,7 +302,6 @@ const BotonAudio = forwardRef(({ onTranscription, onStart, onStop, ...props }, r
             boxShadow: 4,
             borderRadius: 3,
             fontSize: "1rem",
-            fontFamily: "'Lora', serif",
           }}
         >
           {alertMessage}

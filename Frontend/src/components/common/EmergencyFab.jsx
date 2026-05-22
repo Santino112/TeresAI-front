@@ -132,7 +132,7 @@ function EmergencyFab({ inline = false }) {
           aria-label="emergencia"
           onClick={handleTriggerEmergency}
           disabled={submitting}
-          size={inline ? "medium" : "large"}
+          size={inline ? "large" : "large"}
           sx={fabSx}
         > {submitting ? (
           <CircularProgress
@@ -150,21 +150,28 @@ function EmergencyFab({ inline = false }) {
         </Fab>
       </Tooltip>
 
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4500}
-        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
+      {snackbar.open && (
         <Alert
           severity={snackbar.severity}
           variant="filled"
           onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-          sx={{ width: "100%", color: "#ffffff" }}
+          sx={{
+            position: "fixed",
+            top: 20,
+            left: "50%",
+            boxShadow: 4,
+            borderRadius: 3,
+            fontSize: "1rem",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: (theme) => theme.zIndex.modal + 3,
+            width: { xs: "90%", sm: "auto" },
+            color: "#ffffff"
+          }}
         >
           {snackbar.message}
         </Alert>
-      </Snackbar>
+      )}
     </>
   );
 }
