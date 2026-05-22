@@ -118,11 +118,11 @@ export default function Clima({ open, onClose }) {
                                     component="img"
                                     src={weatherData.icon}
                                     alt={weatherData.condition}
-                                    sx={{ width: 100, height: 100 }}
+                                    sx={{ width: 90, height: 90, mr: 1 }}
                                 />
                             </Box>
                             <Box>
-                                <Typography variant="h3" sx={{ position: "relative", right: 10, fontSize: "3.5rem" }}>
+                                <Typography variant="h3" sx={{ position: "relative", right: 6, fontSize: "3.5rem" }}>
                                     {weatherData.temp}°C
                                 </Typography>
                                 <Typography sx={{ fontSize: "1rem" }}>

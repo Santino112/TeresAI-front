@@ -811,11 +811,11 @@ function ResponsiveDrawer() {
                             sx={{
                                 position: "static",
                                 width: 44,
+                                boxShadow: 2,
                                 mr: 1,
                                 height: 44,
                                 minWidth: 44,
                                 flexShrink: 0,
-                                boxShadow: "0 10px 20px rgba(176, 0, 32, 0.25)",
                                 color: "white",
                                 backgroundColor: "#ca2828",
                                 "&:hover": {

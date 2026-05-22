@@ -82,9 +82,9 @@ function IconMenu({ setPaginaActiva }) {
                 id='basic-button'
                 fullWidth
                 onClick={(e) => setAnchorEl(e.currentTarget)}
-                sx={{ color: "#000000", justifyContent: "flex-start", p: 2 }}
+                sx={{ color: "#000000", justifyContent: "flex-start", p: 2,  textTransform: "none"  }}
             >
-                <Avatar sx={{ mr: 2, color: "#ffffff" }}>{stringAvatar(profile?.username)}</Avatar>
+                <Avatar src={user?.user_metadata?.avatar_url} sx={{ mr: 2, color: "#ffffff"}}>{stringAvatar(profile?.username || user?.user_metadata?.full_name)}</Avatar>
                 {profile?.username.slice(0, 15) || "Usuario"}
                 <ExpandLessRoundedIcon fontSize="small" sx={{ ml: "auto" }} />
             </Button>
