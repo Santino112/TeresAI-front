@@ -11,6 +11,7 @@ import Chat from "./chatIA/chat.jsx";
 import Buscador from '../buscador/buscador.jsx';
 import Perfil from "../profile/profile.jsx";
 import Calendar from "../calendar/calendar.jsx";
+import Clima from '../clima/clima.jsx';
 import Familiar from "./familiar/familiar.jsx";
 import Menu from "@mui/material/Menu";
 import ManualFamiliar from '../manual/manualFamiliar.jsx';
@@ -47,6 +48,7 @@ import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
 import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
+import CloudRoundedIcon from '@mui/icons-material/CloudRounded';
 import MicOffRoundedIcon from "@mui/icons-material/MicOffRounded";
 
 const drawerWidth = 290;
@@ -185,6 +187,10 @@ function ResponsiveDrawer() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [menuConvId, setMenuConvId] = useState(null);
   const { user, loading: authLoading } = useAuth();
+  //Api clima
+  const [openWeather, setOpenWeather] = useState(false);
+  const handleOpenWeather = () => setOpenWeather(true);
+  const handleCloseWeather = () => setOpenWeather(false);
 
   const [open, setOpen] = useState(false);
   const handleCloseModal = async () => {
@@ -816,13 +822,20 @@ function ResponsiveDrawer() {
           >
             <MenuIcon />
           </IconButton>
-          {activeConversationId && paginaActiva === "chat" && (
-            <Typography noWrap sx={{ fontSize: "1rem" }}>
-              {Array.isArray(conversations)
-                ? conversations.find((c) => c.id === activeConversationId)?.title || "Chat sin titulo"
-                : "Chat sin titulo"}
-            </Typography>
-          )}
+          <Box sx={{ flexGrow: 1 }}>
+            {activeConversationId && paginaActiva === "chat" && (
+              <Typography noWrap sx={{ fontSize: "1.1rem", display: { xs: "none", md: "block" } }}>
+                {Array.isArray(conversations)
+                  ? conversations.find(c => c.id === activeConversationId)?.title || "Chat sin título"
+                  : "Chat sin título"}
+              </Typography>
+            )}
+          </Box>
+          <IconButton color="inherit" onClick={handleOpenWeather} title="Ver clima" sx={{
+            "&:hover": { backgroundColor: "#e1e1e1", color: "#000000" },
+          }}>
+            <CloudRoundedIcon fontSize='large' />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }} aria-label="mailbox folders">
@@ -954,6 +967,10 @@ function ResponsiveDrawer() {
             <Inicio />
           )}
         </Box>
+        <Clima
+          open={openWeather}
+          onClose={handleCloseWeather}
+        />
       </Box>
     </Box>
   );

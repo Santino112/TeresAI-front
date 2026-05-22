@@ -727,22 +727,6 @@ function ResponsiveDrawer() {
                                         }
                                     }}
                                 >
-                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3, color: "#000000", "&:hover": { backgroundColor: "#e1e1e1" } }}>
-                                        <StarRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Favorito
-                                    </MenuItem>
-                                    <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3, color: "#000000", "&:hover": { backgroundColor: "#e1e1e1" } }}>
-                                        <EditRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Renombrar
-                                    </MenuItem>
-                                    <Divider sx={{
-                                        width: "100%",
-                                        color: "#000000",
-                                        backgroundColor: "#9f9e9e",
-                                        "&::before, &::after": {
-                                            borderColor: "#000000",
-                                        },
-                                        m: 0,
-                                        p: 0
-                                    }}></Divider>
                                     <MenuItem onClick={(e) => { e.stopPropagation(); handleDelete(); handleMenuClose(); }}
                                         sx={{
                                             color: "#000000",
@@ -811,11 +795,11 @@ function ResponsiveDrawer() {
                             sx={{
                                 position: "static",
                                 width: 44,
+                                boxShadow: 2,
                                 mr: 1,
                                 height: 44,
                                 minWidth: 44,
                                 flexShrink: 0,
-                                boxShadow: "0 10px 20px rgba(176, 0, 32, 0.25)",
                                 color: "white",
                                 backgroundColor: "#ca2828",
                                 "&:hover": {

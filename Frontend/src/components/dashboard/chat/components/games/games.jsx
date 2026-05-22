@@ -72,6 +72,7 @@ const Games = () => {
                         xl: "1.3rem",
                     },
                     lineHeight: 1.8,
+                    textAlign: { xs: "center", sm: "center", md: "start" },
                 }}>En esta sección podras encontrar una serie de juegos que te ayudaran a pasar el rato. Juegos divertidos y de memoria
                     para ejercitar la mente y mejorar el bienestar propio.
                 </Typography>

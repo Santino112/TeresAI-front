@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import { supabase } from '../../supabaseClient';
 import { AuthContext } from './authContextDefinition.js';
+import logo from '../../assets/images/logo_teresAI.png';
 
 export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(null);
@@ -32,6 +33,7 @@ export const AuthProvider = ({ children }) => {
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         if (!active) return;
+        if (_event === "SIGNED_IN") setLoading(true);
         setSession(session);
         setLoading(false);
       }
@@ -60,7 +62,7 @@ export const AuthProvider = ({ children }) => {
           justifyContent: "center",
         }}
       >
-        <CircularProgress size={32} />
+        <Box component="img" src={logo} alt="TeresAI" sx={{ width: 120, height: "auto" }} />
       </Box>
     );
   }

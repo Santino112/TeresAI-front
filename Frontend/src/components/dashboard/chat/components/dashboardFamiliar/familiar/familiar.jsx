@@ -204,31 +204,51 @@ const Familiar = () => {
             <Select
               value={selectedElder || ""}
               onChange={(e) => setSelectedElder(e.target.value)}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    borderRadius: 3,
+                    backgroundColor: "#303030",
+                    color: "#ffffff",
+                  }
+                },
+                MenuListProps: { sx: { p: 0 } }
+              }}
               sx={{
                 backgroundColor: "#d7d6d6",
-                mt: 1,
                 color: "#000000",
                 borderRadius: 3,
                 boxShadow: 3,
-                input: { color: "#000000" },
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 3,
-                  pr: 1,
+                mb: 1,
+                // 1. Esto fuerza el borde a la raíz del Select cuando está enfocado
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "gray !important",
+                  borderWidth: "2px !important",
                 },
-                "& fieldset": {
-                  borderColor: "transparent"
+                // 2. Quitamos el borde por defecto y en hover
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "transparent",
                 },
-                "& .MuiInputBase-input::placeholder": {
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "transparent",
+                  borderWidth: "2px",
+                },
+                // Estilos del Input e Icono
+                "& .MuiInputBase-input": {
                   color: "#000000",
-                  opacity: 0.6,
+                  WebkitTextFillColor: "#000000",
                 },
-                "&:hover fieldset": {
-                  borderColor: "transparent"
+                "& .MuiSelect-icon": {
+                  color: "#000000",
                 },
-                "&.Mui-focused fieldset": {
-                  borderColor: "gray"
+                // Estilos del Label (opcional, para mantener el negro al enfocar)
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#000000 !important",
                 },
-                mb: 1
+                // Corrección para el Start Adornment si fuera necesario
+                "& .MuiInputAdornment-root": {
+                  color: "#000000",
+                }
               }}
             >
               {elders.map((elder) => (
@@ -239,9 +259,9 @@ const Familiar = () => {
             </Select>
           )}
         </Stack>
+        <Divider sx={{ borderColor: "rgba(0,0,0,0.1)", width: "100%", my: 2 }} />
       </Paper>
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-
       {loading ? (
         <Box sx={{ p: 5, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 2, flexGrow: 1 }}>
           <Typography variant="h2" sx={{ fontSize: "1rem", fontFamily: "'Lora', serif", color: "#000000" }}>Cargando información</Typography>
@@ -261,7 +281,7 @@ const Familiar = () => {
             }
           }
         }}>
-          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }} sx={{ boxShadow: 3, }}>
+          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }} sx={{ boxShadow: 3 }}>
             <Card
               sx={{
                 height: "100%",

@@ -113,7 +113,6 @@ function EmergencyFab({ inline = false }) {
       height: 44,
       minWidth: 44,
       flexShrink: 0,
-      boxShadow: "0 10px 20px rgba(176, 0, 32, 0.25)",
     }
     : {
       position: "fixed",
