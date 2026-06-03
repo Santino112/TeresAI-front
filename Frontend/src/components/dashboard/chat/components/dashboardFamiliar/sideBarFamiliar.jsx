@@ -554,7 +554,10 @@ function ResponsiveDrawer() {
             justifyContent: "flex-start",
             mb: 1,
             mt: 1,
-            backgroundColor: "transparent",
+            backgroundColor: paginaActiva === "inicio" ? "#e1e1e1" : "transparent",
+            border: "2px solid",
+            borderRadius: 2,
+            borderColor: paginaActiva === "inicio" ? "gray" : "transparent",
             color: "#000000",
             "&:hover": {
               backgroundColor: "#e1e1e1",
@@ -570,7 +573,10 @@ function ResponsiveDrawer() {
           }}
           sx={{
             justifyContent: "flex-start",
-            backgroundColor: "transparent",
+            backgroundColor: paginaActiva === "familiar" ? "#e1e1e1" : "transparent",
+            border: "2px solid",
+            borderColor: paginaActiva === "familiar" ? "gray" : "transparent",
+            borderRadius: 2,
             mb: 1,
             color: "#000000",
             "&:hover": {
@@ -588,7 +594,10 @@ function ResponsiveDrawer() {
           }}
           sx={{
             justifyContent: "flex-start",
-            backgroundColor: "transparent",
+            backgroundColor: paginaActiva === "chat" ? "#e1e1e1" : "transparent",
+            border: "2px solid",
+            borderColor: paginaActiva === "chat" ? "gray" : "transparent",
+            borderRadius: 2,
             mb: 1,
             color: "#000000",
             "&:hover": {
@@ -604,7 +613,10 @@ function ResponsiveDrawer() {
           sx={{
             justifyContent: "flex-start",
             mb: 1,
-            backgroundColor: "transparent",
+            backgroundColor: paginaActiva === "buscador" ? "#e1e1e1" : "transparent",
+            border: "2px solid",
+            borderColor: paginaActiva === "buscador" ? "gray" : "transparent",
+            borderRadius: 2,
             color: "#000000",
             "&:hover": {
               backgroundColor: "#e1e1e1",
@@ -617,7 +629,10 @@ function ResponsiveDrawer() {
           }}
           sx={{
             justifyContent: "flex-start",
-            backgroundColor: "transparent",
+            backgroundColor: paginaActiva === "calendario" ? "#e1e1e1" : "transparent",
+            border: "2px solid",
+            borderColor: paginaActiva === "calendario" ? "gray" : "transparent",
+            borderRadius: 2,
             mb: 1,
             color: "#000000",
             "&:hover": {
@@ -750,22 +765,6 @@ function ResponsiveDrawer() {
                     }
                   }}
                 >
-                  <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3, color: "#000000", "&:hover": { backgroundColor: "#e1e1e1" } }}>
-                    <StarRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Favorito
-                  </MenuItem>
-                  <MenuItem onClick={(e) => { e.stopPropagation(); handleMenuClose(); }} sx={{ borderRadius: 3, color: "#000000", "&:hover": { backgroundColor: "#e1e1e1" } }}>
-                    <EditRoundedIcon fontSize="small" sx={{ mr: 1 }} /> Renombrar
-                  </MenuItem>
-                  <Divider sx={{
-                    width: "100%",
-                    color: "#000000",
-                    backgroundColor: "#9f9e9e",
-                    "&::before, &::after": {
-                      borderColor: "#000000",
-                    },
-                    m: 0,
-                    p: 0
-                  }}></Divider>
                   <MenuItem onClick={(e) => { e.stopPropagation(); handleDelete(); handleMenuClose(); }}
                     sx={{
                       color: "#000000",

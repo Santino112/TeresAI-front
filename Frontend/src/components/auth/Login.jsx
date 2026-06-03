@@ -122,7 +122,7 @@ const Login = () => {
 
         setPhoneOtpSent(true);
         setPhoneCode("");
-        showPhoneFeedback("Te enviaremos un código por SMS. Mira tus notificaciones", "success");
+        showPhoneFeedback("El sistema OTP está en periodo de prueba gratuito en Twilio. Funciona para un solo número de teléfono. Por favor, ingrese con Google hasta que reestablescamos esto.", "info");
         setPhoneLoading(false);
     };
 

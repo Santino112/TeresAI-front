@@ -7,6 +7,7 @@ import { getMessagesFamiliar } from "../../../exports/conversacionesFamiliar.js"
 import { useBrowserLocation } from "../../../exports/useBrowserLocation.js";
 import { useAuth } from "../../../../../auth/useAuth.jsx";
 import { tomarDatosPerfiles } from "../../../exports/datosInicialesUsuarios.js";
+import logo from "../../../../../../assets/images/logo_teresAI_noText.png";
 import fondoChatAI from "../../../../../../assets/images/fondoChatAI.png";
 import axios from "axios";
 import ReactMarkDown from "react-markdown";
@@ -22,7 +23,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
   const [respuesta, setRespuesta] = useState("");
   const [ttsEnabled, setTtsEnabled] = useState(false);
   const [profile, setProfile] = useState(null);
-  const [pensandoIA, setPensandoIA] = useState(null);
+  const [pensandoIA, setPensandoIA] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const esPantallaInicial = mensajes.length === 0 && !loadingMessages && !activeConversationId;
   const { user } = useAuth();
@@ -309,6 +310,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
               <TextField
                 placeholder={fraseActual}
                 value={prompt}
+                disabled={pensandoIA}
                 onChange={(e) => setPrompt(e.target.value)}
                 fullWidth
                 multiline
@@ -417,7 +419,6 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                       maxWidth: msg.role === "user" ? "70%" : "100%",
                       p: 2,
                       borderRadius: "15px",
-                      fontFamily: "Arial, sans-serif",
                       color: "#000000",
                       backgroundColor: msg.role === "user" ? "#cfcdc7" : "transparent",
                       boxShadow: msg.role === "user" ? 3 : 0,
@@ -445,71 +446,71 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                     }}
                   >
                     <ReactMarkDown
-                      components={
-                        msg.role === "user"
-                          ? {
-                            p: ({ children }) => (
-                              <Typography
-                                sx={{
-                                  fontSize: "1.05rem",
-                                  lineHeight: 1.8,
-                                  color: "#000000",
-                                  m: 0,
-                                  textAlign: "left"
-                                }}
-                              >
-                                {children}
-                              </Typography>
-                            )
-                          }
-                          : {
-                            p: ({ children }) => (
-                              <Typography
-                                sx={{
-                                  fontSize: "1.05rem",
-                                  lineHeight: 1.8,
-                                  mb: 1,
-                                  color: "#000000",
-                                  textAlign: "left"
-                                }}
-                              >
-                                {children}
-                              </Typography>
-                            ),
-                            li: ({ children }) => (
-                              <li
-                                style={{
-                                  fontSize: "1.05rem",
-                                  lineHeight: 1.8,
-                                  color: "#000000",
-                                  textAlign: "left"
-                                }}
-                              >
-                                {children}
-                              </li>
-                            )
-                          }
-                      }
+                      components={msg.role === "user" ? {
+                        p: ({ children }) => (
+                          <Typography sx={{
+                            fontSize: "1.05rem",
+                            lineHeight: 1.8,
+                            color: "#000000",
+                            m: 0,
+                            textAlign: "left"
+                          }}>
+                            {children}
+                          </Typography>
+                        ),
+                      } : {
+                        p: ({ children }) => (
+                          <Typography sx={{
+                            fontSize: "1.05rem",
+                            lineHeight: 1.8,
+                            mb: 1,
+                            color: "#000000",
+                            textAlign: "left"
+                          }}>
+                            {children}
+                          </Typography>
+                        ),
+                        li: ({ children }) => (
+                          <li style={{
+                            fontSize: "1.05rem",
+                            lineHeight: 1.8,
+                            color: "#000000",
+                            textAlign: "left"
+                          }}>
+                            {children}
+                          </li>
+                        ),
+                      }}
                     >
                       {msg.content}
                     </ReactMarkDown>
                   </Box>
                 </Box>
               ))}
-              {isThinking && (
+              {pensandoIA && (
                 <Box sx={{ display: "flex", justifyContent: "flex-start", width: "100%", maxWidth: "800px", pl: 2 }}>
-                  <Box
-                    sx={{
+                  <Box sx={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: 1,
+                    maxWidth: "800px",
+                    width: "100%",
+                  }}>
+                    <Box
+                      component="img"
+                      src={logo}
+                      alt="Teresa"
+                      sx={{ position: "relative", top: "8px", height: "2rem", width: "auto", mt: "12px" }}
+                    />
+                    <Box sx={{
                       maxWidth: "800px",
                       width: "100%",
                       mb: 3,
                       color: "#000000",
-                      fontStyle: "italic",
                       fontSize: "1.05rem",
-                      fontFamily: "'Lora', serif"
-                    }}
-                  >
-                    {fraseParaChat}
+                    }}>
+                      {fraseParaChat}
+                    </Box>
                   </Box>
                 </Box>
               )}
@@ -549,6 +550,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
               <TextField
                 placeholder={fraseActual}
                 value={prompt}
+                disabled={pensandoIA}
                 onChange={(e) => setPrompt(e.target.value)}
                 multiline
                 fullWidth
