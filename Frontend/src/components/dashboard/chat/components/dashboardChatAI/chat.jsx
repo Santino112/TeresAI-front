@@ -8,7 +8,7 @@ import { useBrowserLocation } from "../../exports/useBrowserLocation.js";
 import { IconButton } from "@mui/material";
 import { useAuth } from "../../../../auth/useAuth.jsx";
 import { tomarDatosPerfiles } from '../../exports/datosInicialesUsuarios.js';
-import logo from "../../../../../assets/images/logo_teresAI_noText.png"
+import logo from "../../../../../assets/images/logo_teresAI_noText.png";
 import fondoChatAI from "../../../../../assets/images/fondoChatAI.png";
 import axios from "axios";
 import ReactMarkDown from 'react-markdown';
@@ -536,7 +536,7 @@ const Chat = ({ activeConversationId, setActiveConversationId, addConversation }
                       component="img"
                       src={logo}
                       alt="Teresa"
-                      sx={{ height: "1.50rem", width: "auto", mt: "10px" }}
+                      sx={{ position: "relative", top: "8px", height: "2rem", width: "auto", mt: "12px" }}
                     />
                     <Box sx={{
                       maxWidth: "800px",
